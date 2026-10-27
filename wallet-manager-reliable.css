@@ -1,0 +1,120 @@
+/* INJ Node · official wallet manager · stable touch and multi-wallet additions
+   Scoped to #walletDialog to avoid impacting the rest of the app. */
+html[data-inj-page="index"] body #walletDialog.wallet-dialog {
+  box-sizing:border-box;
+  width:min(94vw,620px);
+  max-width:620px;
+  max-height:min(86dvh,760px);
+  padding:clamp(16px,4vw,26px);
+  margin:auto;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  border-radius:18px;
+}
+#walletDialog .wallet-manager-add-form{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin:17px 0 22px;
+  padding:clamp(14px,3vw,18px);
+  border:1px solid color-mix(in srgb,var(--accent,#70d6d4) 24%,var(--line,#344c56));
+  border-radius:14px;
+  background:color-mix(in srgb,var(--accent,#70d6d4) 4%,var(--surface,#0b1c24));
+  min-width:0;
+}
+#walletDialog .wallet-manager-add-fields{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:0;
+}
+#walletDialog .wallet-manager-add-fields label{
+  display:block;
+  padding:0;
+  margin:4px 0 0;
+  color:var(--muted-strong,var(--text,#e6f6f4));
+  font:750 10px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.11em;
+  text-align:left;
+}
+#walletDialog .wallet-manager-add-fields label span{
+  letter-spacing:normal;
+  font-weight:500;
+  opacity:.7;
+}
+#walletDialog .wallet-manager-add-fields input{
+  display:block;
+  position:static;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  height:48px;
+  min-height:48px;
+  border:1px solid color-mix(in srgb,var(--accent,#70d6d4) 20%,var(--line,#354952));
+  border-radius:10px;
+  padding:11px 13px;
+  font-size:16px;
+  line-height:1.3;
+  color:var(--text,#fff);
+  background:var(--surface-strong,#13282d);
+  box-shadow:none;
+  outline:none;
+  appearance:none;
+}
+#walletDialog .wallet-manager-add-fields input:focus-visible{
+  border-color:var(--accent,#70d6d4);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent,#70d6d4) 13%,transparent);
+}
+#walletDialog .wallet-manager-add-button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:static;
+  flex:none;
+  width:100%;
+  height:48px;
+  min-height:48px;
+  margin:5px 0 0;
+  padding:10px 14px;
+  border:0;
+  border-radius:11px;
+  color:var(--theme-canvas,#08201f);
+  background:var(--accent,#70d6d4);
+  font:800 12px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.035em;
+  cursor:pointer;
+  transform:none;
+  white-space:nowrap;
+  touch-action:manipulation;
+}
+#walletDialog .wallet-manager-add-status{
+  display:block;
+  min-height:1.5em;
+  margin:0;
+  padding:0;
+  font:500 11px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:var(--muted-strong,var(--muted,#b0caca));
+  overflow-wrap:break-word;
+}
+#walletDialog .wallet-manager-add-status.error{color:#f1a0a4}
+#walletDialog .wallet-manager-list{max-width:100%;min-width:0;}
+#walletDialog .wallet-manager-row{min-width:0;}
+#walletDialog .wallet-manager-copy{min-width:0;}
+#walletDialog .wallet-manager-copy small{
+  display:block;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+@media(max-width:600px){
+ html[data-inj-page="index"] body #walletDialog.wallet-dialog{
+   width:calc(100% - 24px);
+   max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 34px);
+   border-radius:16px;
+   padding:17px 14px;
+ }
+ #walletDialog .wallet-manager-add-form{margin:14px 0 18px;}
+ #walletDialog .wallet-manager-add-button{font-size:12px;}
+}
