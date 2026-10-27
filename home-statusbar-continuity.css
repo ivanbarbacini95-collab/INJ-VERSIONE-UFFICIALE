@@ -1,0 +1,34 @@
+/* INJ Node · iPhone status-bar continuity · 2026-10-27
+   The standalone iOS status bar was showing the flat --theme-canvas colour,
+   while the Home immediately below used the vibrant --page-gradient.
+   Paint both the root canvas and the Home with the SAME palette and origin.
+   No fixed strips, filters, extra compositor layers or layout shifts. */
+@media (max-width:900px), (pointer:coarse) {
+  html[data-inj-page="index"] {
+    background-color:var(--theme-canvas,var(--bg,#020708))!important;
+    background-image:var(--page-gradient)!important;
+    background-position:center top!important;
+    background-size:cover!important;
+    background-repeat:no-repeat!important;
+    background-attachment:scroll!important;
+  }
+  /* iOS may use BODY rather than HTML as its behind-status-bar backing layer,
+     depending on Safari versus an installed PWA. Both must match the theme. */
+  html[data-inj-page="index"] body {
+    background-color:var(--theme-canvas,var(--bg,#020708))!important;
+    background-image:var(--page-gradient)!important;
+    background-position:center top!important;
+    background-size:cover!important;
+    background-repeat:no-repeat!important;
+    background-attachment:scroll!important;
+  }
+  /* Preserve the native status-bar-safe spacing and original Home layout.
+     Only its background painting is unified with the root colour system. */
+  html[data-inj-page="index"] body #entryGate.entry-gate {
+    background-color:var(--theme-canvas,var(--bg,#020708))!important;
+    background-image:var(--page-gradient)!important;
+    background-position:center top!important;
+    background-repeat:no-repeat!important;
+    background-attachment:scroll!important;
+  }
+}
