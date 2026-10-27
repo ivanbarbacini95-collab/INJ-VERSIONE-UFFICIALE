@@ -330,6 +330,7 @@
 <link rel="stylesheet" href="./home-tile-descriptions.css?v=20261026a"/>
 <link rel="stylesheet" href="./performance-timeline-fit.css?v=20261026-fit1"/>
 <link rel="stylesheet" href="./first-access-unified.css?v=20261027-official-fix1"/>
+<link rel="stylesheet" href="./wallet-manager-reliable.css?v=20261027a"/>
 <link rel="stylesheet" href="./home-terminal-header-20261027.css?v=h4"/>
 <script defer src="./home-terminal-header-20261027.js?v=h2"></script>
 <script defer src="./inj-node-insights-config.js?v=1"></script>
@@ -1195,7 +1196,17 @@
 <div><span class="card-label">Wallet salvati</span><h2>Gestisci indirizzi</h2></div>
 <button aria-label="Chiudi" class="dialog-close" id="closeWalletDialog" type="button">×</button>
 </div>
-<p>Assegna un nome, apri o rimuovi gli indirizzi salvati su questo dispositivo.</p>
+<p>Aggiungi, rinomina e seleziona i wallet senza riavviare INJ Node. Sono necessari solo indirizzi pubblici.</p>
+<form class="wallet-manager-add-form" id="walletManagerAddForm" novalidate>
+  <div class="wallet-manager-add-fields">
+    <label for="walletManagerName">NOME WALLET <span>(facoltativo)</span></label>
+    <input id="walletManagerName" name="walletManagerName" type="text" maxlength="28" autocomplete="off" spellcheck="false" placeholder="Es. Ledger principale" />
+    <label for="walletManagerAddress">INDIRIZZO INJECTIVE</label>
+    <input id="walletManagerAddress" name="walletManagerAddress" type="text" inputmode="text" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="inj1…" aria-describedby="walletManagerAddStatus"/>
+  </div>
+  <button id="walletManagerAddButton" class="wallet-manager-add-button" type="submit">+ AGGIUNGI WALLET</button>
+  <small id="walletManagerAddStatus" class="wallet-manager-add-status" role="status" aria-live="polite">Il wallet viene salvato subito, anche se la rete è lenta.</small>
+</form>
 <div class="wallet-manager-list" id="walletManagerList"></div>
 </dialog>
 <dialog aria-label="Stato rete e API INJ Node" class="system-status-dialog" id="systemStatusDialog">
@@ -1333,7 +1344,7 @@
   </article>
 </section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
-<script defer="" src="app.js?v=20261027-onboard3"></script>
+<script defer="" src="app.js?v=20261027-wallet-fix1"></script>
 <script defer src="./morning-brief.js?v=160737"></script>
 <script>
 (function(){
