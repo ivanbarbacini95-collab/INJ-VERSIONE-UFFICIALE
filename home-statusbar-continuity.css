@@ -1,34 +1,58 @@
-/* INJ Node · iPhone status-bar continuity · 2026-10-27
-   The standalone iOS status bar was showing the flat --theme-canvas colour,
-   while the Home immediately below used the vibrant --page-gradient.
-   Paint both the root canvas and the Home with the SAME palette and origin.
-   No fixed strips, filters, extra compositor layers or layout shifts. */
-@media (max-width:900px), (pointer:coarse) {
-  html[data-inj-page="index"] {
-    background-color:var(--theme-canvas,var(--bg,#020708))!important;
+/* INJ Node · iOS edge-to-edge Home / status-bar join · v3
+   On installed iOS PWAs the native status area displays a FLAT theme color;
+   the animated Home effects start at the web viewport boundary. Painting the
+   same gradient on html/body is insufficient: the compositing surface still
+   begins with a sharp line. Bridge that join with a deliberate theme-matched
+   status colour and a gentle entrance for the noninteractive ambient fields.
+   All rules are mobile/Home-specific; no scroll or layout changes. */
+html[data-inj-page="index"]{
+ --inj-status-tone:#14302d;
+}
+html[data-inj-page="index"][data-theme="navy"]{--inj-status-tone:#14302d}
+html[data-inj-page="index"][data-theme="black"]{--inj-status-tone:#080809}
+html[data-inj-page="index"][data-theme="light"]{--inj-status-tone:#eaf5fc}
+html[data-inj-page="index"][data-theme="amber"]{--inj-status-tone:#192638}
+html[data-inj-page="index"][data-theme="ocean"]{--inj-status-tone:#1a3047}
+html[data-inj-page="index"][data-theme="chromatic"]{--inj-status-tone:#343052}
+html[data-inj-page="index"][data-theme="velvet"]{--inj-status-tone:#332951}
+html[data-inj-page="index"][data-theme="aqua"]{--inj-status-tone:#cce7ed}
+html[data-inj-page="index"][data-theme="ocean-x-electric"]{--inj-status-tone:#174b77}
+html[data-inj-page="index"][data-theme="ocean-x-ion"]{--inj-status-tone:#472d6a}
+html[data-inj-page="index"][data-theme="ocean-x-toxic"]{--inj-status-tone:#155947}
+html[data-inj-page="index"][data-theme="ocean-x-solar"]{--inj-status-tone:#713745}
+
+@media (max-width:900px), (hover:none) and (pointer:coarse){
+  /* iOS standalone uses the solid root backing colour for its status region. */
+  html[data-inj-page="index"],
+  html[data-inj-page="index"] body{
+    background-color:var(--inj-status-tone)!important;
     background-image:var(--page-gradient)!important;
+    background-repeat:no-repeat!important;
     background-position:center top!important;
-    background-size:cover!important;
+    background-attachment:scroll!important;
+  }
+  /* Begin the Home at precisely the same solid colour as the status region;
+     fade into the user's existing dynamic theme rather than cutting to it. */
+  html[data-inj-page="index"] body #entryGate.entry-gate{
+    background-color:var(--inj-status-tone)!important;
+    background-image:
+      linear-gradient(180deg,
+        var(--inj-status-tone) 0px,
+        color-mix(in srgb,var(--inj-status-tone) 52%,transparent) 76px,
+        transparent 172px),
+      var(--page-gradient)!important;
+    background-position:center top!important;
     background-repeat:no-repeat!important;
     background-attachment:scroll!important;
   }
-  /* iOS may use BODY rather than HTML as its behind-status-bar backing layer,
-     depending on Safari versus an installed PWA. Both must match the theme. */
-  html[data-inj-page="index"] body {
-    background-color:var(--theme-canvas,var(--bg,#020708))!important;
-    background-image:var(--page-gradient)!important;
-    background-position:center top!important;
-    background-size:cover!important;
-    background-repeat:no-repeat!important;
-    background-attachment:scroll!important;
-  }
-  /* Preserve the native status-bar-safe spacing and original Home layout.
-     Only its background painting is unified with the root colour system. */
-  html[data-inj-page="index"] body #entryGate.entry-gate {
-    background-color:var(--theme-canvas,var(--bg,#020708))!important;
-    background-image:var(--page-gradient)!important;
-    background-position:center top!important;
-    background-repeat:no-repeat!important;
-    background-attachment:scroll!important;
+  /* Moving ambient layers were creating the sharp edge at the iOS inset.
+     Fade in only these decorative layers, not the interactive cards/header. */
+  html[data-inj-page="index"] body #entryGate > :is(
+    .ocean-x-atmosphere,.ocean-aurora-atmosphere,
+    .chromatic-mist-atmosphere,.velvet-nebula-atmosphere,
+    .aqua-mirage-atmosphere
+  ){
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0px,#000 168px)!important;
+    mask-image:linear-gradient(to bottom,transparent 0px,#000 168px)!important;
   }
 }
