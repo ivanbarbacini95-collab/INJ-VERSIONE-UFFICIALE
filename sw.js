@@ -1,7 +1,8 @@
-const CACHE_NAME = 'inj-node-v16.10.27-home-premium-titles1';
+const CACHE_NAME = 'inj-node-v16.10.27-statusbar-continuity2';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
   './home-premium-titles.css?v=20261027p1',
+  './home-statusbar-continuity.css?v=20261027top2',
   './home-terminal-header-20261027.js?v=h2',
   './workspace-sections.js?v=20261027-live2',
   './navigation.js?v=20261027-sync1',
