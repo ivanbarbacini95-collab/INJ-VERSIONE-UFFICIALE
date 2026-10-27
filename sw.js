@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v16.10.27-home-pre-migration-restored1';
+const CACHE_NAME = 'inj-node-v16.10.27-ios-status-bar-theme-continuity1';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
   './home-terminal-header-20261027.js?v=h2',
