@@ -271,7 +271,7 @@
     if (el.closest?.('[data-i18n-skip="true"]')) return;
     // The Home descriptions always follow the chosen language, even after
     // a theme switch, a live update or a return to this already-mounted page.
-    if (el.classList?.contains('inj-tile-description')) {
+    if (el.classList?.contains('inj-tile-description') || el.classList?.contains('inj-home-tile-title')) {
       const localized = el.getAttribute(lang === 'en' ? 'data-en' : 'data-it');
       if (localized != null) {
         if (el.firstChild?.nodeType === 3 && el.childNodes.length === 1) {
@@ -296,7 +296,7 @@
     try {
       if (root.nodeType === 3) {
         const parent = root.parentElement;
-        if (!parent || parent.closest?.('[data-i18n-skip="true"], script, style, textarea')) return;
+        if (!parent || parent.closest?.('[data-i18n-skip="true"], .inj-home-tile-title, script, style, textarea')) return;
         const next = translateString(root.nodeValue);
         if (next !== root.nodeValue) root.nodeValue = next;
         return;
