@@ -1,0 +1,96 @@
+/* INJ Node — Premium Trading Terminal / Home typography
+   Intentional typographic-only update. Keep original two-column launcher,
+   full-width ETF, Workspace & Treasury, original icon placement and themes.
+   Source of truth for IT/EN titles: data-it/data-en in index.html. */
+
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > span:not(.entry-action-icon):not(.inj-tile-scene) > strong.inj-home-tile-title {
+  font-family:var(--inj-node-terminal-font,"IBM Plex Mono",ui-monospace,monospace)!important;
+  font-size:clamp(12px,1.08vw,14px)!important;
+  font-weight:600!important;
+  letter-spacing:.075em!important;
+  line-height:1.26!important;
+  text-transform:uppercase!important;
+  text-wrap:balance!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  white-space:normal!important;
+  text-overflow:clip!important;
+  max-width:100%!important;
+  -webkit-font-smoothing:antialiased;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action .inj-tile-description {
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:clamp(10px,.88vw,11.5px)!important;
+  font-weight:400!important;
+  letter-spacing:0!important;
+  line-height:1.35!important;
+  text-transform:none!important;
+  opacity:.76!important;
+}
+@media(max-width:799px) {
+  /* Text only: no change to the original card/grid measurements. */
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > span:not(.entry-action-icon):not(.inj-tile-scene) {
+    gap:4px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > span:not(.entry-action-icon):not(.inj-tile-scene) > strong.inj-home-tile-title {
+    display:block!important;
+    font-size:clamp(11.3px,3.03vw,12.7px)!important;
+    line-height:1.25!important;
+    font-weight:600!important;
+    letter-spacing:.055em!important;
+    max-width:100%!important;
+    margin:0!important;
+    text-align:center!important;
+    white-space:normal!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > span:not(.entry-action-icon):not(.inj-tile-scene) > .inj-tile-description {
+    font-size:clamp(9.4px,2.58vw,10.5px)!important;
+    line-height:1.25!important;
+    font-weight:400!important;
+    text-align:center!important;
+    opacity:.75!important;
+    white-space:normal!important;
+    text-overflow:ellipsis!important;
+    overflow:hidden!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > :is(#entryInjcEtfButton,#entryWorkspaceButton,#entryTreasuryButton)
+  > span:not(.entry-action-icon):not(.inj-tile-scene) > strong.inj-home-tile-title {
+    font-size:clamp(13px,3.6vw,16px)!important;
+    font-weight:600!important;
+    letter-spacing:.065em!important;
+    line-height:1.25!important;
+    text-align:left!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > :is(#entryInjcEtfButton,#entryWorkspaceButton,#entryTreasuryButton)
+  > span:not(.entry-action-icon):not(.inj-tile-scene) > .inj-tile-description {
+    font-size:10.5px!important;
+    font-weight:400!important;
+    text-align:left!important;
+  }
+}
+@media(max-width:360px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > span:not(.entry-action-icon):not(.inj-tile-scene) > strong.inj-home-tile-title{
+    font-size:11px!important;
+    letter-spacing:.025em!important;
+  }
+}
