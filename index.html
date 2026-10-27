@@ -35,9 +35,9 @@
   </script>
 <style>html[data-return-home="1"] .boot-splash{display:none!important}</style>
 <link href="style.css?v=16.01.44" rel="stylesheet"/>
-<script>document.addEventListener('DOMContentLoaded',()=>{const c=getComputedStyle(document.documentElement).getPropertyValue('--theme-canvas').trim();if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
+<script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--inj-status-tone').trim()||cs.getPropertyValue('--theme-canvas').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <link rel="stylesheet" href="viewport.css?v=16.00.74">
-<script defer src="viewport.js?v=16.06.00"></script>
+<script defer src="viewport.js?v=20261027native3"></script>
 
 <style id="entry-flat-v44-css">
 .entry-actions.entry-flat-v44{display:flex!important;flex-direction:column!important;gap:10px!important;width:100%!important}
@@ -333,7 +333,7 @@
 <link rel="stylesheet" href="./wallet-manager-reliable.css?v=20261027a"/>
 <link rel="stylesheet" href="./home-terminal-header-20261027.css?v=h4"/>
 <link rel="stylesheet" href="./home-premium-titles.css?v=20261027p1"/>
-<link rel="stylesheet" href="./home-statusbar-continuity.css?v=20261027top2"/>
+<link rel="stylesheet" href="./home-statusbar-continuity.css?v=20261027native3"/>
 
 <script defer src="./home-terminal-header-20261027.js?v=h2"></script>
 <script defer src="./inj-node-insights-config.js?v=1"></script>
