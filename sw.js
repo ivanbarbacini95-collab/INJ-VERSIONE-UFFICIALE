@@ -1,7 +1,6 @@
-const CACHE_NAME = 'inj-node-v16.10.27-home-fintech-tiles1';
+const CACHE_NAME = 'inj-node-v16.10.27-home-pre-migration-restored1';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
-  './home-fintech-tiles-20261027.css?v=fintech1',
   './home-terminal-header-20261027.js?v=h2',
   './workspace-sections.js?v=20261027-live2',
   './navigation.js?v=20261027-sync1',
