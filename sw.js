@@ -1,6 +1,7 @@
-const CACHE_NAME = 'inj-node-v16.10.27-ios-status-bar-theme-continuity1';
+const CACHE_NAME = 'inj-node-v16.10.27-home-premium-titles1';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
+  './home-premium-titles.css?v=20261027p1',
   './home-terminal-header-20261027.js?v=h2',
   './workspace-sections.js?v=20261027-live2',
   './navigation.js?v=20261027-sync1',
@@ -17,7 +18,7 @@ const APP_SHELL = [
   './market-portal.js?v=20261027-g1',
   './first-access-unified.css?v=20261027-official-fix1',
   './wallet-manager-reliable.css?v=20261027a',
-  './i18n.js?v=20261026b',
+  './i18n.js?v=20261027titles1',
   './app.js?v=20261027-wallet-fix1',
   './performance-timeline-fit.css?v=20261026-fit1',
   './home-premium-iconography.js?v=20261027luxb1',
