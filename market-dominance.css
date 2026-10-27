@@ -1,0 +1,56 @@
+/* INJ Node · market INJ dominance, borderless live module */
+html[data-inj-market] .inj-dom-panel{
+ --inj-dom-muted:var(--muted);
+ margin:22px auto 26px;
+ padding:17px 2px 23px;
+ border-top:1px solid var(--line);
+ border-bottom:1px solid var(--line);
+ background:transparent!important;
+ color:var(--text);
+ width:100%;
+ box-sizing:border-box
+}
+html[data-inj-market] .inj-dom-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px 16px}
+html[data-inj-market] .inj-dom-header h2{margin:0;font-size:clamp(14px,2.8vw,19px);font-weight:830;letter-spacing:.08em;color:var(--text)}
+html[data-inj-market] .inj-dom-header p{margin:3px 0 0;color:var(--muted);font-size:12px}
+html[data-inj-market] .inj-dom-status{color:var(--accent);font-size:10px;font-weight:750;letter-spacing:.04em}
+html[data-inj-market] .inj-dom-main{display:flex;align-items:baseline;gap:15px;flex-wrap:wrap;padding-top:15px}
+html[data-inj-market] .inj-dom-value{font-size:clamp(32px,6vw,56px);letter-spacing:-.055em;line-height:1.04;font-weight:850;font-variant-numeric:tabular-nums;color:var(--accent)}
+html[data-inj-market] .inj-dom-change{display:flex;flex-direction:column;gap:4px}
+html[data-inj-market] .inj-dom-change small,html[data-inj-market] .inj-dom-facts small{font-size:10px;font-weight:750;letter-spacing:.06em;color:var(--muted)}
+html[data-inj-market] .inj-dom-change strong{font-size:13px;font-variant-numeric:tabular-nums}
+html[data-inj-market] .inj-dom-facts{display:flex;align-items:center;flex-wrap:wrap;gap:10px 33px;margin-top:17px}
+html[data-inj-market] .inj-dom-facts div{display:flex;flex-direction:column;gap:3px}
+html[data-inj-market] .inj-dom-facts strong{font-size:clamp(13px,2vw,17px);font-weight:750;font-variant-numeric:tabular-nums}
+html[data-inj-market] .inj-dom-toolbar{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:9px;margin-top:23px}
+html[data-inj-market] .inj-dom-ranges{display:flex;gap:3px;flex-wrap:wrap}
+html[data-inj-market] .inj-dom-ranges button,html[data-inj-market] #injDomRefresh{
+ cursor:pointer;font:inherit;line-height:1.25;
+ border-radius:8px;border:1px solid transparent;
+ background:transparent;color:var(--muted);
+ font-size:11px;font-weight:750;padding:8px 11px;
+ touch-action:manipulation
+}
+html[data-inj-market] .inj-dom-ranges button[aria-pressed="true"]{border-color:var(--line);background:var(--accent-soft);color:var(--text)}
+html[data-inj-market] #injDomRefresh{border-color:var(--line)}
+html[data-inj-market] .inj-dom-ranges button:focus-visible,html[data-inj-market] #injDomRefresh:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html[data-inj-market] .inj-dom-chart-wrap{position:relative;width:100%;margin-top:7px}
+html[data-inj-market] #injDomChart{display:block;width:100%;height:auto;max-height:255px;min-height:95px;overflow:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:crosshair}
+html[data-inj-market] .inj-dom-gridline{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+html[data-inj-market] .inj-dom-tick{fill:var(--muted);font-family:inherit;font-size:12px}
+html[data-inj-market] .inj-dom-cursor{stroke:var(--muted);stroke-dasharray:4 4;stroke-width:1;vector-effect:non-scaling-stroke}
+html[data-inj-market] .inj-dom-empty{min-height:75px;display:grid;place-items:center;color:var(--muted);font-size:12px;text-align:center;padding:8px}
+html[data-inj-market] .inj-dom-empty[hidden]{display:none!important}
+html[data-inj-market] .inj-dom-inspection{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px 17px;margin:5px 0 0;font-size:11px;color:var(--muted)}
+html[data-inj-market] .inj-dom-inspection strong{color:var(--text);font-size:12px;font-variant-numeric:tabular-nums}
+html[data-inj-market] .inj-dom-inspection aside{font-size:11px}
+html[data-inj-market] .inj-dom-note{font-size:10px;line-height:1.6;color:var(--muted);margin:13px 0 0;max-width:780px}
+@media(max-width:600px){
+ html[data-inj-market] .inj-dom-panel{margin-top:14px;padding:12px 0 17px}
+ html[data-inj-market] .inj-dom-facts{gap:8px 21px}
+ html[data-inj-market] .inj-dom-toolbar{margin-top:18px}
+ html[data-inj-market] .inj-dom-ranges button{padding:7px 9px}
+ html[data-inj-market] .inj-dom-chart-wrap{margin-top:4px}
+ html[data-inj-market] .inj-dom-status{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){html[data-inj-market] .inj-dom-panel *{animation:none!important;transition:none!important}}

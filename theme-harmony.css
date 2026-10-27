@@ -1,0 +1,290 @@
+/* INJ Node · Theme Harmony v16.01.11
+   The same semantic colour system for Home, Dashboard, PWA overlays,
+   and autonomous sections. Presentation-only: no geometry, scrolling,
+   chart updates, or position transforms are changed. */
+
+/* Existing four palettes retain their original values. The two newer
+   ambient themes now define the Dashboard-specific surface tokens too. */
+:root[data-theme="ocean"] {
+ --accent-ink:#031b26;
+ --card-gradient:
+  radial-gradient(ellipse at 100% 0%,rgba(78,163,196,.075),transparent 44%),
+  linear-gradient(145deg,rgba(18,44,64,.93),rgba(9,25,41,.96));
+ --market-gradient:
+  radial-gradient(ellipse at 100% 5%,rgba(51,155,185,.12),transparent 47%),
+  linear-gradient(145deg,rgba(18,49,67,.94),rgba(9,29,47,.97));
+ --dock-gradient:linear-gradient(130deg,rgba(17,43,63,.94),rgba(10,26,43,.95));
+ --floating-surface:rgba(15,34,50,.97);
+ --dialog-gradient:linear-gradient(140deg,#182d44,#0c1e31);
+ --card-orb:rgba(65,163,206,.07);
+ --card-orb-alt:rgba(111,96,199,.05);
+ --card-inner-highlight:rgba(227,248,255,.048);
+ --card-shadow-accent:rgba(80,161,191,.045);
+ --shadow:0 19px 48px rgba(3,13,28,.30),0 6px 20px rgba(3,21,35,.18);
+ --section-overview:var(--accent);
+ --section-wallet:var(--accent);
+ --section-staking:var(--accent);
+ --section-market:var(--accent);
+ --section-delegations:var(--accent);
+}
+:root[data-theme="chromatic"] {
+ --accent-ink:#221528;
+ --card-gradient:
+  radial-gradient(ellipse at 98% 1%,rgba(204,137,206,.09),transparent 47%),
+  linear-gradient(145deg,rgba(45,37,69,.93),rgba(27,29,53,.96));
+ --market-gradient:
+  radial-gradient(ellipse at 96% 6%,rgba(109,164,220,.14),transparent 50%),
+  linear-gradient(145deg,rgba(48,40,74,.94),rgba(27,32,58,.97));
+ --dock-gradient:linear-gradient(125deg,rgba(48,40,72,.94),rgba(28,31,53,.95));
+ --floating-surface:rgba(39,34,62,.97);
+ --dialog-gradient:linear-gradient(145deg,#372b50,#1d203b);
+ --card-orb:rgba(213,129,189,.07);
+ --card-orb-alt:rgba(94,179,207,.06);
+ --card-inner-highlight:rgba(255,239,255,.05);
+ --card-shadow-accent:rgba(188,124,213,.055);
+ --shadow:0 19px 48px rgba(12,8,29,.34),0 6px 20px rgba(18,11,35,.19);
+ --section-overview:var(--accent);
+ --section-wallet:var(--accent);
+ --section-staking:var(--accent);
+ --section-market:var(--accent);
+ --section-delegations:var(--accent);
+}
+/* Shared aliases use each theme's palette instead of stale defaults from
+   independent pages. They follow changes to data-theme immediately. */
+:root[data-theme]{
+ --canvas:var(--bg);
+ --panel:var(--surface);
+ --panel-strong:var(--surface-strong);
+ --surface2:var(--surface-strong);
+ --surface-2:var(--surface-strong);
+ --surface-3:var(--surface-soft);
+ --muted2:var(--muted-strong);
+ --muted-2:var(--muted-strong);
+ --positive:var(--up);
+ --negative:var(--down);
+ --theme-browser:var(--bg);
+ --inj-theme-panel:var(--card-gradient,linear-gradient(145deg,var(--surface-strong),var(--surface)));
+ --inj-theme-inset:color-mix(in srgb,var(--surface-strong) 88%,var(--surface));
+}
+/* Main Dashboard: explicit theme gradients for all twelve selections.
+   Theme-sensitive original styles only covered a subset of palettes. */
+html[data-theme] .app-shell{
+ color:var(--text)!important;
+ --inj-dashboard-background:var(--page-gradient);
+}
+html[data-theme] .app-shell :is(.wallet-dock,.aggregate-strip,.data-card,.wallet-mini){
+ border-color:var(--line)!important;
+ color:var(--text);
+}
+html[data-theme] .app-shell :is(.data-card,.wallet-mini){
+ background:var(--inj-theme-panel)!important;
+}
+html[data-theme] .app-shell .market-card{
+ background:var(--market-gradient,var(--inj-theme-panel))!important;
+}
+html[data-theme] .app-shell .wallet-dock,
+html[data-theme] .app-shell .aggregate-strip{
+ background:var(--dock-gradient,var(--inj-theme-panel))!important;
+}
+html[data-theme] .app-shell .wallet-mini.active{
+ border-color:color-mix(in srgb,var(--accent) 47%,var(--line))!important;
+ background:color-mix(in srgb,var(--accent) 8%,var(--surface-strong))!important;
+}
+html[data-theme] .app-shell :is(.reward-rate-grid>div,.target-stats>div,.target-live-missing,
+  .milestone-block,.validator-list>div,.allocation,.market-tf-track){
+ border-color:var(--line);
+ background-color:var(--inj-theme-inset);
+}
+html[data-theme] .app-shell :is(.card-label,.method-note,.allocation-labels,
+  .market-range,.market-tf-range-values,.wallet-dock-title small){
+ color:var(--muted);
+}
+/* Preserve existing number animations, reward glow and P/L emphasis. */
+html[data-theme] .app-shell :is(.header-main-button,.chart-launch-button){
+ border-color:var(--line)!important;
+ color:var(--text);
+ background:color-mix(in srgb,var(--surface-strong) 84%,transparent)!important;
+}
+html[data-theme] .app-shell :is(.search-panel,.wallet-dialog),
+html[data-theme] :is(.wallet-dialog,.native-chart-dialog,.system-status-dialog){
+ color:var(--text);
+ border-color:var(--line);
+ background:var(--dialog-gradient,var(--surface))!important;
+}
+html[data-theme] .app-shell :is(.search-panel input,.target-input-label input,.reward-sim-control input){
+ color:var(--text);border-color:var(--line-strong);
+}
+/* All independent tools share semantic borders/surfaces. Keep chart
+   candles and positive/negative performance colours untouched. */
+html[data-theme] :is(.treasury-panel,.treasury-card,.rewards-total-panel,.rewards-card,
+ .market-asset-section,.market-card,.cap-panel,.comparison-card,.data-card){
+ border-color:var(--line);
+}
+html[data-theme] :is(.treasury-panel,.rewards-total-panel,.market-asset-section,
+ .cap-panel,.comparison-card){
+ background:var(--inj-theme-panel)!important;
+ color:var(--text);
+}
+html[data-theme] :is(.treasury-close,.rewards-close,.book-back,.cc-back,.home){
+ border-color:var(--line)!important;
+ color:var(--text);
+}
+html[data-theme] :is(.market-asset-dialog,.market-asset-dialog[open]){
+ color:var(--text);
+ border-color:var(--line);
+ background:var(--dialog-gradient,var(--surface))!important;
+}
+/* Ambient themes: an opaque page shell masks the moving layers. Make only
+   those shells transparent, keeping the themed document background. */
+html:is([data-theme="ocean"],[data-theme="chromatic"],[data-theme="velvet"],[data-theme="aqua"],[data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],[data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]):not([data-inj-page="index"])
+ :is(.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,body>.shell){
+ background:transparent!important;
+}
+html:is([data-theme="ocean"],[data-theme="chromatic"],[data-theme="velvet"],[data-theme="aqua"],[data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],[data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) .app-shell{
+ background:transparent!important;
+}
+/* No opaque header strip and no new fixed blur effects on iOS. */
+html[data-theme] :is(.app-shell>.topbar,.treasury-header,.rewards-header,
+ .terminal-header,.cc-topbar,.book-topbar,.shell>.header){
+ background:transparent!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+}
+@media(max-width:900px),(hover:none) and (pointer:coarse){
+ html[data-theme] :is(.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell){
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+ }
+}
+/* Sections and old local scripts must never recolour gains or losses. */
+
+/* Standalone sections reproduce exactly the four original Dashboard/Home
+   palettes instead of relying on slightly different local theme defaults. */
+html:not([data-inj-page="index"])[data-theme="navy"]{
+ --bg:#020708;
+ --surface:#071515;
+ --surface-strong:#0b1e1e;
+ --surface-soft:#102a29;
+ --line:rgba(153, 241, 224, .085);
+ --line-strong:rgba(166, 242, 230, .17);
+ --text:#f4fffc;
+ --muted:#809c99;
+ --muted-strong:#bed8d4;
+ --accent:#7ef2d4;
+ --accent-ink:#001812;
+ --accent-soft:rgba(126, 242, 212, .10);
+ --page-gradient:linear-gradient(150deg, #061519 0%, #020708 46%, #0c0a1a 100%);
+ --card-gradient:radial-gradient(circle at 104% -8%, rgba(126, 242, 212, .060), transparent 34%),
+    radial-gradient(circle at -8% 108%, rgba(120, 101, 255, .040), transparent 38%),
+    linear-gradient(145deg, rgba(9, 27, 27, .978), rgba(4, 10, 13, .992));
+ --market-gradient:radial-gradient(circle at 92% 10%, rgba(126, 242, 212, .085), transparent 38%),
+    radial-gradient(circle at 5% 108%, rgba(105, 181, 255, .040), transparent 42%),
+    linear-gradient(145deg, rgba(10, 29, 29, .985), rgba(4, 10, 13, .994));
+ --dock-gradient:radial-gradient(circle at 8% 0%, rgba(126, 242, 212, .055), transparent 31%),
+    radial-gradient(circle at 96% 100%, rgba(126, 103, 255, .038), transparent 36%),
+    linear-gradient(120deg, rgba(9, 27, 27, .95), rgba(5, 12, 15, .95));
+ --floating-surface:rgba(6, 18, 19, .982);
+ --dialog-gradient:linear-gradient(145deg, #0b2322, #061113);
+ --card-orb:rgba(126, 242, 212, .060);
+ --card-orb-alt:rgba(125, 105, 255, .045);
+ --card-inner-highlight:rgba(229, 255, 250, .044);
+ --card-shadow-accent:rgba(78, 221, 190, .050);
+ --shadow:0 24px 68px rgba(0, 4, 7, .46), 0 10px 30px rgba(0, 63, 58, .105);
+ --theme-canvas:#020708;
+}
+html:not([data-inj-page="index"])[data-theme="black"]{
+ --bg:#000000;
+ --surface:#050505;
+ --surface-strong:#0a0a0b;
+ --surface-soft:#111113;
+ --line:rgba(255, 255, 255, .060);
+ --line-strong:rgba(255, 255, 255, .125);
+ --text:#f4f4f5;
+ --muted:#77777d;
+ --muted-strong:#b9b9be;
+ --accent:#e3e5e8;
+ --accent-ink:#050505;
+ --accent-soft:rgba(235, 237, 240, .060);
+ --page-gradient:radial-gradient(ellipse at 50% -22%, rgba(255, 255, 255, .035), transparent 34rem),
+    linear-gradient(155deg, #050505 0%, #000000 52%, #030303 100%);
+ --card-gradient:linear-gradient(145deg, rgba(15, 15, 16, .992), rgba(4, 4, 5, .997));
+ --market-gradient:linear-gradient(145deg, rgba(18, 18, 19, .994), rgba(5, 5, 6, .998));
+ --dock-gradient:linear-gradient(120deg, rgba(13, 13, 14, .975), rgba(4, 4, 5, .975));
+ --floating-surface:rgba(7, 7, 8, .990);
+ --dialog-gradient:linear-gradient(145deg, #111112, #050506);
+ --card-orb:rgba(255, 255, 255, .022);
+ --card-orb-alt:rgba(255, 255, 255, .012);
+ --card-inner-highlight:rgba(255, 255, 255, .032);
+ --card-shadow-accent:transparent;
+ --shadow:0 24px 64px rgba(0, 0, 0, .60), 0 8px 24px rgba(0, 0, 0, .34);
+ --theme-canvas:#000000;
+}
+html:not([data-inj-page="index"])[data-theme="light"]{
+ --bg:#edf4fb;
+ --surface:#ffffff;
+ --surface-strong:#f4f8fd;
+ --surface-soft:#e9f1f9;
+ --line:rgba(31, 72, 111, .085);
+ --line-strong:rgba(31, 72, 111, .16);
+ --text:#11263d;
+ --muted:#667c93;
+ --muted-strong:#3f5870;
+ --accent:#087fa4;
+ --accent-ink:#ffffff;
+ --accent-soft:rgba(8, 127, 164, .085);
+ --up:#087d4c;
+ --up-soft:rgba(8, 125, 76, .12);
+ --down:#d33d50;
+ --down-soft:rgba(211, 61, 80, .11);
+ --page-gradient:radial-gradient(circle at 10% -8%, rgba(74, 154, 238, .15), transparent 34rem),
+    radial-gradient(circle at 91% 2%, rgba(46, 194, 220, .08), transparent 30rem),
+    linear-gradient(148deg, #fbfdff 0%, #eef5fc 50%, #f7fbff 100%);
+ --card-gradient:radial-gradient(circle at 102% -6%, rgba(22, 151, 190, .045), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, .985), rgba(245, 249, 253, .99));
+ --market-gradient:radial-gradient(circle at 88% 18%, rgba(9, 145, 184, .10), transparent 44%),
+    radial-gradient(circle at 8% 110%, rgba(53, 130, 230, .065), transparent 42%),
+    linear-gradient(135deg, #ffffff 0%, #edf7fc 66%, #f8fbfe 100%);
+ --dock-gradient:radial-gradient(circle at 12% 0%, rgba(17, 147, 186, .04), transparent 34%),
+    linear-gradient(120deg, rgba(255, 255, 255, .96), rgba(240, 247, 252, .94));
+ --floating-surface:rgba(255, 255, 255, .985);
+ --dialog-gradient:linear-gradient(145deg, #ffffff, #f0f6fb);
+ --card-orb:rgba(10, 139, 177, .045);
+ --card-orb-alt:rgba(67, 132, 220, .035);
+ --card-inner-highlight:rgba(255, 255, 255, .72);
+ --card-shadow-accent:rgba(36, 105, 164, .055);
+ --shadow:0 18px 46px rgba(35, 78, 115, .10), 0 5px 16px rgba(48, 88, 122, .055);
+ --theme-canvas:#eef5ff;
+}
+html:not([data-inj-page="index"])[data-theme="amber"]{
+ --bg:#05080d;
+ --surface:#0b1118;
+ --surface-strong:#111923;
+ --surface-soft:#18222d;
+ --line:rgba(220, 200, 178, .085);
+ --line-strong:rgba(226, 198, 168, .16);
+ --text:#f5f6f7;
+ --muted:#87919c;
+ --muted-strong:#c7cdd2;
+ --accent:#d6b28e;
+ --accent-ink:#1c130d;
+ --accent-soft:rgba(214, 178, 142, .085);
+ --page-gradient:radial-gradient(ellipse at 8% -10%, rgba(54, 83, 121, .16), transparent 35rem),
+    radial-gradient(ellipse at 94% 3%, rgba(199, 139, 88, .050), transparent 30rem),
+    radial-gradient(ellipse at 69% 114%, rgba(104, 74, 120, .045), transparent 38rem),
+    linear-gradient(151deg, #0a111a 0%, #05080d 51%, #0c0d12 100%);
+ --card-gradient:radial-gradient(circle at 103% -8%, rgba(218, 177, 136, .030), transparent 35%),
+    radial-gradient(circle at -7% 109%, rgba(65, 96, 132, .040), transparent 39%),
+    linear-gradient(145deg, rgba(15, 23, 32, .982), rgba(7, 10, 15, .994));
+ --market-gradient:radial-gradient(circle at 91% 10%, rgba(220, 180, 140, .042), transparent 37%),
+    radial-gradient(circle at 5% 108%, rgba(64, 99, 137, .048), transparent 42%),
+    linear-gradient(145deg, rgba(16, 24, 34, .988), rgba(7, 10, 15, .996));
+ --dock-gradient:radial-gradient(circle at 8% 0%, rgba(71, 105, 143, .045), transparent 31%),
+    radial-gradient(circle at 95% 100%, rgba(211, 157, 105, .025), transparent 34%),
+    linear-gradient(120deg, rgba(14, 22, 31, .96), rgba(7, 10, 15, .955));
+ --floating-surface:rgba(9, 14, 20, .982);
+ --dialog-gradient:linear-gradient(145deg, #131d28, #080c12);
+ --card-orb:rgba(67, 101, 140, .045);
+ --card-orb-alt:rgba(211, 158, 107, .028);
+ --card-inner-highlight:rgba(245, 235, 225, .038);
+ --card-shadow-accent:rgba(196, 143, 94, .024);
+ --shadow:0 24px 66px rgba(0, 3, 8, .48), 0 9px 28px rgba(28, 39, 55, .11);
+}

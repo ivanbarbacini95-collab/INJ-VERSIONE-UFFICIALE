@@ -1,0 +1,229 @@
+/* INJ Node · Home P/L today — larger, responsive P/L value v16.01.02
+   Only this Home panel is affected. No overlays, blur or viewport changes. */
+html[data-inj-page="index"] body #entryGate #entryInsights .entry-price-pnl {
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:66px!important;
+  padding:9px 15px!important;
+  gap:10px!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  background:color-mix(in srgb,var(--surface-strong,#101619) 90%,transparent)!important;
+  border:1px solid color-mix(in srgb,var(--accent,#6edec8) 21%,var(--line,#39454a))!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInsights .entry-price-pnl > div {
+  display:flex!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  align-self:center!important;
+  text-align:left!important;
+  margin:0!important;
+  padding:0!important;
+  gap:0!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInsights .entry-price-pnl > div > span {
+  display:block!important;
+  font-size:clamp(12px,1.15vw,14px)!important;
+  line-height:1.25!important;
+  font-weight:760!important;
+  letter-spacing:.015em!important;
+  color:var(--muted-strong,var(--text,#f1f8f7))!important;
+  text-transform:none!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInsights .entry-price-pnl > div > small{
+  display:none!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl {
+  display:inline-flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  align-self:center!important;
+  justify-self:end!important;
+  margin:0!important;
+  padding:0!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  font-size:clamp(36px,4vw,50px)!important;
+  line-height:1.12!important;
+  font-weight:900!important;
+  letter-spacing:-.05em!important;
+  font-variant-numeric:tabular-nums!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  text-shadow:none!important;
+}
+/* Apply sign colors to the digit-roll child nodes as well as the host. */
+html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl.positive,
+html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl.positive * {
+  color:var(--up,#46e8ad)!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl.negative,
+html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl.negative * {
+  color:var(--down,#ff7080)!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl.neutral,
+html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl.neutral * {
+  color:var(--text,#f3f8f8)!important;
+}
+@media(max-width:900px){
+  html[data-inj-page="index"] body #entryGate #entryInsights .entry-price-pnl{
+    min-height:64px!important;
+    padding:8px 12px!important;
+    gap:8px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryInsights .entry-price-pnl > div > span{
+    font-size:clamp(11px,2.9vw,13px)!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl{
+    font-size:clamp(32px,8.5vw,42px)!important;
+  }
+}
+@media(max-width:370px){
+  html[data-inj-page="index"] body #entryGate #entryInsights .entry-price-pnl{
+    padding:8px 10px!important;
+    gap:6px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryInsights #entryInsightPnl{
+    font-size:clamp(28px,7.8vw,34px)!important;
+  }
+}
+
+/* v16.10.26 — Balanced Home P/L.
+   Label at left and a medium-sized animated value at right at every viewport.
+   Scoped and more specific than the older one-column mobile override. */
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  column-gap:12px!important;
+  row-gap:0!important;
+  min-height:74px!important;
+  padding:12px 18px!important;
+  overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl > div{
+  grid-column:1!important;
+  justify-self:start!important;
+  align-self:center!important;
+  min-width:0!important;
+  max-width:100%!important;
+  white-space:nowrap!important;
+  text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl{
+  display:block!important;
+  grid-column:2!important;
+  justify-self:end!important;
+  align-self:center!important;
+  width:max-content!important;
+  max-width:100%!important;
+  min-width:0!important;
+  font-size:clamp(24px,2.2vw,32px)!important;
+  line-height:1.12!important;
+  font-weight:850!important;
+  letter-spacing:-.04em!important;
+  font-variant-numeric:tabular-nums!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl
+  :is(.number-roll-text,.number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer){
+  font-size:inherit!important;
+  line-height:inherit!important;
+}
+@media(max-width:900px){
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    min-height:68px!important;
+    padding:10px 13px!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl{
+    font-size:clamp(22px,3.2vw,27px)!important;
+  }
+}
+@media(max-width:480px){
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    column-gap:7px!important;
+    row-gap:0!important;
+    min-height:66px!important;
+    padding:10px 12px!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl{
+    grid-column:2!important;
+    font-size:clamp(20px,5.5vw,24px)!important;
+    justify-self:end!important;
+    text-align:right!important;
+  }
+}
+
+
+/* v16.10.26f — Compact P/L, scaled like the live INJ/USDT quote.
+   The label stays left, the signed amount stays right, and the
+   recovered vertical room benefits the interactive live chart. */
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl {
+  min-height:52px!important;
+  padding:8px 14px!important;
+  column-gap:10px!important;
+  row-gap:0!important;
+  align-items:center!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl {
+  font-size:clamp(18px,1.9vw,22px)!important;
+  line-height:1.12!important;
+  font-weight:800!important;
+  letter-spacing:-.025em!important;
+}
+/* Keep the rolling digits exactly the same scale as their host. */
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl
+ :is(.number-roll-text,.number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer) {
+  font-size:inherit!important;
+  line-height:inherit!important;
+}
+@media(max-width:900px) {
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl {
+    min-height:50px!important;
+    padding:7px 12px!important;
+    column-gap:8px!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl {
+    font-size:clamp(17px,4.45vw,20px)!important;
+  }
+  /* Widen the graph vertically without changing its data, path or gestures. */
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-chart .entry-spark-stage {
+    min-height:clamp(150px,40vw,185px)!important;
+  }
+}
+@media(max-width:370px) {
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl {
+    min-height:48px!important;
+    padding:7px 10px!important;
+    column-gap:6px!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl {
+    font-size:clamp(16px,4.4vw,18px)!important;
+  }
+}

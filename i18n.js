@@ -12,28 +12,76 @@
 
   // Pairs are intentionally UI-oriented: crypto/product names remain unchanged where they are clearer as product terms.
   const pairs = [
-    ['Lingua', 'Language'], ['Italiano', 'Italian'], ['Inglese', 'English'], ['Interfaccia', 'Interface'],
+    // Home launcher microdescriptions: a quick, readable purpose for every destination.
+    ["Patrimonio e staking", "Wallet wealth & staking"],
+    ["Dati live del wallet", "Live wallet data"],
+    ["Grafici dei prezzi", "Live price charts"],
+    ["Ordini buy e sell", "Buy and sell orders"],
+    ["Storico dei rendimenti", "Performance history"],
+    ["Converti INJ e valute", "Convert INJ & currencies"],
+    ["Analisi e strumenti", "Analysis & tools"],
+    ["Crypto e mercati", "Crypto markets"],
+    ["Reward staking live", "Live staking rewards"],
+    ["Confronta market cap", "Compare market caps"],
+    ["Simula il patrimonio", "Simulate portfolio value"],
+    ["Obiettivi dei reward", "Reward milestones"],
+    ["Monitoraggio ETF INJC", "INJC ETF tracker"],
+    ["Crea la tua schermata", "Build your workspace"],
+    ["Totale dei tuoi wallet", "All-wallet overview"],
+    ["Pannello di controllo", "Dashboard"],
+    ["Vista in tempo reale", "Live View"],
+    ["Grafici in tempo reale", "Live Charts"],
+    ["Libro ordini", "Order Book"],
+    ["Cronologia rendimenti", "Performance Timeline"],
+    ["Convertitore INJ", "INJ Converter"],
+    ["Centro di controllo", "Command Center"],
+    ["Tesoreria INJ", "INJ Treasury"],
+    ["Valore Potenziale", "Potential Value"],
+    ["Apri Valore Potenziale", "Open Potential Value"],
+    ["Apri Market Cap Comparison", "Open Market Cap Comparison"],
+    ["Ricompense in tempo reale", "Live Rewards"],
+    ["Apri Reward Ladder", "Open Reward Ladder"],
+
+    ['Apri Mercato','Open Market'], ['Apri menu','Open menu'], ['Chiudi menu','Close menu'], ['Chiudi sezione e torna alla Home','Close section and return Home'], ['Lingua', 'Language'], ['Italiano', 'Italian'], ['Inglese', 'English'], ['Interfaccia', 'Interface'],
     ['PRIMO ACCESSO', 'FIRST ACCESS'], ['Collega il tuo wallet', 'Connect your wallet'],
     ['Incolla il tuo indirizzo pubblico Injective per iniziare. Non servono seed phrase, chiavi private o connessioni al wallet.', 'Paste your public Injective address to get started. No seed phrase, private keys or wallet connections are required.'],
     ['NOME WALLET', 'WALLET NAME'], ['INDIRIZZO INJECTIVE', 'INJECTIVE ADDRESS'], ['Continua', 'Continue'],
+    ['Preparazione della Home', 'Preparing your Home'],
+    ['Verifica dell’indirizzo sulla rete Injective…', 'Checking your address on Injective…'],
+    ['Wallet verificato. Caricamento della Home…', 'Wallet verified. Opening your Home…'],
+    ['Wallet verificato.', 'Wallet verified.'],
+    ['Verifica…', 'Checking…'],
+    ['Inserisci un indirizzo Injective valido che inizi con inj1.', 'Enter a valid Injective address starting with inj1.'],
+    ['Impossibile verificare il wallet. Controlla l’indirizzo o la connessione e riprova.', 'Unable to verify the wallet. Check the address or connection and try again.'],
+    ['Puoi scegliere un nome riconoscibile. L’indirizzo resta salvato solo su questo dispositivo.', 'You can choose a recognizable name. The address stays on this device only.'],
     ['L’indirizzo rimane salvato solo su questo dispositivo.', 'The address is stored only on this device.'],
     ['WALLET ATTIVO', 'ACTIVE WALLET'], ['Nessun wallet attivo', 'No active wallet'], ['Dati live', 'Live data'],
     ['Azioni rapide', 'Quick actions'], ['Wallet e strumenti', 'Wallet and tools'], ['Gestisci account', 'Manage accounts'],
     ['Aggiorna', 'Refresh'], ['Sincronizza dati', 'Sync data'], ['Dati personali', 'Personal data'],
     ['Prezzo medio INJ', 'Average INJ price'], ['Usato per calcolare il PnL', 'Used to calculate PnL'],
-    ['Preferenze', 'Preferences'], ['Personalizza INJ Node', 'Customize INJ Node'], ['Valuta', 'Currency'],
+    ['Preferenze', 'Preferences'], ['Avanzate', 'Advanced'], ['Valuta, privacy, tema e lingua', 'Currency, privacy, theme and language'], ['Storico, rete e installazione', 'History, network and installation'], ['Personalizza INJ Node', 'Customize INJ Node'], ['Valuta', 'Currency'],
     ['Nascondi valori', 'Hide values'], ['Mostra valori', 'Show values'], ['Tema', 'Theme'], ['Scegli tema', 'Choose theme'],
-    ['Nero', 'Black'], ['Chiaro', 'Light'], ['Reset grafici Treasury', 'Reset Treasury charts'],
+    ['Nero', 'Black'], ['Chiaro', 'Light'], ['Ocean Aurora · fluido','Ocean Aurora · fluid'], ['12 temi disponibili','12 themes available'], ['Chromatic Mist · multicolore','Chromatic Mist · multicolor'], ['Velvet Nebula · profondo','Velvet Nebula · deep'], ['Aqua Mirage · cristallino','Aqua Mirage · crystalline'], ['Essenziali','Essentials'], ['Reset grafici Treasury', 'Reset Treasury charts'],
     ['Ricomincia lo storico da adesso', 'Restart history from now'], ['Stato rete & API', 'Network & API status'],
     ['Verifica servizi live', 'Check live services'], ['Installa INJ Node', 'Install INJ Node'],
     ['Aggiungi l’app al dispositivo', 'Add the app to this device'], ['Dati', 'Data'], ['In attesa…', 'Waiting…'],
+    ['Il tuo spazio Injective', 'Your Injective space'],
     ['Il tuo spazio Injective.', 'Your Injective space.'],
     ['Scegli il wallet, controlla i dati essenziali e apri la vista che ti serve.', 'Choose a wallet, check the essential data and open the view you need.'],
     ['ACCOUNT SELEZIONATO', 'SELECTED ACCOUNT'], ['Seleziona un wallet', 'Select a wallet'], ['VALORE ACCOUNT', 'ACCOUNT VALUE'],
     ['AGGIORNATO', 'UPDATED'], ['INJ / USDT · OGGI', 'INJ / USDT · TODAY'], ['Dalle 00:00 · wallet selezionato', 'From 00:00 · selected wallet'],
     ['DISPONIBILE', 'AVAILABLE'], ['INJ liquidi', 'Liquid INJ'], ['REWARD / GIORNO', 'REWARD / DAY'], ['APR NETTO', 'NET APR'],
     ['Wallet selezionato', 'Selected wallet'], ['Portfolio · staking · analytics', 'Portfolio · staking · analytics'],
+    ['ESPLORA', 'EXPLORE'], ['Apri una categoria per vedere gli strumenti', 'Open a category to see the tools'],
+    ['Monitoraggio', 'Monitoring'], ['Pulse · reward · performance', 'Pulse · rewards · performance'],
+    ['Grafici · order book', 'Charts · order book'], ['Patrimonio · control center', 'Portfolio · control center'],
+    ['Strumenti', 'Tools'], ['Conversione · utility', 'Conversion · utilities'],
     ['Prezzo · patrimonio · reward live', 'Price · portfolio · live rewards'], ['P/L giornaliero · storico · autoscale', 'Daily P/L · history · autoscale'],
+    ['Capitale in movimento · staking · reward · claim', 'Capital in motion · staking · rewards · claims'],
+    ['Flusso realtime dei wallet Injective', 'Realtime flow of Injective wallets'], ['Torna alla Home', 'Back to Home'],
+    ['In attesa di claim · monitoraggio attivo', 'Waiting for claim · monitoring active'], ['Claim rilevato', 'Claim detected'],
+    ['APR ponderato', 'Weighted APR'], ['del totale', 'of total'], ['Nessun wallet salvato', 'No saved wallets'],
+    ['Aggiungi un wallet dalla Home di INJ Node.', 'Add a wallet from the INJ Node Home.'], ['Sincronizzazione…', 'Syncing…'],
     ['EUR · USD · INJ · conversione live', 'EUR · USD · INJ · live conversion'],
     ['Patrimonio · staking · reward · crescita live', 'Portfolio · staking · rewards · live growth'],
     ['Wallet e preferenze restano solo su questo dispositivo.', 'Wallets and preferences stay only on this device.'],
@@ -43,6 +91,9 @@
     ['GIORNO MIGLIORE · 14G', 'BEST DAY · 14D'], ['Tocca una candela per vedere i dettagli.', 'Tap a candle to see details.'],
     ['SCORRI ← STORICO · OGGI →', 'SCROLL ← HISTORY · TODAY →'], ['conversione live', 'live conversion'],
     ['CONVERSIONE LIVE', 'LIVE CONVERSION'], ['Scrivi in uno dei tre campi: gli altri si aggiornano automaticamente', 'Type in any of the three fields: the others update automatically'],
+    ['WALLET SELEZIONATO', 'SELECTED WALLET'], ['QUANTITÀ', 'QUANTITY'],
+    ['CONTROVALORE USD', 'USD PORTFOLIO VALUE'], ['Usa il totale', 'Use full balance'],
+    ['In attesa dei dati wallet', 'Waiting for wallet data'], ['Wallet selezionato', 'Selected wallet'],
     ['EURO', 'EURO'], ['DOLLARI', 'DOLLARS'], ['Inserisci un importo in € / $ / INJ', 'Enter an amount in € / $ / INJ'],
     ['Connessione…', 'Connecting…'], ['Account', 'Accounts'], ['0 salvati', '0 saved'], ['Un solo pannello per tutti i wallet', 'One panel for all wallets'],
     ['Totale multi-wallet', 'Multi-wallet total'], ['Sincronizzazione…', 'Syncing…'], ['Patrimonio', 'Portfolio value'], ['Totale', 'Total'],
@@ -218,6 +269,18 @@
   function translateElement(el) {
     if (!el || el.nodeType !== 1) return;
     if (el.closest?.('[data-i18n-skip="true"]')) return;
+    // The Home descriptions always follow the chosen language, even after
+    // a theme switch, a live update or a return to this already-mounted page.
+    if (el.classList?.contains('inj-tile-description')) {
+      const localized = el.getAttribute(lang === 'en' ? 'data-en' : 'data-it');
+      if (localized != null) {
+        if (el.firstChild?.nodeType === 3 && el.childNodes.length === 1) {
+          if (el.firstChild.nodeValue !== localized) el.firstChild.nodeValue = localized;
+        } else if (el.textContent !== localized) {
+          el.textContent = localized;
+        }
+      }
+    }
     for (const attr of ['aria-label', 'title', 'placeholder']) {
       if (el.hasAttribute?.(attr)) {
         const old = el.getAttribute(attr);
@@ -284,7 +347,7 @@
   }
 
   let observer;
-  let flushTimer = 0;
+  // Translate realtime text updates before the next paint.
   const pending = new Set();
 
   function observe() {
@@ -299,7 +362,6 @@
   }
 
   function flushMutations() {
-    flushTimer = 0;
     if (!pending.size) return;
     observer?.disconnect();
     applying = true;
@@ -325,21 +387,21 @@
       if (mutation.type === 'characterData' || mutation.type === 'attributes') pending.add(mutation.target);
       else mutation.addedNodes.forEach((node) => pending.add(node));
     }
-    if (!flushTimer) flushTimer = window.setTimeout(flushMutations, 80);
+    flushMutations();
   });
 
   function safeApply(nextLang, persist = true) {
     try { applyLanguage(nextLang, persist); } catch (_) { updateControls(); }
   }
 
+  window.addEventListener('storage', event => { if(event.key===STORAGE_KEY && VALID.has(event.newValue))safeApply(event.newValue,false); });
+  window.addEventListener('pageshow',()=>{const saved=readStoredLanguage();if(VALID.has(saved)&&saved!==lang)safeApply(saved,false);});
   function start() {
     bindControls();
-    // Core INJ Node has already completed its load before this script is injected.
-    // Translation is therefore presentation-only and cannot block the boot screen.
-    window.setTimeout(() => {
-      safeApply(lang, false);
-      observe();
-    }, 40);
+    // Apply the stored language immediately at DOM-ready and translate
+    // subsequent live updates synchronously with the mutation microtask.
+    safeApply(lang, false);
+    observe();
   }
 
   window.INJ_I18N = {

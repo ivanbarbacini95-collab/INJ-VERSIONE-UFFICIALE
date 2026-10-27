@@ -29,9 +29,10 @@ const INJ_DECIMALS = 1e18;
 const USDC_DECIMALS = 1e6;
 const NATIVE_USDC_DENOM = 'erc20:0xa00c59ff5a080d2b954d0c75e46e22a0c371235a';
 
-const BOOT_SPLASH_DURATION = 2800;
-const BOOT_PROGRESS_DELAY = 280;
-const BOOT_PROGRESS_DURATION = 2180;
+// Branded intro approved at 6.5s. Keep Home init asynchronous underneath it.
+// Returning from a section continues to bypass the splash entirely.
+const BOOT_MIN_VISUAL_MS = 4500;
+const BOOT_FAILSAFE_MS = 4600;
 const DIRECT_HOME_RETURN = document.documentElement.dataset.returnHome === '1';
 window.addEventListener('pageshow', () => {
   try { sessionStorage.removeItem('inj_node_return_home'); } catch (_) {}
@@ -48,38 +49,10 @@ document.documentElement.classList.toggle('mobile-efficient', MOBILE_EFFICIENCY)
 
 // v15.98.7 — Direct launch + large-monitor responsive scaling.
 
-function formatBootPercent(value) {
-  return `${Math.max(0, Math.min(100, Math.round(value))).toString().padStart(3, '0')}%`;
-}
-
-function animateBootPercent(reducedMotion = false) {
-  const output = $('bootPercent');
-  if (!output) return;
-  output.textContent = '000%';
-
-  const delay = reducedMotion ? 40 : BOOT_PROGRESS_DELAY;
-  const duration = reducedMotion ? 430 : BOOT_PROGRESS_DURATION;
-  const started = performance.now();
-
-  const frame = (now) => {
-    const elapsed = now - started;
-    if (elapsed < delay) {
-      requestAnimationFrame(frame);
-      return;
-    }
-    const progress = Math.max(0, Math.min(1, (elapsed - delay) / duration));
-    output.textContent = formatBootPercent(progress * 100);
-    if (progress < 1) requestAnimationFrame(frame);
-  };
-  requestAnimationFrame(frame);
-}
-
 function scheduleBootSplashExit() {
   const splash = $('bootSplash');
 
-  // v15.99.38 — Returning from Treasury must behave like an in-app Home handoff:
-  // never replay the INJ Node startup logo. The Treasury page sets a one-shot
-  // session flag before navigation; the <head> hides the splash before first paint.
+  // A return from another section reveals the existing Home without replaying boot.
   if (DIRECT_HOME_RETURN) {
     splash?.remove();
     requestAnimationFrame(() => {
@@ -93,37 +66,67 @@ function scheduleBootSplashExit() {
   }
 
   if (!splash) {
-    // La schermata di accesso prende il controllo PRIMA di scoprire la dashboard.
     showEntryGate();
     requestAnimationFrame(() => document.body.classList.remove('boot-loading'));
     return;
   }
 
-  const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-  const wait = reducedMotion ? 650 : BOOT_SPLASH_DURATION;
-  animateBootPercent(Boolean(reducedMotion));
-
-  window.setTimeout(() => {
-    const percent = $('bootPercent');
-    if (percent) percent.textContent = '100%';
-
-    // Prima rendiamo visibile l'Entry Gate sotto la splash; solo nel frame
-    // successivo iniziamo il fade della splash. In questo modo non esiste
-    // alcun frame in cui la dashboard possa comparire tra le due viste.
-    showEntryGate();
-    requestAnimationFrame(() => {
-      splash.classList.add('leaving');
-      document.body.classList.remove('boot-loading');
-    });
-
-    window.setTimeout(() => splash.remove(), reducedMotion ? 300 : 560);
-  }, wait);
+  // A real app-ready signal comes after initial UI + wallet control rendering.
+  // Background price/wallet APIs load asynchronously once the Home can be used.
+  const reducedMotion = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
+  const startedAt = performance.now();
+  let exitQueued = false;
+  let failsafeTimer = 0;
+  function revealHome() {
+    if (exitQueued || !splash.isConnected) return;
+    exitQueued = true;
+    window.clearTimeout(failsafeTimer);
+    const timeVisible = performance.now() - startedAt;
+    const wait = Math.max(0, (reducedMotion ? 0 : BOOT_MIN_VISUAL_MS) - timeVisible);
+    window.setTimeout(() => {
+      if (!splash.isConnected) return;
+      // Paint Home beneath the opaque splash before fading it, without an
+      // intermediate Dashboard frame or Safari compositor blur.
+      showEntryGate();
+      requestAnimationFrame(() => {
+        splash.classList.add('leaving');
+        document.body.classList.remove('boot-loading');
+      });
+      window.setTimeout(() => splash.remove(), reducedMotion ? 0 : 360);
+    }, wait);
+  }
+  window.addEventListener('inj-node:home-ready', revealHome, { once: true });
+  // If setup throws or a third-party script blocks something, avoid a stuck splash.
+  failsafeTimer = window.setTimeout(revealHome, BOOT_FAILSAFE_MS);
 }
 
 
 function selectedEntryWallet() {
   return state.wallets.find((wallet) => wallet.address === state.entrySelectedAddress) || null;
 }
+
+// v16.00.90: same-origin, read-only snapshot for Market Cap Comparison.
+// Use the Home carousel wallet when Home is active; otherwise Dashboard wallet.
+window.INJ_GET_SELECTED_WALLET_SNAPSHOT = function () {
+  const preferred = state.currentView === 'home'
+    ? (state.entrySelectedAddress || state.address)
+    : (state.address || state.entrySelectedAddress);
+  const wallet = state.wallets.find((item) => item.address === preferred);
+  if (!wallet) return null;
+  const row = state.walletSummaries[wallet.address] || null;
+  const total = Number(row?.total);
+  const updated = Number(row?.updated);
+  return {
+    address: wallet.address,
+    label: wallet.label,
+    total: row && Number.isFinite(total) && total >= 0 ? total : NaN,
+    available: Number(row?.available) || 0,
+    staked: Number(row?.staked) || 0,
+    rewards: Number(row?.rewards) || 0,
+    personalApr: Number.isFinite(Number(row?.personalApr)) && row?.personalApr != null ? Number(row.personalApr) : NaN,
+    updated: Number.isFinite(updated) && updated > 0 ? updated : 0
+  };
+};
 
 function setEntryOnboardingStatus(message, mode = '') {
   const status = $('entryWalletStatus');
@@ -146,8 +149,14 @@ function setEntryOnboardingLoading(loading) {
   if (copy) copy.textContent = loading ? 'Verifica…' : 'Continua';
 }
 
-async function submitFirstWallet(event) {
+// First wallet access must NEVER depend on an RPC completing. Persist the
+// validated public address locally and paint Home immediately. Wallet reads,
+// APR and validator metadata can load later without blocking navigation.
+let firstWalletRequestInFlight = false;
+
+function submitFirstWallet(event) {
   event?.preventDefault();
+  if (firstWalletRequestInFlight) return;
   if (state.wallets.length) {
     renderEntryGate();
     return;
@@ -159,42 +168,37 @@ async function submitFirstWallet(event) {
   const address = String(input?.value || '').trim().toLowerCase();
   if (!validAddress(address)) {
     setEntryOnboardingStatus('Inserisci un indirizzo Injective valido che inizi con inj1.', 'error');
-    input?.focus();
+    input?.focus({ preventScroll: true });
     return;
   }
 
+  firstWalletRequestInFlight = true;
   setEntryOnboardingLoading(true);
-  setEntryOnboardingStatus('Verifica dell’indirizzo sulla rete Injective…', 'checking');
-
   try {
-    const summary = await loadWalletSummary(address);
-    state.walletSummaries[address] = {
-      ...state.walletSummaries[address],
-      ...summary,
-      updated: Date.now()
-    };
-    state.lastWalletUpdate = state.walletSummaries[address].updated;
-    setWalletSkeleton(false);
-    saveWalletSummaries();
-    ensureSavedWallet(address, walletLabel);
+    // A public address is sufficient to open this READ-ONLY portfolio.
+    // Saving before the network request also prevents onboarding from
+    // reappearing if iOS suspends or closes the PWA during synchronization.
     state.entrySelectedAddress = address;
-    state.address = address;
-    $('addressInput').value = address;
-
-    // Carica immediatamente lo snapshot appena verificato mentre la Dashboard
-    // rimane coperta dall'Entry Gate, quindi passa alla scelta della modalità.
-    activateWalletImmediately(address);
-    setEntryOnboardingStatus('Wallet verificato.', 'success');
+    activateWalletImmediately(address, walletLabel);
     renderEntryGate();
+    setWalletSkeleton(!Boolean(state.walletSummaries[address]?.updated));
 
-    // Completa validator e APR in background: la scelta Dashboard / Live View
-    // è già utilizzabile senza costringere l'utente ad attendere oltre.
-    loadWallet(false, address);
+    // Next frame: Home is already visible, including any cached snapshot.
+    // Without a snapshot, cards show their existing synchronization
+    // placeholders until real on-chain responses arrive. Never invent balances.
+    requestAnimationFrame(() => {
+      void loadWallet(false, address).catch((error) => {
+        console.error('First wallet background sync failed:', error);
+        setWalletSkeleton(false);
+        setStatus('offline', 'Errore rete Injective');
+      });
+    });
   } catch (error) {
-    console.error(error);
-    setEntryOnboardingStatus('Impossibile verificare il wallet. Controlla l’indirizzo o la connessione e riprova.', 'error');
-    input?.focus();
+    console.error('Unable to save the initial wallet:', error);
+    setEntryOnboardingStatus('Impossibile salvare l’indirizzo. Riprova.', 'error');
+    if (state.wallets.length) renderEntryGate();
   } finally {
+    firstWalletRequestInFlight = false;
     setEntryOnboardingLoading(false);
   }
 }
@@ -828,6 +832,7 @@ function setEntryWalletSelection(address, { scroll = false } = {}) {
   if (!address || !state.wallets.some((wallet) => wallet.address === address)) return;
   const nextIndex = state.wallets.findIndex((wallet) => wallet.address === address);
   state.entrySelectedAddress = address;
+  try { localStorage.setItem('inj_node_comparison_selected_wallet_v1', address); } catch (_) {}
   updateEntryWalletPagination(nextIndex);
 
   const host = $('entryWallets');
@@ -850,7 +855,9 @@ function setEntryWalletSelection(address, { scroll = false } = {}) {
 
   if (scroll && host) {
     const row = [...host.querySelectorAll('.entry-wallet-row')].find((item) => item.dataset.address === address);
-    row?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    // Smoothly center the selected wallet horizontally; never drag the
+    // entire Home vertically back to the carousel.
+    if(row)host.scrollTo({left:entryWalletCenteredScrollLeft(host,row),behavior:'smooth'});
   }
 }
 
@@ -865,7 +872,7 @@ function renderEntryGate() {
   const performanceButton = $('entryPerformanceButton');
   const converterButton = $('entryConverterButton');
   const commandCenterButton = $('entryCommandCenterButton');
-  if (!shell || !host || !hint || !liveButton || !pulseButton || !liveChartsButton || !orderBookButton || !commandCenterButton) return;
+  if (!shell || !host || !hint || !liveButton || !liveChartsButton || !orderBookButton || !commandCenterButton) return;
   const firstAccess = state.wallets.length === 0;
   shell.classList.toggle('first-access', firstAccess);
 
@@ -874,7 +881,7 @@ function renderEntryGate() {
     host.replaceChildren();
     updateEntryWalletPagination(0);
     liveButton.disabled = true;
-    pulseButton.disabled = true;
+    if (pulseButton) pulseButton.disabled = true;
     liveChartsButton.disabled = true;
     orderBookButton.disabled = true;
     if (performanceButton) performanceButton.disabled = true;
@@ -898,7 +905,7 @@ function renderEntryGate() {
   hint.textContent = state.wallets.length === 1 ? '1 wallet salvato' : `${state.wallets.length} wallet · scorri o lancia`;
   $('entryNote').textContent = 'Wallet e preferenze restano solo su questo dispositivo.';
   liveButton.disabled = false;
-  pulseButton.disabled = false;
+  if (pulseButton) pulseButton.disabled = false;
   liveChartsButton.disabled = false;
   orderBookButton.disabled = false;
   if (performanceButton) performanceButton.disabled = false;
@@ -971,7 +978,11 @@ function renderEntryGate() {
   // Keep the selected wallet visible after a rebuild without disturbing a user's swipe.
   requestAnimationFrame(() => {
     const selectedRow = [...host.querySelectorAll('.entry-wallet-row')].find((row) => row.dataset.address === state.entrySelectedAddress);
-    if (selectedRow && state.wallets.length > 1) selectedRow.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+    if (selectedRow && state.wallets.length > 1) {
+      // Horizontal wallet-centering must NEVER scroll the entire Home back to
+      // the wallet row when returning from Dashboard or another section.
+      host.scrollLeft = entryWalletCenteredScrollLeft(host,selectedRow);
+    }
   });
 
   renderEntryOverview();
@@ -1025,7 +1036,7 @@ function systemCopy(mode) {
   return mode === 'online' ? 'SYSTEM · OK' : mode === 'warn' ? 'SYSTEM · ATTENZIONE' : 'SYSTEM · OFFLINE';
 }
 
-function setEntryAnimatedValue(id, text, numericValue, { directional = false, roll = false, stableDigits = false } = {}) {
+function setEntryAnimatedValue(id, text, numericValue, { directional = true, roll = true, stableDigits = false } = {}) {
   const element = $(id);
   if (!element) return;
 
@@ -1040,31 +1051,31 @@ function setEntryAnimatedValue(id, text, numericValue, { directional = false, ro
   // v15.98.17 — Home wallet switches keep the exact odometer geometry but do
   // not animate from the previous wallet's worth. Live market changes on the
   // same wallet still use the per-digit roll.
-  if (roll && state.marketMotionRendering) {
-    clearTimeout(element._verticalRollTimer);
-    element._verticalRollTimer = null;
-    element.classList.add('number-roll-host');
-    renderStableNumberText(element, nextText);
-  } else if (roll) animateVerticalNumberRoll(element, previousText, nextText, previous, next);
+  if (roll) animateVerticalNumberRoll(element, previousText, nextText, previous, next);
   else if (stableDigits) {
     clearTimeout(element._verticalRollTimer);
     element._verticalRollTimer = null;
     element.classList.add('number-roll-host');
+    element._verticalRollPending = null;
+    element._verticalRollTarget = null;
+    element._verticalVisualText = nextText;
+    element._verticalVisualNumeric = Number.isFinite(next) ? next : NaN;
     renderStableNumberText(element, nextText);
   } else {
     clearTimeout(element._verticalRollTimer);
     element._verticalRollTimer = null;
+    element._verticalRollPending = null;
+    element._verticalRollTarget = null;
+    element._verticalVisualText = nextText;
+    element._verticalVisualNumeric = Number.isFinite(next) ? next : NaN;
     element.textContent = nextText;
   }
 
-  if (!state.suppressEffects && !state.marketMotionRendering && visibleChange && directional && numericChange) {
-    clearTimeout(element._entryValueTimer);
-    element.classList.remove('entry-value-up', 'entry-value-down');
-    void element.offsetWidth;
-    element.classList.add(next > previous ? 'entry-value-up' : 'entry-value-down');
-    element._entryValueTimer = window.setTimeout(() => {
-      element.classList.remove('entry-value-up', 'entry-value-down');
-    }, 520);
+  if (!state.suppressEffects && visibleChange && directional && numericChange) {
+    const direction = next > previous ? 'up' : 'down';
+    if (!element.querySelector('.number-roll-digit')) {
+      renderDirectionalNumberText(element, previousText, nextText, direction, 560);
+    }
   }
 
   element.dataset.entryRenderedValue = nextText;
@@ -1152,20 +1163,51 @@ function entryConverterValues() {
   return { EUR: eur, USD: usd, INJ: inj };
 }
 
+
+/* INJ Converter · selected wallet is the same active Home carousel account.
+   Only on-chain wallet summaries with a timestamp are eligible for valuation. */
+function entryConverterSelectedPortfolio(){
+  const {wallet,row}=selectedEntrySummary();
+  const total=Number(row?.total);
+  const ready=Boolean(wallet && row && Number(row.updated)>0 && Number.isFinite(total) && total>=0);
+  return {wallet,total:ready?total:NaN,updated:ready?Number(row.updated):0};
+}
+
+function renderEntryConverterWallet(){
+  const name=$('entryConverterWalletName');
+  if(!name)return;
+  const {wallet,total,updated}=entryConverterSelectedPortfolio();
+  const price=Number(state.price);
+  const usd=Number.isFinite(total)&&Number.isFinite(price)&&price>0?total*price:NaN;
+  const en=window.INJ_I18N?.getLanguage?.()==='en';
+  name.textContent=wallet?.label||(en?'Select a wallet':'Seleziona un wallet');
+  const qty=$('entryConverterWalletInj');
+  if(qty)qty.textContent=Number.isFinite(total)?formatInj(total,4):'—';
+  const usdNode=$('entryConverterWalletUsd');
+  if(usdNode)usdNode.textContent=Number.isFinite(usd)?usdMoney(usd,2):'—';
+  const freshness=$('entryConverterWalletAge');
+  if(freshness)freshness.textContent=updated>0
+    ?(en?'Wallet data: ':'Dati wallet: ')+formatFreshAge(updated)
+    :(en?'Waiting for wallet data':'In attesa dei dati wallet');
+  const use=$('entryConverterUseWallet');
+  if(use)use.disabled=!Number.isFinite(total)||!(price>0);
+}
+
 function renderEntryConverter() {
   const host = $('entryConverter');
   if (!host) return;
+  renderEntryConverterWallet();
   const price = number(state.price);
   const eurPerUsd = number(state.eurRate);
   const usdPerEur = eurPerUsd > 0 ? 1 / eurPerUsd : 0;
   const priceNode = $('entryConverterPrice');
-  if (priceNode) priceNode.textContent = price > 0 ? `INJ $${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: price < 10 ? 4 : 2 })}` : 'INJ $—';
+  if (priceNode) setEntryAnimatedValue('entryConverterPrice', price > 0 ? `INJ $${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: price < 10 ? 4 : 2 })}` : 'INJ $—', price > 0 ? price : NaN, { directional: false, roll: false });
   const rateNode = $('entryConverterRate');
-  if (rateNode) rateNode.textContent = usdPerEur > 0 ? `1 € = ${usdPerEur.toLocaleString('it-IT', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} $` : '1 € = — $';
+  if (rateNode) setEntryAnimatedValue('entryConverterRate', usdPerEur > 0 ? `1 € = ${usdPerEur.toLocaleString('it-IT', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} $` : '1 € = — $', usdPerEur > 0 ? usdPerEur : NaN, { directional: false, roll: false });
   const meta = $('entryConverterMeta');
   if (meta) {
     const eurPrice = price > 0 && eurPerUsd > 0 ? price * eurPerUsd : 0;
-    meta.textContent = price > 0 ? `1 INJ = $${price.toFixed(price < 10 ? 4 : 2)}${eurPrice > 0 ? ` · €${eurPrice.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}` : ''}` : 'Prezzo INJ in attesa…';
+    setEntryAnimatedValue('entryConverterMeta', price > 0 ? `1 INJ = $${price.toFixed(price < 10 ? 4 : 2)}${eurPrice > 0 ? ` · €${eurPrice.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}` : ''}` : 'Prezzo INJ in attesa…', price > 0 ? price : NaN, { directional: false, roll: false });
   }
 
   const fields = {
@@ -1190,6 +1232,19 @@ function renderEntryConverter() {
 }
 
 function bindEntryConverter() {
+  $('entryConverterUseWallet')?.addEventListener('click', () => {
+    const {total}=entryConverterSelectedPortfolio();
+    if(!Number.isFinite(total)||!(Number(state.price)>0))return;
+    // Preserve the original manual editing logic; only choose the INJ source.
+    state.converter.source='INJ';
+    state.converter.value=total;
+    state.converter.hasValue=true;
+    renderEntryConverter();
+    // Do not focus inputs here: focusing would open the iOS keyboard.
+  });
+  window.addEventListener('injnode:languagechange', () => {
+    if(isConverterActive())renderEntryConverterWallet();
+  });
   const fields = {
     EUR: $('entryConverterEur'),
     USD: $('entryConverterUsd'),
@@ -1257,11 +1312,19 @@ function entryPnlTimelineStorageKey() {
   return 'inj_node_daily_pnl_timeline_v1';
 }
 
+// Historical P/L days recorded at a local midnight are assigned their
+// original calendar date on upgrade; subsequent candles use UTC midnight.
+function normalizeEntryPnlDayStart(dayStart) {
+  const value = number(dayStart);
+  if (!(value > 0) || value % 86_400_000 === 0) return value;
+  const localDate = new Date(value);
+  return Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate());
+}
 function entryPnlTimelineDayLabel(dayStart, compact = false) {
   const date = new Date(number(dayStart));
   return date.toLocaleDateString('it-IT', compact
-    ? { day: '2-digit', month: 'short' }
-    : { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+    ? { day: '2-digit', month: 'short', timeZone: 'UTC' }
+    : { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
 function readEntryPnlTimeline(address) {
@@ -1271,7 +1334,7 @@ function readEntryPnlTimeline(address) {
     const rows = Array.isArray(all?.[address]) ? all[address] : [];
     return rows
       .map((row) => ({
-        dayStart: number(row?.dayStart),
+        dayStart: normalizeEntryPnlDayStart(row?.dayStart),
         openPrice: number(row?.openPrice),
         closePrice: number(row?.closePrice),
         baseTotal: number(row?.baseTotal),
@@ -1331,7 +1394,7 @@ function ensureEntryPnlTimelineRow() {
     timeline.inspectDay = 0;
   }
 
-  const bounds = entryLocalDayBounds();
+  const bounds = entryMarketDayBounds();
   const today = bounds.start;
   let current = timeline.rows.find((item) => number(item.dayStart) === today);
 
@@ -1407,7 +1470,7 @@ function updateEntryPnlTimelineTodayHero(current = null) {
     } else {
       const pnl = number(row.pnlUsd);
       const pct = number(row.pct);
-      summary.textContent = `${pnl > 0 ? '+' : pnl < 0 ? '−' : ''}${money(Math.abs(pnl), 2)} · ${pct > 0 ? '+' : pct < 0 ? '−' : ''}${Math.abs(pct).toFixed(2)}%`;
+      setRollingNumberValue(summary, `${pnl > 0 ? '+' : pnl < 0 ? '−' : ''}${money(Math.abs(pnl), 2)} · ${pct > 0 ? '+' : pct < 0 ? '−' : ''}${Math.abs(pct).toFixed(2)}%`, pnl);
       summary.className = `${pnl > 0 ? 'positive' : pnl < 0 ? 'negative' : 'neutral'} private`;
     }
   }
@@ -1417,9 +1480,9 @@ function updateEntryPnlTimelineTodayHero(current = null) {
   const positiveDays = periodRows.filter((item) => number(item.pnlUsd) > 0).length;
   const negativeDays = periodRows.filter((item) => number(item.pnlUsd) < 0).length;
   if (periodSummary) {
-    periodSummary.textContent = periodRows.length
+    setRollingNumberValue(periodSummary, periodRows.length
       ? `${periodPnl > 0 ? '+' : periodPnl < 0 ? '−' : ''}${money(Math.abs(periodPnl), 2)}`
-      : '—';
+      : '—', periodRows.length ? periodPnl : NaN);
     periodSummary.className = `${periodPnl > 0 ? 'positive' : periodPnl < 0 ? 'negative' : 'neutral'} private`;
   }
   if (periodMeta) {
@@ -1434,9 +1497,9 @@ function updateEntryPnlTimelineTodayHero(current = null) {
   }, null);
   if (bestSummary) {
     const pnl = best ? number(best.pnlUsd) : 0;
-    bestSummary.textContent = best
+    setRollingNumberValue(bestSummary, best
       ? `${pnl > 0 ? '+' : pnl < 0 ? '−' : ''}${money(Math.abs(pnl), 2)}`
-      : '—';
+      : '—', best ? pnl : NaN);
     bestSummary.className = `${best ? (pnl > 0 ? 'positive' : pnl < 0 ? 'negative' : 'neutral') : 'neutral'} private`;
   }
   if (bestMeta) {
@@ -1446,18 +1509,18 @@ function updateEntryPnlTimelineTodayHero(current = null) {
   }
 
   if (rollover) {
-    const bounds = entryLocalDayBounds();
+    const bounds = entryMarketDayBounds();
     const remaining = Math.max(0, bounds.end - Date.now());
     const hours = Math.floor(remaining / 3_600_000);
     const minutes = Math.floor((remaining % 3_600_000) / 60_000);
-    rollover.textContent = `Chiude 00:00 · ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
+    rollover.textContent = `Chiude 00:00 UTC · ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
   }
 }
 
 function scheduleEntryPnlTimelineMidnightRollover() {
   const timeline = state.entryPnlTimeline;
   if (timeline.rolloverTimer) return;
-  const bounds = entryLocalDayBounds();
+  const bounds = entryMarketDayBounds();
   timeline.rolloverAt = bounds.end;
   const delay = Math.max(500, bounds.end - Date.now() + 350);
   timeline.rolloverTimer = window.setTimeout(async () => {
@@ -1465,7 +1528,7 @@ function scheduleEntryPnlTimelineMidnightRollover() {
     timeline.rolloverAt = 0;
     // Freeze yesterday exactly as the last known session value, then hydrate
     // the new local day opening price and create the fresh LIVE candle.
-    const newBounds = entryLocalDayBounds();
+    const newBounds = entryMarketDayBounds();
     timeline.rows.forEach((row) => {
       if (row.live && number(row.dayStart) < newBounds.start) row.live = false;
     });
@@ -1484,6 +1547,7 @@ function entryPnlTimelineVisibleCandles() {
   if (!scroll || !track) return [];
   const left = scroll.scrollLeft;
   const right = left + scroll.clientWidth;
+  if (entryPnlTimelineLayoutMode() === 'fit') return [...track.querySelectorAll('.entry-pnl-day')];
   return [...track.querySelectorAll('.entry-pnl-day')].filter((node) => {
     const nodeLeft = node.offsetLeft;
     return nodeLeft + node.offsetWidth > left + 2 && nodeLeft < right - 2;
@@ -1510,6 +1574,41 @@ function entryPnlTimelineEma(values, period) {
     result[index] = ema;
   }
   return result;
+}
+
+
+const ENTRY_PNL_LAYOUT_STORAGE_KEY = 'inj_node_timeline_layout_v1';
+
+function entryPnlTimelineLayoutMode() {
+  return state.entryPnlTimeline.layoutMode === 'scroll' ? 'scroll' : 'fit';
+}
+
+// Recalculate candle widths without discarding the DOM nodes or their live values.
+function applyEntryPnlTimelineLayout() {
+  const section = $('entryPnlTimeline');
+  const scroll = $('entryPnlTimelineScroll');
+  const track = $('entryPnlTimelineTrack');
+  if (!section || !scroll || !track) return;
+  const count = Math.max(1, (state.entryPnlTimeline.rows || []).length);
+  const available = Math.max(1, scroll.clientWidth || section.clientWidth || 320);
+  const mode = entryPnlTimelineLayoutMode();
+  section.dataset.layoutMode = mode;
+
+  if (mode === 'fit') {
+    const slot = available / count;
+    section.dataset.fitDense = slot < 48 ? '1' : '0';
+    track.style.setProperty('--pnl-slot', `${slot.toFixed(3)}px`);
+    track.style.width = `${available}px`;
+    track.style.justifyContent = 'flex-start';
+    if (scroll.scrollLeft) scroll.scrollLeft = 0;
+  } else {
+    const targetVisible = available < 620 ? 14 : available < 980 ? 22 : 34;
+    const slot = Math.max(18, Math.min(28, Math.round(available / targetVisible) || 22));
+    section.dataset.fitDense = '0';
+    track.style.setProperty('--pnl-slot', `${slot}px`);
+    track.style.width = `${Math.max(available, count * slot)}px`;
+    track.style.justifyContent = count * slot <= available ? 'flex-end' : 'flex-start';
+  }
 }
 
 function syncEntryPnlTimelineControls() {
@@ -1540,6 +1639,21 @@ function syncEntryPnlTimelineControls() {
     legend.querySelector('.ema-fast')?.classList.toggle('unavailable', rowsCount < 7);
     legend.querySelector('.ema-slow')?.classList.toggle('unavailable', rowsCount < 21);
   }
+  const currentLayout = entryPnlTimelineLayoutMode();
+  const language = window.INJ_I18N?.getLanguage?.() === 'en' ? 'en' : 'it';
+  const layoutGroup = $('entryPnlLayoutSwitch');
+  if (layoutGroup) layoutGroup.setAttribute('aria-label', language === 'en' ? 'Timeline layout' : 'Visualizzazione cronologia');
+  [['entryPnlLayoutFit', 'fit', 'TUTTO', 'ALL', 'Mostra tutto lo storico in una schermata', 'Fit full history to screen'],
+   ['entryPnlLayoutScroll', 'scroll', 'SCORRI', 'SCROLL', 'Barre grandi e scorrimento orizzontale', 'Larger bars and horizontal scrolling']].forEach(([id, value, it, en, itTitle, enTitle]) => {
+    const button = $(id);
+    if (!button) return;
+    const selected = currentLayout === value;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+    const caption = language === 'en' ? en : it;
+    if (button.textContent !== caption) button.textContent = caption;
+    button.title = language === 'en' ? enTitle : itTitle;
+  });
 }
 
 function paintEntryPnlEmaLayer(track, scroll, allNodes, ema7, ema21, maxAbs, maxVisual, stageHeight) {
@@ -1660,6 +1774,28 @@ function bindEntryPnlTimelineInteraction() {
   const scroll = $('entryPnlTimelineScroll');
   if (!scroll || scroll.dataset.bound === '1') return;
   scroll.dataset.bound = '1';
+  const timeline = state.entryPnlTimeline;
+  if (!timeline.layoutPreferenceLoaded) {
+    timeline.layoutPreferenceLoaded = true;
+    try { timeline.layoutMode = localStorage.getItem(ENTRY_PNL_LAYOUT_STORAGE_KEY) === 'scroll' ? 'scroll' : 'fit'; } catch (_) {}
+  }
+  const setLayout = (mode) => {
+    const next = mode === 'scroll' ? 'scroll' : 'fit';
+    if (timeline.layoutMode === next) return;
+    timeline.layoutMode = next;
+    timeline.followLatest = true;
+    try { localStorage.setItem(ENTRY_PNL_LAYOUT_STORAGE_KEY, next); } catch (_) {}
+    applyEntryPnlTimelineLayout();
+    syncEntryPnlTimelineControls();
+    requestAnimationFrame(() => {
+      if (next === 'scroll') scroll.scrollLeft = Math.max(0, scroll.scrollWidth - scroll.clientWidth);
+      else scroll.scrollLeft = 0;
+      scheduleEntryPnlTimelineScale();
+    });
+  };
+  $('entryPnlLayoutFit')?.addEventListener('click', () => setLayout('fit'));
+  $('entryPnlLayoutScroll')?.addEventListener('click', () => setLayout('scroll'));
+  window.addEventListener('injnode:languagechange', syncEntryPnlTimelineControls);
   const inspectAtPointer = (event) => {
     const rect = scroll.getBoundingClientRect();
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) { clearEntryPnlDayInspection(); return; }
@@ -1696,7 +1832,10 @@ function bindEntryPnlTimelineInteraction() {
     else if (event.key === 'End') scroll.scrollTo({ left: scroll.scrollWidth, behavior: 'smooth' });
     else scroll.scrollBy({ left: event.key === 'ArrowLeft' ? -amount : amount, behavior: 'smooth' });
   });
-  window.addEventListener('resize', scheduleEntryPnlTimelineScale, { passive: true });
+  window.addEventListener('resize', () => {
+    applyEntryPnlTimelineLayout();
+    scheduleEntryPnlTimelineScale();
+  }, { passive: true });
 }
 
 function renderEntryPnlTimeline(force = false) {
@@ -1722,11 +1861,7 @@ function renderEntryPnlTimeline(force = false) {
     if (zero) track.appendChild(zero);
     if (emaLayer) track.appendChild(emaLayer);
     const count = rows.length;
-    const targetVisible = scroll.clientWidth < 620 ? 14 : scroll.clientWidth < 980 ? 22 : 34;
-    const slot = Math.max(18, Math.min(28, Math.round(scroll.clientWidth / Math.max(1, targetVisible)) || 22));
-    track.style.setProperty('--pnl-slot', `${slot}px`);
-    track.style.width = `${Math.max(scroll.clientWidth, count * slot)}px`;
-    track.style.justifyContent = count * slot <= scroll.clientWidth ? 'flex-end' : 'flex-start';
+    applyEntryPnlTimelineLayout();
     const labelStep = count <= 14 ? 2 : count <= 40 ? 4 : 7;
 
     rows.forEach((row, index) => {
@@ -1791,7 +1926,7 @@ function updateEntryPnlTimelineLive(forcePaint = false) {
   const signedLivePnl = `${current.pnlUsd > 0 ? '+' : current.pnlUsd < 0 ? '−' : ''}${money(Math.abs(current.pnlUsd), 2)}`;
   const signedLivePct = `${current.pct > 0 ? '+' : current.pct < 0 ? '−' : ''}${Math.abs(number(current.pct)).toFixed(2)}%`;
   const value = node.querySelector('.entry-pnl-value');
-  if (value) value.textContent = signedLivePnl;
+  if (value) setRollingNumberValue(value, signedLivePnl, current.pnlUsd);
   const tooltipValue = node.querySelector('.entry-pnl-tooltip-value');
   if (tooltipValue) tooltipValue.textContent = `${signedLivePnl} · ${signedLivePct}`;
   const tooltipWorth = node.querySelector('.entry-pnl-tooltip-worth');
@@ -1804,15 +1939,14 @@ function updateEntryPnlTimelineLive(forcePaint = false) {
   scheduleEntryPnlTimelineScale();
 }
 
-function entryLocalDayBounds(timestamp = Date.now()) {
-  const startDate = new Date(timestamp);
-  startDate.setHours(0, 0, 0, 0);
-  const endDate = new Date(startDate);
-  endDate.setDate(endDate.getDate() + 1);
-  return { start: startDate.getTime(), end: endDate.getTime() };
+// INJ/USDT trades 24/7; one daily session is midnight-to-midnight UTC.
+function entryMarketDayBounds(timestamp = Date.now()) {
+  const date = new Date(timestamp);
+  const start = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  return { start, end: start + 86_400_000 };
 }
 
-function resetEntryPriceSession(dayStart = entryLocalDayBounds().start) {
+function resetEntryPriceSession(dayStart = entryMarketDayBounds().start) {
   state.entrySpark.points = [];
   state.entrySpark.loadedAt = 0;
   state.entrySpark.dayStart = dayStart;
@@ -1824,7 +1958,7 @@ function resetEntryPriceSession(dayStart = entryLocalDayBounds().start) {
 }
 
 function entrySparkPath(points) {
-  const bounds = entryLocalDayBounds();
+  const bounds = entryMarketDayBounds();
   const dayStart = number(state.entrySpark.dayStart) || bounds.start;
   const dayEnd = bounds.start === dayStart ? bounds.end : dayStart + 86_400_000;
   const rows = Array.isArray(points)
@@ -1832,7 +1966,16 @@ function entrySparkPath(points) {
         .filter((row) => number(row?.price) > 0 && number(row?.t) >= dayStart && number(row?.t) <= dayEnd)
         .sort((a, b) => number(a.t) - number(b.t))
     : [];
-  if (rows.length < 2) return { line: '', area: '', direction: 0, last: null };
+  if (rows.length < 2) {
+    if (!rows.length) return { line: '', area: '', direction: 0, last: null };
+    // At the exact start of a new day, show the real opening dot; the
+    // historical curve will grow from it as the exchange receives candles.
+    const row = rows[0];
+    const x = Math.max(0, Math.min(320, ((number(row.t) - dayStart) / (dayEnd - dayStart)) * 320));
+    const y = 75;
+    return { line: `M${x.toFixed(2)} ${y}`, area: '', direction: number(row.price) - number(state.entrySpark.openPrice),
+      last: [x, y], samples: [{ x, y, t: number(row.t), price: number(row.price) }], width: 320, height: 150 };
+  }
 
   // v15.83 — stronger mobile Y autoscale with protected top/bottom breathing room.
   // The true intraday low/high always define the scale, then a dynamic margin
@@ -1878,7 +2021,7 @@ function entrySparkPath(points) {
 
 function entrySparkTimeLabel(timestamp) {
   const date = new Date(number(timestamp));
-  return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
 }
 
 function hideEntrySparkInspector() {
@@ -2039,7 +2182,7 @@ function renderEntryAtGlance() {
 }
 
 async function loadEntrySparkline(force = false) {
-  const bounds = entryLocalDayBounds();
+  const bounds = entryMarketDayBounds();
   const sameDay = number(state.entrySpark.dayStart) === bounds.start;
   if (!sameDay) resetEntryPriceSession(bounds.start);
   if (state.entrySpark.loading) return;
@@ -2052,19 +2195,30 @@ async function loadEntrySparkline(force = false) {
   renderEntryAtGlance();
   try {
     const end = Date.now();
-    const data = await fetchJson(`https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=3m&startTime=${Math.floor(bounds.start)}&endTime=${Math.floor(end)}&limit=500`, 9000);
-    const rows = Array.isArray(data) ? data.filter((row) => number(row?.[4]) > 0) : [];
+    const data = await fetchJson(`https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=3m&startTime=${bounds.start}&endTime=${end}&limit=500`, 9000);
+    // A pending request must not redraw yesterday after midnight UTC.
+    if (entryMarketDayBounds().start !== bounds.start) return;
+    const rows = Array.isArray(data) ? data.filter((row) => number(row?.[4]) > 0 && number(row?.[0]) < end) : [];
     if (rows.length) {
       const openPrice = number(rows[0]?.[1]);
       state.entrySpark.dayStart = bounds.start;
       state.entrySpark.openPrice = openPrice > 0 ? openPrice : number(rows[0]?.[4]);
       const points = [{ t: bounds.start, price: state.entrySpark.openPrice, live: false }];
       rows.forEach((row) => {
-        const t = Math.min(end, number(row?.[6]) || number(row?.[0]) || end);
+        const closeAt = number(row?.[6]);
+        // Binance reports the end of an unfinished candle in the future;
+        // never plot historical values beyond the current real timestamp.
+        const t = Math.min(end, closeAt > 0 ? closeAt : number(row?.[0]));
         const price = number(row?.[4]);
-        if (price > 0) points.push({ t, price, live: false });
+        if (price > 0 && t > bounds.start && t > number(points.at(-1)?.t)) {
+          points.push({ t, price, live: false });
+        }
       });
-      if (state.price > 0) points.push({ t: end, price: state.price, live: true });
+      const current = number(state.price) > 0 ? number(state.price) : number(rows.at(-1)?.[4]);
+      if (current > 0) {
+        if (points.at(-1)?.t === end) points.pop();
+        points.push({ t: end, price: current, live: true });
+      }
       state.entrySpark.points = points;
       state.entrySpark.lastLiveSampleAt = end;
       state.entrySpark.loadedAt = end;
@@ -2073,8 +2227,13 @@ async function loadEntrySparkline(force = false) {
     console.warn('Grafico Price Home non disponibile', error);
   } finally {
     state.entrySpark.loading = false;
-    renderEntryAtGlance();
-    renderEntryPnlTimeline();
+    if (entryMarketDayBounds().start !== bounds.start) {
+      resetEntryPriceSession(entryMarketDayBounds().start);
+      void loadEntrySparkline(true);
+    } else {
+      renderEntryAtGlance();
+      renderEntryPnlTimeline();
+    }
   }
 }
 
@@ -2132,6 +2291,66 @@ function pulseDashboardReveal() {
   });
 }
 
+// The canonical header inset replaces the old post-paint top measurement.
+// The Dashboard stays in normal document flow at a stable scroll origin.
+
+// v16.00.16 — Dashboard scroll self-heal.
+// iOS/WebKit can occasionally restore the Dashboard while a transient Home/menu
+// overflow lock is still present. Reconcile only stale locks; real open overlays
+// keep ownership of scrolling.
+function healDashboardScrollState({ force = false } = {}) {
+  if (state.currentView !== 'dashboard') return;
+
+  const body = document.body;
+  const root = document.documentElement;
+  const gate = $('entryGate');
+  const menu = $('headerMenu');
+  const gateVisible = Boolean(
+    gate?.classList.contains('visible') &&
+    gate?.getAttribute('aria-hidden') === 'false'
+  );
+  const menuOpen = Boolean(menu?.classList.contains('open'));
+  const chartOpen = Boolean($('chartDialog')?.open);
+  const focusOpen = isFocusDisplayActive();
+  const pulseOpen = isPulseViewActive();
+  const chartsOpen = isLiveChartsActive();
+
+  if (!gateVisible || force) body.classList.remove('entry-gate-open');
+  if (!menuOpen) body.classList.remove('menu-overlay-open', 'drawer-open');
+  if (!chartOpen) body.classList.remove('chart-overlay-open');
+  if (!focusOpen) body.classList.remove('focus-display-open', 'entry-live-launch');
+  if (!pulseOpen) body.classList.remove('pulse-view-open');
+  if (!chartsOpen) body.classList.remove('live-charts-open');
+
+  if (force) {
+    body.classList.remove(
+      'dashboard-home-return',
+      'dashboard-home-fade',
+      'dashboard-home-instant-return',
+      'mode-returning'
+    );
+  }
+
+  const overlayStillOwnsScroll = gateVisible || menuOpen || chartOpen || focusOpen || pulseOpen || chartsOpen;
+  if (overlayStillOwnsScroll) return;
+
+  body.classList.add('dashboard-scroll-ready');
+  root.classList.remove('drawer-open');
+  // Header baseline comes solely from the shared responsive CSS.
+  // Do not apply a new negative margin after the Dashboard has painted.
+  body.style.removeProperty('--inj-dashboard-leading-space');
+
+  // Defensive cleanup for an interrupted transition / bfcache restore.
+  for (const node of [body, root, document.scrollingElement]) {
+    if (!node?.style) continue;
+    node.style.removeProperty('overflow');
+    node.style.removeProperty('overflow-y');
+    node.style.removeProperty('touch-action');
+    node.style.removeProperty('position');
+    node.style.removeProperty('top');
+  }
+}
+
 function renderFocusAmbient() {
   const clock = $('focusDisplayClock');
   if (clock) clock.textContent = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit' }).format(new Date());
@@ -2141,6 +2360,8 @@ function renderFocusAmbient() {
 function showEntryGate({ modeReturn = false } = {}) {
   const gate = $('entryGate');
   if (!gate) return;
+  document.body.classList.remove('dashboard-scroll-ready');
+  document.body.style.removeProperty('--inj-dashboard-leading-space');
   state.currentView = 'home';
   renderEntryGate();
   loadEntrySparkline(false);
@@ -2149,9 +2370,8 @@ function showEntryGate({ modeReturn = false } = {}) {
   gate.setAttribute('aria-hidden', 'false');
   document.body.classList.add('entry-gate-open');
   document.body.classList.toggle('mode-returning', modeReturn);
-  if (!state.wallets.length && !modeReturn) {
-    requestAnimationFrame(() => setTimeout(() => ($('entryWalletName') || $('entryWalletInput'))?.focus(), 90));
-  }
+  // First access must be calm on iPhone: do not raise the keyboard automatically.
+  // The wallet input receives focus only after the user taps it.
 }
 
 function closeEntryGate({ revealDashboard = true } = {}) {
@@ -2166,10 +2386,28 @@ function closeEntryGate({ revealDashboard = true } = {}) {
   gate.classList.add('leaving');
 
   window.setTimeout(() => {
+    // An iOS PWA may resume after Scroll Guard has already released an
+    // abandoned Home fade, or the user may have returned Home meanwhile.
+    // Never hide the newly opened page or reset Dashboard scroll in that case.
+    if (revealDashboard && (state.currentView !== 'dashboard' || !gate.classList.contains('leaving'))) return;
+    if (revealDashboard && state.currentView === 'dashboard') {
+      // Home is a fixed foreground panel. Unlock the document, then fix its
+      // scroll origin in this SAME task, before hiding the foreground panel.
+      // No scroll correction is allowed after the Dashboard is visible.
+      document.body.classList.remove('entry-gate-open');
+      const scroller = document.scrollingElement || document.documentElement;
+      scroller.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.scrollTo(0, 0);
+    } else {
+      document.body.classList.remove('entry-gate-open');
+    }
     gate.classList.remove('visible', 'leaving');
     gate.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('entry-gate-open');
-    if (revealDashboard) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (revealDashboard) {
+      healDashboardScrollState({ force: true });
+      updateDashboardSectionNavigator(true);
+    }
 
     if (revealDashboard || !$('focusDisplayDialog')?.hidden || !$('pulseViewDialog')?.hidden || !$('liveChartsDialog')?.hidden) {
       requestAnimationFrame(() => document.body.classList.remove('entry-live-launch'));
@@ -2191,16 +2429,45 @@ function activateEntrySelection() {
 
 function enterDashboardFromGate() {
   if (state.currentView !== 'home' || !modeLaunchAllowed()) return;
+  window.INJ_HOME_SCROLL?.save();
   activateEntrySelection();
+
+  // Mode handoff: Live View must never donate its fullscreen scroll/touch
+  // surface to Dashboard. This is safe because modeLaunchAllowed() above
+  // excludes every active/closing immersive overlay.
+  const parkedLiveView = $('focusDisplayDialog');
+  if (parkedLiveView?.classList.contains('mode-parked')) {
+    parkedLiveView.hidden = true;
+    parkedLiveView.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('focus-display-open', 'entry-live-launch', 'mode-returning');
+  }
+
+  // v16.00.40 — Dashboard owns the native document scroller as soon as the
+  // launch starts. Close transient controls before the Home fade so an old
+  // overflow/touch lock cannot survive into the Dashboard.
+  setHeaderMenuOpen(false);
+  setSearchOpen(false);
+  setThemePickerOpen(false);
+  setUiStylePickerOpen(false);
+  document.body.classList.remove('drawer-open', 'menu-overlay-open', 'chart-overlay-open');
+  document.documentElement.classList.remove('drawer-open');
+
+  // The fullscreen Home is fixed and remains on top while the page's
+  // normal document scroller is prepared. Do not schedule scrollTo after
+  // reveal; that causes a visible mid-page jump on iPhone Safari/PWA.
+  const scroller = document.scrollingElement || document.documentElement;
+  scroller.scrollTop = 0;
+  document.body.scrollTop = 0;
+  document.body.style.removeProperty('--inj-dashboard-leading-space');
   state.currentView = 'dashboard';
-  pulseDashboardReveal();
+  document.body.classList.add('dashboard-scroll-ready');
   closeEntryGate({ revealDashboard: true });
-  requestAnimationFrame(() => updateDashboardSectionNavigator(true));
 }
 
 function parkEntryGateUnderImmersive() {
   const gate = $('entryGate');
   if (!gate) return;
+  window.INJ_HOME_SCROLL?.save();
   // v15.64: the selector never leaves the compositor while Live/Pulse is open.
   // It remains a fully painted, theme-correct page underneath the immersive layer.
   gate.classList.remove('leaving', 'mode-return');
@@ -2223,6 +2490,7 @@ function restoreEntryGateFromImmersive() {
   gate.setAttribute('aria-hidden', 'false');
   document.body.classList.add('entry-gate-open');
   document.body.classList.remove('entry-live-launch', 'mode-returning');
+  window.INJ_HOME_SCROLL?.restore();
 }
 
 function armModeExitLock(duration = 1250) {
@@ -2280,7 +2548,7 @@ function enterLiveChartsFromGate() {
   setHeaderMenuOpen(false);
   setSearchOpen(false);
   try { sessionStorage.setItem('inj_node_livecharts_from_home', '1'); } catch (_) {}
-  window.location.assign('./live-charts.html?v=15.99.80');
+  window.INJ_OPEN_SECTION('./live-charts.html?v=16.00.14');
 }
 
 function enterOrderBookFromGate() {
@@ -2288,7 +2556,7 @@ function enterOrderBookFromGate() {
   setHeaderMenuOpen(false);
   setSearchOpen(false);
   try { sessionStorage.setItem('inj_node_orderbook_from_home', '1'); } catch (_) {}
-  window.location.assign('./order-book.html?v=15.99.80');
+  window.INJ_OPEN_SECTION('./order-book.html?v=16.00.14');
 }
 
 function isPerformanceTimelineActive() {
@@ -2297,6 +2565,7 @@ function isPerformanceTimelineActive() {
 }
 
 function settlePerformanceTimelineViewport() {
+  applyEntryPnlTimelineLayout();
   const scroll = $('entryPnlTimelineScroll');
   if (scroll && state.entryPnlTimeline.followLatest) {
     scroll.scrollLeft = Math.max(0, scroll.scrollWidth - scroll.clientWidth);
@@ -2369,8 +2638,10 @@ function enterConverterFromGate() {
   state.currentView = 'converter';
   view.hidden = false;
   view.setAttribute('aria-hidden', 'false');
+  // The page is opaque immediately: never expose a translucent Home frame
+  // before the first paint on iOS Safari.
+  view.classList.add('open');
   renderEntryConverter();
-  requestAnimationFrame(() => view.classList.add('open'));
 }
 
 function closeConverterToHome() {
@@ -2378,12 +2649,13 @@ function closeConverterToHome() {
   if (!view || view.hidden) return;
   state.currentView = 'home';
   armModeExitLock(650);
+  // Blur the active input so WebKit dismisses the keyboard without zooming
+  // or leaving the edited viewport scaled on return to Home.
+  if (view.contains(document.activeElement)) document.activeElement.blur();
   view.classList.remove('open');
   view.setAttribute('aria-hidden', 'true');
-  window.setTimeout(() => {
-    view.hidden = true;
-    restoreEntryGateFromImmersive();
-  }, 180);
+  view.hidden = true;
+  restoreEntryGateFromImmersive();
 }
 
 
@@ -2417,7 +2689,7 @@ function enterCommandCenterFromGate() {
 
   setHeaderMenuOpen(false);
   setSearchOpen(false);
-  window.location.assign(`./command-center.html?wallet=${encodeURIComponent(wallet.address)}&v=15.99.80`);
+  window.INJ_OPEN_SECTION(`./command-center.html?wallet=${encodeURIComponent(wallet.address)}&v=16.03.01`);
 }
 
 // v15.70 — Home launchers require a fresh gesture that actually began on the
@@ -2553,7 +2825,7 @@ const state = {
   walletSummaries: {},
   entrySelectedAddress: '',
   entrySpark: { points: [], loadedAt: 0, loading: false, dayStart: 0, openPrice: 0, lastLiveSampleAt: 0, plot: null, inspectIndex: -1 },
-  entryPnlTimeline: { address: '', rows: [], renderKey: '', frame: 0, saveAt: 0, lastPaintAt: 0, followLatest: true, inspectDay: 0, rolloverTimer: 0, rolloverAt: 0, lastHydrateAttempt: 0, metricMode: 'usd', emaVisible: true },
+  entryPnlTimeline: { address: '', rows: [], renderKey: '', frame: 0, saveAt: 0, lastPaintAt: 0, followLatest: true, inspectDay: 0, rolloverTimer: 0, rolloverAt: 0, lastHydrateAttempt: 0, metricMode: 'usd', emaVisible: true, layoutMode: 'fit', layoutPreferenceLoaded: false },
   summariesLoading: false,
   summariesLastRefresh: 0,
   targetByWallet: {},
@@ -2564,6 +2836,9 @@ const state = {
   converter: { source: 'EUR', value: 0, hasValue: false },
   endpoint: '',
   socket: null,
+  marketReconnectTimer: 0,
+  marketSocketGeneration: 0,
+  marketWatchdogBusy: false,
   walletRequest: 0,
   walletPendingAddress: '',
   loading: false,
@@ -2589,6 +2864,32 @@ const state = {
   nativeChartResizeObserver: null,
   nativeChartRenderFrame: 0,
   nativeChartHover: { active: false, t: 0 }
+};
+
+
+/* Morning Brief uses the same verified on-chain summaries and INJ ticker as the Home.
+   No extra wallet RPC or alternative fabricated balance is introduced. */
+window.INJ_MORNING_SOURCE = function () {
+  return {
+    price: state.price,
+    priceAt: state.lastMarketUpdate,
+    change24h: state.change,
+    currency: state.currency,
+    eurRate: state.eurRate,
+    view: state.currentView,
+    wallets: state.wallets.map((wallet) => {
+      const row = state.walletSummaries[wallet.address] || null;
+      const numeric = (key) => row && row[key] !== null && row[key] !== undefined && Number.isFinite(Number(row[key])) ? Number(row[key]) : null;
+      return {
+        address: wallet.address, label: wallet.label,
+        rewards: numeric('rewards'), staked: numeric('staked'),
+        apr: numeric('personalApr'), updated: numeric('updated') || 0
+      };
+    })
+  };
+};
+window.INJ_MORNING_REFRESH = async function () {
+  await Promise.allSettled([loadMarket(), refreshWalletSummaries(true)]);
 };
 
 function number(value) {
@@ -2697,7 +2998,8 @@ function loadSavedWallets() {
     label: String(item?.label || `Wallet ${index + 1}`).trim().slice(0, 28)
   })).filter((item, index, all) => validAddress(item.address) && all.findIndex((row) => row.address === item.address) === index) : [];
 
-  const legacy = localStorage.getItem('inj_monitor_address') || '';
+  let legacy = '';
+  try { legacy = localStorage.getItem('inj_monitor_address') || ''; } catch (_) {}
   if (validAddress(legacy) && !state.wallets.some((item) => item.address === legacy)) {
     state.wallets.push({ address: legacy, label: `Wallet ${state.wallets.length + 1}` });
   }
@@ -2705,7 +3007,10 @@ function loadSavedWallets() {
     const cached = JSON.parse(localStorage.getItem('inj_monitor_summaries_v1') || '{}');
     state.walletSummaries = cached && typeof cached === 'object' ? cached : {};
   } catch (_) { state.walletSummaries = {}; }
-  saveWallets();
+  try { saveWallets(); } catch (error) {
+    // Read-only/local storage failures must not discard wallets already read.
+    console.warn('Unable to refresh saved wallet list:', error);
+  }
 }
 
 function saveWallets() {
@@ -2788,11 +3093,33 @@ function ensureSavedWallet(address, requestedLabel = '') {
 function setHeaderMenuOpen(open) {
   const host = $('headerMenu');
   if (!host) return;
+  // Always enter the Control Center at its header, even after a long scroll.
+  // Reset before revealing the panel to avoid a visible scroll jump.
+  if (open) {
+    const panel = $('headerMenuPanel');
+    if (panel) panel.scrollTop = 0;
+  }
   host.classList.toggle('open', open);
   document.body.classList.toggle('menu-overlay-open', open);
   $('entryMenuButton')?.setAttribute('aria-expanded', open ? 'true' : 'false');
   $('entryMenuButton')?.setAttribute('aria-label', open ? 'Chiudi menu' : 'Apri menu');
   if (!open) setThemePickerOpen(false);
+}
+
+function openWalletAddressEditor(address) {
+  const wallet = state.wallets.find((item) => item.address === address);
+  if (!wallet) return;
+  setSearchOpen(true);
+  const input = $('addressInput');
+  const name = $('walletNameInput');
+  if (input) {
+    input.value = wallet.address;
+    requestAnimationFrame(() => {
+      input.focus({ preventScroll: true });
+      try { input.select(); } catch (_) {}
+    });
+  }
+  if (name) name.value = wallet.label || '';
 }
 
 function setSearchOpen(open) {
@@ -2864,6 +3191,26 @@ function renderWalletCards() {
 
     heading.append(status, name);
 
+    const address = document.createElement('small');
+    address.className = 'wallet-mini-address';
+    address.textContent = shortAddress(wallet.address);
+    address.title = `Modifica indirizzo ${wallet.label}`;
+    address.setAttribute('role', 'button');
+    address.setAttribute('tabindex', '0');
+    address.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openWalletAddressEditor(wallet.address);
+    });
+    address.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        openWalletAddressEditor(wallet.address);
+      }
+    });
+    heading.append(address);
+
     const total = document.createElement('span');
     total.className = 'wallet-mini-total private';
     total.textContent = row ? `${number(row.total).toLocaleString('it-IT', { maximumFractionDigits: 2 })} INJ` : '— INJ';
@@ -2873,6 +3220,9 @@ function renderWalletCards() {
     worth.textContent = row && state.price > 0 ? compactMoney(row.total * state.price) : (fresh ? 'LIVE' : row ? 'CACHE' : 'SYNC');
 
     open.append(heading, total, worth);
+    // Exactly three layout children. The selected state is conveyed by
+    // aria-pressed, the theme-accent border and the existing status dot.
+    // Never append badges here: this button uses a fixed compact grid.
     open.addEventListener('click', () => {
       if (!active || state.walletPendingAddress) loadWallet(true, wallet.address);
     });
@@ -3047,29 +3397,21 @@ function toast(message) {
   toast.timer = setTimeout(() => host.classList.remove('show'), 2200);
 }
 
-function signalChange(element, previous, next) {
+function signalChange(element, previous, next, previousText, nextText) {
   const tolerance = Math.max(1e-12, Math.abs(previous) * 1e-10);
   if (!Number.isFinite(previous) || !Number.isFinite(next) || Math.abs(next - previous) <= tolerance) return;
+
+  // v16.00.18 — Calm Motion. The data can tick as fast as it wants, but the
+  // colour cue is rate-limited so high volatility never turns the UI into a
+  // continuous strobe. Values remain realtime; only the decorative cue rests.
+  const now = performance.now();
+  const minVisualGap = 900;
+  if (now - Number(element._lastDirectionalCueAt || 0) < minVisualGap) return;
+  element._lastDirectionalCueAt = now;
+
   const direction = next > previous ? 'up' : 'down';
-  const card = element.closest('.data-card');
-  const now = Date.now();
-
-  element.classList.remove('value-change-up', 'value-change-down');
-  void element.offsetWidth;
-  element.classList.add(`value-change-${direction}`);
-
-  // La card si illumina solo in risposta a una variazione realmente visibile.
-  // Il piccolo lock evita che due valori della stessa card provochino flash sovrapposti
-  // durante lo stesso ciclo di rendering.
-  if (card && now - number(card.dataset.lastFlash) > 420) {
-    card.dataset.lastFlash = String(now);
-    card.classList.remove('data-flash-up', 'data-flash-down');
-    void card.offsetWidth;
-    card.classList.add(`data-flash-${direction}`);
-    clearTimeout(card._flashTimer);
-    card._flashTimer = setTimeout(() => {
-      card.classList.remove('data-flash-up', 'data-flash-down');
-    }, 1400);
+  if (!element.querySelector('.number-roll-digit')) {
+    renderDirectionalNumberText(element, previousText, nextText, direction, 300);
   }
 }
 
@@ -3102,7 +3444,7 @@ function appendRollingDigit(parent, oldDigit, newDigit, direction) {
   oldLayer.textContent = oldDigit || '\u00a0';
 
   const newLayer = document.createElement('span');
-  newLayer.className = 'number-roll-digit-layer number-roll-new';
+  newLayer.className = `number-roll-digit-layer number-roll-new number-change-digit number-change-${direction}`;
   newLayer.textContent = newDigit;
 
   slot.append(oldLayer, newLayer);
@@ -3165,60 +3507,102 @@ function renderStableNumberText(element, text) {
   element.append(shell);
 }
 
-function animateVerticalNumberRoll(element, previousText, nextText, previousNumeric, nextNumeric) {
+function renderDirectionalNumberText(element, previousText, nextText, direction, duration = 620) {
   if (!element) return;
-  // Keep the host in tabular-number mode even after the temporary animation
-  // markup is removed. This makes the animated and final text occupy the same
-  // width and prevents the tiny horizontal/baseline jumps seen on live updates.
-  element.classList.add('number-roll-host');
-  const oldText = previousText === undefined ? undefined : String(previousText);
-  const newText = String(nextText);
-  const previous = Number(previousNumeric);
-  const next = Number(nextNumeric);
-  const visibleChange = oldText !== undefined && oldText !== newText;
-  const numericChange = Number.isFinite(previous) && Number.isFinite(next) &&
-    Math.abs(next - previous) > Math.max(1e-12, Math.abs(previous) * 1e-10);
-  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-
-  // Identical rounded values can be rendered several times per second. Do not
-  // interrupt a roll that is already in flight just because another renderer ran.
-  if (!visibleChange || !numericChange || state.suppressEffects || reduceMotion) {
-    if (element._verticalRollTimer && oldText === newText) return;
-    clearTimeout(element._verticalRollTimer);
-    element._verticalRollTimer = null;
+  const oldText = String(previousText ?? '');
+  const newText = String(nextText ?? '');
+  const oldGroups = numberRollGroups(oldText);
+  const newGroups = numberRollGroups(newText);
+  if (!newGroups.length || !oldGroups.length) {
     renderStableNumberText(element, newText);
     return;
   }
 
-  clearTimeout(element._verticalRollTimer);
-  const direction = next > previous ? 'up' : 'down';
+  clearTimeout(element._digitColorTimer);
   const shell = document.createElement('span');
-  shell.className = 'number-roll-text';
+  shell.className = 'number-roll-text number-roll-stable';
   shell.setAttribute('aria-label', newText);
-
-  const oldGroups = numberRollGroups(oldText);
-  const newGroups = numberRollGroups(newText);
   let cursor = 0;
 
-  newGroups.forEach((group, index) => {
+  newGroups.forEach((group, groupIndex) => {
     if (group.start > cursor) shell.append(document.createTextNode(newText.slice(cursor, group.start)));
-    appendRollingNumberGroup(shell, oldGroups[index]?.text || '', group.text, direction);
+    const oldDigits = Array.from(String(oldGroups[groupIndex]?.text || '')).filter((char) => /\d/.test(char));
+    const chars = Array.from(String(group.text || ''));
+    const newDigitCount = chars.reduce((count, char) => count + (/\d/.test(char) ? 1 : 0), 0);
+    const offset = oldDigits.length - newDigitCount;
+    let digitIndex = 0;
+
+    for (const char of chars) {
+      if (!/\d/.test(char)) {
+        shell.append(document.createTextNode(char));
+        continue;
+      }
+      const oldIndex = digitIndex + offset;
+      const oldDigit = oldIndex >= 0 && oldIndex < oldDigits.length ? oldDigits[oldIndex] : '';
+      const digit = document.createElement('span');
+      digit.className = 'number-roll-static-digit';
+      if (oldDigit !== char) digit.classList.add('number-change-digit', `number-change-${direction}`);
+      digit.textContent = char;
+      shell.append(digit);
+      digitIndex += 1;
+    }
     cursor = group.end;
   });
+
   if (cursor < newText.length) shell.append(document.createTextNode(newText.slice(cursor)));
+  element.classList.add('number-roll-host');
+  element.replaceChildren(shell);
+  element._digitColorTimer = window.setTimeout(() => {
+    element.querySelectorAll('.number-change-up,.number-change-down').forEach((node) => node.classList.remove('number-change-up','number-change-down'));
+    element._digitColorTimer = null;
+  }, duration);
+}
 
-  // If a value contains no digits (for example an em dash), use the plain text.
-  element.textContent = '';
-  if (newGroups.length) element.append(shell);
-  else element.textContent = newText;
+function animateVerticalNumberRoll(element, previousText, nextText, previousNumeric, nextNumeric) {
+  if (!element) return;
+  element.classList.add('number-roll-host');
 
-  element._verticalRollTimer = window.setTimeout(() => {
-    element._verticalRollTimer = null;
-    // Keep the exact same per-digit geometry after the animation. Reverting to
-    // a plain text node changed the glyph metrics by a fraction of a pixel on
-    // Safari/iOS and created the visible grow/shrink "jump" at the end.
-    renderStableNumberText(element, newText);
-  }, 500);
+  const targetText = String(nextText);
+  const targetNumeric = Number(nextNumeric);
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  const visualGap = 720;
+
+  if (element._verticalVisualText === undefined) {
+    element._verticalVisualText = targetText;
+    element._verticalVisualNumeric = Number.isFinite(targetNumeric) ? targetNumeric : NaN;
+    renderStableNumberText(element, targetText);
+    return;
+  }
+
+  // Cancel any legacy two-layer roll that may still be alive after a hot reload.
+  clearTimeout(element._verticalRollTimer);
+  element._verticalRollTimer = null;
+  element._verticalRollPending = null;
+  element._verticalRollTarget = null;
+
+  const oldText = String(element._verticalVisualText ?? previousText ?? targetText);
+  const oldNumeric = Number(element._verticalVisualNumeric);
+  const visibleChange = oldText !== targetText;
+  const numericChange = Number.isFinite(oldNumeric) && Number.isFinite(targetNumeric) &&
+    Math.abs(targetNumeric - oldNumeric) > Math.max(1e-12, Math.abs(oldNumeric) * 1e-10);
+  const now = performance.now();
+  const canCue = visibleChange && numericChange && !state.suppressEffects && !reduceMotion &&
+    now - Number(element._verticalLastAnimatedAt || 0) >= visualGap;
+
+  // The numeric value is painted immediately on every tick. When the visual cue
+  // is allowed, only the NEW changed digits exist in the DOM: no ghost layer,
+  // no mixed old/new number and no post-animation snap.
+  if (canCue) {
+    const direction = targetNumeric > oldNumeric ? 'up' : 'down';
+    element._verticalLastAnimatedAt = now;
+    element._lastDirectionalCueAt = now;
+    renderDirectionalNumberText(element, oldText, targetText, direction, 260);
+  } else {
+    renderStableNumberText(element, targetText);
+  }
+
+  element._verticalVisualText = targetText;
+  element._verticalVisualNumeric = Number.isFinite(targetNumeric) ? targetNumeric : NaN;
 }
 
 function setRollingNumberValue(element, text, numericValue) {
@@ -3251,6 +3635,10 @@ function setPlainNumberValue(element, text, numericValue) {
 
   clearTimeout(element._verticalRollTimer);
   element._verticalRollTimer = null;
+  element._verticalRollPending = null;
+  element._verticalRollTarget = null;
+  element._verticalVisualText = nextText;
+  element._verticalVisualNumeric = Number.isFinite(next) ? next : NaN;
   element.textContent = nextText;
   element.dataset.plainRenderedValue = nextText;
   if (Number.isFinite(next)) element.dataset.plainNumericValue = String(next);
@@ -3269,9 +3657,9 @@ function setStableLiveNumberValue(element, text, numericValue) {
 function setPulseOnlyValue(id, text, numericValue, { flash = true } = {}) {
   const element = $(id);
   if (!element) return;
-  const result = setPlainNumberValue(element, text, numericValue);
+  const result = setRollingNumberValue(element, text, numericValue);
   if (flash && !state.suppressEffects && result.visibleChange && result.numericChange) {
-    signalChange(element, result.previous, result.next);
+    signalChange(element, result.previous, result.next, result.previousText, result.nextText);
   }
 }
 
@@ -3293,22 +3681,19 @@ function setRewardEstimateValue(id, value, active, digits = 4) {
   element.innerHTML = `<span class="reward-estimate-number">${formattedNumber}</span><span class="reward-estimate-unit">INJ</span>`;
 }
 
-// Pulse View intentionally has no numeric odometer in v15.98.13.
+// v16.00.14 — Pulse View uses the same fluid per-digit odometer as the other live surfaces.
 
-function setValue(id, text, numericValue, { flash = true, roll = false } = {}) {
+function setValue(id, text, numericValue, { flash = true, roll = true } = {}) {
   const element = $(id);
   if (!element) return;
 
-  // v15.98.13: Dashboard is intentionally selective. Only callers that pass
-  // roll:true get the per-digit odometer; every other value stays geometrically
-  // fixed and can use the existing directional color blink.
+  // v16.00.14 — Dashboard live numbers roll by default. Per-digit fixed geometry
+  // keeps widths stable while changed digits inherit the realtime direction color.
   const result = roll
-    ? (state.marketMotionRendering
-        ? setStableLiveNumberValue(element, text, numericValue)
-        : setRollingNumberValue(element, text, numericValue))
+    ? setRollingNumberValue(element, text, numericValue)
     : setPlainNumberValue(element, text, numericValue);
-  if (flash && !state.suppressEffects && !state.marketMotionRendering && result.visibleChange && result.numericChange) {
-    signalChange(element, result.previous, result.next);
+  if (flash && !state.suppressEffects && result.visibleChange && result.numericChange) {
+    signalChange(element, result.previous, result.next, result.previousText, result.nextText);
   }
 
   // Keep the legacy datasets because a few older dashboard effects read them.
@@ -3321,34 +3706,9 @@ function setAccruedRewardValue(text, numericValue) {
   const element = $('rewardsInj');
   if (!element) return;
 
-  const result = setPlainNumberValue(element, text, numericValue);
-  const card = $('rewardsCard');
-
-  // Reward maturate are an accumulation signal: highlight only real increases
-  // in INJ. Price-only changes in the USD countervalue must not trigger it.
-  if (
-    card &&
-    !state.suppressEffects &&
-    !state.marketMotionRendering &&
-    result.visibleChange &&
-    result.numericChange &&
-    Number.isFinite(result.previous) &&
-    Number.isFinite(result.next) &&
-    result.next > result.previous
-  ) {
-    element.classList.remove('reward-accrual-value-flash');
-    card.classList.remove('reward-accrual-flash');
-    void card.offsetWidth;
-    element.classList.add('reward-accrual-value-flash');
-    card.classList.add('reward-accrual-flash');
-
-    clearTimeout(card._rewardAccrualFlashTimer);
-    card._rewardAccrualFlashTimer = window.setTimeout(() => {
-      element.classList.remove('reward-accrual-value-flash');
-      card.classList.remove('reward-accrual-flash');
-    }, 900);
-  }
-
+  // Reward maturate has its own calm luminous treatment. Keep the number itself
+  // perfectly stable and realtime instead of combining it with the odometer cue.
+  const result = setStableLiveNumberValue(element, text, numericValue);
   element.dataset.renderedValue = result.nextText;
   if (Number.isFinite(result.next)) element.dataset.numericValue = String(result.next);
   else delete element.dataset.numericValue;
@@ -3356,9 +3716,9 @@ function setAccruedRewardValue(text, numericValue) {
 
 function setBlinkOnlyElement(element, text, numericValue, { flash = true } = {}) {
   if (!element) return { visibleChange: false, numericChange: false, previous: NaN, next: NaN };
-  const result = setPlainNumberValue(element, text, numericValue);
-  if (flash && !state.suppressEffects && !state.marketMotionRendering && result.visibleChange && result.numericChange) {
-    signalChange(element, result.previous, result.next);
+  const result = setRollingNumberValue(element, text, numericValue);
+  if (flash && !state.suppressEffects && result.visibleChange && result.numericChange) {
+    signalChange(element, result.previous, result.next, result.previousText, result.nextText);
   }
   return result;
 }
@@ -3429,8 +3789,8 @@ async function loadWalletSummary(address) {
 
 async function refreshWalletSummaries(force = false) {
   if (state.summariesLoading || !state.wallets.length) return;
-  const summaryCooldown = MOBILE_EFFICIENCY ? 55_000 : 25_000;
-  const walletStaleAfter = MOBILE_EFFICIENCY ? 50_000 : 20_000;
+  const summaryCooldown = MOBILE_EFFICIENCY ? 12_000 : 8_000;
+  const walletStaleAfter = MOBILE_EFFICIENCY ? 10_000 : 7_000;
   if (!force && Date.now() - state.summariesLastRefresh < summaryCooldown) return;
   state.summariesLoading = true;
   state.summariesLastRefresh = Date.now();
@@ -3440,7 +3800,7 @@ async function refreshWalletSummaries(force = false) {
     const row = state.walletSummaries[address];
     if (force || !row) return true;
     const isPriority = address === state.address || address === state.entrySelectedAddress;
-    const staleAfter = MOBILE_EFFICIENCY && !isPriority ? 120_000 : walletStaleAfter;
+    const staleAfter = MOBILE_EFFICIENCY && !isPriority ? 20_000 : walletStaleAfter;
     return Date.now() - number(row.updated) > staleAfter;
   });
   if (!addresses.length) {
@@ -3453,7 +3813,7 @@ async function refreshWalletSummaries(force = false) {
     while (cursor < addresses.length) {
       const address = addresses[cursor++];
       try {
-        state.walletSummaries[address] = await loadWalletSummary(address);
+        state.walletSummaries[address] = { ...state.walletSummaries[address], ...(await loadWalletSummary(address)) };
         saveWalletSummaries();
         if (!MOBILE_EFFICIENCY) {
           renderAggregate();
@@ -3462,7 +3822,7 @@ async function refreshWalletSummaries(force = false) {
       } catch (_) {}
     }
   };
-  const concurrency = MOBILE_EFFICIENCY ? 1 : Math.min(3, addresses.length);
+  const concurrency = MOBILE_EFFICIENCY ? Math.min(2, addresses.length) : Math.min(3, addresses.length);
   await Promise.all(Array.from({ length: concurrency }, worker));
   state.summariesLoading = false;
   renderAggregate();
@@ -4140,7 +4500,7 @@ function renderEntryMarketMatrix() {
     if (Number.isFinite(value)) valid += 1;
     if (direction > 0) bullish += 1;
     if (direction < 0) bearish += 1;
-    if (output) output.textContent = marketMatrixValueText(value);
+    if (output) setEntryAnimatedValue(`matrix${suffix}`, marketMatrixValueText(value), Number.isFinite(value) ? value : NaN);
     if (status) status.textContent = !Number.isFinite(value) ? 'SYNC' : direction > 0 ? 'UP' : direction < 0 ? 'DOWN' : 'FLAT';
     for (const node of [cell, rail]) {
       if (!node) continue;
@@ -4257,7 +4617,7 @@ function updateMarket(next) {
   // frame without manufacturing extra historical samples.
   if ($('entryGate')?.classList.contains('visible')) {
     const now = Date.now();
-    const bounds = entryLocalDayBounds(now);
+    const bounds = entryMarketDayBounds(now);
     if (number(state.entrySpark.dayStart) !== bounds.start) {
       resetEntryPriceSession(bounds.start);
       void loadEntrySparkline(true);
@@ -4315,17 +4675,42 @@ async function loadMarket() {
   }
 }
 
-function connectMarketSocket() {
-  if (document.hidden) return;
-  try { state.socket?.close(); } catch (_) {}
+function scheduleMarketReconnect(delay = 1100) {
+  clearTimeout(state.marketReconnectTimer);
+  if (navigator.onLine === false) return;
+  state.marketReconnectTimer = window.setTimeout(() => {
+    state.marketReconnectTimer = 0;
+    connectMarketSocket(false);
+  }, delay);
+}
+
+function connectMarketSocket(force = false) {
+  if (navigator.onLine === false) return;
+  const current = state.socket;
+  if (!force && current && (current.readyState === WebSocket.OPEN || current.readyState === WebSocket.CONNECTING)) return;
+
+  clearTimeout(state.marketReconnectTimer);
+  state.marketReconnectTimer = 0;
+  if (current) {
+    current.onopen = null;
+    current.onmessage = null;
+    current.onerror = null;
+    current.onclose = null;
+    try { current.close(); } catch (_) {}
+  }
+
+  const generation = ++state.marketSocketGeneration;
   try {
-    // v15.98.62 — same lightweight Binance miniTicker feed used by Command Center.
-    // The raw tick is the target; the shared visual market clock interpolates it
-    // across every visible INJ Node surface.
+    // v16.00.12 — one authoritative market socket. Stale close events from an
+    // older socket can no longer tear down a newer healthy connection.
     const socket = new WebSocket('wss://stream.binance.com:9443/ws/injusdt@miniTicker');
     state.socket = socket;
-    socket.onopen = () => setStatus('online', state.address ? 'Wallet online' : 'Mercato live');
+    socket.onopen = () => {
+      if (state.socket !== socket || generation !== state.marketSocketGeneration) return;
+      setStatus('online', state.address ? 'Wallet online' : 'Mercato live');
+    };
     socket.onmessage = (event) => {
+      if (state.socket !== socket || generation !== state.marketSocketGeneration) return;
       try {
         const payload = JSON.parse(event.data);
         const tick = payload?.data || payload;
@@ -4341,11 +4726,58 @@ function connectMarketSocket() {
         });
       } catch (_) {}
     };
-    socket.onerror = () => setStatus('', 'Riconnessione…');
-    socket.onclose = () => { if (!document.hidden) setTimeout(connectMarketSocket, 4000); };
+    socket.onerror = () => {
+      if (state.socket !== socket || generation !== state.marketSocketGeneration) return;
+      setStatus('', 'Riconnessione…');
+      try { socket.close(); } catch (_) {}
+    };
+    socket.onclose = () => {
+      if (state.socket !== socket || generation !== state.marketSocketGeneration) return;
+      state.socket = null;
+      if (navigator.onLine === false) {
+        setStatus('offline', 'Offline');
+        return;
+      }
+      setStatus('', 'Riconnessione…');
+      scheduleMarketReconnect(1100);
+    };
   } catch (_) {
-    setTimeout(connectMarketSocket, 5000);
+    if (generation === state.marketSocketGeneration) scheduleMarketReconnect(1400);
   }
+}
+
+function maintainMarketRealtime() {
+  if (navigator.onLine === false || state.marketWatchdogBusy) return;
+  const socket = state.socket;
+  const connected = socket && socket.readyState === WebSocket.OPEN;
+  const connecting = socket && socket.readyState === WebSocket.CONNECTING;
+  const age = state.lastMarketUpdate ? Date.now() - state.lastMarketUpdate : Infinity;
+
+  if (!connected && !connecting) connectMarketSocket(false);
+  if (age > 8_000) {
+    state.marketWatchdogBusy = true;
+    Promise.resolve(loadMarket()).finally(() => { state.marketWatchdogBusy = false; });
+  }
+  // A WebSocket can remain OPEN at browser level while no longer receiving
+  // packets. Replace it only after a generous stale window.
+  if (connected && age > 15_000) connectMarketSocket(true);
+}
+
+function resumeRealtimeData(forceWalletSummaries = false) {
+  if (navigator.onLine === false) {
+    setStatus('offline', 'Offline');
+    renderDataFreshness();
+    return;
+  }
+  connectMarketSocket(false);
+  void loadMarket();
+  if (state.address && !state.loading) void loadWallet(false, state.address);
+  void refreshWalletSummaries(forceWalletSummaries);
+  void loadEntryMarketMatrixAnchors(false);
+  if (isLiveChartsActive()) void loadLiveChartsHistory(true);
+  if ((state.marketTargetPrice > 0 || state.marketRawPrice > 0) && !state.marketMotionFrame) startGlobalMarketMotion(700);
+  renderDataFreshness();
+  renderSystemStatus();
 }
 
 async function loadValidator(row) {
@@ -4570,7 +5002,7 @@ function syncFocusDisplayViewport() {
   dialog.style.setProperty('--focus-viewport-height', `${Math.round(height)}px`);
 }
 
-function setFocusDisplayValue(element, text, numericValue, { roll = false } = {}) {
+function setFocusDisplayValue(element, text, numericValue, { roll = true } = {}) {
   if (!element) return;
   const nextText = String(text);
   const next = Number(numericValue);
@@ -4583,16 +5015,18 @@ function setFocusDisplayValue(element, text, numericValue, { roll = false } = {}
 
   // v15.98.13: Live View rolls only PRICE and CONTROVALORE. Every other
   // metric is rendered as fixed text and retains the directional color blink.
-  if (active && roll && !state.marketMotionRendering) {
+  if (active && roll) {
     animateVerticalNumberRoll(element, previousText, nextText, previous, next);
   } else {
     clearTimeout(element._verticalRollTimer);
     element._verticalRollTimer = null;
+    element._verticalRollPending = null;
+    element._verticalRollTarget = null;
+    element._verticalVisualText = nextText;
+    element._verticalVisualNumeric = Number.isFinite(next) ? next : NaN;
     if (roll) {
       element.classList.add('number-roll-host');
-      // v15.98.16: Live View is primed with the exact same per-digit geometry
-      // used during the roll before the fullscreen layer becomes visible.
-      // This removes the one-frame grow/snap seen on entry in Safari/iOS.
+      // Keep the same fixed digit geometry while the immersive view is parked.
       renderStableNumberText(element, nextText);
     } else {
       element.classList.remove('number-roll-host');
@@ -4600,15 +5034,11 @@ function setFocusDisplayValue(element, text, numericValue, { roll = false } = {}
     }
   }
 
-  if (active && !state.suppressEffects && !state.marketMotionRendering && visibleChange && numericChange) {
+  if (active && !state.suppressEffects && visibleChange && numericChange) {
     const direction = next > previous ? 'up' : 'down';
-    element.classList.remove('focus-value-up', 'focus-value-down');
-    void element.offsetWidth;
-    element.classList.add(`focus-value-${direction}`);
-    clearTimeout(element._focusValueTimer);
-    element._focusValueTimer = setTimeout(() => {
-      element.classList.remove('focus-value-up', 'focus-value-down');
-    }, 1250);
+    if (!element.querySelector('.number-roll-digit')) {
+      renderDirectionalNumberText(element, previousText, nextText, direction, 620);
+    }
   }
 
   element.dataset.focusRenderedValue = nextText;
@@ -5169,6 +5599,7 @@ function openFocusDisplay() {
   renderFocusDisplay();
   renderFocusAmbient();
   dialog.hidden = false;
+  dialog.removeAttribute('aria-hidden');
   dialog.classList.remove('controls-hidden', 'is-closing', 'mode-parked');
   dialog.classList.add('mode-active');
   document.body.classList.add('focus-display-open');
@@ -5217,12 +5648,22 @@ function closeFocusDisplay({ revealDashboard = true, animate = false } = {}) {
       restoreEntryGateFromImmersive();
       dialog.classList.remove('is-closing', 'mode-active');
       dialog.classList.add('mode-parked');
+      dialog.hidden = true;
+      dialog.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('focus-display-open', 'mode-returning');
+      window.INJ_SCROLL_GUARD?.refresh();
       return;
     }
     prepareImmersiveHomeCrossfade();
     dialog.classList.add('is-closing');
-    window.setTimeout(() => finishImmersiveHomeCrossfade(dialog, 'focus-display-open'), 620);
+    window.setTimeout(() => {
+      finishImmersiveHomeCrossfade(dialog, 'focus-display-open');
+      // Fully retire the Live View layer; a parked but displayed fixed overlay
+      // could still capture Dashboard swipes on iPhone PWA.
+      dialog.hidden = true;
+      dialog.setAttribute('aria-hidden', 'true');
+      window.INJ_SCROLL_GUARD?.refresh();
+    }, 620);
     return;
   }
 
@@ -5230,8 +5671,11 @@ function closeFocusDisplay({ revealDashboard = true, animate = false } = {}) {
     const gate = $('entryGate');
     dialog.classList.remove('is-closing', 'mode-active');
     dialog.classList.add('mode-parked');
+    dialog.hidden = true;
+    dialog.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('focus-display-open', 'mode-returning');
     gate?.classList.remove('mode-return');
+    window.INJ_SCROLL_GUARD?.refresh();
     pulseDashboardReveal();
   };
 
@@ -5249,18 +5693,21 @@ function returnDashboardToEntryGate() {
   // first, then refresh its data after the navigation frame. This removes the
   // visible freeze caused by renderEntryGate()/sparkline work before reveal.
   state.currentView = 'home';
+  document.body.classList.remove('dashboard-scroll-ready');
   document.body.classList.add('dashboard-home-instant-return', 'entry-gate-open');
   document.body.classList.remove('dashboard-home-return', 'dashboard-home-fade', 'mode-returning', 'entry-live-launch');
 
   gate.classList.remove('leaving', 'immersive-underlay', 'mode-return', 'return-front', 'dashboard-underlay');
   gate.classList.add('visible', 'home-return-stable');
   gate.setAttribute('aria-hidden', 'false');
+  window.INJ_HOME_SCROLL?.restore();
 
   requestAnimationFrame(() => {
     document.body.classList.remove('dashboard-home-instant-return');
     const refreshHome = () => {
       if (state.currentView !== 'home') return;
       renderEntryGate();
+      window.INJ_HOME_SCROLL?.restore();
       requestAnimationFrame(() => loadEntrySparkline(false));
     };
     if ('requestIdleCallback' in window) requestIdleCallback(refreshHome, { timeout: 180 });
@@ -5271,10 +5718,10 @@ function returnDashboardToEntryGate() {
 function goHome(source = 'internal') {
   // Dashboard may return Home only through the explicit Home tile. Search,
   // chart and every other header control are never valid Home navigation sources.
-  if (state.currentView === 'dashboard' && source !== 'dashboard-home-button') return;
-  if (state.currentView === 'live' && !['immersive-close', 'immersive-keyboard'].includes(source)) return;
-  if (state.currentView === 'pulse' && !['immersive-close', 'immersive-keyboard'].includes(source)) return;
-  if (state.currentView === 'charts' && !['immersive-close', 'immersive-keyboard'].includes(source)) return;
+  if (state.currentView === 'dashboard' && !['dashboard-home-button','navigation'].includes(source)) return;
+  if (state.currentView === 'live' && !['immersive-close', 'immersive-keyboard','navigation'].includes(source)) return;
+  if (state.currentView === 'pulse' && !['immersive-close', 'immersive-keyboard','navigation'].includes(source)) return;
+  if (state.currentView === 'charts' && !['immersive-close', 'immersive-keyboard','navigation'].includes(source)) return;
 
   setHeaderMenuOpen(false);
   setSearchOpen(false);
@@ -5852,13 +6299,13 @@ function setPulseMetric(id, value, level, deltaText, currentText, metaText) {
   const meta = $(`${prefix}Meta`);
   const rewardMetric = id === 'pulseMetricReward';
   if (delta) {
-    setPlainNumberValue(delta, deltaText, n);
+    setRollingNumberValue(delta, deltaText, n);
   }
   if (current) {
     const currentNumeric = id === 'pulseMetricPrice' ? state.price
       : id === 'pulseMetricPnl' ? currentTotalInj() * state.price
       : state.rewards;
-    setPlainNumberValue(current, currentText, currentNumeric);
+    setRollingNumberValue(current, currentText, currentNumeric);
   }
   if (meta) meta.textContent = metaText;
 }
@@ -6231,6 +6678,7 @@ function closePulseView({ revealDashboard = true, animate = false } = {}) {
 }
 
 function renderMarket() {
+  // v16.00.15 — Dashboard odometers keep a single-line fixed geometry on compact rows.
   setValue('marketPrice', state.price > 0 ? money(state.price, 4) : '—', state.price || NaN, { roll: true });
   setValue('dayLow', state.low > 0 ? money(state.low, 3) : '—', state.low || NaN);
   setValue('dayHigh', state.high > 0 ? money(state.high, 3) : '—', state.high || NaN);
@@ -6246,19 +6694,8 @@ function renderMarket() {
   setBlinkOnlyElement(amount, state.price > 0 ? usdt(state.changeAmount, 4) : '— USDT', state.price > 0 ? state.changeAmount : NaN);
   amount.className = state.changeAmount > 0 ? 'positive' : state.changeAmount < 0 ? 'negative' : '';
 
-  const terminalPrice = $('chartHeaderPrice');
-  const terminalChange = $('chartHeaderChange');
-  if (terminalPrice) {
-    setBlinkOnlyElement(
-      terminalPrice,
-      state.price > 0 ? `$${state.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: state.price < 10 ? 4 : 2 })}` : '$—',
-      state.price > 0 ? state.price : NaN
-    );
-  }
-  if (terminalChange) {
-    setBlinkOnlyElement(terminalChange, state.price > 0 ? `${next > 0 ? '+' : ''}${next.toFixed(2)}% · 24H` : '—', state.price > 0 ? next : NaN, { flash: false });
-    terminalChange.className = next > 0 ? 'positive' : next < 0 ? 'negative' : 'neutral';
-  }
+  // Il popup usa un solo renderer, senza contatori animati o timer concorrenti.
+  // renderNativeChartSummary aggiorna esclusivamente il testo del prezzo live.
   renderMarketTimeframes();
   if (isFocusDisplayActive()) renderFocusDisplay();
   if (isPulseViewActive()) renderPulseView();
@@ -6278,7 +6715,7 @@ function renderPortfolio() {
   $('walletState').textContent = activeWallet ? `${activeWallet.label} · ${shortAddress(state.address)}` : state.address ? shortAddress(state.address) : 'Wallet non caricato';
   setValue('netWorthUsd', state.address ? money(netWorth, 2) : '—', state.address ? netWorth : NaN, { roll: true });
   setValue('netWorthInj', formatInj(totalInj, 4), totalInj);
-  setValue('availableInj', formatInj(state.available), state.available);
+  setValue('availableInj', formatInj(state.available, 5), state.available);
   setValue('availableUsd', money(state.available * state.price), state.available * state.price);
   const nativeUsdcRow = $('nativeUsdcRow');
   if (nativeUsdcRow) {
@@ -6293,7 +6730,7 @@ function renderPortfolio() {
   setValue('ownedVsStakedInj', formatInj(ownedVsStaked), ownedVsStaked);
   setValue('stakedInj', formatInj(state.staked), state.staked);
   setValue('stakedUsd', money(state.staked * state.price), state.staked * state.price);
-  setAccruedRewardValue(formatInj(state.rewards), state.rewards);
+  setAccruedRewardValue(formatInj(state.rewards, 5), state.rewards);
   setValue('rewardsUsd', money(state.rewards * state.price), state.rewards * state.price, { flash: false });
   setValue('aprValue', state.personalApr > 0 ? `${state.personalApr.toFixed(3)}%` : '—', state.personalApr || NaN);
   setValue('stakedShare', `${stakedShare.toFixed(1)}%`, stakedShare);
@@ -6957,17 +7394,32 @@ function renderNativeChartSummary() {
   const high = values.length ? Math.max(number(chart.max), ...values) : number(chart.max);
   const perf = nativeChartPerformance(current, open);
 
-  if ($('nativeChartOpen')) $('nativeChartOpen').textContent = nativeChartPrice(open);
-  if ($('nativeChartLow')) $('nativeChartLow').textContent = nativeChartPrice(low);
-  if ($('nativeChartHigh')) $('nativeChartHigh').textContent = nativeChartPrice(high);
-  if ($('nativeChartNow')) $('nativeChartNow').textContent = nativeChartPrice(current);
-  if ($('chartHeaderPrice')) $('chartHeaderPrice').textContent = nativeChartPrice(current);
+  // Aggiorna solo testo semplice: niente animazioni per cifra o glitch degli span.
+  const setStableText = (id, value) => {
+    const element = $(id);
+    if (!element) return;
+    if (element._verticalRollTimer) clearTimeout(element._verticalRollTimer);
+    if (element._digitColorTimer) clearTimeout(element._digitColorTimer);
+    element._verticalRollTimer = null;
+    element._digitColorTimer = null;
+    element._verticalRollPending = null;
+    element._verticalRollTarget = null;
+    element.classList.remove('number-roll-host');
+    if (element.children.length || element.textContent !== value) element.textContent = value;
+  };
+  setStableText('nativeChartOpen', nativeChartPrice(open));
+  setStableText('nativeChartLow', nativeChartPrice(low));
+  setStableText('nativeChartHigh', nativeChartPrice(high));
+  setStableText('nativeChartNow', nativeChartPrice(current));
+  setStableText('chartHeaderPrice', nativeChartPrice(current));
 
   const change = $('chartHeaderChange');
   if (change) {
     const label = state.nativeChartRange === 'y1' ? 'ALL · 1Y' : NATIVE_CHART_CONFIG[state.nativeChartRange]?.label || '1D';
-    change.textContent = open > 0 ? `${perf >= 0 ? '+' : ''}${perf.toFixed(2)}% · ${label}` : '—';
-    change.className = perf > 0 ? 'positive' : perf < 0 ? 'negative' : 'neutral';
+    const nextText = open > 0 ? `${perf >= 0 ? '+' : ''}${perf.toFixed(2)}% · ${label}` : '—';
+    if (change.textContent !== nextText) change.textContent = nextText;
+    const nextClass = perf > 0 ? 'positive' : perf < 0 ? 'negative' : 'neutral';
+    if (change.className !== nextClass) change.className = nextClass;
   }
 }
 
@@ -7084,7 +7536,10 @@ function renderNativeChart() {
     // La linea usa sempre tutta la larghezza per il periodo realmente trascorso.
     // Niente spazio vuoto fino a fine ora/giorno/settimana/mese/anno.
     const latestTimestamp = Math.max(periodStart + 1, plotted[plotted.length - 1]?.t || now, Math.min(now, periodEnd));
-    const visibleEnd = Math.min(periodEnd, latestTimestamp);
+    // Ancoraggio a intervalli di tempo: non riscalare l'intero tracciato
+    // orizzontalmente a ogni singolo tick live.
+    const horizontalStep = { h1: 15_000, d1: 60_000, w1: 300_000, m1: 1_800_000, y1: 21_600_000 }[state.nativeChartRange] || 60_000;
+    const visibleEnd = Math.min(periodEnd, periodStart + Math.max(horizontalStep, Math.ceil((latestTimestamp - periodStart) / horizontalStep) * horizontalStep));
 
     const perfValues = plotted.map((row) => row.perf);
     const rawMin = Math.min(0, ...perfValues);
@@ -7099,6 +7554,23 @@ function renderNativeChart() {
     const margin = Math.max(0.06, span * 0.08);
     minPerf -= margin;
     maxPerf += margin;
+    span = maxPerf - minPerf;
+
+    // La scala verticale non deve cambiare a ogni variazione dell'ultimo prezzo.
+    // Apre ulteriore spazio solo quando un nuovo estremo si avvicina al bordo;
+    // si reinizializza quando cambia timeframe, periodo o prezzo di apertura.
+    const scaleKey = `${state.nativeChartRange}:${periodStart}:${state.nativeChart.open}`;
+    let axisScale = state.nativeChart.axisScale;
+    if (!axisScale || axisScale.key !== scaleKey) {
+      axisScale = { key: scaleKey, min: minPerf - span * 0.16, max: maxPerf + span * 0.16 };
+      state.nativeChart.axisScale = axisScale;
+    } else {
+      const stableSpan = Math.max(0.01, axisScale.max - axisScale.min);
+      if (rawMin < axisScale.min + stableSpan * 0.04) axisScale.min = rawMin - stableSpan * 0.20;
+      if (rawMax > axisScale.max - stableSpan * 0.04) axisScale.max = rawMax + stableSpan * 0.20;
+    }
+    minPerf = axisScale.min;
+    maxPerf = axisScale.max;
     span = maxPerf - minPerf;
 
     const xFor = (t) => pad.l + Math.max(0, Math.min(1, (t - periodStart) / Math.max(1, visibleEnd - periodStart))) * plotW;
@@ -7491,7 +7963,7 @@ function updateInstallUi() {
 
 function registerPwa() {
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=15.99.80').catch(() => {}), { once: true });
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=16.01.37',{updateViaCache:'none'}).then(registration=>registration.update()).catch(() => {}), { once: true });
   }
   updateInstallUi();
 }
@@ -7501,7 +7973,15 @@ function applyTheme(theme, notify = false) {
     navy: { label: 'Aurora', color: '#03070b' },
     black: { label: 'Obsidian', color: '#030303' },
     light: { label: 'Chiaro', color: '#eef5ff' },
-    amber: { label: 'Midnight Ember', color: '#070b11' }
+    amber: { label: 'Midnight Ember', color: '#070b11' },
+    ocean: { label: 'Ocean Aurora', color: '#07131f' },
+    chromatic: { label: 'Chromatic Mist', color: '#111323' },
+    velvet: { label: 'Velvet Nebula', color: '#0a1024' },
+    aqua: { label: 'Aqua Mirage', color: '#d7e9ef' },
+    'ocean-x-electric': { label: 'Electric Ocean', color: '#06132d' },
+    'ocean-x-ion': { label: 'Ion Storm', color: '#130c2c' },
+    'ocean-x-toxic': { label: 'Toxic Abyss', color: '#061c1d' },
+    'ocean-x-solar': { label: 'Solar Surge', color: '#1b122c' }
   };
   const selected = themes[theme] ? theme : 'navy';
   document.documentElement.dataset.theme = selected;
@@ -7515,6 +7995,9 @@ function applyTheme(theme, notify = false) {
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
+  // Reopen the selected category while keeping the catalog compact.
+  const selectedGroup = document.querySelector('#themePicker [data-theme-choice="' + selected + '"]')?.closest('.theme-category');
+  if (selectedGroup) document.querySelectorAll('#themePicker .theme-category').forEach((group) => { group.open = group === selectedGroup; });
   if (isChartOpen()) requestAnimationFrame(renderNativeChart);
   if (notify) toast(`Tema ${themes[selected].label}`);
 }
@@ -7935,24 +8418,39 @@ function bindEvents() {
     if (event.key === 'Escape' && isPulseViewActive()) goHome('immersive-keyboard');
     if (event.key === 'Escape' && isLiveChartsActive()) goHome('immersive-keyboard');
   });
-  window.addEventListener('online', () => { renderDataFreshness(); refreshAll(false); });
+  window.addEventListener('online', () => resumeRealtimeData(true));
   window.addEventListener('offline', () => { setStatus('offline', 'Offline'); renderDataFreshness(); });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      try { state.socket?.close(); } catch (_) {}
-      return;
-    }
-    if (isLiveChartsActive()) void loadLiveChartsHistory(true);
-    connectMarketSocket();
-    refreshAll(false);
-    void loadEntryMarketMatrixAnchors(false);
+    // Do not deliberately tear down live feeds while the page is hidden. iOS may
+    // suspend JavaScript on its own; as soon as the page is visible we reconcile
+    // every live source immediately.
+    if (!document.hidden) resumeRealtimeData(false);
   });
+  window.addEventListener('focus', () => { if (!document.hidden) resumeRealtimeData(false); }, { passive: true });
 }
 
 
 // v15.98.102 — Dashboard navigation is now section-native: macro headings collapse in place.
 
+function bindUniversalPageWheelScroll() {
+  if (window.__injUniversalWheelBound) return;
+  window.__injUniversalWheelBound = true;
+  // WebKit PWA: never change scrolling geometry during wheel/touch gestures.
+  const restore = () => {
+    if (state.currentView === 'dashboard') healDashboardScrollState({ force: false });
+  };
+  window.addEventListener('pageshow', restore, { passive: true });
+  window.addEventListener('popstate', () => requestAnimationFrame(restore), { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) requestAnimationFrame(restore);
+  });
+}
+
 async function init() {
+  bindUniversalPageWheelScroll();
+  // Wallet detection is independent of other saved preferences. A corrupt
+  // theme/chart setting must not force a returning user through onboarding.
+  try { loadSavedWallets(); } catch (error) { console.warn('Saved wallet initialization:', error); }
   try {
     state.currency = localStorage.getItem('inj_monitor_currency') === 'EUR' ? 'EUR' : 'USD';
     localStorage.removeItem('inj_monitor_card_style');
@@ -7961,8 +8459,8 @@ async function init() {
       : 'd1';
     if ($('currencyValue')) $('currencyValue').textContent = state.currency === 'EUR' ? '€' : '$';
     syncPrivacyUi(localStorage.getItem('inj_monitor_privacy') === '1');
-    loadSavedWallets();
-    state.entrySelectedAddress = state.wallets.find((wallet) => wallet.address === (localStorage.getItem('inj_monitor_address') || ''))?.address || state.wallets[0]?.address || '';
+    state.entrySelectedAddress = state.wallets.find((wallet) => wallet.address === (localStorage.getItem('inj_node_comparison_selected_wallet_v1') || localStorage.getItem('inj_monitor_address') || ''))?.address || state.wallets[0]?.address || '';
+    if (state.entrySelectedAddress) localStorage.setItem('inj_node_comparison_selected_wallet_v1', state.entrySelectedAddress);
     loadTargetStorage();
     loadAveragePriceStorage();
     loadMarketFrameCache();
@@ -7997,6 +8495,8 @@ async function init() {
   setDashboardCollapsed('matrix', dashboardCollapsedPreference('matrix'), false);
   renderAll();
   renderWalletControls();
+  // Home controls are now usable; do not hold the splash for network requests.
+  window.dispatchEvent(new Event('inj-node:home-ready'));
   loadEurRate();
   await loadMarket();
   void loadEntryMarketMatrixAnchors(true);
@@ -8006,24 +8506,37 @@ async function init() {
   if (state.wallets.length) await refreshWalletSummaries(true);
   state.suppressEffects = false;
 
-  // v15.98.28 — Mobile scheduling keeps live data responsive while avoiding
-  // duplicate network/DOM work that would otherwise keep iPhone CPU/GPU awake.
+  // v16.00.12 — realtime continuity: market feed is watchdog-protected, the
+  // active wallet is reconciled every few seconds and the five-wallet summary
+  // follows closely without waiting for a minute-long mobile cooldown.
+  setInterval(() => { if (!document.hidden) maintainMarketRealtime(); }, 2_500);
+  // UTC intraday sessions must restart even if no exchange tick arrives at
+  // 00:00. Rehydrate during the day to fill gaps after iOS sleep/offline.
   setInterval(() => {
-    if (!document.hidden && (!state.socket || state.socket.readyState !== WebSocket.OPEN)) loadMarket();
-  }, 60_000);
+    const gate = $('entryGate');
+    if (document.hidden || state.currentView !== 'home' ||
+        !gate?.classList.contains('visible') || state.entrySpark.loading) return;
+    const today = entryMarketDayBounds().start;
+    if (number(state.entrySpark.dayStart) !== today) {
+      resetEntryPriceSession(today);
+      void loadEntrySparkline(true);
+    } else if (Date.now() - number(state.entrySpark.loadedAt) >= 180_000) {
+      void loadEntrySparkline(false);
+    }
+  }, 15_000);
   setInterval(() => { if (!document.hidden) loadMarketTimeframes(false); }, 15 * 60_000);
   setInterval(() => { if (!document.hidden) void loadEntryMarketMatrixAnchors(false); }, 2 * 60_000);
-  const summaryEvery = MOBILE_EFFICIENCY ? 60_000 : 30_000;
+  const summaryEvery = MOBILE_EFFICIENCY ? 15_000 : 10_000;
   setTimeout(() => {
     if (!document.hidden) refreshWalletSummaries(false);
     setInterval(() => {
       if (!document.hidden) refreshWalletSummaries(false);
     }, summaryEvery);
-  }, 15_000);
+  }, 6_000);
   setInterval(() => {
     if (!document.hidden && state.currentView === 'dashboard') renderWalletCards();
-  }, MOBILE_EFFICIENCY ? 30_000 : 10_000);
-  setInterval(() => { if (!document.hidden) renderDataFreshness(); }, MOBILE_EFFICIENCY ? 3_000 : 1_000);
+  }, 5_000);
+  setInterval(() => { if (!document.hidden) renderDataFreshness(); }, 1_000);
   // Target Tracker runs as a lightweight live instrument between wallet reads.
   setInterval(() => {
     if (!document.hidden && state.currentView === 'dashboard' && state.address && !$('targetCard')?.classList.contains('tracker-collapsed')) {
@@ -8035,7 +8548,7 @@ async function init() {
   renderFocusAmbient();
   setInterval(() => {
     if (state.address && !document.hidden && !state.loading && ['dashboard','live','pulse','performance'].includes(state.currentView)) loadWallet(false, state.address);
-  }, MOBILE_EFFICIENCY ? 45_000 : 30_000);
+  }, MOBILE_EFFICIENCY ? 6_000 : 5_000);
 }
 
 // Document and nested scroll boundaries are handled by viewport.js.
@@ -8165,17 +8678,16 @@ window.addEventListener('pagehide', () => {
   state.marketMotionLastFrame = 0;
 });
 window.addEventListener('pageshow', (event) => {
-  if (!event.persisted) return;
   requestAnimationFrame(() => {
-    try { connectMarketSocket(); } catch (_) {}
-    if ((state.marketTargetPrice > 0 || state.marketRawPrice > 0) && !state.marketMotionFrame) {
-      try { startGlobalMarketMotion(700); } catch (_) {}
-    }
-    window.setTimeout(() => {
-      try { refreshAll(false); } catch (_) {}
-      try { loadEntryMarketMatrixAnchors(false); } catch (_) {}
-    }, 180);
+    try { resumeRealtimeData(Boolean(event.persisted)); } catch (_) {}
+    if (state.currentView === 'dashboard') window.setTimeout(() => healDashboardScrollState({ force: true }), 0);
   });
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && state.currentView === 'dashboard') {
+    requestAnimationFrame(() => healDashboardScrollState({ force: true }));
+  }
 });
 
 // v15.99.4 — Home P/L Timeline: persistent 24H candles + viewport-based Y autoscaling and historical horizontal scroll.

@@ -1,0 +1,34 @@
+/* INJ Node v16.01.16 · Dashboard wallet dock.
+   Every theme: no enclosing rectangle around saved wallet addresses.
+   Individual wallet tiles, active state, layout, scroll and data stay intact. */
+html[data-theme] body .app-shell main#top > section.wallet-dock,
+html[data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets,
+html[data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip,
+html[data-theme] body .app-shell main#top > section.wallet-dock .wallet-dock-title {
+ background:transparent!important;
+ background-image:none!important;
+ border:0!important;
+ box-shadow:none!important;
+ outline:none!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+}
+/* Remove any original ornamental rectangle or highlight layer belonging
+   to the surrounding wrappers (never to individual .wallet-mini cards). */
+html[data-theme] body .app-shell main#top > section.wallet-dock::before,
+html[data-theme] body .app-shell main#top > section.wallet-dock::after,
+html[data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets::before,
+html[data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets::after,
+html[data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip::before,
+html[data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip::after{
+ content:none!important;
+ display:none!important;
+ box-shadow:none!important;
+}
+/* Keep each saved address legible and the selected wallet distinct. */
+html[data-theme] body .app-shell .wallet-mini{
+ border-color:var(--line)!important;
+}
+html[data-theme] body .app-shell .wallet-mini.active{
+ border-color:color-mix(in srgb,var(--accent) 47%,var(--line))!important;
+}

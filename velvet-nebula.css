@@ -1,0 +1,159 @@
+/* INJ Node · Velvet Nebula v16.01.12
+   Premium nocturnal violet / teal ambience. Shared across all sections.
+   Seamless compositor-only loops; no blur filters, content transforms,
+   scroll locks or animation of live financial values. */
+:root[data-theme="velvet"]{
+ color-scheme:dark;
+ --bg:#0a1024;--canvas:#0a1024;--theme-canvas:#0a1024;
+ --theme-browser:#0a1024;--theme-backdrop:#0a1024;--theme-canvas-soft:#151d36;
+ --surface:#18223c;--surface-strong:#242b48;--surface-soft:#303955;
+ --panel:#18223c;--panel-strong:#242b48;
+ --text:#f5f5fe;--muted:#aebad4;--muted-strong:#dbe0f4;
+ --accent:#c9b1f5;--accent-ink:#16112c;--accent-soft:rgba(201,177,245,.14);
+ --line:rgba(199,193,229,.18);--line-strong:rgba(204,197,237,.32);
+ --up:#65e4b5;--up-soft:rgba(101,228,181,.13);
+ --down:#ff859e;--down-soft:rgba(255,133,158,.13);
+ --header-glow-a:rgba(174,97,214,.12);--header-glow-b:rgba(58,191,183,.08);
+ --header-edge:rgba(206,181,238,.22);
+ --page-gradient:
+  radial-gradient(ellipse 74% 67% at 12% 4%,rgba(93,73,165,.27),transparent 76%),
+  radial-gradient(ellipse 68% 58% at 96% 15%,rgba(158,71,180,.17),transparent 76%),
+  radial-gradient(ellipse 78% 63% at 87% 97%,rgba(34,140,149,.19),transparent 76%),
+  linear-gradient(140deg,#0a132a 0%,#171632 53%,#0a1b2b 100%);
+ --card-gradient:
+  radial-gradient(ellipse at 104% -7%,rgba(169,102,208,.10),transparent 42%),
+  radial-gradient(ellipse at -8% 108%,rgba(68,178,179,.07),transparent 44%),
+  linear-gradient(145deg,rgba(34,35,69,.93),rgba(14,29,49,.96));
+ --market-gradient:
+  radial-gradient(ellipse at 98% 6%,rgba(181,99,210,.14),transparent 45%),
+  radial-gradient(ellipse at 5% 106%,rgba(58,172,176,.085),transparent 44%),
+  linear-gradient(145deg,rgba(35,36,70,.95),rgba(14,30,49,.97));
+ --dock-gradient:linear-gradient(125deg,rgba(34,33,66,.94),rgba(17,33,49,.95));
+ --floating-surface:rgba(25,29,55,.97);
+ --dialog-gradient:linear-gradient(145deg,#302b54,#13263e);
+ --card-orb:rgba(173,102,211,.075);--card-orb-alt:rgba(66,196,177,.062);
+ --card-inner-highlight:rgba(247,235,255,.057);
+ --card-shadow-accent:rgba(156,98,192,.060);
+ --shadow:0 20px 52px rgba(4,8,24,.38),0 7px 25px rgba(10,21,34,.21);
+ --section-overview:var(--accent);--section-wallet:var(--accent);
+ --section-staking:var(--accent);--section-market:var(--accent);
+ --section-delegations:var(--accent);
+}
+html[data-theme="velvet"],html[data-theme="velvet"] body{
+ background-color:#0a1024!important;color-scheme:dark;
+}
+html[data-theme="velvet"] body{
+ background-image:var(--page-gradient)!important;background-attachment:scroll!important;
+}
+/* Each viewport owns its own isolated non-interactive ambient layer. */
+html[data-theme="velvet"] :is(
+ #entryGate,.app-shell,.treasury-shell,.rewards-shell,.live-page,
+ .book-page,.cc-shell,.shell,.cap-shell){
+ isolation:isolate;
+}
+html[data-theme="velvet"] #entryGate{background:var(--page-gradient)!important}
+html[data-theme="velvet"] #entryGate>.entry-gate-shell:not(.first-access){
+ background:transparent!important;
+}
+.velvet-nebula-atmosphere{display:none}
+html[data-theme="velvet"] .velvet-nebula-atmosphere{
+ display:block;position:fixed;inset:0;z-index:-1;
+ overflow:hidden;pointer-events:none;
+}
+html[data-theme="velvet"] .velvet-nebula-field{
+ position:absolute;left:50%;top:50%;width:144vmax;height:144vmax;
+ border-radius:50%;pointer-events:none;transform-origin:center;
+ -webkit-backface-visibility:hidden;backface-visibility:hidden;will-change:transform;
+}
+html[data-theme="velvet"] .velvet-nebula-field--a{
+ opacity:.74;
+ background:
+  radial-gradient(ellipse at 19% 28%,rgba(154,77,207,.39),rgba(112,69,165,.15) 29%,transparent 57%),
+  radial-gradient(ellipse at 79% 72%,rgba(37,151,180,.30),rgba(32,99,145,.11) 31%,transparent 59%);
+ animation:velvet-nebula-orbit-a 89s linear infinite;
+}
+html[data-theme="velvet"] .velvet-nebula-field--b{
+ opacity:.66;
+ background:
+  radial-gradient(ellipse at 76% 22%,rgba(206,98,157,.29),rgba(135,63,143,.10) 28%,transparent 55%),
+  radial-gradient(ellipse at 22% 76%,rgba(47,189,168,.31),rgba(34,121,131,.11) 30%,transparent 56%);
+ animation:velvet-nebula-orbit-b 113s linear infinite;
+}
+html[data-theme="velvet"] .velvet-nebula-field--c{
+ opacity:.45;
+ background:
+  radial-gradient(ellipse at 22% 25%,rgba(89,94,210,.30),transparent 54%),
+  radial-gradient(ellipse at 76% 76%,rgba(110,67,165,.24),transparent 56%);
+ animation:velvet-nebula-orbit-c 137s linear infinite;
+}
+/* Linear revolutions whose endpoint equals their start: no visible jump. */
+@keyframes velvet-nebula-orbit-a{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+@keyframes velvet-nebula-orbit-b{
+ from{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+}
+@keyframes velvet-nebula-orbit-c{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+/* Shared transparent shells reveal atmosphere, without changing layout. */
+html[data-theme="velvet"] .app-shell{
+ background:transparent!important;color:var(--text);
+}
+html[data-theme="velvet"]:not([data-inj-page="index"])
+ :is(.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell,.cap-shell){
+ background:transparent!important;color:var(--text);
+}
+html[data-theme="velvet"] :is(.treasury-header,.rewards-header,.cc-topbar,
+ .terminal-header,.book-topbar,.shell>.header,.cap-header,.app-shell>.topbar){
+ background:transparent!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html[data-theme="velvet"] #entryGate :is(.entry-overview,.entry-insights){
+ background:linear-gradient(140deg,rgba(38,34,72,.86),rgba(18,34,57,.89))!important;
+ border-color:rgba(207,183,235,.22)!important;
+ box-shadow:inset 0 1px rgba(255,245,255,.06),0 16px 39px rgba(6,11,30,.16)!important;
+}
+html[data-theme="velvet"] #entryGate .entry-wallet{
+ background:linear-gradient(143deg,rgba(37,33,69,.86),rgba(18,35,54,.92))!important;
+ border-color:rgba(207,183,235,.23)!important;
+}
+html[data-theme="velvet"] #entryGate .entry-actions.entry-flat-v44>.entry-action{
+ background:linear-gradient(129deg,rgba(38,34,70,.88),rgba(18,37,55,.92))!important;
+ border-color:rgba(200,176,232,.24)!important;
+ box-shadow:inset 0 1px rgba(255,245,255,.055)!important;
+}
+html[data-theme="velvet"] #entryGate .entry-actions.entry-flat-v44>.entry-action:active{
+ border-color:rgba(212,171,245,.59)!important;
+}
+html[data-theme="velvet"] :is(.treasury-card,.cap-panel,.data-card,.market-card,.menu-control-panel){
+ border-color:var(--line);
+}
+html[data-theme="velvet"] .jn-monogram{--jn-brand-accent:#d4aff7}
+html[data-theme="velvet"] .node-pulse-splash{--pulse-accent:#d4aff7}
+html[data-theme="velvet"] #entryGate .home-safe-heading h1>strong{color:#f7f4ff!important}
+html[data-theme="velvet"] #entryGate .home-safe-heading h1>span{color:#d4aff7!important}
+.theme-swatch.velvet{
+ background:linear-gradient(124deg,#111d39 0%,#553b89 26%,#bb64bc 48%,#3e8998 72%,#165a62 100%)!important;
+ border:1px solid rgba(216,188,240,.50)!important;
+}
+html[data-theme="velvet"] [data-theme-choice="velvet"]{
+ border-color:rgba(211,171,245,.72)!important;
+}
+@media(max-width:900px),(hover:none) and (pointer:coarse){
+ html[data-theme="velvet"] .velvet-nebula-field{
+  width:118vmax;height:118vmax;-webkit-filter:none!important;filter:none!important;
+ }
+ html[data-theme="velvet"] .velvet-nebula-field--a{opacity:.57}
+ html[data-theme="velvet"] .velvet-nebula-field--b{opacity:.50}
+ html[data-theme="velvet"] .velvet-nebula-field--c{display:none}
+ html[data-theme="velvet"] :is(.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.cap-shell){
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-theme="velvet"] .velvet-nebula-field{animation:none!important;will-change:auto!important}
+}

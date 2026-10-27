@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="it" data-inj-page="visualize-wealth" data-theme="navy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020708">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Valore Potenziale · INJ Node</title>
+<script>
+try{const t=localStorage.getItem('inj_monitor_theme');const valid=['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'];document.documentElement.dataset.theme=valid.includes(t)?t:'navy'}catch(_){}
+</script>
+<link rel="stylesheet" href="./visualize-wealth.css?v=160502">
+<link rel="stylesheet" href="./ocean-aurora.css?v=160109">
+<link rel="stylesheet" href="./chromatic-mist.css?v=160110">
+<link rel="stylesheet" href="./theme-harmony.css?v=160114">
+<link rel="stylesheet" href="./velvet-nebula.css?v=160112">
+<link rel="stylesheet" href="./aqua-mirage.css?v=160113">
+<link rel="stylesheet" href="./ocean-x-series.css?v=160114">
+<script defer src="./navigation.js?v=20261027-g1"></script>
+<script defer src="./visualize-wealth.js?v=160318"></script>
+<script defer src="./visualize-wealth-extras.js?v=160319"></script>
+<script defer src="./visualize-wealth-growth.js?v=160321"></script>
+<link rel="stylesheet" href="./scroll-edges.css?v=160129">
+<link rel="stylesheet" href="./visualize-wealth-extras.css?v=160319">
+<link rel="stylesheet" href="./visualize-wealth-growth.css?v=160321">
+<link rel="stylesheet" href="./section-heading-harmony.css?v=160131">
+<link rel="stylesheet" href="./unified-navigation.css?v=160136">
+<script defer src="./section-heading-harmony.js?v=160131"></script>
+<script defer src="./scroll-edges.js?v=160128"></script>
+<link rel="stylesheet" href="./adaptive-layout.css?v=160600">
+<script defer src="./adaptive-layout.js?v=160600"></script>
+<link rel="manifest" href="./manifest.webmanifest?v=16.06.29">
+<meta name="apple-mobile-web-app-title" content="INJ Node">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/inj-node-minimal-180-v16.06.29.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/inj-node-minimal-192-v16.06.29.png">
+<link rel="icon" type="image/svg+xml" href="./icons/inj-node-minimal-icon-v16.06.29.svg">
+<link rel="stylesheet" href="./inj-uhd.css?v=160710">
+<!-- Global INJ Node terminal typography -->
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="stylesheet" href="./card-titles-uppercase.css?v=20261024">
+<script defer src="./inj-node-insights-config.js?v=1"></script>
+<script defer src="./inj-node-telemetry.js?v=1"></script>
+</head>
+<body>
+<div class="wealth-shell">
+<header class="wealth-header">
+<button class="wealth-home" id="visualizeWealthBack" type="button" aria-label="Torna alla Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7M6.5 10v9h11v-9M10 19v-5h4v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="wealth-heading inj-location-title" data-i18n-skip="true"><strong class="inj-location-name">INJ Node</strong><span class="inj-location-section" data-inj-section-name="visualize-wealth" id="wealthPageTitle">Valore Potenziale</span></div>
+<span class="wealth-eyebrow" id="wealthEyebrow">SIMULATORE</span>
+</header>
+<main class="wealth-main">
+<div class="wealth-intro">
+<p class="wealth-kicker" id="wealthKicker">IL TUO PATRIMONIO, A QUALSIASI PREZZO</p>
+<h1 id="wealthMainTitle">Valore Potenziale</h1>
+<p class="wealth-description" id="wealthDescription">Immagina un prezzo per INJ e scopri quanto varrebbe il tuo patrimonio.</p>
+</div>
+<section class="wealth-control" aria-label="Prezzo ipotetico">
+<label for="wealthPrice" id="wealthPriceLabel">PREZZO IPOTETICO DI 1 INJ</label>
+<div class="wealth-input-shell"><span class="wealth-currency" id="wealthCurrency">$</span><input id="wealthPrice" type="text" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="50,00" aria-describedby="wealthPriceHelp"><span class="wealth-unit">/ INJ</span></div>
+<p id="wealthPriceHelp">Inserisci un prezzo e la simulazione si aggiorna immediatamente.</p>
+</section>
+<div class="wealth-subcontext"><span id="wealthWalletLabel">—</span><span id="wealthDataStatus" class="wealth-status">SINCRONIZZAZIONE</span></div>
+<section class="wealth-results" aria-label="Valori simulati">
+<article class="wealth-result wealth-primary"><p class="wealth-result-label" id="wealthTotalLabel">NET WORTH SIMULATO</p><div class="wealth-amount" id="wealthTotal">—</div><p class="wealth-result-detail" id="wealthTotalDetail">Disponibili + staking + reward</p></article>
+<div class="wealth-divider" aria-hidden="true"></div>
+<article class="wealth-result wealth-secondary"><p class="wealth-result-label" id="wealthStakedLabel">SOLO STAKING</p><div class="wealth-amount" id="wealthStaked">—</div><p class="wealth-result-detail" id="wealthStakedDetail">Solo INJ effettivamente delegati</p></article>
+</section>
+<section class="wealth-all" aria-labelledby="wealthAllTitle">
+  <div class="wealth-extra-head">
+    <h2 id="wealthAllTitle">TUTTI I WALLET · SIMULAZIONE</h2>
+    <span class="wealth-extra-state" id="wealthAllCount">—</span>
+  </div>
+  <div class="wealth-all-grid">
+    <article>
+      <span id="wealthAllWorthLabel">PATRIMONIO TOTALE</span>
+      <strong id="wealthAllWorth">—</strong>
+      <small id="wealthAllInj">—</small>
+    </article>
+    <article>
+      <span id="wealthAllStakeLabel">SOLO STAKING</span>
+      <strong id="wealthAllStake">—</strong>
+      <small id="wealthAllStakeInj">—</small>
+    </article>
+  </div>
+</section>
+<section class="wealth-income" aria-labelledby="wealthIncomeTitle">
+  <div class="wealth-extra-head">
+    <h2 id="wealthIncomeTitle">RENDITA POTENZIALE DA STAKING · USD</h2>
+    <span class="wealth-extra-state" id="wealthIncomeStatus">APR IN AGGIORNAMENTO</span>
+  </div>
+  <div class="wealth-income-grid" role="table" aria-label="Rendita per wallet selezionato e tutti i wallet">
+    <div class="wealth-income-row" role="row">
+      <span role="columnheader" id="wealthIncomePeriodTitle">PERIODO</span>
+      <div role="columnheader"><strong id="wealthIncomeSelectedTitle">WALLET SELEZIONATO</strong><small id="wealthIncomeSelectedName">—</small><small id="wealthIncomeSelectedApr">APR —</small></div>
+      <div role="columnheader"><strong id="wealthIncomeAllTitle">TUTTI I WALLET</strong><small id="wealthIncomeAllApr">APR —</small></div>
+    </div>
+    <div class="wealth-income-row" role="row"><span role="cell">1H</span><strong role="cell" id="wealthIncomeSelected1h">—</strong><strong role="cell" id="wealthIncomeAll1h">—</strong></div>
+<div class="wealth-income-row" role="row"><span role="cell">1D</span><strong role="cell" id="wealthIncomeSelected1d">—</strong><strong role="cell" id="wealthIncomeAll1d">—</strong></div>
+<div class="wealth-income-row" role="row"><span role="cell">1S</span><strong role="cell" id="wealthIncomeSelected1w">—</strong><strong role="cell" id="wealthIncomeAll1w">—</strong></div>
+<div class="wealth-income-row" role="row"><span role="cell">1M</span><strong role="cell" id="wealthIncomeSelected1m">—</strong><strong role="cell" id="wealthIncomeAll1m">—</strong></div>
+<div class="wealth-income-row" role="row"><span role="cell">1Y</span><strong role="cell" id="wealthIncomeSelected1y">—</strong><strong role="cell" id="wealthIncomeAll1y">—</strong></div>
+  </div>
+  <p class="wealth-income-note" id="wealthIncomeNote">Rendita stimata al prezzo ipotetico e APR netto, senza compound.</p>
+</section>
+<section class="wealth-growth" aria-labelledby="wealthGrowthTitle">
+ <div class="wealth-extra-head">
+  <h2 id="wealthGrowthTitle">CRESCITA DELLO STAKING</h2>
+  <span class="wealth-extra-state" id="wealthGrowthStatus">APR IN ATTESA</span>
+ </div>
+ <div class="wealth-growth-toolbar">
+  <div class="wealth-growth-options" role="group" aria-label="Scope / Wallet">
+   <button type="button" data-growth-scope="selected" aria-pressed="true"><span id="wealthGrowthSelectedScope">Wallet selezionato</span></button>
+   <button type="button" data-growth-scope="all" aria-pressed="false"><span id="wealthGrowthAllScope">Tutti i wallet</span></button>
+  </div>
+  <label class="wealth-growth-period" for="wealthGrowthYears">
+   <span id="wealthGrowthPeriodLabel">PERIODO</span>
+   <select id="wealthGrowthYears" aria-label="Periodo di simulazione">
+    <option value="1">1 anno / year</option>
+    <option value="2">2 anni / years</option>
+    <option value="3">3 anni / years</option>
+    <option value="5">5 anni / years</option>
+    <option value="7">7 anni / years</option>
+    <option value="10" selected>10 anni / years</option>
+    <option value="15">15 anni / years</option>
+    <option value="20">20 anni / years</option>
+    <option value="25">25 anni / years</option>
+    <option value="30">30 anni / years</option>
+   </select>
+  </label>
+ </div>
+ <p class="wealth-growth-scope" id="wealthGrowthSource">Wallet selezionato dalla Home</p>
+ <div class="wealth-growth-mode" role="group" aria-label="Compound simulation mode">
+  <button type="button" data-growth-mode="compound" aria-pressed="true"><span class="wealth-growth-swatch compound"></span><span id="wealthGrowthCompoundMode">Reinvesti ogni giorno</span></button>
+  <button type="button" data-growth-mode="simple" aria-pressed="false"><span class="wealth-growth-swatch simple"></span><span id="wealthGrowthSimpleMode">Non reinvestire</span></button>
+ </div>
+ <div class="wealth-growth-chart">
+  <svg id="wealthGrowthPlot" viewBox="0 0 760 300" role="img" tabindex="0" aria-label="Grafico interattivo di staking"></svg>
+  <div class="wealth-growth-empty" id="wealthGrowthEmpty" hidden></div>
+ </div>
+ <div class="wealth-growth-point" aria-live="off">
+  <div class="wealth-growth-point-head"><strong id="wealthGrowthPointTime">Oggi</strong><span id="wealthGrowthPointHint">Trascina sul grafico per esplorare gli anni</span></div>
+  <div class="wealth-growth-point-grid">
+   <div class="wealth-growth-point-item" data-growth-kind="simple">
+    <span><span class="wealth-growth-swatch simple"></span><span id="wealthGrowthPointSimpleLabel">Senza compound</span></span>
+    <strong id="wealthGrowthPointSimpleDaily">—</strong><small id="wealthGrowthPointSimpleTotal">—</small>
+   </div>
+   <div class="wealth-growth-point-item" data-growth-kind="compound">
+    <span><span class="wealth-growth-swatch compound"></span><span id="wealthGrowthPointCompoundLabel">Con compound</span></span>
+    <strong id="wealthGrowthPointCompoundDaily">—</strong><small id="wealthGrowthPointCompoundTotal">—</small>
+   </div>
+  </div>
+ </div>
+ <div class="wealth-growth-results">
+  <article class="wealth-growth-result" data-growth-kind="simple">
+   <div class="wealth-growth-result-heading"><span class="wealth-growth-swatch simple"></span><span id="wealthGrowthSimpleLabel">Senza compound</span></div>
+   <div class="wealth-growth-result-value" id="wealthGrowthSimpleValue">—</div>
+   <small class="wealth-growth-result-fiat" id="wealthGrowthSimpleFiat"></small>
+   <div class="wealth-growth-bar-track" aria-hidden="true"><div class="wealth-growth-bar" data-growth-kind="simple" id="wealthGrowthSimpleBar"></div></div>
+  </article>
+  <article class="wealth-growth-result" data-growth-kind="compound">
+   <div class="wealth-growth-result-heading"><span class="wealth-growth-swatch compound"></span><span id="wealthGrowthCompoundLabel">Compound giornaliero</span></div>
+   <div class="wealth-growth-result-value" id="wealthGrowthCompoundValue">—</div>
+   <small class="wealth-growth-result-fiat" id="wealthGrowthCompoundFiat"></small>
+   <div class="wealth-growth-bar-track" aria-hidden="true"><div class="wealth-growth-bar" data-growth-kind="compound" id="wealthGrowthCompoundBar"></div></div>
+  </article>
+ </div>
+ <dl class="wealth-growth-summary">
+  <div><dt id="wealthGrowthExtraLabel">INJ EXTRA CON COMPOUND</dt><dd id="wealthGrowthExtra">—</dd></div>
+  <div><dt id="wealthGrowthFinalLabel">SCENARIO SELEZIONATO</dt><dd id="wealthGrowthFinal">—</dd></div>
+  <div><dt id="wealthGrowthDailyLabel">INJ AL GIORNO A FINE PERIODO</dt><dd id="wealthGrowthDaily">—</dd></div>
+  <div><dt id="wealthGrowthStartLabel">STAKING INIZIALE</dt><dd id="wealthGrowthStart">—</dd></div>
+ </dl>
+ <p class="wealth-growth-note" id="wealthGrowthNote">Proiezione indicativa ad APR costante.</p>
+</section>
+<p class="wealth-footnote" id="wealthFootnote">Simulazione indicativa: valorizza esclusivamente gli INJ, senza stimare altri token, commissioni o imposte.</p>
+</main>
+<footer class="inj-section-brand inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
+</div>
+</body>
+</html>

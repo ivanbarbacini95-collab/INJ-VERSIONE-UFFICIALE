@@ -1,0 +1,214 @@
+/* INJ Node · NODE PULSE splash v16.01.02
+   Standalone, theme-aware boot experience. Never blur the iPhone safe area,
+   alter the page viewport or display synthetic loading percentages. */
+html[data-inj-page="index"] body #bootSplash.node-pulse-splash {
+  --pulse-ink:var(--text,#f4fbfb);
+  --pulse-accent:var(--accent,#75e4ce);
+  --pulse-muted:var(--muted-strong,#9ab4b3);
+  position:fixed!important;
+  z-index:2147483640!important;
+  inset:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:100vh!important;
+  height:100dvh!important;
+  min-height:0!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:max(20px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom))!important;
+  overflow:hidden!important;
+  color:var(--pulse-ink)!important;
+  background:var(--theme-canvas,var(--bg,#040b10))!important;
+  background-color:var(--theme-canvas,var(--bg,#040b10))!important;
+  opacity:1!important;
+  visibility:visible!important;
+  isolation:isolate!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-filter:none!important;
+  filter:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  transform:none!important;
+  will-change:auto!important;
+  transition:opacity .30s ease,visibility .30s step-end!important;
+  pointer-events:auto!important;
+}
+html[data-inj-page="index"] body #bootSplash.node-pulse-splash::before,
+html[data-inj-page="index"] body #bootSplash.node-pulse-splash::after{
+  content:none!important;display:none!important;
+  filter:none!important;-webkit-filter:none!important;
+}
+/* Return from Treasury/sections must never flash the startup splash. */
+html[data-return-home="1"][data-inj-page="index"] body #bootSplash.node-pulse-splash{
+  display:none!important;
+}
+html[data-inj-page="index"] body #bootSplash.node-pulse-splash.leaving{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-stage{
+  position:relative!important;
+  z-index:1!important;
+  display:flex!important;
+  width:min(100%,460px)!important;
+  max-width:460px!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  margin:0!important;
+  padding:0!important;
+  min-height:0!important;
+  background:transparent!important;
+  border:0!important;
+  transform:none!important;
+  animation:none!important;
+  text-align:center!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-name{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:center!important;
+  gap:.32em!important;
+  color:var(--pulse-ink)!important;
+  white-space:nowrap!important;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:clamp(36px,8vw,55px)!important;
+  line-height:1.1!important;
+  letter-spacing:-.055em!important;
+  animation:node-pulse-reveal .46s cubic-bezier(.2,.7,.2,1) both!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-name strong{
+  font-size:inherit!important;
+  font-weight:900!important;
+  color:var(--pulse-ink)!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-name span{
+  font-size:inherit!important;
+  font-weight:550!important;
+  color:var(--pulse-accent)!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-visual{
+  position:relative!important;
+  display:block!important;
+  width:min(290px,75vw)!important;
+  height:60px!important;
+  min-height:60px!important;
+  margin:14px 0 7px!important;
+  padding:0!important;
+  overflow:visible!important;
+  color:var(--pulse-accent)!important;
+  background:transparent!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-visual svg{
+  width:100%!important;height:100%!important;
+  display:block!important;
+  overflow:visible!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-path{
+  stroke-width:2.4!important;
+  opacity:.89!important;
+  vector-effect:non-scaling-stroke!important;
+  stroke-dasharray:35 65!important;
+  animation:node-pulse-trace 1.45s linear infinite!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-dot{
+  fill:currentColor!important;
+  stroke:none!important;
+  opacity:.82!important;
+  transform-origin:center!important;
+  animation:node-pulse-led 1.45s ease-in-out infinite!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-status{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  min-height:19px!important;
+  max-width:100%!important;
+  color:var(--pulse-muted)!important;
+  font:700 clamp(10px,2.3vw,12px)/1.4 system-ui,-apple-system,sans-serif!important;
+  letter-spacing:.14em!important;
+  text-transform:uppercase!important;
+  white-space:normal!important;
+  text-align:center!important;
+  animation:node-pulse-reveal .45s .12s both!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-indicator{
+  display:inline-block!important;
+  flex:0 0 5px!important;
+  width:5px!important;height:5px!important;
+  border-radius:50%!important;
+  background:var(--pulse-accent)!important;
+  opacity:.6!important;
+  animation:node-pulse-led 1.45s ease-in-out infinite!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-foot{
+  position:absolute!important;
+  z-index:1!important;
+  left:20px!important;right:20px!important;
+  bottom:max(29px,env(safe-area-inset-bottom))!important;
+  margin:0!important;
+  padding:0!important;
+  color:var(--pulse-muted)!important;
+  font:650 10px/1.35 system-ui,-apple-system,sans-serif!important;
+  letter-spacing:.24em!important;
+  opacity:.62!important;
+  text-align:center!important;
+  pointer-events:none!important;
+  white-space:nowrap!important;
+}
+:root[data-theme="black"] body #bootSplash.node-pulse-splash{
+  --pulse-ink:#f5f7fa;
+  --pulse-accent:#d9f0ed;
+  --pulse-muted:#a0abad;
+  background:#040609!important;
+}
+:root[data-theme="light"] body #bootSplash.node-pulse-splash{
+  --pulse-ink:#112b33;
+  --pulse-accent:#087b89;
+  --pulse-muted:#556c74;
+  background:#f2f8fa!important;
+}
+:root[data-theme="amber"] body #bootSplash.node-pulse-splash{
+  --pulse-ink:#f1f6f5;
+  --pulse-accent:var(--accent,#dfbb83);
+  --pulse-muted:#aab5b5;
+}
+@keyframes node-pulse-trace{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes node-pulse-led{0%,100%{opacity:.34}50%{opacity:1}}
+@keyframes node-pulse-reveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){
+ html[data-inj-page="index"] body #bootSplash .node-pulse-name{font-size:clamp(34px,9vw,42px)!important}
+ html[data-inj-page="index"] body #bootSplash .node-pulse-visual{width:min(260px,78vw)!important;height:54px!important;min-height:54px!important;margin:11px 0 6px!important}
+ html[data-inj-page="index"] body #bootSplash .node-pulse-status{font-size:10px!important;letter-spacing:.12em!important}
+ html[data-inj-page="index"] body #bootSplash .node-pulse-foot{font-size:9px!important;letter-spacing:.17em!important}
+}
+@media(max-height:480px) and (orientation:landscape){
+ html[data-inj-page="index"] body #bootSplash .node-pulse-name{font-size:29px!important}
+ html[data-inj-page="index"] body #bootSplash .node-pulse-visual{height:38px!important;min-height:38px!important;margin:3px 0!important}
+ html[data-inj-page="index"] body #bootSplash .node-pulse-foot{bottom:max(8px,env(safe-area-inset-bottom))!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #bootSplash .node-pulse-name,
+ html[data-inj-page="index"] body #bootSplash .node-pulse-status,
+ html[data-inj-page="index"] body #bootSplash .node-pulse-path,
+ html[data-inj-page="index"] body #bootSplash .node-pulse-dot,
+ html[data-inj-page="index"] body #bootSplash .node-pulse-indicator{
+  animation:none!important;opacity:1!important;transform:none!important;
+ }
+ html[data-inj-page="index"] body #bootSplash.node-pulse-splash{
+  transition:none!important;
+ }
+}

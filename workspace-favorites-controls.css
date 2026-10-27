@@ -1,0 +1,39 @@
+/* Favorites Heatmap controls: editable in-place, including monitor mode. */
+.ws-section-body[data-widget="favoritesheatmap"]{
+ display:flex;flex-direction:column;gap:8px;min-height:0;
+ overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+}
+.ws-section-body[data-widget="favoritesheatmap"]>.ws-favorites-toolbar{
+ position:sticky;top:0;z-index:5;display:flex!important;flex-wrap:wrap;align-items:center;
+ gap:6px;flex-shrink:0;margin:0 0 4px;padding:3px 0 7px;
+ background:var(--ws-panel,#102333);opacity:1!important;
+}
+.ws-card[data-style="bare"] .ws-favorites-toolbar,
+.ws-card[data-style="glass"] .ws-favorites-toolbar{
+ background:color-mix(in srgb,var(--ws-panel) 88%,transparent);border-radius:6px;
+}
+.ws-favorites-ranges{display:flex;gap:3px;min-width:0;flex:1 1 auto}
+.ws-favorites-toolbar :is(.ws-favorites-range,.ws-favorites-edit){
+ min-height:30px;border:1px solid color-mix(in srgb,var(--ws-accent) 24%,var(--ws-line));
+ border-radius:7px;background:color-mix(in srgb,var(--ws-panel) 92%,var(--ws-accent));
+ color:var(--ws-fg);font-size:clamp(10px,2.2cqw,12px);font-weight:700;
+ letter-spacing:.02em;padding:5px 8px;cursor:pointer;flex:0 0 auto;
+}
+.ws-favorites-toolbar .ws-favorites-range{flex:1 1 25%;min-width:32px;padding-inline:4px}
+.ws-favorites-toolbar .ws-favorites-range[aria-pressed="true"]{
+ background:color-mix(in srgb,var(--ws-accent) 17%,var(--ws-panel));
+ color:var(--ws-accent);border-color:var(--ws-accent);
+}
+.ws-favorites-toolbar .ws-favorites-edit{margin-inline-start:auto;white-space:nowrap}
+.ws-favorites-toolbar button:focus-visible{outline:2px solid var(--ws-accent);outline-offset:2px}
+.ws-section-body[data-widget="favoritesheatmap"]>.ws-mini-heatmap{
+ flex:0 0 auto;min-height:0;align-content:start;
+}
+body.ws-immersive .ws-section-body[data-widget="favoritesheatmap"]>.ws-favorites-toolbar,
+body.ws-monitor-no-controls .ws-section-body[data-widget="favoritesheatmap"]>.ws-favorites-toolbar{
+ display:flex!important;
+}
+@container (max-width:270px){
+ .ws-section-body[data-widget="favoritesheatmap"]>.ws-favorites-toolbar{flex-direction:column;align-items:stretch}
+ .ws-favorites-toolbar .ws-favorites-edit{margin:0;align-self:stretch}
+}

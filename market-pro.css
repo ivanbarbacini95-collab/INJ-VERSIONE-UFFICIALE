@@ -1,0 +1,277 @@
+/* INJ NODE — MARKET PRO v16.01.08
+   Compact 2x2 header · vitreous coin row cards · rolling 1H terminal. */
+html[data-inj-market]{
+ --mk-surface:color-mix(in srgb,var(--panel,#101e30) 84%,#0d1822 16%);
+ --mk-rim:color-mix(in srgb,var(--accent,#71cfe0) 22%,transparent);
+ --mk-glass:color-mix(in srgb,var(--panel,#101e30) 88%,transparent);
+ --mk-glass-bright:color-mix(in srgb,var(--panel,#101e30) 76%,#718d9a 24%);
+}
+html[data-inj-market] .shell{padding-bottom:max(24px,env(safe-area-inset-bottom))!important}
+html[data-inj-market] .overview{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ width:min(100%,940px)!important;
+ margin:4px auto 20px!important;
+ gap:10px!important;
+}
+html[data-inj-market] .overview article{
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ gap:4px!important;min-width:0!important;
+ min-height:95px!important;margin:0!important;
+ padding:13px 12px!important;
+ text-align:center!important;
+ border:1px solid var(--mk-rim)!important;
+ border-radius:16px!important;
+ background:linear-gradient(148deg,color-mix(in srgb,var(--panel) 93%,#8aa5b7 7%),var(--panel))!important;
+ box-shadow:inset 0 1px 0 rgba(247,254,255,.035)!important;
+}
+html[data-inj-market] .overview article small{
+ letter-spacing:.1em!important;font-size:10px!important;line-height:1.3!important;
+ color:var(--muted)!important;text-wrap:balance;
+}
+html[data-inj-market] .overview article strong{
+ margin:1px 0!important;line-height:1.2!important;
+ font-size:clamp(19px,2.8vw,29px)!important;
+ font-weight:850!important;
+ font-variant-numeric:tabular-nums!important;
+ white-space:nowrap!important;
+}
+html[data-inj-market] .overview article > span{
+ font-size:10px!important;line-height:1.35!important;
+ min-height:12px!important;text-align:center!important;
+}
+html[data-inj-market] .overview article > span.up{color:var(--positive,#31d99c)!important}
+html[data-inj-market] .overview article > span.down{color:var(--negative,#fa6b84)!important}
+html[data-inj-market] .market-asset-section{
+ padding:0 0 8px!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ border:0!important;
+ overflow:visible!important;
+}
+html[data-inj-market] .toolbar{
+ padding:15px 5px 17px!important;
+ gap:12px!important;align-items:center!important;
+}
+html[data-inj-market] .heading h2{
+ font-size:clamp(19px,2.5vw,26px)!important;line-height:1.25!important;
+ letter-spacing:-.025em!important;
+}
+html[data-inj-market] .tools{justify-content:flex-end!important}
+html[data-inj-market] .tools > *{background:var(--mk-surface)!important;border:1px solid var(--mk-rim)!important}
+html[data-inj-market] .tablewrap{overflow-x:auto!important;overflow-y:visible!important;-webkit-overflow-scrolling:touch!important}
+html[data-inj-market] table{
+ border-collapse:separate!important;border-spacing:0 8px!important;
+ width:100%!important;table-layout:fixed!important;
+ min-width:990px!important;
+}
+html[data-inj-market] thead{background:transparent!important}
+html[data-inj-market] th,html[data-inj-market] thead th{
+ padding:8px 11px 11px!important;
+ background:transparent!important;
+ position:static!important;border:0!important;
+ font-size:10px!important;letter-spacing:.06em!important;
+}
+html[data-inj-market] th:first-child,html[data-inj-market] td:first-child{padding-left:14px!important}
+html[data-inj-market] table th:nth-child(1){width:4%!important}
+html[data-inj-market] table th:nth-child(2){width:17%!important}
+html[data-inj-market] table th:nth-child(3){width:14%!important}
+html[data-inj-market] table th:nth-child(n+4):nth-child(-n+7){width:7%!important}
+html[data-inj-market] table th:nth-child(8){width:12%!important}
+html[data-inj-market] table th:nth-child(9){width:12%!important}
+html[data-inj-market] table th:nth-child(10){width:13%!important}
+html[data-inj-market] tbody tr[data-coin]{
+ position:relative!important;
+ transform:scale(1)!important;
+ transition:transform .25s cubic-bezier(.2,.75,.2,1),filter .25s ease!important;
+ will-change:auto!important;
+ cursor:pointer!important;
+}
+html[data-inj-market] tbody tr[data-coin] td{
+ box-sizing:border-box!important;
+ padding:12px 10px!important;
+ vertical-align:middle!important;
+ height:62px!important;
+ border-block:1px solid var(--mk-rim)!important;
+ border-bottom:1px solid var(--mk-rim)!important;
+ background:var(--mk-glass)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.032)!important;
+}
+html[data-inj-market] tbody tr[data-coin] td:first-child{
+ border-left:1px solid var(--mk-rim)!important;
+ border-radius:15px 0 0 15px!important;
+}
+html[data-inj-market] tbody tr[data-coin] td:last-child{
+ border-right:1px solid var(--mk-rim)!important;
+ border-radius:0 15px 15px 0!important;
+}
+html[data-inj-market] tbody tr[data-coin]:hover,
+html[data-inj-market] tbody tr[data-coin].in-spotlight{
+ transform:scale(1.009)!important;
+ filter:brightness(1.065)!important;
+ z-index:1!important;
+}
+html[data-inj-market] tbody tr[data-coin].in-spotlight td{
+ border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
+ background:var(--mk-glass-bright)!important;
+}
+html[data-inj-market] tbody tr[data-coin].inj td{
+ background:color-mix(in srgb,var(--mk-glass) 91%,var(--accent) 9%)!important;
+}
+html[data-inj-market] .asset{max-width:100%!important;min-width:0!important}
+html[data-inj-market] .asset strong{font-size:13px!important;max-width:130px!important;overflow:hidden!important;text-overflow:ellipsis!important}
+html[data-inj-market] .asset img{width:29px!important;height:29px!important}
+html[data-inj-market] .percent-value{
+ display:inline-flex!important;justify-content:center!important;align-items:center!important;
+ min-width:61px!important;min-height:27px!important;
+ padding:4px 6px!important;border-radius:8px!important;
+ font-weight:730!important;
+ font-variant-numeric:tabular-nums!important;
+ transform:none!important;animation:none!important;transition:background-color .3s ease,color .3s ease!important;
+}
+html[data-inj-market] td.up .percent-value{color:var(--positive)!important;background:rgba(45,199,137,calc(.05 + var(--perf-alpha,0)))!important}
+html[data-inj-market] td.down .percent-value{color:var(--negative)!important;background:rgba(229,83,111,calc(.05 + var(--perf-alpha,0)))!important}
+html[data-inj-market] td.neutral .percent-value{color:var(--muted)!important;background:rgba(120,139,156,.05)!important}
+html[data-inj-market] .chartbtn{border-radius:7px!important;touch-action:manipulation!important}
+html[data-inj-market] .chartbtn:focus-visible,.asset:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+html[data-inj-market] .spark{max-width:100%!important;height:35px!important}
+html[data-inj-market] footer{padding:15px 8px!important}
+/* Every asset can be opened for the complete statistics and native chart. */
+html[data-inj-market] dialog.market-asset-dialog{
+ width:min(780px,96vw)!important;
+ max-width:96vw!important;
+ max-height:min(90dvh,920px)!important;
+ padding:clamp(16px,3vw,25px)!important;
+ border-radius:22px!important;
+ border:1px solid color-mix(in srgb,var(--accent) 23%,var(--line))!important;
+ background:linear-gradient(145deg,var(--panel),var(--bg))!important;
+ box-shadow:0 32px 100px rgba(0,0,0,.54)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-market] dialog::backdrop{background:rgba(2,7,12,.83)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html[data-inj-market] .modalhead{gap:10px!important;align-items:center!important}
+html[data-inj-market] .detail-identity{display:flex;gap:11px;align-items:center;min-width:0}
+html[data-inj-market] .detail-asset-icon img{width:38px;height:38px;border-radius:50%;display:block;object-fit:contain}
+html[data-inj-market] .modalhead h2{font-size:clamp(19px,4vw,26px)!important;line-height:1.16!important;overflow-wrap:anywhere!important}
+html[data-inj-market] .modalhead button{width:38px;height:38px;flex:0 0 38px;border:1px solid var(--line)!important;border-radius:10px;background:var(--bg)!important}
+html[data-inj-market] .detail-primary{
+ display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 15px;
+ margin:18px 0 14px;padding-bottom:15px;border-bottom:1px solid var(--line);
+}
+html[data-inj-market] #detailPrice{
+ font-size:clamp(29px,6vw,39px)!important;
+ line-height:1.15!important;letter-spacing:-.045em!important;
+ font-weight:900!important;font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-market] #detailChange{font-weight:820;font-size:15px}
+html[data-inj-market] #detailChange.up{color:var(--positive)!important}
+html[data-inj-market] #detailChange.down{color:var(--negative)!important}
+html[data-inj-market] .detail-primary small{color:var(--muted);font-size:10px}
+html[data-inj-market] .detail-chart-header{
+ display:flex;align-items:center;justify-content:space-between;
+ flex-wrap:wrap;gap:10px;margin-bottom:9px;
+}
+html[data-inj-market] .detail-chart-header>strong{font-size:11px;letter-spacing:.13em;color:var(--muted)}
+html[data-inj-market] .detail-ranges{display:flex;gap:4px;flex-wrap:wrap}
+html[data-inj-market] .detail-ranges button{
+ border:1px solid transparent;background:transparent;
+ padding:7px 11px;min-width:41px;min-height:32px;
+ color:var(--muted);border-radius:9px;font-weight:730;font-size:11px;
+ touch-action:manipulation;
+}
+html[data-inj-market] .detail-ranges button.active{
+ border-color:color-mix(in srgb,var(--accent) 35%,transparent)!important;
+ background:color-mix(in srgb,var(--accent) 12%,transparent)!important;
+ color:var(--accent)!important;
+}
+html[data-inj-market] .detailchart{
+ display:block!important;position:relative;min-height:222px!important;height:222px!important;
+ margin:0!important;padding:0!important;
+ border:1px solid color-mix(in srgb,var(--accent) 16%,var(--line))!important;
+ border-radius:14px!important;
+ background:color-mix(in srgb,var(--bg) 90%,var(--panel) 10%)!important;
+ overflow:hidden!important;
+}
+html[data-inj-market] .detailchart svg{
+ width:100%!important;height:100%!important;
+ display:block!important;overflow:visible!important;
+}
+html[data-inj-market] .detail-chart-foot{
+ display:flex;justify-content:space-between;gap:10px;
+ color:var(--muted);font-variant-numeric:tabular-nums;
+ font-size:10px;padding:6px 3px 0;
+}
+html[data-inj-market] #detailStatus{margin:8px 0 13px!important;font-size:10px!important;min-height:14px!important;line-height:1.4!important}
+html[data-inj-market] .detailstats{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+}
+html[data-inj-market] .detailstats article{
+ display:flex;flex-direction:column;justify-content:center;
+ min-height:62px;padding:12px 11px!important;min-width:0;
+ border:1px solid var(--mk-rim)!important;border-radius:12px!important;
+ background:var(--mk-glass)!important;box-shadow:inset 0 1px rgba(255,255,255,.025)!important;
+}
+html[data-inj-market] .detailstats article small{font-size:10px!important;color:var(--muted)!important}
+html[data-inj-market] .detailstats article strong{
+ font-size:clamp(13px,2.7vw,17px)!important;overflow-wrap:anywhere!important;
+}
+html[data-inj-market] .detailstats article strong.up{color:var(--positive)!important}
+html[data-inj-market] .detailstats article strong.down{color:var(--negative)!important}
+@media(max-width:750px){
+ html[data-inj-market] .overview{gap:8px!important;margin-bottom:15px!important}
+ html[data-inj-market] .overview article{padding:9px 7px!important;min-height:80px!important}
+ html[data-inj-market] .overview article strong{font-size:clamp(18px,5vw,22px)!important}
+ html[data-inj-market] .overview article small{font-size:9px!important}
+ html[data-inj-market] .toolbar{padding:10px 2px 13px!important}
+ html[data-inj-market] .tools{justify-content:flex-start!important}
+ html[data-inj-market] .tablewrap{overflow:visible!important;max-width:100%!important}
+ html[data-inj-market] table{
+  min-width:0!important;width:100%!important;table-layout:fixed!important;
+  border-spacing:0 9px!important;
+ }
+ html[data-inj-market] table th:nth-child(1){width:8%!important}
+ html[data-inj-market] table th:nth-child(2){width:31%!important}
+ html[data-inj-market] table th:nth-child(3){width:24%!important}
+ html[data-inj-market] table th:nth-child(5){width:22%!important}
+ html[data-inj-market] table th:nth-child(10){width:15%!important}
+ html[data-inj-market] th:nth-child(4),html[data-inj-market] th:nth-child(6),
+ html[data-inj-market] th:nth-child(7),html[data-inj-market] th:nth-child(8),html[data-inj-market] th:nth-child(9),
+ html[data-inj-market] td:nth-child(4),html[data-inj-market] td:nth-child(6),
+ html[data-inj-market] td:nth-child(7),html[data-inj-market] td:nth-child(8),html[data-inj-market] td:nth-child(9){display:none!important}
+ html[data-inj-market] tbody tr[data-coin] td{
+   height:68px!important;padding:9px 3px!important;
+ }
+ html[data-inj-market] tbody tr[data-coin] td:first-child{padding-left:7px!important}
+ html[data-inj-market] .asset{gap:5px!important}
+ html[data-inj-market] .asset img{width:23px!important;height:23px!important}
+ html[data-inj-market] .asset strong{font-size:11px!important;max-width:90px!important}
+ html[data-inj-market] .asset small{font-size:10px!important}
+ html[data-inj-market] .live-price{font-size:11px!important;padding:2px 0!important}
+ html[data-inj-market] .percent-value{font-size:10px!important;min-width:0!important;padding:4px 3px!important}
+ html[data-inj-market] .spark{width:50px!important;height:30px!important}
+ html[data-inj-market] dialog.market-asset-dialog{
+  max-height:min(92dvh,980px)!important;width:95vw!important;padding:16px 13px!important;border-radius:17px!important;
+ }
+ html[data-inj-market] .detailchart{height:192px!important;min-height:192px!important}
+ html[data-inj-market] .detail-ranges{width:100%!important;justify-content:space-between}
+ html[data-inj-market] .detail-ranges button{flex:1;min-width:0;padding:8px 3px!important}
+ html[data-inj-market] .detailstats{gap:7px!important}
+ html[data-inj-market] .detailstats article{padding:10px 9px!important;min-height:58px!important}
+ html[data-inj-market] .detailstats article strong{font-size:13px!important}
+}
+@media(max-width:390px){
+ html[data-inj-market] table th:nth-child(1){width:8%!important}
+ html[data-inj-market] table th:nth-child(2){width:29%!important}
+ html[data-inj-market] table th:nth-child(3){width:28%!important}
+ html[data-inj-market] table th:nth-child(5){width:23%!important}
+ html[data-inj-market] table th:nth-child(10){width:12%!important}
+ html[data-inj-market] .asset strong{max-width:67px!important;font-size:10px!important}
+ html[data-inj-market] .chartbtn svg{width:38px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-market] tbody tr[data-coin]{transition:none!important;transform:none!important}
+ html[data-inj-market] #dynamicMarketPulse .dynamic-pulse-led{animation:none!important}
+}

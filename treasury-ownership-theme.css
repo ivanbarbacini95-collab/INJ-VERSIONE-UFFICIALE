@@ -1,0 +1,43 @@
+/* INJ NODE v16.07.02 · Wallet Ownership chips match the selected theme.
+   Only each wallet percentage container receives the same opaque/semi-opaque
+   panel gradient used by Treasury and Dashboard cards; the scrolling rail
+   itself stays transparent. No animation, size or scroll/gesture change. */
+html[data-inj-page="treasury"][data-theme] body .treasury-ownership .treasury-ownership-track > .treasury-owner{
+  background:
+    radial-gradient(ellipse at 92% 8%,
+      color-mix(in srgb,var(--owner-color,var(--accent)) 7%,transparent),
+      transparent 64%),
+    var(--inj-theme-panel,var(--card-gradient,var(--surface-strong)))!important;
+  background-color:var(--surface-strong,var(--surface))!important;
+  border-color:color-mix(in srgb,var(--accent) 28%,var(--line))!important;
+  box-shadow:
+    inset 0 1px color-mix(in srgb,var(--text) 7%,transparent),
+    0 3px 12px color-mix(in srgb,var(--bg) 14%,transparent)!important;
+  -webkit-box-shadow:
+    inset 0 1px color-mix(in srgb,var(--text) 7%,transparent),
+    0 3px 12px color-mix(in srgb,var(--bg) 14%,transparent)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+/* Distinct account identity must remain individual, regardless of palette. */
+html[data-inj-page="treasury"][data-theme] body .treasury-ownership .treasury-owner > .treasury-owner-dot{
+  background:var(--owner-color,var(--accent))!important;
+}
+html[data-inj-page="treasury"][data-theme] body .treasury-ownership .treasury-owner > .treasury-owner-meter > i{
+  background:var(--owner-color,var(--accent))!important;
+}
+html[data-inj-page="treasury"][data-theme] body .treasury-ownership .treasury-owner > .treasury-owner-label{
+  color:var(--text)!important;
+}
+html[data-inj-page="treasury"][data-theme] body .treasury-ownership .treasury-owner > .treasury-owner-pct{
+  color:var(--text)!important;
+}
+/* Preserve transparent gaps between tiles; never paint the whole strip. */
+html[data-inj-page="treasury"][data-theme] body .treasury-ownership .treasury-ownership-window,
+html[data-inj-page="treasury"][data-theme] body .treasury-ownership .treasury-ownership-track{
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}

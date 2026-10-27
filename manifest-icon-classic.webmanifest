@@ -1,0 +1,30 @@
+{
+  "id": "./install-icon-classic.html",
+  "name": "INJ Node",
+  "short_name": "INJ Node",
+  "start_url": "./install-icon-classic.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071320",
+  "theme_color": "#071320",
+  "icons": [
+    {
+      "src": "./icons/inj-node-192-v16.06.28.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/inj-node-512-v16.06.28.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/inj-node-180-v16.06.28.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

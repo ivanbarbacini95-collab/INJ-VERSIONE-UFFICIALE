@@ -1,0 +1,115 @@
+/* INJ Node · Privacy Shield v1
+   Replace visual blur with opaque terminal-style masking.
+   The live calculations and wallet values are NOT rewritten. This is a
+   presentation-only privacy view, not an access-control feature. */
+body.privacy-on .private {
+  filter:none!important;
+  -webkit-filter:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+/* Hide only the VALUE, never the entire data card or its heading. */
+body.privacy-on :is(
+  .private:is(strong,small,span,b,output),
+  .entry-overview-worth.private > :is(strong,small),
+  .entry-overview-stats.private > div > strong,
+  .entry-price-pnl.private > strong,
+  .focus-display-stats.private > div > strong,
+  .focus-display-stats.private .reward-accent-frame > strong,
+  .morning-brief-reward-grid.private > div > :is(strong,span)
+) {
+  position:relative!important;
+  isolation:isolate!important;
+  min-width:min(5ch,100%)!important;
+  visibility:hidden!important;
+  text-shadow:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+/* Digit-roll animations must not shine through the shield. */
+body.privacy-on :is(
+  .private:is(strong,small,span,b,output),
+  .entry-overview-worth.private > :is(strong,small),
+  .entry-overview-stats.private > div > strong,
+  .entry-price-pnl.private > strong,
+  .focus-display-stats.private strong,
+  .morning-brief-reward-grid.private > div > :is(strong,span)
+) > * {
+  visibility:hidden!important;
+}
+/* Consistent five-dot masked readout, independent of the underlying
+   sign, digit count, market price or value animation. */
+body.privacy-on :is(
+  .private:is(strong,small,span,b,output),
+  .entry-overview-worth.private > :is(strong,small),
+  .entry-overview-stats.private > div > strong,
+  .entry-price-pnl.private > strong,
+  .focus-display-stats.private > div > strong,
+  .focus-display-stats.private .reward-accent-frame > strong,
+  .morning-brief-reward-grid.private > div > :is(strong,span)
+)::after {
+  content:"•••••"!important;
+  visibility:visible!important;
+  position:absolute!important;
+  z-index:8!important;
+  top:50%!important;
+  left:50%!important;
+  transform:translate(-50%,-50%)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  min-width:5.5ch!important;
+  min-height:18px!important;
+  height:1.6em!important;
+  max-height:26px!important;
+  box-sizing:border-box!important;
+  padding:2px 8px!important;
+  border:1px solid color-mix(in srgb,var(--accent,#83e5d8) 28%,transparent)!important;
+  border-radius:7px!important;
+  background:color-mix(in srgb,var(--accent,#83e5d8) 8%,var(--surface-strong,#0a1721))!important;
+  color:color-mix(in srgb,var(--accent,#83e5d8) 75%,var(--text,#e6f7f3))!important;
+  -webkit-text-fill-color:currentColor!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important;
+  font-size:clamp(10px,.58em,12px)!important;
+  font-weight:800!important;
+  letter-spacing:.12em!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  text-shadow:none!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--accent,#83e5d8) 9%,transparent)!important;
+  pointer-events:none!important;
+  animation:inj-privacy-shield-in .22s ease-out both!important;
+}
+@keyframes inj-privacy-shield-in {
+  from {opacity:.35;transform:translate(-50%,-50%) scale(.96)}
+  to {opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+/* The existing LIVE badge doubles as an unmistakable privacy-mode indicator. */
+body.privacy-on #entryOverview .entry-overview-live {
+  color:var(--accent,#83e5d8)!important;
+  font-size:0!important;
+  letter-spacing:normal!important;
+}
+body.privacy-on #entryOverview .entry-overview-live::after {
+  content:"PRIVATE"!important;
+  display:inline!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.14em!important;
+}
+body.privacy-on #entryPrivacyButton.active {
+  border-color:color-mix(in srgb,var(--accent,#83e5d8) 58%,transparent)!important;
+  background:color-mix(in srgb,var(--accent,#83e5d8) 14%,var(--surface-strong,#0a1721))!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent,#83e5d8) 6%,transparent)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body.privacy-on :is(
+  .private:is(strong,small,span,b,output),
+  .entry-overview-worth.private > :is(strong,small),
+  .entry-overview-stats.private > div > strong,
+  .entry-price-pnl.private > strong,
+  .focus-display-stats.private strong,
+  .morning-brief-reward-grid.private > div > :is(strong,span)
+ )::after {animation:none!important}
+}

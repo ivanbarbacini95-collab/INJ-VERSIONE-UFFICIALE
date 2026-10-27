@@ -1,0 +1,87 @@
+/* INJ Node · display fidelity layer · v16.07.10
+   Supports Retina / 4K / ultrawide without scaling, blurring or changing
+   wallet/chart coordinates. Theme backgrounds remain CSS gradients (resolution independent).
+   Do not force canvas DPR: individual renderers own backing-store resolution. */
+:root{
+ font-optical-sizing:auto;
+ font-kerning:normal;
+ -webkit-text-size-adjust:100%;
+ text-size-adjust:100%;
+}
+html,body{
+ -webkit-font-smoothing:antialiased;
+ -moz-osx-font-smoothing:grayscale;
+ text-rendering:optimizeLegibility;
+}
+html body :is(button,input,select,textarea,label){
+ font-kerning:normal;
+ -webkit-font-smoothing:antialiased;
+}
+html body :is(
+ .inj-location-name,.inj-location-section,.entry-action strong,
+ .market-heading,.market-heading h1,.market-asset-section .heading,
+ .mp-name,.mp-price,.mp-percent,.hm-symbol,.hm-change,.hm-price,
+ .price-amount,.market-ticker-number,.metric-value,.stat-value,
+ .overview strong,.inj-mi-stat strong,.inj-mi-snapshot strong,
+ .detail-primary strong,.treasury-total,.wealth-total
+){
+ text-rendering:geometricPrecision;
+ font-variant-numeric:tabular-nums;
+}
+html body svg{
+ shape-rendering:geometricPrecision;
+}
+html body :is(.entry-action-icon,.home,.market-icon,.header-menu-button) svg :is(path,polyline,polygon,line,circle,rect){
+ vector-effect:non-scaling-stroke;
+}
+/* Embedded SVG icons typically use native path widths; preserve fill/stroke
+   rather than applying filters that blur at odd device pixel ratios. */
+html body :is(img,canvas,video){
+ image-rendering:auto;
+}
+html body :is(img,svg){
+ max-width:100%;
+}
+/* High density displays: allow selected captions and live values to breathe.
+   No blanket zoom or transform: iPhone scroll and safe-area geometry remain unchanged. */
+@media (min-width:1920px){
+ html{font-size:clamp(16px,.5vw,20px)}
+ html body{font-size:clamp(14px,.47vw,19px)}
+ html body :is(
+  .inj-mi-tabs button,.overview small,.market-ticker-label,.mp-meta small,
+  .mp-heading,.inj-mi-update,.inj-essentials-source,
+  .inj-mi-snapshot article span,.detailstats small,.treasury-metric-label,
+  .market-asset-section .heading span
+ ){
+  font-size:clamp(11px,.36vw,15px)!important;
+  letter-spacing:.015em;
+ }
+ html body :is(
+  .inj-location-name,.entry-action strong,.mp-name strong,.mp-price-value,
+  .metric-value,.stat-value,.inj-mi-stat strong,.inj-mi-snapshot article strong
+ ){
+  font-size:clamp(15px,.65vw,27px)!important;
+  line-height:1.22;
+ }
+ html[data-inj-market] .heatmap-grid .heatmap-tile .hm-symbol{
+  font-size:clamp(14px,.62vw,21px)!important;
+ }
+ html[data-inj-market] .heatmap-grid .heatmap-tile .hm-change{
+  font-size:clamp(14px,.59vw,19px)!important;
+ }
+ html[data-inj-market] .heatmap-grid .heatmap-tile .hm-price{
+  font-size:clamp(12px,.48vw,16px)!important;
+ }
+}
+/* Full 4K/5K desktop: fluid primary section titles but no enlarged fixed chrome. */
+@media (min-width:3000px){
+ html body :is(
+  .header h1,.brand h1,.inj-location-section,
+  .market-asset-section .heading h2,.inj-mi-hero h2
+ ){
+  font-size:clamp(18px,.7vw,29px)!important;
+  line-height:1.15;
+ }
+}
+/* Themes are defined with CSS gradients, not bitmap screenshots: they remain
+   resolution-independent on 2x/3x screens and at native 4K/5K dimensions. */

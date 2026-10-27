@@ -1,0 +1,79 @@
+/* INJ Node x B Capital Group · one complete, uncut approved brand image.
+   Earlier versions used three images layered over the same composite logo;
+   that repeated CAPITAL GROUP and the tagline in Safari. Now there is exactly
+   ONE image, progressively revealed, with no masks slicing the right of B. */
+html[data-inj-page="index"] body #bootSplash.node-pulse-splash .node-pulse-stage{
+  top:-4dvh!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-capital-brand{
+  position:absolute!important;
+  z-index:2!important;
+  box-sizing:border-box!important;
+  left:8px!important;
+  right:8px!important;
+  bottom:max(58px,calc(env(safe-area-inset-bottom) + 49px))!important;
+  width:min(82vw,318px)!important;
+  height:auto!important;
+  aspect-ratio:668/199!important;
+  margin:0 auto!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  pointer-events:none!important;
+  isolation:isolate!important;
+  filter:drop-shadow(0 0 12px rgba(228,163,70,.08))!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-capital-artwork{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  object-fit:contain!important;
+  overflow:visible!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  /* One mask over one full logo: discrete, letter-by-letter reveal. */
+  animation:jn-capital-single-reveal 2.8s 1.1s steps(18,end) both!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+}
+/* Avoid reintroducing old logo variants if stale styles are retained by Safari. */
+html[data-inj-page="index"] body #bootSplash :is(.node-capital-monogram,.node-capital-name,.node-capital-tagline){
+  display:none!important;
+}
+@keyframes jn-capital-single-reveal {
+  from{clip-path:inset(0 100% 0 0)}
+  to{clip-path:inset(0 0 0 0)}
+}
+@media(max-width:430px){
+  html[data-inj-page="index"] body #bootSplash .node-capital-brand{
+    left:3px!important;
+    right:3px!important;
+    width:min(82vw,318px)!important;
+    bottom:max(55px,calc(env(safe-area-inset-bottom) + 45px))!important;
+  }
+}
+@media(max-height:480px) and (orientation:landscape){
+  html[data-inj-page="index"] body #bootSplash .node-pulse-stage{top:-2dvh!important}
+  html[data-inj-page="index"] body #bootSplash .node-capital-brand{
+    width:min(36vw,220px)!important;
+    left:auto!important;
+    right:10px!important;
+    bottom:max(15px,env(safe-area-inset-bottom))!important;
+    margin:0!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #bootSplash .node-capital-artwork{
+    animation:none!important;
+    clip-path:none!important;
+  }
+}

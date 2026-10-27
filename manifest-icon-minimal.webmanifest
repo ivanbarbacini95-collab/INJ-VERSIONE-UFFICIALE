@@ -1,0 +1,30 @@
+{
+  "id": "./install-icon-minimal.html",
+  "name": "INJ Node",
+  "short_name": "INJ Node",
+  "start_url": "./install-icon-minimal.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071320",
+  "theme_color": "#071320",
+  "icons": [
+    {
+      "src": "./icons/inj-node-minimal-192-v16.06.29.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/inj-node-minimal-512-v16.06.29.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/inj-node-minimal-180-v16.06.29.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

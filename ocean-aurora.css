@@ -1,0 +1,119 @@
+/* INJ Node · Ocean Aurora v16.01.09
+   Gentle, seamless ambient motion. No heavy blur, background-position repaint,
+   or price-driven tinting. The other colour themes are untouched. */
+:root[data-theme="ocean"]{
+ color-scheme:dark;
+ --bg:#07131f;--canvas:#07131f;--theme-canvas:#07131f;--theme-browser:#07131f;
+ --theme-canvas-soft:#0c2030;--theme-backdrop:#07131f;
+ --surface:#0e2130;--surface-strong:#152b3d;--surface-soft:#1d3547;
+ --panel:#0e2130;--panel-strong:#152b3d;
+ --text:#edf7fc;--muted:#9db6c5;--muted-strong:#c6d8e0;
+ --accent:#8cdaea;--accent-soft:rgba(140,218,234,.13);
+ --line:rgba(157,198,216,.17);--line-strong:rgba(157,198,216,.28);
+ --up:#48dea3;--up-soft:rgba(72,222,163,.12);
+ --down:#fb798f;--down-soft:rgba(251,121,143,.12);
+ --page-gradient:linear-gradient(140deg,#07111d 0%,#0b1b2f 48%,#111b31 100%);
+ --header-glow-a:rgba(68,128,190,.10);--header-glow-b:rgba(75,187,193,.05);
+ --header-edge:rgba(140,218,234,.18);
+}
+html[data-theme="ocean"],html[data-theme="ocean"] body{
+ background-color:#07131f!important;color-scheme:dark;
+}
+html[data-theme="ocean"] body{
+ background-image:var(--page-gradient)!important;
+ background-attachment:scroll!important;
+}
+/* Paint the motion behind the actual UI, in its own isolated compositor area. */
+html[data-theme="ocean"] :is(#entryGate,.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell){
+ isolation:isolate;
+}
+html[data-theme="ocean"] #entryGate{
+ background:var(--page-gradient)!important;
+}
+html[data-theme="ocean"] #entryGate>.entry-gate-shell:not(.first-access){
+ background:transparent!important;
+}
+.ocean-aurora-atmosphere{display:none}
+html[data-theme="ocean"] .ocean-aurora-atmosphere{
+ display:block;position:fixed;inset:0;z-index:-1;
+ pointer-events:none;overflow:hidden;
+}
+html[data-theme="ocean"] .ocean-aurora-field{
+ position:absolute;left:50%;top:50%;
+ width:145vmax;height:145vmax;border-radius:50%;
+ pointer-events:none;opacity:.63;
+ transform-origin:center center;
+ backface-visibility:hidden;-webkit-backface-visibility:hidden;
+ will-change:transform;
+}
+html[data-theme="ocean"] .ocean-aurora-field--a{
+ background:
+  radial-gradient(ellipse at 24% 33%,rgba(45,115,187,.33) 0%,rgba(40,91,162,.13) 27%,transparent 52%),
+  radial-gradient(ellipse at 80% 72%,rgba(85,77,164,.27) 0%,transparent 46%);
+ animation:ocean-aurora-orbit-a 56s linear infinite;
+}
+html[data-theme="ocean"] .ocean-aurora-field--b{
+ background:
+  radial-gradient(ellipse at 72% 24%,rgba(28,135,141,.25),transparent 48%),
+  radial-gradient(ellipse at 23% 75%,rgba(76,97,172,.24),transparent 49%);
+ opacity:.57;animation:ocean-aurora-orbit-b 74s linear infinite;
+}
+html[data-theme="ocean"] .ocean-aurora-field--c{
+ background:
+  radial-gradient(ellipse at 75% 76%,rgba(116,79,166,.21),transparent 49%),
+  radial-gradient(ellipse at 21% 28%,rgba(36,151,163,.17),transparent 47%);
+ opacity:.45;animation:ocean-aurora-orbit-c 98s linear infinite;
+}
+/* 0 and 360deg have precisely the same transform. Linear angular velocity
+   makes every repetition seamless: no start/end easing or colour jumps. */
+@keyframes ocean-aurora-orbit-a{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+@keyframes ocean-aurora-orbit-b{
+ from{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+}
+@keyframes ocean-aurora-orbit-c{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+html[data-theme="ocean"] #entryGate :is(.entry-overview,.entry-insights,.entry-wallet,.entry-price-pnl),
+html[data-theme="ocean"] :is(.treasury-card,.cap-panel,.data-card,.market-card,.menu-control-panel){
+ border-color:rgba(151,197,217,.20);
+}
+html[data-theme="ocean"] #entryGate :is(.entry-overview,.entry-insights){
+ background:linear-gradient(150deg,rgba(18,42,63,.82),rgba(12,28,47,.90))!important;
+ box-shadow:inset 0 1px rgba(235,250,255,.04),0 16px 38px rgba(2,10,20,.12)!important;
+}
+html[data-theme="ocean"] #entryGate .entry-wallet{
+ background:linear-gradient(150deg,rgba(18,40,61,.83),rgba(11,28,46,.91))!important;
+}
+html[data-theme="ocean"] #entryGate .entry-actions.entry-flat-v44>.entry-action{
+ background:linear-gradient(130deg,rgba(19,43,64,.88),rgba(12,30,49,.92))!important;
+ border-color:rgba(150,205,228,.19)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.035)!important;
+}
+html[data-theme="ocean"] #entryGate .entry-actions.entry-flat-v44>.entry-action:active{
+ border-color:rgba(140,218,234,.46)!important;
+}
+html[data-theme="ocean"] .jn-monogram{--jn-brand-accent:#8bdde0}
+html[data-theme="ocean"] .node-pulse-splash{--pulse-accent:#8bdde0}
+html[data-theme="ocean"] #entryGate .home-safe-heading h1>strong{color:#f0faff!important}
+html[data-theme="ocean"] #entryGate .home-safe-heading h1>span{color:#8bdde0!important}
+.theme-swatch.ocean{
+ background:linear-gradient(125deg,#081b2c 6%,#1d5280 40%,#524d88 72%,#176d75 100%)!important;
+ border:1px solid rgba(155,212,228,.4)!important;
+}
+html[data-theme="ocean"] [data-theme-choice="ocean"]{border-color:rgba(140,218,234,.68)!important}
+/* iOS PWA: less GPU memory; no backdrop-filter or blur on fixed surfaces. */
+@media(max-width:900px),(hover:none) and (pointer:coarse){
+ html[data-theme="ocean"] .ocean-aurora-field{
+  width:118vmax;height:118vmax;opacity:.43;will-change:transform;
+  -webkit-filter:none!important;filter:none!important;
+ }
+ html[data-theme="ocean"] .ocean-aurora-field--c{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-theme="ocean"] .ocean-aurora-field{animation:none!important;will-change:auto!important}
+}

@@ -1,0 +1,234 @@
+/* INJ Node 16.01.30 — shared header identity, aligned to navigation controls.
+   This is visual-only. No scroll changes, blur, overlays or wallet-data mutations. */
+.inj-location-title,.inj-location-brand{
+ min-width:0!important;max-width:100%;
+ display:flex!important;flex-direction:column!important;
+ justify-content:center!important;align-items:flex-start!important;
+ align-self:center!important;gap:1px!important;
+ margin:0!important;text-align:left!important;
+ text-decoration:none!important;transform:none!important;
+}
+.inj-location-title > .inj-location-name,
+.inj-location-brand > .inj-location-name{
+ display:block!important;min-width:0;margin:0!important;
+ color:var(--text,#eef6f9)!important;
+ font-size:clamp(15px,1.7vw,22px)!important;
+ line-height:1.05!important;font-weight:900!important;
+ letter-spacing:-.035em!important;white-space:nowrap!important;
+ text-decoration:none!important;
+}
+.inj-location-title > .inj-location-section,
+.inj-location-brand > .inj-location-section{
+ display:block!important;min-width:0;margin:0!important;
+ color:var(--accent,#65dcb8)!important;
+ font-size:clamp(10px,.9vw,12px)!important;line-height:1.35!important;
+ font-weight:850!important;letter-spacing:.055em!important;
+ white-space:nowrap!important;text-decoration:none!important;
+}
+html[data-inj-page="index"] .app-shell > .topbar{
+ align-items:center!important;
+}
+html[data-inj-page="index"] #dashboardHomeButton{
+ align-self:center!important;justify-self:start!important;
+}
+html[data-inj-page="index"] .app-shell .brand.header-title.inj-location-brand{
+ align-self:center!important;justify-self:start!important;
+ display:flex!important;align-items:flex-start!important;
+ gap:0!important;position:relative!important;inset:auto!important;
+ padding:0!important;
+}
+html[data-inj-page="index"] .app-shell .header-right{
+ align-self:center!important;
+}
+html[data-inj-page="index"] #entryGate .home-safe-heading{
+ top:var(--inj-home-heading-offset,0px)!important;
+}
+html[data-inj-page="index"] .home-safe-heading h1{
+ line-height:1.1!important;
+}
+html[data-inj-page="index"] .home-safe-heading p{
+ line-height:1.2!important;
+}
+html[data-inj-page="index"] .menu-control-brand:not(:has(.jn-monogram)),
+html[data-inj-page="index"] .system-status-brand:not(:has(.jn-monogram)){
+ gap:8px!important;
+}
+/* Dedicated sections: keep navigation and heading on the same central line. */
+html[data-inj-page="treasury"] .treasury-header,
+html[data-inj-page="live-rewards"] .rewards-header,
+html[data-inj-page="comparison"] .cap-header,
+html[data-inj-page="visualize-wealth"] .wealth-header,
+html[data-inj-market] .shell > .header,
+html[data-inj-page="order-book"] .book-topbar,
+html[data-inj-page="live-charts"] .terminal-header,
+html[data-inj-page="command-center"] .cc-topbar,
+html[data-inj-page="index"] .performance-timeline-header,
+html[data-inj-page="index"] .converter-view-header{
+ align-items:center!important;
+}
+html[data-inj-page="treasury"] .treasury-header > *,
+html[data-inj-page="live-rewards"] .rewards-header > *,
+html[data-inj-page="comparison"] .cap-header > *,
+html[data-inj-page="visualize-wealth"] .wealth-header > *,
+html[data-inj-page="order-book"] .book-topbar > *{
+ align-self:center!important;
+}
+html[data-inj-page="treasury"] .treasury-title.inj-location-title,
+html[data-inj-page="live-rewards"] .rewards-title.inj-location-title,
+html[data-inj-page="comparison"] .cap-heading.inj-location-title,
+html[data-inj-page="visualize-wealth"] .wealth-heading.inj-location-title,
+html[data-inj-market] .header .brand.inj-location-title{
+ display:flex!important;flex-direction:column!important;
+ justify-content:center!important;align-items:flex-start!important;
+}
+html[data-inj-page="command-center"] .cc-brand .jn-monogram{display:none!important}
+html[data-inj-page="command-center"] .cc-brand-copy.inj-location-title{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+}
+html[data-inj-page="command-center"] .cc-brand-copy.inj-location-title .inj-location-name{
+ font-size:clamp(15px,1.6vw,19px)!important;letter-spacing:-.03em!important;
+}
+html[data-inj-page="command-center"] .cc-brand-copy.inj-location-title .inj-location-section{
+ margin-top:1px!important;letter-spacing:.04em!important;
+}
+/* Embedded Timeline and Converter are independent screens, not new scroll owners. */
+html[data-inj-page="index"] .performance-timeline-title.inj-location-title,
+html[data-inj-page="index"] .converter-view-title.inj-location-title{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ justify-content:center!important;gap:1px!important;
+}
+html[data-inj-page="index"] .performance-timeline-title.inj-location-title > small,
+html[data-inj-page="index"] .converter-view-title.inj-location-title > small{
+ display:none!important;
+}
+html[data-inj-page="index"] .performance-timeline-header > :first-child,
+html[data-inj-page="index"] .converter-view-header > :first-child{
+ align-self:center!important;
+}
+/* Chart terminal: retain live INJ price at center and add contextual identity. */
+html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand{
+ display:flex!important;justify-self:start!important;gap:1px!important;
+ color:var(--text)!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand .inj-location-name{
+ font-size:clamp(12px,1.2vw,16px)!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand .inj-location-section{
+ font-size:clamp(9px,.75vw,11px)!important;letter-spacing:.02em!important;
+}
+html[data-inj-page="order-book"] .book-brand.inj-location-brand{
+ display:flex!important;gap:1px!important;
+}
+html[data-inj-page="order-book"] .book-brand.inj-location-brand .inj-location-name{
+ font-size:clamp(12px,1.3vw,16px)!important;
+}
+html[data-inj-page="order-book"] .book-brand.inj-location-brand .inj-location-section{
+ font-size:clamp(9px,.85vw,11px)!important;
+}
+/* Live View is intentionally different: only GREEN LIVE VIEW, with no JN/brand. */
+html[data-inj-page="index"] #focusDisplayDialog .focus-display-brand{display:none!important}
+html[data-inj-page="index"] #focusDisplayDialog .focus-display-live{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ position:absolute!important;z-index:11!important;
+ top:var(--inj-control-inset,calc(8px + env(safe-area-inset-top,0px)))!important;
+ left:50%!important;right:auto!important;bottom:auto!important;
+ width:auto!important;min-width:0!important;min-height:44px!important;
+ margin:0!important;padding:0 8px!important;
+ transform:translateX(-50%)!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"] #focusDisplayDialog .focus-display-live > span{
+ color:#37e3a0!important;font-size:clamp(14px,3.6vw,19px)!important;
+ font-weight:950!important;letter-spacing:.13em!important;
+ line-height:1.1!important;white-space:nowrap!important;
+ text-shadow:0 0 13px rgba(40,231,160,.17)!important;
+}
+html[data-inj-page="index"] #focusDisplayDialog .focus-display-live > i{
+ background:#37e3a0!important;
+ box-shadow:0 0 10px rgba(55,227,160,.38)!important;
+}
+/* Minimize crowding but never hide live prices/actions on small screens. */
+@media(max-width:760px){
+ html[data-inj-page="index"] .app-shell .brand.header-title.inj-location-brand .inj-location-name{
+  font-size:clamp(14px,3.8vw,17px)!important;
+ }
+ html[data-inj-page="index"] .app-shell .brand.header-title.inj-location-brand .inj-location-section{
+  font-size:10px!important;
+ }
+ html[data-inj-page="treasury"] .treasury-title.inj-location-title > .inj-location-name,
+ html[data-inj-page="live-rewards"] .rewards-title.inj-location-title > .inj-location-name,
+ html[data-inj-page="comparison"] .cap-heading.inj-location-title > .inj-location-name,
+ html[data-inj-page="visualize-wealth"] .wealth-heading.inj-location-title > .inj-location-name{
+  font-size:clamp(14px,3.6vw,17px)!important;
+ }
+ html[data-inj-page="treasury"] .treasury-title.inj-location-title > .inj-location-section,
+ html[data-inj-page="live-rewards"] .rewards-title.inj-location-title > .inj-location-section,
+ html[data-inj-page="comparison"] .cap-heading.inj-location-title > .inj-location-section,
+ html[data-inj-page="visualize-wealth"] .wealth-heading.inj-location-title > .inj-location-section{
+  font-size:10px!important;letter-spacing:.02em!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand{
+  position:absolute!important;
+  top:calc(var(--inj-control-inset,8px) + 4px)!important;left:44px!important;
+  width:115px!important;height:auto!important;
+  z-index:3!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header{
+  min-height:72px!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .market-heading{
+  padding-top:14px!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand .inj-location-name{
+  font-size:11px!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand .inj-location-section{
+  font-size:9px!important;
+ }
+ html[data-inj-page="order-book"] .book-topbar{
+  grid-template-columns:34px minmax(70px,1fr) auto auto!important;
+  gap:6px!important;
+  min-height:63px!important;
+ }
+ html[data-inj-page="order-book"] .book-brand.inj-location-brand{
+  min-width:0!important;max-width:105px!important;
+ }
+ html[data-inj-page="order-book"] .book-brand.inj-location-brand .inj-location-name{
+  font-size:11px!important;
+ }
+ html[data-inj-page="order-book"] .book-brand.inj-location-brand .inj-location-section{
+  font-size:9px!important;
+ }
+ html[data-inj-page="order-book"] .book-topbar .pair small{
+  display:none!important;
+ }
+}
+@media(max-width:390px){
+ html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand{
+  left:40px!important;
+ }
+ html[data-inj-page="order-book"] .book-topbar .pair{
+  min-width:0!important;
+ }
+ html[data-inj-page="order-book"] .book-topbar .pair strong{
+  font-size:.5rem!important;
+ }
+ html[data-inj-page="index"] #focusDisplayDialog .focus-display-live > span{
+  font-size:13px!important;
+ }
+}
+
+/* Market keeps its accessible h1 and Top 200 descriptor. */
+html[data-inj-market] .shell > .header .brand.inj-location-title > h1.inj-location-section{
+ display:flex!important;flex-wrap:nowrap!important;align-items:baseline!important;
+ justify-content:flex-start!important;gap:7px!important;
+ margin:0!important;padding:0!important;width:auto!important;min-width:0!important;
+ font-size:clamp(10px,.9vw,12px)!important;line-height:1.35!important;
+ font-weight:850!important;letter-spacing:.055em!important;white-space:nowrap!important;
+ color:var(--accent)!important;
+}
+html[data-inj-market] .brand.inj-location-title > h1.inj-location-section > em{
+ font-size:clamp(8px,.65vw,10px)!important;letter-spacing:0!important;
+ font-weight:850!important;white-space:nowrap!important;
+}

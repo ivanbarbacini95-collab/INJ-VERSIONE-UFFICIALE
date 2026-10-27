@@ -1,0 +1,125 @@
+/* INJ Node v16.01.33 — unified iPhone/PWA header safe-area alignment.
+ * Only corrects upper chrome. Never locks native scroll, moves data cards,
+ * or adds compositor blur. All themes share the same inset.
+ */
+@supports (-webkit-touch-callout: none) {
+ @media (max-width:900px) and (pointer:coarse) {
+  /* One iPhone-safe baseline for the whole application. +10 px breathing
+     room beyond the OS safe area, not another full status-bar height. */
+  :root{
+    --inj-control-inset:max(14px,calc(env(safe-area-inset-top,0px) + 10px));
+  }
+
+  /* Crucial: a hidden Home must not leave a ghost title above Dashboard.
+     Restrict to fully closed surfaces; immersive transitions still own Home. */
+  html[data-inj-page="index"] body:not(.entry-gate-open)
+   > #entryGate[aria-hidden="true"]:not(.immersive-underlay):not(.dashboard-underlay){
+    display:none!important;visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  html[data-inj-page="index"] body:not(.boot-loading) > #bootSplash{
+    display:none!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+   > #injHomeBrandFooter{display:none!important;}
+
+  /* Home safe area belongs to the shell, not to each inner card. */
+  html[data-inj-page="index"] #entryGate.entry-gate.visible[aria-hidden="false"]
+   > .entry-gate-shell:not(.first-access){
+    padding-top:var(--inj-control-inset)!important;
+  }
+
+  /* Dashboard is the exception: REMOVE extra layout space, THEN use the
+     same 10px safety inset as Home. Do not push its whole document down. */
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+   > .app-shell{
+    position:relative!important;
+    top:0!important;left:auto!important;right:auto!important;
+    margin-top:0!important;
+    padding-top:0!important;
+    transform:none!important;-webkit-transform:none!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+   > .app-shell > .topbar{
+    box-sizing:border-box!important;
+    position:relative!important;top:0!important;
+    margin-top:0!important;
+    padding-top:var(--inj-control-inset)!important;
+    padding-bottom:8px!important;
+    min-height:calc(var(--inj-control-inset) + 44px + 8px)!important;
+    align-items:center!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+   > .app-shell > main{
+    margin-top:0!important;padding-top:0!important;
+  }
+
+  /* Each destination applies the safe-area allowance once, in its header.
+     The page container remains naturally scrollable and untouched. */
+  html[data-inj-page="treasury"] .treasury-header,
+  html[data-inj-page="live-rewards"] .rewards-header,
+  html[data-inj-page="live-charts"] .terminal-header,
+  html[data-inj-page="order-book"] .book-topbar,
+  html[data-inj-page="command-center"] .cc-topbar,
+  html[data-inj-page="comparison"] .cap-header,
+  html[data-inj-page="visualize-wealth"] .wealth-header,
+  html[data-inj-market] .shell > .header,
+  html[data-inj-page="index"] #performanceTimelineView.open .performance-timeline-header,
+  html[data-inj-page="index"] #converterView.open .converter-view-header{
+    box-sizing:border-box!important;
+    padding-top:var(--inj-control-inset)!important;
+    margin-top:0!important;
+    align-items:center!important;
+  }
+  html[data-inj-page="treasury"] .treasury-header,
+  html[data-inj-page="live-rewards"] .rewards-header,
+  html[data-inj-page="comparison"] .cap-header,
+  html[data-inj-page="visualize-wealth"] .wealth-header,
+  html[data-inj-market] .shell > .header{
+    position:relative!important;top:0!important;
+    min-height:calc(var(--inj-control-inset) + 44px)!important;
+  }
+  /* Terminal remains compact: its price column stays centered by
+     dashboard-livecharts-top.css, including on narrow phones. */
+  html[data-inj-page="live-charts"] .terminal-header{
+    min-height:max(82px,calc(var(--inj-control-inset) + 44px))!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand{
+    display:flex!important;
+    top:calc(var(--inj-control-inset) + 17px)!important;
+    left:max(46px,calc(env(safe-area-inset-left,0px) + 46px))!important;
+    transform:translateY(-50%)!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .market-heading{
+    grid-column:2!important;
+    justify-self:center!important;
+    align-self:center!important;
+    padding:0!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header #headerLivePrice{
+    text-align:center!important;
+    margin-inline:auto!important;
+  }
+  html[data-inj-page="live-charts"] #liveChartsBack{
+    top:var(--inj-control-inset)!important;
+  }
+
+  /* Eliminate stray blur/ghost layers in the top chrome, not in charts
+     or legitimate foreground modals. */
+  html[data-inj-page="index"] .app-shell > .topbar,
+  html[data-inj-page="treasury"] .treasury-header,
+  html[data-inj-page="live-rewards"] .rewards-header,
+  html[data-inj-page="live-charts"] .terminal-header,
+  html[data-inj-page="order-book"] .book-topbar,
+  html[data-inj-page="command-center"] .cc-topbar,
+  html[data-inj-page="comparison"] .cap-header,
+  html[data-inj-page="visualize-wealth"] .wealth-header,
+  html[data-inj-market] .shell > .header{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+    -webkit-filter:none!important;
+    filter:none!important;
+  }
+ }
+}
+/* Keep Live Charts centered and titled on desktop, unchanged by the iOS patch. */

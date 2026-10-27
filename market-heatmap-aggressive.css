@@ -1,0 +1,312 @@
+/* INJ Node · Aggressive Trading Terminal · v16.07.32
+   Presentation-only override for the two Heatmap views.
+   Maintains genuine 1H quotes, native gestures and one finite price-change pulse. */
+html[data-inj-market] #marketHeatmap{
+  --arctic-green:#16f5b3;
+  --arctic-red:#ff5076;
+  --arctic-silver:#bdd6e4;
+  --agg-card-top:#182532;
+  --agg-card-bottom:#0c1723;
+}
+/* Graphite remains dominant. Only a restrained, static trend wash is visible
+   on the card; the right-hand signal stays entirely dark until price changes. */
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){
+  --agg-trend-wash:transparent;
+  background:
+    radial-gradient(ellipse 100% 96% at 100% 83%,var(--agg-trend-wash) 0%,transparent 76%),
+    linear-gradient(160deg,rgba(255,255,255,.036) 0%,transparent 47%),
+    linear-gradient(138deg,var(--agg-card-top) 0%,#111e2b 49%,var(--agg-card-bottom) 100%)!important;
+  border-color:rgba(163,193,213,.23)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(239,250,255,.085),
+    inset 0 -10px 18px rgba(3,11,19,.08),
+    0 4px 12px rgba(0,7,16,.22)!important;
+  padding-right:12px!important;
+  filter:none!important;
+  transform:none!important;
+  transition:border-color .23s ease,box-shadow .23s ease!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-up{
+  --arctic-tone:var(--arctic-green);
+  --agg-trend-wash:color-mix(in srgb,var(--arctic-green) 23%,transparent);
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-down{
+  --arctic-tone:var(--arctic-red);
+  --agg-trend-wash:color-mix(in srgb,var(--arctic-red) 23%,transparent);
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-flat{
+  --arctic-tone:var(--arctic-silver);
+}
+/* Keep the title and rank clear of the illuminated right edge. */
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-rank{
+  right:14px!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-identity{
+  max-width:100%!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-change{
+  text-shadow:none!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-spark{
+  opacity:.79!important;
+}
+/* Static trend identity: brighter but localized to the right hand corner.
+   This is NOT the pulse; the thin edge bar still stays completely dark at rest. */
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-up,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-down{
+  box-shadow:
+    inset 0 1px 0 rgba(239,250,255,.095),
+    inset -8px 0 18px color-mix(in srgb,var(--arctic-tone) 8%,transparent),
+    0 4px 12px rgba(0,7,16,.22)!important;
+}
+/* The selected timeframe lives in the toolbar, not on individual coins.
+   Give the historic chart the full available inner width. */
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-spark-timeframe{display:none!important}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-spark-wrap{
+  justify-content:flex-end!important;
+  gap:0!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-spark{
+  width:100%!important;
+  max-width:100%!important;
+  height:23px!important;
+  flex:1 1 auto!important;
+  opacity:.96!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-spark polyline{
+  stroke-width:2.1px!important;
+  filter:drop-shadow(0 0 2px color-mix(in srgb,var(--arctic-tone) 39%,transparent));
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-spark-loading{opacity:.7!important}
+/* Fixed-size performance signal. Invisible at rest; illuminates ONLY on changed quotes. */
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n)::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:auto!important;
+  top:7%!important;
+  bottom:7%!important;
+  right:4px!important;
+  width:3px!important;
+  height:auto!important;
+  border:0!important;
+  border-radius:999px!important;
+  z-index:2!important;
+  pointer-events:none!important;
+  background:var(--arctic-tone)!important;
+  box-shadow:
+    0 0 5px color-mix(in srgb,var(--arctic-tone) 80%,transparent),
+    0 0 11px color-mix(in srgb,var(--arctic-tone) 34%,transparent),
+    0 0 17px color-mix(in srgb,var(--arctic-tone) 12%,transparent)!important;
+  /* Off at rest: no persistent color/glow until a REAL price tick. */
+  opacity:0;
+  transform:none!important;
+  clip-path:none!important;
+  filter:none!important;
+  animation:none!important;
+}
+/* One brief fade up/down, fixed dimensions. Never pulse the card or change bar geometry. */
+@keyframes injAggressiveEdgePulse{
+  /* Never animate size, clipping or transform. Only opacity changes. */
+  0%{opacity:0}
+  25%{opacity:1}
+  59%{opacity:1}
+  100%{opacity:0}
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-up::after,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-down::after{
+  animation:injAggressiveEdgePulse .96s cubic-bezier(.24,.09,.26,1) 1 both!important;
+}
+/* No global card glow on pointer movement; use a discreet metallic edge. */
+@media(hover:hover) and (pointer:fine){
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:hover{
+    filter:brightness(1.035)!important;
+    border-color:rgba(188,219,235,.38)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(245,253,255,.12),
+      0 6px 16px rgba(0,7,16,.26)!important;
+  }
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:focus-visible{
+  outline:2px solid #a8eafa!important;
+  outline-offset:2px!important;
+}
+/* Visual label reflects the selected preset, not the previous colorway. */
+html[data-inj-market] #marketHeatmap .map-compact-head::before{
+  content:"AGGRESSIVE TRADING TERMINAL"!important;
+  color:#b9d8e7!important;
+  border-color:rgba(163,198,216,.26)!important;
+  background:linear-gradient(145deg,rgba(120,150,174,.11),rgba(18,32,44,.08))!important;
+}
+@media(max-width:599px){
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){
+    padding-right:10px!important;
+  }
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n)::after{
+    top:8%!important;
+    bottom:8%!important;
+    right:3px!important;
+    width:2px!important;
+  }
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile .hm-spark{
+    width:100%!important;max-width:100%!important;height:17px!important;
+  }
+  html[data-inj-market] #marketHeatmap .map-compact-head::before{
+    content:"AGGRESSIVE TERMINAL"!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-up::after,
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-down::after{
+    animation:none!important;
+  }
+}
+
+/* 16.07.32 · centered Heatmap terminal — icon, identity, performance.
+   Timeframes control percentage/tint only. No mini-charts or unused chart space. */
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){
+  justify-content:center!important;
+  align-items:center!important;
+  gap:5px!important;
+  text-align:center!important;
+  padding:12px 12px!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-identity{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-icon{
+  display:block!important;
+  flex:0 0 auto!important;
+  width:28px!important;
+  height:28px!important;
+  margin:0!important;
+  object-fit:contain!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-labels{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:2px!important;
+  width:100%!important;
+  text-align:center!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-symbol{
+  font-size:clamp(13px,1vw,17px)!important;
+  font-weight:850!important;
+  letter-spacing:.018em!important;
+  text-align:center!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-name{
+  display:block!important;
+  max-width:100%!important;
+  font-size:10px!important;
+  font-weight:560!important;
+  color:rgba(197,219,230,.72)!important;
+  line-height:1.1!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-change{
+  order:1!important;
+  margin:3px 0 0!important;
+  font-size:clamp(15px,1.25vw,21px)!important;
+  font-weight:880!important;
+  line-height:1.1!important;
+  text-align:center!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-price{
+  order:2!important;
+  margin:0!important;
+  font-size:clamp(10px,.82vw,12px)!important;
+  font-weight:650!important;
+  line-height:1.15!important;
+  color:rgba(210,230,242,.78)!important;
+  text-align:center!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-rank{
+  position:absolute!important;
+  top:9px!important;
+  right:10px!important;
+  font-size:9px!important;
+  opacity:.49!important;
+}
+/* On featured larger tiles, emphasize the signal, not an empty graph region. */
+@media(min-width:600px){
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(-n+5) .hm-icon{
+  width:36px!important;height:36px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(-n+5) .hm-symbol{
+  font-size:clamp(16px,1.7vw,22px)!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(-n+5) .hm-name{
+  font-size:12px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(-n+5) .hm-change{
+  font-size:clamp(20px,2vw,29px)!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(-n+5) .hm-price{
+  font-size:clamp(12px,1.15vw,16px)!important;
+ }
+}
+@media(max-width:599px){
+ html[data-inj-market] #marketHeatmap .heatmap-grid{
+  grid-auto-rows:115px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){
+  gap:3px!important;
+  padding:8px 9px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-identity{
+  gap:3px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-icon{
+  width:23px!important;height:23px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-labels{
+  gap:1px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-symbol{
+  font-size:12px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-name{
+  font-size:9px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-change{
+  margin:2px 0 0!important;font-size:14px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-price{
+  font-size:10px!important;
+ }
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-rank{
+  display:none!important;
+ }
+}
+
+/* 16.07.41 · iPad / tablet stable tiles.
+   A fixed row height avoids Safari's auto track-height recalculation as
+   live labels refresh. Cards never animate; the ::after edge may still
+   flash once for an actual changed quote. */
+@media (min-width:600px) and (max-width:1399px){
+  html[data-inj-market] #marketHeatmap .heatmap-grid{
+    grid-auto-rows:162px!important;
+  }
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){
+    transition:none!important;
+    animation:none!important;
+    transform:none!important;
+  }
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-price{
+    flex:0 0 auto!important;
+    line-height:1.25!important;
+  }
+}

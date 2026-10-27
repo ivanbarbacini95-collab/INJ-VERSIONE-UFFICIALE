@@ -1,0 +1,216 @@
+*{box-sizing:border-box}html{color-scheme:dark;--bg:#07111f;--panel:#101e30;--line:#25374b;--text:#e9f2fa;--muted:#91a5b9;--positive:#31d99c;--negative:#fa6b84;--accent:#63b7ff}html[data-theme=black]{--bg:#090a0e;--panel:#16171d;--line:#303037;--accent:#dedee4}html[data-theme=light]{color-scheme:light;--bg:#f5f8fd;--panel:#fff;--line:#dce5ef;--text:#142236;--muted:#61758c;--accent:#2875bc}html[data-theme=amber]{--bg:#0f1016;--panel:#1b1d26;--line:#413f42;--accent:#f5ad63}body{background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;margin:0;min-height:100vh;overflow-x:hidden}button,input,select{font:inherit}button,a{cursor:pointer}.shell{max-width:1580px;margin:auto;padding:clamp(14px,2.5vw,32px)}.header{display:flex;align-items:center;gap:18px;padding:6px 0 24px}.home{height:41px;width:41px;border:1px solid var(--line);border-radius:13px;display:grid;place-items:center;color:var(--text);text-decoration:none;font-size:26px}.brand{flex:1}.brand>span,.modalhead small{font-size:10px;letter-spacing:2px;color:var(--accent);font-weight:750}.brand h1{font-size:25px;line-height:1.05;margin:3px 0}.brand em{font:600 10px system-ui;border:1px solid var(--line);border-radius:7px;padding:4px 7px;vertical-align:middle;font-style:normal;color:var(--muted)}.live{font-size:11px;color:var(--positive);font-weight:800}.live i{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor;margin-right:6px}.overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:20px}.overview article{border:1px solid var(--line);background:var(--panel);padding:19px;border-radius:16px;min-width:0}.overview small{color:var(--muted);font-size:10px;letter-spacing:.9px;display:block}.overview strong{display:block;margin-top:8px;font-size:clamp(19px,2vw,26px);font-weight:690;font-variant-numeric:tabular-nums}.overview span{font-size:11px;color:var(--muted)}.panel{border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}.toolbar{display:flex;justify-content:space-between;gap:15px;padding:19px 21px;flex-wrap:wrap;align-items:center}.heading h2{margin:0;font-size:18px}.heading span{color:var(--muted);font-size:11px}.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tools>*{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:9px;height:36px;padding:0 11px}.tools .search{display:flex;align-items:center;gap:8px;padding:0 10px}.search svg{width:16px;height:16px;stroke:var(--muted);stroke-width:2;fill:none}.search input{min-width:135px;width:190px;background:transparent;border:0;outline:0;color:var(--text)}.graphbar{padding:10px 20px;display:flex;align-items:center;gap:15px;flex-wrap:wrap;border-block:1px solid var(--line)}.graphbar>span{font-weight:650;color:var(--muted);font-size:11px}#ranges{display:flex;gap:5px;flex-wrap:wrap}#ranges button{border:0;background:transparent;color:var(--muted);border-radius:8px;padding:7px 12px}#ranges button.active{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}.graphbar small{color:var(--muted);font-size:10px;margin-left:auto}.tablewrap{overflow-x:auto;overscroll-behavior-x:contain}table{border-collapse:collapse;width:100%;min-width:1080px;font-variant-numeric:tabular-nums}th{position:sticky;top:0;background:var(--panel);z-index:2;color:var(--muted);font-weight:550;font-size:11px;text-align:right;padding:14px 12px;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child{padding-left:19px;text-align:left}th:nth-child(2){text-align:left}th button{background:transparent;color:inherit;border:none;padding:0;white-space:nowrap}th button:hover{color:var(--accent)}td{border-bottom:1px solid var(--line);padding:13px 12px;text-align:right;white-space:nowrap}td:first-child{padding-left:19px;color:var(--muted);text-align:left;width:35px}td:nth-child(2){text-align:left}.asset{display:flex;gap:10px;align-items:center;background:none;border:0;color:var(--text);text-align:left;padding:0}.asset img{width:30px;height:30px;object-fit:contain;border-radius:50%}.asset strong{display:block;font-size:13px}.asset small{display:block;color:var(--muted);font-size:11px}.inj td{background:color-mix(in srgb,var(--accent) 5%,transparent)}tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}.up{color:var(--positive)}.down{color:var(--negative)}.neutral{color:var(--muted)}.spark{width:100px;height:30px;display:block;margin-left:auto}.spark polyline{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.empty{text-align:center!important;color:var(--muted);padding:45px!important}footer{padding:16px 21px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:10px}dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:18px;max-width:min(620px,94vw);width:100%;padding:22px;box-shadow:0 18px 70px #0009}dialog::backdrop{background:#020916bc}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{margin:5px 0}.modalhead button{background:transparent;color:var(--text);border:none;font-size:28px}.detailchart{margin:22px 0;min-height:130px;display:grid;place-items:center}.detailchart svg{width:100%;height:180px}.detailstats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.detailstats article{background:var(--bg);padding:12px;border-radius:10px}.detailstats small{display:block;color:var(--muted)}.detailstats strong{display:block;font-size:16px;margin-top:5px}#detailStatus{display:block;margin-top:12px;color:var(--muted)}@media(max-width:750px){.overview{grid-template-columns:repeat(2,1fr);gap:8px}.overview article{padding:13px}.overview strong{font-size:18px}.toolbar{padding:15px}.tools{width:100%}.tools .search{flex:1;min-width:170px}.search input{width:100%;min-width:0}.graphbar{padding:10px}.graphbar small{width:100%;margin:0}.tablewrap{overflow-x:auto}table{min-width:0}th,td{padding:12px 8px}th:first-child,td:first-child{padding-left:12px}th:nth-child(4),th:nth-child(6),th:nth-child(7),th:nth-child(8),th:nth-child(9),td:nth-child(4),td:nth-child(6),td:nth-child(7),td:nth-child(8),td:nth-child(9){display:none}.spark{width:66px}.asset img{width:25px;height:25px}.asset{gap:6px}td:nth-child(2){max-width:110px}.asset strong{max-width:85px;overflow:hidden;text-overflow:ellipsis}footer{font-size:10px}}
+/* Market full-bleed desktop: fit the browser instead of a centered 1580px canvas. */
+@media (min-width: 751px){
+  .shell{max-width:none;width:100%;margin:0;padding:clamp(12px,1.35vw,26px)}
+  .panel{width:100%}
+  .tablewrap{width:100%;overflow-x:auto}
+  table{min-width:1080px;width:100%;table-layout:auto}
+  .spark{width:clamp(100px,9vw,190px)}
+}
+/* Percentage changes roll vertically, with no glow/background/shadow. */
+.percent-cell{font-variant-numeric:tabular-nums;overflow:hidden}
+.percent-value{display:inline-block;padding:3px 5px;white-space:nowrap;vertical-align:middle;transform:translateZ(0)}
+.pct-scroll.pct-rise{animation:marketPctUp .3s cubic-bezier(.2,.75,.25,1) both}
+.pct-scroll.pct-fall{animation:marketPctDown .3s cubic-bezier(.2,.75,.25,1) both}
+@keyframes marketPctUp{0%{transform:translateY(45%);opacity:.65}100%{transform:translateY(0);opacity:1}}
+@keyframes marketPctDown{0%{transform:translateY(-45%);opacity:.65}100%{transform:translateY(0);opacity:1}}
+/* Only prices get a green/red glow after an actual displayed change. */
+.live-price{display:inline-block;padding:3px 5px;border-radius:6px;white-space:nowrap}
+.price-pulse.price-rise{--pulse-color:var(--positive);animation:marketPriceGlow 1.15s ease-out both}
+.price-pulse.price-fall{--pulse-color:var(--negative);animation:marketPriceGlow 1.15s ease-out both}
+@keyframes marketPriceGlow{
+  0%{color:var(--pulse-color);background:color-mix(in srgb,var(--pulse-color) 22%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--pulse-color) 38%,transparent),0 0 19px color-mix(in srgb,var(--pulse-color) 48%,transparent);text-shadow:0 0 11px var(--pulse-color)}
+  45%{color:var(--pulse-color);background:color-mix(in srgb,var(--pulse-color) 12%,transparent);box-shadow:0 0 12px color-mix(in srgb,var(--pulse-color) 23%,transparent);text-shadow:0 0 6px var(--pulse-color)}
+  100%{color:inherit;background:transparent;box-shadow:none;text-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){.pct-scroll,.price-pulse{animation:none!important}}
+
+/* v6: readable and reachable navigation on iOS, both standalone and in-app. */
+html{scroll-padding-top:78px;-webkit-text-size-adjust:100%}
+body{min-height:100dvh;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+.shell{padding-top:max(14px,env(safe-area-inset-top,0px))}
+html.market-embedded .shell{padding-top:14px}
+.header{
+  position:sticky;top:0;z-index:100;min-height:70px;margin:0 0 16px;padding:10px 0 13px;
+  background:var(--bg);-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  -webkit-filter:none!important;filter:none!important;isolation:isolate;
+  border-bottom:1px solid var(--line);
+}
+.home{
+  appearance:none;min-width:82px;width:auto;height:46px;min-height:46px;
+  padding:0 12px;border:1px solid var(--line);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--panel);color:var(--text);font-size:13px;font-weight:700;
+  box-shadow:none!important;filter:none!important;backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;touch-action:manipulation;
+  position:relative;z-index:101;
+}
+.home svg{width:21px;height:21px;flex-shrink:0;stroke:currentColor;stroke-width:2.25;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.home:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.header .brand{min-width:0}.header .brand h1{font-size:clamp(18px,3vw,25px)}
+@media(max-width:750px){
+  .shell{padding-inline:12px}
+  .header{gap:10px;min-height:66px;margin-bottom:13px;padding:8px 0 10px}
+  .home{min-width:74px;height:46px;padding:0 10px}
+  .header .brand h1{font-size:21px;white-space:nowrap}
+  .header .brand>span{font-size:9px}
+  .brand em{font-size:9px;padding:3px 5px}
+  .live{font-size:10px;white-space:nowrap}
+}
+@media(max-width:360px){.header{gap:7px}.home{min-width:68px;padding:0 6px}.header .brand h1{font-size:19px}.brand em{font-size:8px}}
+
+/* v7 Trading Terminal: price-only animations, percentages fixed in place. */
+.percent-cell{overflow:visible;white-space:nowrap;font-variant-numeric:tabular-nums}
+.percent-value{display:inline-block;min-width:72px;text-align:right;white-space:nowrap;padding:3px 0;transform:none!important;transition:none!important;animation:none!important;font-variant-numeric:tabular-nums}
+.pct-scroll,.pct-rise,.pct-fall{animation:none!important;transform:none!important;opacity:1!important}
+.live-price-cell{font-variant-numeric:tabular-nums}
+.live-price{position:relative;display:inline-flex;align-items:center;justify-content:flex-end;min-height:27px;padding:3px 6px;border-radius:6px;white-space:nowrap;line-height:1.25;font-variant-numeric:tabular-nums;isolation:isolate}
+.price-amount{display:inline-flex;white-space:pre;align-items:center;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+.price-digit{display:inline-block;white-space:pre;backface-visibility:hidden}
+.price-tick-arrow{position:absolute;left:-17px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:900;line-height:1;opacity:0;pointer-events:none}
+.price-pulse.price-rise{--pulse-color:var(--positive);animation:terminalGlow 1.1s cubic-bezier(.2,.7,.2,1) both}
+.price-pulse.price-fall{--pulse-color:var(--negative);animation:terminalGlow 1.1s cubic-bezier(.2,.7,.2,1) both}
+.price-pulse .price-tick-arrow{color:var(--pulse-color);animation:terminalArrow 1.1s ease-out both}
+.price-digit-changed.digit-rise{animation:terminalDigitUp .36s cubic-bezier(.2,.8,.2,1) both}
+.price-digit-changed.digit-fall{animation:terminalDigitDown .36s cubic-bezier(.2,.8,.2,1) both}
+@keyframes terminalGlow{
+  0%{color:var(--pulse-color);background:color-mix(in srgb,var(--pulse-color) 28%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--pulse-color) 65%,transparent),0 0 24px 2px color-mix(in srgb,var(--pulse-color) 55%,transparent);text-shadow:0 0 14px var(--pulse-color)}
+  36%{color:var(--pulse-color);background:color-mix(in srgb,var(--pulse-color) 17%,transparent);box-shadow:0 0 17px color-mix(in srgb,var(--pulse-color) 30%,transparent);text-shadow:0 0 8px var(--pulse-color)}
+  100%{color:inherit;background:transparent;box-shadow:none;text-shadow:none}
+}
+@keyframes terminalArrow{0%{opacity:0;transform:translate(-3px,-50%) scale(.75)}14%{opacity:1;transform:translate(0,-50%) scale(1)}66%{opacity:1}100%{opacity:0;transform:translate(2px,-50%) scale(1)}}
+@keyframes terminalDigitUp{from{transform:translateY(35%);opacity:.3}to{transform:translateY(0);opacity:1}}
+@keyframes terminalDigitDown{from{transform:translateY(-35%);opacity:.3}to{transform:translateY(0);opacity:1}}
+@media(min-width:1080px){table{table-layout:fixed}table th:nth-child(1){width:4%}table th:nth-child(2){width:17%}table th:nth-child(3){width:13%}table th:nth-child(n+4):nth-child(-n+7){width:7%}table th:nth-child(8){width:12%}table th:nth-child(9){width:13%}table th:nth-child(10){width:13%}table td{overflow:hidden;text-overflow:ellipsis}table td.live-price-cell{overflow:visible}}
+@media(max-width:750px){.percent-value{min-width:0}.live-price{padding-inline:2px}.price-tick-arrow{left:-13px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.price-pulse,.price-pulse .price-tick-arrow,.price-digit-changed{animation:none!important}.price-tick-arrow{display:none}}
+
+/* v16.00.76 — Market header belongs to the document, not the viewport.
+   The brand and Home control leave the screen naturally when scrolling. */
+html[data-inj-market] .shell > .header {
+  position:static!important;
+  top:auto!important;
+  inset:auto!important;
+  z-index:auto!important;
+  transform:none!important;
+  isolation:auto!important;
+  background:transparent!important;
+}
+html[data-inj-market] {scroll-padding-top:0!important;}
+html[data-inj-market] .header #marketBack.home {
+  min-width:44px!important;
+  width:44px!important;
+  max-width:44px!important;
+  height:44px!important;
+  min-height:44px!important;
+  padding:0!important;
+  flex:0 0 44px;
+  border-radius:13px;
+  display:grid!important;
+  place-items:center!important;
+}
+html[data-inj-market] #marketBack svg{
+  width:21px!important;
+  height:21px!important;
+  stroke:currentColor;
+  stroke-width:1.85;
+  fill:none;
+}
+@media (max-width:750px) {
+  html[data-inj-market] .shell>.header {margin-bottom:12px;padding-bottom:11px;}
+}
+
+
+/* INJ Node Market 16.00.82 — balanced global dashboard / seamless metrics ribbon. */
+html[data-inj-market] .shell{padding-top:max(10px,env(safe-area-inset-top,0px))}
+html[data-inj-market] .shell>.header{display:grid!important;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:clamp(8px,1.6vw,18px);margin-bottom:10px!important;padding-bottom:12px!important}
+html[data-inj-market] .header .brand{display:flex;flex-direction:column;justify-content:center;min-width:0}
+html[data-inj-market] .header .brand h1{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:3px 0;min-width:0}
+html[data-inj-market] .header .brand h1 em{white-space:nowrap}
+html[data-inj-market] .header .live{justify-self:end;white-space:nowrap;margin:0;letter-spacing:.06em}
+html[data-inj-market] .market-ticker{margin:0 0 clamp(12px,1.6vw,19px);width:100%;position:relative;overflow:hidden;min-height:44px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--panel) 80%,var(--bg))}
+html[data-inj-market] .market-ticker::before,html[data-inj-market] .market-ticker::after{content:"";position:absolute;top:0;bottom:0;width:24px;z-index:2;pointer-events:none}
+html[data-inj-market] .market-ticker::before{left:0;background:linear-gradient(90deg,var(--panel),transparent)}
+html[data-inj-market] .market-ticker::after{right:0;background:linear-gradient(270deg,var(--panel),transparent)}
+html[data-inj-market] .market-ticker-viewport{width:100%;overflow:hidden;min-height:43px;display:flex;align-items:center}
+html[data-inj-market] .market-ticker-track{width:max-content;display:flex;align-items:center;min-height:43px;white-space:nowrap;animation:marketGlobalTicker 58s linear infinite;will-change:transform}
+html[data-inj-market] .market-ticker-track:has(.market-ticker-wait){animation:none}
+html[data-inj-market] .market-ticker-group{display:flex;align-items:center;flex:0 0 auto;gap:23px;padding:0 20px;min-height:42px}
+html[data-inj-market] .market-ticker-item{display:inline-flex;gap:8px;align-items:center;white-space:nowrap;font-size:11px;font-variant-numeric:tabular-nums}
+html[data-inj-market] .market-ticker-label{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.075em}
+html[data-inj-market] .market-ticker-number{font-weight:820;color:var(--text);font-size:12px}
+html[data-inj-market] .market-ticker-number.up{color:var(--positive)}
+html[data-inj-market] .market-ticker-number.down{color:var(--negative)}
+html[data-inj-market] .market-ticker-divider{display:inline-block;width:1px;height:15px;opacity:.6;background:var(--line)}
+html[data-inj-market] .market-ticker-wait{padding:0 16px;color:var(--muted);font-size:10px;letter-spacing:.1em}
+html[data-inj-market] .market-ticker:hover .market-ticker-track,
+html[data-inj-market] .market-ticker:focus-within .market-ticker-track{animation-play-state:paused}
+@keyframes marketGlobalTicker{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+html[data-inj-market] .overview{grid-template-columns:minmax(0,1.18fr) minmax(0,1.15fr) minmax(0,.8fr) minmax(0,1fr);gap:clamp(9px,1.25vw,17px);margin-bottom:16px;align-items:stretch}
+html[data-inj-market] .overview article{padding:clamp(14px,1.5vw,23px);display:flex;flex-direction:column;min-height:112px;justify-content:space-between;gap:6px;border-radius:15px}
+html[data-inj-market] .overview article small{font-size:10px;font-weight:850;line-height:1.3;letter-spacing:.07em}
+html[data-inj-market] .overview article strong{font-size:clamp(19px,2vw,29px);margin:0;min-height:27px;line-height:1.13;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-inj-market] .overview .overview-detail,html[data-inj-market] .overview article>span{font-size:10px;line-height:1.25;min-height:13px}
+html[data-inj-market] .overview .overview-detail.up{color:var(--positive)}
+html[data-inj-market] .overview .overview-detail.down{color:var(--negative)}
+html[data-inj-market] .overview article:nth-child(1){border-color:color-mix(in srgb,var(--accent) 29%,var(--line))}
+html[data-inj-market] .overview article:nth-child(3) strong{color:var(--accent)}
+html[data-inj-market] .toolbar{gap:16px;align-items:center}
+html[data-inj-market] .toolbar .heading{min-width:160px}
+html[data-inj-market] .toolbar .tools{margin-left:auto;min-width:0}
+@media(max-width:750px){
+ html[data-inj-market] .overview{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+ html[data-inj-market] .overview article{min-height:100px;padding:12px 10px;border-radius:12px}
+ html[data-inj-market] .overview article small{font-size:9px}
+ html[data-inj-market] .overview article strong{font-size:clamp(17px,4.4vw,22px)}
+ html[data-inj-market] .overview .overview-detail{font-size:9px}
+ html[data-inj-market] .market-ticker{margin-bottom:12px}
+ html[data-inj-market] .market-ticker-group{gap:16px;padding:0 16px}
+ html[data-inj-market] .market-ticker-track{animation-duration:74s}
+ html[data-inj-market] .toolbar .heading{min-width:100%}
+ html[data-inj-market] .toolbar .tools{margin-left:0}
+}
+@media(max-width:380px){
+ html[data-inj-market] .shell>.header{gap:7px}
+ html[data-inj-market] .header .brand h1{font-size:18px}
+ html[data-inj-market] .header .brand h1 em{font-size:8px}
+ html[data-inj-market] .overview article strong{font-size:16px}
+}
+/* Terminal price update: only actual changed digits receive restrained color.
+   No highlight rectangle, glow, shadow or blur on price quotes. */
+html[data-inj-market] .live-price,
+html[data-inj-market] .live-price.price-pulse,
+html[data-inj-market] .price-pulse.price-rise,
+html[data-inj-market] .price-pulse.price-fall{
+ background:transparent!important;
+ box-shadow:none!important;
+ text-shadow:none!important;
+ filter:none!important;
+ color:inherit!important;
+ animation:none!important;
+ transition:none!important;
+ isolation:auto!important;
+}
+html[data-inj-market] .price-digit{display:inline-block;color:inherit;white-space:pre}
+html[data-inj-market] .price-digit-changed.digit-rise{
+ animation:marketQuietDigitRise .42s ease-out both!important;
+ text-shadow:none!important;box-shadow:none!important
+}
+html[data-inj-market] .price-digit-changed.digit-fall{
+ animation:marketQuietDigitFall .42s ease-out both!important;
+ text-shadow:none!important;box-shadow:none!important
+}
+@keyframes marketQuietDigitRise{0%{color:var(--positive);opacity:.76;transform:translateY(1px)}100%{color:inherit;opacity:1;transform:translateY(0)}}
+@keyframes marketQuietDigitFall{0%{color:var(--negative);opacity:.76;transform:translateY(-1px)}100%{color:inherit;opacity:1;transform:translateY(0)}}
+html[data-inj-market] .price-tick-arrow{
+ animation:marketQuietArrow .7s ease-out both!important;
+ font-weight:750!important;
+ text-shadow:none!important;
+ filter:none!important;
+}
+@keyframes marketQuietArrow{0%{opacity:0;transform:translate(-2px,-50%)}20%{opacity:.85;transform:translate(0,-50%)}65%{opacity:.55}100%{opacity:0;transform:translate(1px,-50%)}}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-market] .market-ticker-track{animation:none!important;transform:none!important}
+ html[data-inj-market] .market-ticker-viewport{overflow-x:auto!important;scrollbar-width:thin}
+ html[data-inj-market] .price-digit-changed,html[data-inj-market] .price-tick-arrow{animation:none!important}
+}

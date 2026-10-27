@@ -1,0 +1,155 @@
+/* INJ NODE v16.06.31 — Seamless multi-wallet rail / all themes.
+   Home and Dashboard cards use the shared theme surface.
+   This targets only Dashboard's #top .wallet-dock + #walletCards.
+   No changes to scrolling, click targets or wallet data. */
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock > .saved-wallets,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock .wallet-dock-title,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock #walletCards {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+}
+/* Safari sometimes paints old decor through the horizontally composited strip.
+   Suppress only presentation pseudos, NOT the row's actual controls or text. */
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock > .saved-wallets::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock > .saved-wallets::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock #walletCards::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock #walletCards::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini > .wallet-mini-main::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini > .wallet-mini-main::after {
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini {
+  background:var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  position:relative;
+
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line))!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  isolation:auto!important;
+}
+/* A card's interactive button also must not hold the legacy inset rectangle. */
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini > .wallet-mini-main {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+/* The viewed wallet keeps the theme card gradient and a subtle accent tint. */
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini.active {
+  background:radial-gradient(ellipse at 94% 0%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 57%),var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  border-color:color-mix(in srgb,var(--accent) 88%,var(--line))!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),
+    0 0 15px color-mix(in srgb,var(--accent) 24%,transparent),
+    0 0 26px color-mix(in srgb,var(--accent) 10%,transparent)!important;
+  -webkit-box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),
+    0 0 15px color-mix(in srgb,var(--accent) 24%,transparent),
+    0 0 26px color-mix(in srgb,var(--accent) 10%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini.active .wallet-mini-name {
+  color:var(--accent)!important;
+}
+/* Keep every gap physically clear; browser remains in charge of horizontal
+   overflow and vertical scrolling. Do not change touch-action or dimensions. */
+@media (prefers-reduced-motion:reduce) {
+ html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini {
+   transition:none!important;
+   animation:none!important;
+ }
+}
+
+
+/* v16.06.32 · shared multi-wallet presentation for Home and Dashboard.
+   The native three-cell Dashboard wallet grid is preserved with no extra
+   child and no top/bottom positioning adjustments. */
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards .wallet-mini-current-label {
+ display:none!important;
+}
+/* Home carousel uses .entry-wallet-row.selected/.entry-wallet.selected,
+   independent of Dashboard state; never modify gesture transforms,
+   snap positions, horizontal/vertical overflow, padding or row dimensions. */
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section,
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section > .entry-wallets,
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section #entryWallets,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row {
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+ filter:none!important;
+ box-shadow:none!important;
+ -webkit-box-shadow:none!important;
+}
+/* Remove only the backdrop pseudo-layers that create rectangular fill in
+   the gap between adjacent Home wallet items, not gesture markers/handles. */
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section::before,
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section::after,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets::before,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets::after,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row::before,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row::after {
+ content:none!important;
+ display:none!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row > .entry-wallet {
+  background:var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+ border-color:color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+ box-shadow:none!important;
+ -webkit-box-shadow:none!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+ transition:border-color .18s ease,box-shadow .18s ease!important;
+}
+/* ONE active glow plus theme-colored tile on the selected button. The separate rename
+   button and any existing Home wallet ticker layout remain untouched. */
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row.selected > .entry-wallet.selected {
+  background:radial-gradient(ellipse at 94% 0%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 57%),var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+ border-color:color-mix(in srgb,var(--accent) 90%,var(--line))!important;
+ box-shadow:
+   0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),
+   0 0 16px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+ -webkit-box-shadow:
+   0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),
+   0 0 16px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row.selected > .entry-wallet.selected > i {
+ background:var(--accent)!important;
+ box-shadow:0 0 12px color-mix(in srgb,var(--accent) 38%,transparent)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row > .entry-wallet {
+  transition:none!important;
+ }
+}

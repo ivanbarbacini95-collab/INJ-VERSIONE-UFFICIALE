@@ -1,0 +1,177 @@
+/* INJ Node · Compact Home header 2026-10-27 (h4).
+   No terminal strip; the existing hamburger shares the title baseline.
+   Returning-user Home only. */
+
+/* Actual brand and menu are on the SAME responsive grid, not separate
+   absolute elements offset from the live strip. */
+html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)
+ .entry-wallet-section > .home-safe-heading.inj-terminal-hero-arranged {
+  --inj-home-dock:clamp(52px,13.5vw,66px);
+  --inj-home-button-size:clamp(44px,10.8vw,48px);
+  display:grid!important;
+  grid-template-columns:var(--inj-home-dock) minmax(0,1fr) var(--inj-home-dock)!important;
+  grid-template-rows:auto auto!important;
+  align-content:center!important;
+  align-items:center!important;
+  justify-items:center!important;
+  column-gap:clamp(7px,2vw,14px)!important;
+  row-gap:5px!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:78px!important;
+  height:auto!important;
+  margin:0 0 14px!important;
+  padding:3px 2px 9px!important;
+  position:relative!important;
+  top:auto!important;left:auto!important;right:auto!important;
+  translate:none!important;
+  transform:none!important;-webkit-transform:none!important;
+  overflow:visible!important;
+  isolation:auto!important;
+  text-align:center!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .home-safe-heading.inj-terminal-hero-arranged > h1 {
+  display:block!important;
+  grid-column:2!important;
+  grid-row:1!important;
+  justify-self:center!important;
+  align-self:center!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  padding:0!important;
+  margin:0!important;
+  text-align:center!important;
+  font-size:clamp(28px,7.8vw,51px)!important;
+  line-height:1.1!important;
+  letter-spacing:-.035em!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .home-safe-heading.inj-terminal-hero-arranged > p {
+  grid-column:2!important;
+  grid-row:2!important;
+  justify-self:center!important;
+  align-self:start!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  padding:0!important;
+  margin:0!important;
+  text-align:center!important;
+  font-size:clamp(11px,2.9vw,17px)!important;
+  line-height:1.35!important;
+  letter-spacing:.075em!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .home-safe-heading.inj-terminal-hero-arranged > #entryMenuButton.header-main-button {
+  display:flex!important;
+  grid-column:1!important;
+  grid-row:1!important;
+  align-self:center!important;
+  justify-self:center!important;
+  position:relative!important;
+  inset:auto!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:var(--inj-home-button-size)!important;
+  height:var(--inj-home-button-size)!important;
+  max-width:var(--inj-home-button-size)!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  translate:none!important;
+  filter:none!important;
+  z-index:30!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .home-safe-heading.inj-terminal-hero-arranged > #entryMenuButton {
+  position:relative!important;
+  inset:auto!important;
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+  width:var(--inj-home-button-size)!important;
+  height:var(--inj-home-button-size)!important;
+  min-width:0!important;
+  min-height:0!important;
+  border-radius:clamp(13px,3.5vw,16px)!important;
+  padding:0!important;
+  margin:0!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  translate:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .home-safe-heading.inj-terminal-hero-arranged #entryMenuButton > svg {
+  width:20px!important;height:20px!important;
+  display:block!important;
+  margin:auto!important;
+}
+/* The hidden panel and backdrop retain their own fixed layer and controls. */
+html[data-inj-page="index"] body #entryGate #headerMenu.open #headerMenuPanel {
+  z-index:2147483200!important;
+}
+@media(max-width:390px){
+ html[data-inj-page="index"] body #entryGate
+  .home-safe-heading.inj-terminal-hero-arranged {
+    --inj-home-dock:50px;
+    column-gap:5px!important;
+    min-height:74px!important;
+    padding:3px 0 8px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+  .home-safe-heading.inj-terminal-hero-arranged > h1 {
+    font-size:clamp(25px,7.25vw,32px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+  .home-safe-heading.inj-terminal-hero-arranged > p {
+    font-size:clamp(9px,2.55vw,12px)!important;
+    letter-spacing:.055em!important;
+ }
+}
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) .entry-wallet-section > .home-safe-heading.inj-terminal-hero-arranged {
+    min-height:90px!important;
+    margin-bottom:18px!important;
+ }
+}
+
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > #headerMenu.entry-home-menu {
+  /* Settings panel is still a root overlay; only its button moves. */
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #headerMenu.open #headerMenuPanel,
+html[data-inj-page="index"] body #entryGate
+ #headerMenu.open #headerMenuBackdrop {
+  pointer-events:auto!important;
+}
+
+/* The menu container no longer participates in the Home grid. Its modal
+   descendants stay rooted outside the title so Safari cannot clip them. */
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > #headerMenu.entry-home-menu {
+  display:block!important;
+  position:absolute!important;
+  top:0!important;left:0!important;right:auto!important;bottom:auto!important;
+  width:0!important;height:0!important;min-width:0!important;min-height:0!important;
+  padding:0!important;margin:0!important;
+  transform:none!important;-webkit-transform:none!important;
+  translate:none!important;
+  background:transparent!important;
+  border:0!important;box-shadow:none!important;
+  overflow:visible!important;
+  z-index:2147483000!important;
+}

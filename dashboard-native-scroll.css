@@ -1,0 +1,115 @@
+/* INJ Node 16.03.06 — single native document scroller for Dashboard.
+ * The previous cascade set overflow-y:auto on BOTH html and body. Safari PWA
+ * can latch a later swipe to body, whose own scroll range is zero, making
+ * Dashboard appear frozen after visiting Home or another section.
+ * Keep html as the only vertical scroll owner. Do not affect modal/iframe pages.
+ */
+html[data-inj-page="index"][data-inj-scroll="dashboard"]{
+  position:static!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]
+body.dashboard-scroll-ready:not(.entry-gate-open):not(.menu-overlay-open):not(.inj-section-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open):not(.chart-overlay-open){
+  position:static!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:auto!important;
+}
+/* Keep the Dashboard shell in normal document flow; never create a nested
+ * viewport-height scrolling box when switching modes on iOS.
+ * Individual carousels and charts retain their own horizontal interactions.
+ */
+html[data-inj-page="index"][data-inj-scroll="dashboard"]
+body.dashboard-scroll-ready:not(.entry-gate-open):not(.inj-section-open)
+> .app-shell{
+  position:relative!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+}
+
+/* v16.05.23 — Last author stylesheet: a single native document scroller.
+   Locks for actual modals and fullscreen sections remain in control. */
+html[data-inj-page="index"][data-inj-scroll="dashboard"]:not(:has(
+  #entryGate.visible[aria-hidden="false"],
+  #headerMenu.open,
+  .inj-content-frame,
+  #injMarketPortal:not([hidden]),
+  dialog[open],
+  #converterView.open,
+  #performanceTimelineView.open,
+  #focusDisplayDialog.mode-active:not(.mode-parked),
+  #liveChartsDialog.mode-active:not(.mode-parked),
+  #pulseViewDialog.mode-active:not(.mode-parked)
+)) {
+ position:static!important;inset:auto!important;
+ height:auto!important;min-height:100%!important;max-height:none!important;
+ overflow-x:clip!important;overflow-y:auto!important;
+ touch-action:auto!important;-webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]:not(:has(
+  #entryGate.visible[aria-hidden="false"],
+  #headerMenu.open,
+  .inj-content-frame,
+  #injMarketPortal:not([hidden]),
+  dialog[open],
+  #converterView.open,
+  #performanceTimelineView.open,
+  #focusDisplayDialog.mode-active:not(.mode-parked),
+  #liveChartsDialog.mode-active:not(.mode-parked),
+  #pulseViewDialog.mode-active:not(.mode-parked)
+)) body.dashboard-scroll-ready {
+ position:static!important;inset:auto!important;
+ height:auto!important;min-height:100dvh!important;max-height:none!important;
+ overflow-x:clip!important;overflow-y:visible!important;
+ touch-action:auto!important;-webkit-overflow-scrolling:auto!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]:not(:has(
+  #entryGate.visible[aria-hidden="false"],
+  #headerMenu.open,
+  .inj-content-frame,
+  #injMarketPortal:not([hidden]),
+  dialog[open],
+  #converterView.open,
+  #performanceTimelineView.open,
+  #focusDisplayDialog.mode-active:not(.mode-parked),
+  #liveChartsDialog.mode-active:not(.mode-parked),
+  #pulseViewDialog.mode-active:not(.mode-parked)
+)) body.dashboard-scroll-ready > .app-shell {
+ display:block!important;position:relative!important;inset:auto!important;
+ width:100%!important;height:auto!important;min-height:100dvh!important;
+ max-height:none!important;overflow-x:clip!important;overflow-y:visible!important;
+ visibility:visible!important;pointer-events:auto!important;
+ touch-action:auto!important;transform:none!important;
+ -webkit-transform:none!important;contain:none!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]
+body.dashboard-scroll-ready > #entryGate[aria-hidden="true"]:not(.immersive-underlay) {
+ pointer-events:none!important;visibility:hidden!important;
+}
+
+
+/* v16.05.25 — Live View and Dashboard never share a touch or scroll layer.
+   A parked fullscreen Live View must be entirely removed from hit-testing,
+   while the live/closing overlay keeps its normal transition untouched. */
+html[data-inj-page="index"] #focusDisplayDialog[hidden],
+html[data-inj-page="index"] #focusDisplayDialog.mode-parked {
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+/* The Dashboard is the document scroller only after the Live overlay has
+   actually finished. Do not modify modal or Home scroll ownership here. */

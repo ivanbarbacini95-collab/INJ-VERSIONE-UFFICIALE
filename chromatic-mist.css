@@ -1,0 +1,146 @@
+/* INJ Node / Chromatic Mist v16.01.10
+   Six desaturated, interwoven hues; continuous compositor-only orbits.
+   No backdrop blur and no page-container transforms (iOS PWA safe). */
+:root[data-theme="chromatic"]{
+  color-scheme:dark;
+  --bg:#111323;
+  --canvas:#111323;
+  --theme-canvas:#111323;
+  --theme-browser:#111323;
+  --theme-canvas-soft:#1b2139;
+  --theme-backdrop:#111323;
+  --surface:#20243a;
+  --surface-strong:#2b2d47;
+  --surface-soft:#353853;
+  --panel:#20243a;
+  --panel-strong:#2b2d47;
+  --text:#f9f5fe;
+  --muted:#c3bad7;
+  --muted-strong:#e1d8ed;
+  --accent:#dcb5f2;
+  --accent-soft:rgba(220,181,242,.13);
+  --line:rgba(204,187,228,.20);
+  --line-strong:rgba(218,197,235,.33);
+  --up:#59dfb2;
+  --up-soft:rgba(89,223,178,.13);
+  --down:#ff839b;
+  --down-soft:rgba(255,131,155,.13);
+  --header-glow-a:rgba(198,116,216,.10);
+  --header-glow-b:rgba(73,191,191,.06);
+  --header-edge:rgba(213,183,238,.19);
+  --page-gradient:
+    radial-gradient(ellipse 78% 61% at 7% 5%,rgba(133,92,200,.22),transparent 75%),
+    radial-gradient(ellipse 62% 66% at 95% 10%,rgba(75,154,215,.19),transparent 74%),
+    radial-gradient(ellipse 73% 63% at 92% 96%,rgba(71,174,160,.17),transparent 77%),
+    radial-gradient(ellipse 63% 56% at 5% 94%,rgba(216,114,146,.15),transparent 75%),
+    linear-gradient(145deg,#15172c 0%,#111627 47%,#151525 100%);
+}
+html[data-theme="chromatic"],html[data-theme="chromatic"] body{
+ background-color:#111323!important;color-scheme:dark;
+}
+html[data-theme="chromatic"] body{
+ background-image:var(--page-gradient)!important;
+ background-attachment:scroll!important;
+}
+/* Dedicated atmosphere lives behind UI; never changes layout or scroll locks. */
+html[data-theme="chromatic"] :is(#entryGate,.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell){
+ isolation:isolate;
+}
+html[data-theme="chromatic"] #entryGate{
+ background:var(--page-gradient)!important;
+}
+html[data-theme="chromatic"] #entryGate>.entry-gate-shell:not(.first-access){
+ background:transparent!important;
+}
+.chromatic-mist-atmosphere{display:none}
+html[data-theme="chromatic"] .chromatic-mist-atmosphere{
+ display:block;position:fixed;inset:0;z-index:-1;
+ pointer-events:none;overflow:hidden;
+}
+html[data-theme="chromatic"] .chromatic-mist-field{
+ position:absolute;left:50%;top:50%;
+ width:148vmax;height:148vmax;
+ border-radius:50%;pointer-events:none;
+ transform-origin:center center;
+ -webkit-backface-visibility:hidden;backface-visibility:hidden;
+ will-change:transform;
+}
+html[data-theme="chromatic"] .chromatic-mist-field--a{
+ opacity:.80;
+ background:
+   radial-gradient(ellipse at 18% 27%,rgba(204,106,183,.34) 0%,rgba(171,97,193,.15) 28%,transparent 57%),
+   radial-gradient(ellipse at 78% 70%,rgba(61,149,231,.30) 0%,rgba(65,109,183,.11) 30%,transparent 57%);
+ animation:chromatic-mist-orbit-a 83s linear infinite;
+}
+html[data-theme="chromatic"] .chromatic-mist-field--b{
+ opacity:.72;
+ background:
+   radial-gradient(ellipse at 78% 23%,rgba(237,172,104,.26) 0%,rgba(204,128,109,.11) 28%,transparent 54%),
+   radial-gradient(ellipse at 19% 76%,rgba(81,197,162,.28) 0%,rgba(45,143,153,.12) 29%,transparent 56%);
+ animation:chromatic-mist-orbit-b 109s linear infinite;
+}
+html[data-theme="chromatic"] .chromatic-mist-field--c{
+ opacity:.59;
+ background:
+   radial-gradient(ellipse at 23% 23%,rgba(124,108,236,.31),transparent 50%),
+   radial-gradient(ellipse at 77% 76%,rgba(116,193,213,.23),transparent 55%),
+   radial-gradient(ellipse at 60% 18%,rgba(240,126,148,.16),transparent 40%);
+ animation:chromatic-mist-orbit-c 137s linear infinite;
+}
+/* Endpoints are identical, and no easing means no perceptible reset. */
+@keyframes chromatic-mist-orbit-a{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+@keyframes chromatic-mist-orbit-b{
+ from{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+}
+@keyframes chromatic-mist-orbit-c{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+html[data-theme="chromatic"] #entryGate :is(.entry-overview,.entry-insights,.entry-wallet,.entry-price-pnl),
+html[data-theme="chromatic"] :is(.treasury-card,.cap-panel,.data-card,.market-card,.menu-control-panel){
+ border-color:rgba(214,191,233,.23);
+}
+html[data-theme="chromatic"] #entryGate :is(.entry-overview,.entry-insights){
+ background:linear-gradient(140deg,rgba(43,36,68,.82),rgba(24,30,54,.87))!important;
+ box-shadow:inset 0 1px rgba(255,247,255,.05),0 14px 37px rgba(8,8,25,.14)!important;
+}
+html[data-theme="chromatic"] #entryGate .entry-wallet{
+ background:linear-gradient(145deg,rgba(42,37,68,.84),rgba(27,32,54,.91))!important;
+}
+html[data-theme="chromatic"] #entryGate .entry-actions.entry-flat-v44>.entry-action{
+ background:linear-gradient(127deg,rgba(43,39,67,.85),rgba(28,35,58,.91))!important;
+ border-color:rgba(210,184,235,.24)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.04)!important;
+}
+html[data-theme="chromatic"] #entryGate .entry-actions.entry-flat-v44>.entry-action:active{
+ border-color:rgba(235,176,228,.57)!important;
+}
+html[data-theme="chromatic"] .jn-monogram{--jn-brand-accent:#ebb9e1}
+html[data-theme="chromatic"] .node-pulse-splash{--pulse-accent:#ebb9e1}
+html[data-theme="chromatic"] #entryGate .home-safe-heading h1>strong{color:#f9f5fe!important}
+html[data-theme="chromatic"] #entryGate .home-safe-heading h1>span{color:#ebb9e1!important}
+.theme-swatch.chromatic{
+ background:linear-gradient(118deg,#7563c4 0%,#cb77ae 23%,#e8ab7b 42%,#69bdba 64%,#5688c9 83%,#9b79da 100%)!important;
+ border:1px solid rgba(236,207,242,.50)!important;
+}
+html[data-theme="chromatic"] [data-theme-choice="chromatic"]{
+ border-color:rgba(236,187,231,.67)!important;
+}
+@media(max-width:900px),(hover:none) and (pointer:coarse){
+ html[data-theme="chromatic"] .chromatic-mist-field{
+  width:121vmax;height:121vmax;will-change:transform;
+  -webkit-filter:none!important;filter:none!important;
+ }
+ html[data-theme="chromatic"] .chromatic-mist-field--a{opacity:.61}
+ html[data-theme="chromatic"] .chromatic-mist-field--b{opacity:.53}
+ html[data-theme="chromatic"] .chromatic-mist-field--c{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-theme="chromatic"] .chromatic-mist-field{
+  animation:none!important;will-change:auto!important;
+ }
+}

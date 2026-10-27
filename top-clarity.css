@@ -1,0 +1,185 @@
+/* INJ NODE v16.00.45 — iOS/PWA crisp top bars.
+   Keep navigation titles and prices crisp across mobile and desktop. */
+
+/* No backdrop blur on navigation chrome: titles and prices always render sharp.
+   This does not alter chart effects, card glows or the blur of an OPEN menu. */
+.app-shell > .topbar,
+.treasury-header,
+.rewards-header,
+.book-topbar,
+.terminal-header,
+.cc-topbar,
+.flow-header {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-filter: none !important;
+  filter: none !important;
+  -webkit-font-smoothing: antialiased;
+  backface-visibility: visible;
+}
+.app-shell > .topbar > *,
+.treasury-header > *,
+.rewards-header > *,
+.book-topbar > *,
+.terminal-header > *,
+.cc-topbar > *,
+.flow-header > * {
+  -webkit-filter: none !important;
+  filter: none !important;
+}
+
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  .treasury-header,
+  .rewards-header {
+    top: env(safe-area-inset-top, 0px) !important;
+  }
+  /* Keep Dashboard controls sharp without creating a separate blurred GPU layer. */
+  .app-shell > .topbar {
+    -webkit-transform: none !important;
+    transform: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  #entryGate.visible:not(.immersive-underlay) .entry-gate-shell > h1,
+  #entryGate.visible:not(.immersive-underlay) .entry-gate-shell > .entry-home-menu {
+    filter: none !important;
+    -webkit-filter: none !important;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Mobile: do not leave invisible blurred layers in WebKit's compositor. */
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  html, body,
+  #entryGate.visible:not(.immersive-underlay):not(.dashboard-underlay),
+  #entryGate.visible:not(.immersive-underlay):not(.dashboard-underlay) > .entry-gate-shell,
+  .entry-home-top, .entry-brand,
+  .app-shell > .topbar,
+  .treasury-shell, .rewards-shell, .live-page, .book-page, .cc-shell,
+  .treasury-header, .rewards-header, .terminal-header, .book-topbar, .cc-topbar,
+  .converter-view-header, .performance-timeline-header, .header {
+    -webkit-filter:none!important;filter:none!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    -webkit-transform:none!important;transform:none!important;
+    will-change:auto!important;
+    -webkit-backface-visibility:visible!important;backface-visibility:visible!important;
+  }
+  #entryGate.visible:not(.immersive-underlay):not(.dashboard-underlay) > .entry-gate-shell,
+  .entry-home-top, .entry-brand {
+    animation:none!important;
+  }
+  /* The themed page gradient remains; the large blurred pseudo-layers do not. */
+  body::before, body::after, #entryGate::before, #entryGate::after {
+    content:none!important;display:none!important;
+    filter:none!important;-webkit-filter:none!important;
+    animation:none!important;transform:none!important;
+  }
+  .header-menu:not(.open) .header-menu-backdrop,
+  .header-menu:not(.open) .header-menu-panel {
+    display:none!important;
+  }
+  .header-menu .header-menu-backdrop,
+  .header-menu .header-menu-panel {
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    will-change:auto!important;
+    -webkit-backface-visibility:visible!important;backface-visibility:visible!important;
+  }
+  .header-menu.open .header-menu-panel {
+    background:var(--dialog-gradient,var(--surface))!important;
+    background-color:var(--surface)!important;
+    transform:none!important;-webkit-transform:none!important;
+  }
+
+}
+
+/* Mobile WebKit: cards and controls also used backdrop blur below the header.
+   Remove it from every app surface, not only the navigation ancestors. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  html[data-theme] body :is(#entryGate,#focusDisplayDialog,#converterView,#performanceTimelineView,.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell),
+  html[data-theme] body :is(#entryGate,#focusDisplayDialog,#converterView,#performanceTimelineView,.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell) *,
+  html[data-theme] body :is(#entryGate,#focusDisplayDialog,#converterView,#performanceTimelineView,.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell) *::before,
+  html[data-theme] body :is(#entryGate,#focusDisplayDialog,#converterView,#performanceTimelineView,.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell) *::after {
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  #focusDisplayDialog .focus-display-shell::before,
+  #focusDisplayDialog .focus-display-shell::after {
+    content:none!important;display:none!important;filter:none!important;
+  }
+}
+
+/* Hidden search layers must not participate in Safari compositing. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  .header-search:not(.open) .search-panel { display:none!important; }
+}
+
+
+/* INJ NODE v16.00.88 · iPhone Safari/PWA non-blurred page tops
+   Root cause addressed: sticky translucent header compositing, including
+   pseudo-element gradients that survived earlier backdrop-filter overrides.
+   These rules do NOT touch data cards, live charts or page scrolling owners. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  /* Separate page headings from sticky/filter layers; keep their contents sharp
+     and let the native document scroll carry the whole header naturally. */
+  .app-shell > .topbar,
+  .treasury-header,
+  .rewards-header,
+  .shell > .header,
+  .terminal-header,
+  .book-topbar,
+  .cc-topbar {
+    position:relative!important;
+    top:auto!important;
+    transform:none!important;
+    -webkit-transform:none!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    will-change:auto!important;
+    backface-visibility:visible!important;
+    -webkit-backface-visibility:visible!important;
+  }
+  /* These blur-backed strips extend ABOVE the Treasury/Rewards header.
+     The parent header was sharp, but the translucent strip still covered text
+     in WebKit's rubber-band / safe-area compositor. Do not create it. */
+  .treasury-header::before,
+  .rewards-header::before {
+    content:none!important;
+    display:none!important;
+    background:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+    mask-image:none!important;
+    -webkit-mask-image:none!important;
+  }
+  .treasury-header,
+  .rewards-header,
+  .app-shell > .topbar,
+  .shell > .header {
+    background-image:none!important;
+    -webkit-background-clip:border-box!important;
+  }
+  /* The themed root paints under the non-translucent iOS status bar. */
+  html,body {
+    background-attachment:scroll!important;
+    -webkit-font-smoothing:antialiased;
+  }
+}
+
+/* iOS Home: legacy ambient ::before/::after were fixed 90px blur layers.
+   Remove them only on touch phones; the normal theme gradient stays intact. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  html[data-inj-page="index"] .entry-gate::before,
+  html[data-inj-page="index"] .entry-gate::after {
+    content:none!important;
+    display:none!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+}

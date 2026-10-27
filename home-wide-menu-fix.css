@@ -1,0 +1,166 @@
+/* INJ Node · v16.07.44 · full-width desktop canvas and contained Settings.
+   Home-only selectors. No scroll ownership, touch gestures, theme selections,
+   wallet state or sound/volume logic are changed. */
+
+/* Ultrawide: the window itself is the themed canvas. No centered outer shell
+   with visible differently colored side pillars. Keep content grids intact. */
+@media (min-width:1800px){
+ html[data-inj-page="index"],
+ html[data-inj-page="index"] body{
+  width:100%!important;
+  max-width:none!important;
+  background:var(--page-gradient,linear-gradient(150deg,var(--theme-canvas,#020708),var(--bg,#020708))),var(--theme-canvas,var(--bg,#020708))!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell,
+ html[data-inj-page="index"] body > .app-shell{
+  width:100%!important;
+  max-width:none!important;
+  margin-inline:0!important;
+  border-inline:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+ }
+ /* Home entry remains comfortably laid out, but has no visible framed island. */
+ html[data-inj-page="index"] #entryGate{
+  width:100%!important;
+  max-width:none!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+ }
+ html[data-inj-page="index"] #entryGate > .entry-gate-shell:not(.first-access){
+  border-color:transparent!important;
+  box-shadow:none!important;
+  background:transparent!important;
+ }
+}
+
+/* Control Center · v16.07.44
+   Keep the panel mounted while closed: display:none prevented every entrance
+   and exit transition. Visibility + pointer-events keep it truly inactive.
+   A restrained upward fade reads as a native popover, never as a drawer. */
+html[data-inj-page="index"] #headerMenu #headerMenuPanel {
+  display:block!important;
+  position:fixed!important;
+  top:max(9px,env(safe-area-inset-top,0px))!important;
+  bottom:auto!important;
+  right:max(10px,env(safe-area-inset-right,0px))!important;
+  left:auto!important;
+  width:min(430px,calc(100vw - 20px))!important;
+  max-width:calc(100vw - 20px)!important;
+  height:auto!important;
+  max-height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  scrollbar-gutter:stable;
+  z-index:2147483200!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translate3d(0,10px,0) scale(.985)!important;
+  -webkit-transform:translate3d(0,10px,0) scale(.985)!important;
+  transform-origin:top right!important;
+  animation:none!important;
+  transition:opacity .22s ease,transform .27s cubic-bezier(.22,1,.36,1),visibility 0s linear .27s!important;
+}
+html[data-inj-page="index"] #headerMenu #headerMenuBackdrop {
+  display:block!important;
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  z-index:2147483100!important;
+  background:rgba(2,8,18,.46)!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  animation:none!important;
+  transition:opacity .22s ease,visibility 0s linear .22s!important;
+}
+html[data-inj-page="index"] #headerMenu.open #headerMenuPanel {
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:translate3d(0,0,0) scale(1)!important;
+  -webkit-transform:translate3d(0,0,0) scale(1)!important;
+  transition:opacity .22s ease,transform .27s cubic-bezier(.22,1,.36,1),visibility 0s linear 0s!important;
+}
+html[data-inj-page="index"] #headerMenu.open #headerMenuBackdrop {
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  transition:opacity .22s ease,visibility 0s linear 0s!important;
+}
+
+/* The Control Center identity is part of the scrolling content, NOT sticky:
+   otherwise the title floats over wallet/settings rows on iPhone and desktop. */
+html[data-inj-page="index"] #headerMenuPanel .menu-control-head {
+  position:static!important;
+  inset:auto!important;
+  top:auto!important;
+  z-index:auto!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+html[data-inj-page="index"] #headerMenuPanel :is(button,summary) {
+  -webkit-tap-highlight-color:transparent;
+}
+html[data-inj-page="index"] #headerMenuPanel :is(button,summary):focus-visible {
+  outline:2px solid var(--accent,#76d6cf);
+  outline-offset:2px;
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-inj-page="index"] #headerMenu #headerMenuPanel,
+  html[data-inj-page="index"] #headerMenu.open #headerMenuPanel,
+  html[data-inj-page="index"] #headerMenu #headerMenuBackdrop,
+  html[data-inj-page="index"] #headerMenu.open #headerMenuBackdrop {
+    transition:none!important;
+    animation:none!important;
+  }
+}
+
+/* The range control exists only within the Settings preferences disclosure.
+   It cannot become an independently positioned floating element. */
+html[data-inj-page="index"] #headerMenuPanel #menuFeedbackVolumeControl{
+ position:static!important;
+ inset:auto!important;
+ transform:none!important;
+ float:none!important;
+ clear:both!important;
+ max-width:100%!important;
+}
+html[data-inj-page="index"] #headerMenuPanel #menuPreferencesAccordion:not([open]) #menuFeedbackVolumeControl{
+ display:none!important;
+}
+
+/* Preserve normal native details opening/closing, and don't allow horizontal
+   swipes inside the range slider to drag the entire floating panel. */
+html[data-inj-page="index"] #headerMenuPanel :is(.menu-accordion,.menu-accordion-content){
+ max-width:100%!important;
+ min-width:0!important;
+}
+html[data-inj-page="index"] #headerMenuPanel .menu-feedback-volume-slider{
+ max-width:100%!important;
+ min-width:0!important;
+}
+html[data-inj-page="index"] #headerMenuPanel #menuFeedbackVolume{
+ touch-action:pan-x!important;
+}
+@media(max-width:599px){
+ html[data-inj-page="index"] #headerMenu.open #headerMenuPanel{
+  right:max(8px,env(safe-area-inset-right,0px))!important;
+  width:calc(100vw - 16px)!important;
+  max-width:calc(100vw - 16px)!important;
+  scrollbar-gutter:auto;
+ }
+}

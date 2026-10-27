@@ -1,0 +1,215 @@
+/* INJ Node · Ocean X Series v16.01.14 — Electric, Ion, Toxic, Solar.
+   Cohesive palette in Home, Dashboard and every standalone section.
+   No scroll locks, live-value animations or expensive CSS blur filters. */
+:root[data-theme="ocean-x-electric"]{
+ --bg:#06132d;--theme-canvas:#06132d;--theme-canvas-soft:#102647;
+ --surface:#142743;--surface-strong:#1b3551;--surface-soft:#26435f;
+ --text:#f1f9ff;--muted:#a8c3db;--muted-strong:#d2e9f6;
+ --accent:#80edff;--accent-ink:#031e2d;--accent-soft:rgba(58,216,246,.14);
+ --line:rgba(129,199,241,.23);--line-strong:rgba(137,222,247,.35);
+ --ox-background-a:#07142e;--ox-background-b:#123880;--ox-background-c:#073f5d;
+ --ox-layer-a:rgba(16,104,255,.63);--ox-layer-b:rgba(0,229,211,.54);
+ --ox-layer-c:rgba(52,153,255,.31);--ox-layer-d:rgba(3,203,219,.27);
+ --ox-card-a:rgba(14,48,90,.94);--ox-card-b:rgba(8,30,55,.96);
+ --ox-brand:#80edff;
+}
+:root[data-theme="ocean-x-ion"]{
+ --bg:#130c2c;--theme-canvas:#130c2c;--theme-canvas-soft:#2b1c54;
+ --surface:#261c48;--surface-strong:#342653;--surface-soft:#47315e;
+ --text:#faf3ff;--muted:#c8b4dc;--muted-strong:#ecdafa;
+ --accent:#e5aaff;--accent-ink:#231034;--accent-soft:rgba(221,130,255,.14);
+ --line:rgba(214,165,245,.22);--line-strong:rgba(223,175,249,.34);
+ --ox-background-a:#100c2a;--ox-background-b:#491275;--ox-background-c:#13295c;
+ --ox-layer-a:rgba(206,39,239,.62);--ox-layer-b:rgba(31,114,255,.53);
+ --ox-layer-c:rgba(126,62,252,.37);--ox-layer-d:rgba(35,210,237,.23);
+ --ox-card-a:rgba(50,29,88,.94);--ox-card-b:rgba(25,22,60,.96);
+ --ox-brand:#e3b1ff;
+}
+:root[data-theme="ocean-x-toxic"]{
+ --bg:#061c1d;--theme-canvas:#061c1d;--theme-canvas-soft:#103b35;
+ --surface:#10322e;--surface-strong:#1a463b;--surface-soft:#245344;
+ --text:#f0fff9;--muted:#a4d0c2;--muted-strong:#dbf5e9;
+ --accent:#92ffc5;--accent-ink:#062718;--accent-soft:rgba(112,255,179,.13);
+ --line:rgba(127,234,190,.20);--line-strong:rgba(135,249,198,.34);
+ --ox-background-a:#061a21;--ox-background-b:#0b4941;--ox-background-c:#142c25;
+ --ox-layer-a:rgba(6,244,137,.53);--ox-layer-b:rgba(15,163,234,.46);
+ --ox-layer-c:rgba(90,222,130,.28);--ox-layer-d:rgba(25,208,203,.27);
+ --ox-card-a:rgba(15,60,53,.94);--ox-card-b:rgba(8,34,36,.96);
+ --ox-brand:#92ffc5;
+}
+:root[data-theme="ocean-x-solar"]{
+ --bg:#1b122c;--theme-canvas:#1b122c;--theme-canvas-soft:#392443;
+ --surface:#35223d;--surface-strong:#45304c;--surface-soft:#593c55;
+ --text:#fff6f5;--muted:#dac3d3;--muted-strong:#f6dfdf;
+ --accent:#ffd2a2;--accent-ink:#3a2118;--accent-soft:rgba(255,169,104,.14);
+ --line:rgba(250,193,172,.22);--line-strong:rgba(255,202,162,.35);
+ --ox-background-a:#19112f;--ox-background-b:#662a45;--ox-background-c:#103d73;
+ --ox-layer-a:rgba(255,108,45,.66);--ox-layer-b:rgba(42,107,255,.53);
+ --ox-layer-c:rgba(239,68,151,.31);--ox-layer-d:rgba(255,173,75,.25);
+ --ox-card-a:rgba(79,39,65,.94);--ox-card-b:rgba(28,33,68,.96);
+ --ox-brand:#ffd0a6;
+}
+:root:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]){
+ color-scheme:dark;
+ --canvas:var(--bg);--theme-browser:var(--bg);--theme-backdrop:var(--bg);
+ --panel:var(--surface);--panel-strong:var(--surface-strong);
+ --up:#61e7ac;--up-soft:rgba(97,231,172,.14);
+ --down:#ff829a;--down-soft:rgba(255,130,154,.14);
+ --header-glow-a:var(--ox-layer-a);--header-glow-b:var(--ox-layer-b);
+ --header-edge:var(--line);
+ --page-gradient:
+  radial-gradient(ellipse 79% 64% at 9% 8%,var(--ox-layer-a),transparent 75%),
+  radial-gradient(ellipse 76% 65% at 94% 86%,var(--ox-layer-b),transparent 76%),
+  linear-gradient(143deg,var(--ox-background-a),var(--ox-background-b) 53%,var(--ox-background-c));
+ --card-gradient:
+  radial-gradient(ellipse at 104% -8%,var(--ox-layer-c),transparent 54%),
+  linear-gradient(145deg,var(--ox-card-a),var(--ox-card-b));
+ --market-gradient:
+  radial-gradient(ellipse at 96% 8%,var(--ox-layer-d),transparent 53%),
+  linear-gradient(145deg,var(--ox-card-a),var(--ox-card-b));
+ --dock-gradient:linear-gradient(125deg,var(--ox-card-a),var(--ox-card-b));
+ --floating-surface:var(--surface-strong);
+ --dialog-gradient:linear-gradient(145deg,var(--surface-strong),var(--bg));
+ --card-orb:var(--ox-layer-c);--card-orb-alt:var(--ox-layer-d);
+ --card-inner-highlight:rgba(255,255,255,.05);
+ --card-shadow-accent:rgba(0,0,0,.07);
+ --shadow:0 20px 50px rgba(0,5,22,.32),0 6px 22px rgba(0,9,23,.17);
+ --section-overview:var(--accent);--section-wallet:var(--accent);
+ --section-staking:var(--accent);--section-market:var(--accent);
+ --section-delegations:var(--accent);
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]),
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) body{
+ background-color:var(--bg)!important;color-scheme:dark;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) body{
+ background-image:var(--page-gradient)!important;background-attachment:scroll!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"])
+ :is(#entryGate,.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell,.cap-shell){
+ isolation:isolate;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) #entryGate{
+ background:var(--page-gradient)!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) #entryGate>.entry-gate-shell:not(.first-access){
+ background:transparent!important;
+}
+.ocean-x-atmosphere{display:none}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) .ocean-x-atmosphere{
+ display:block;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+}
+.ocean-x-field{
+ position:absolute;left:50%;top:50%;width:145vmax;height:145vmax;
+ border-radius:50%;pointer-events:none;transform-origin:center;
+ -webkit-backface-visibility:hidden;backface-visibility:hidden;will-change:transform;
+}
+.ocean-x-field--a{
+ opacity:.73;
+ background:radial-gradient(ellipse at 18% 29%,var(--ox-layer-a) 0%,transparent 57%),
+ radial-gradient(ellipse at 80% 71%,var(--ox-layer-b),transparent 58%);
+ animation:ocean-x-orbit-a 49s linear infinite;
+}
+.ocean-x-field--b{
+ opacity:.59;
+ background:radial-gradient(ellipse at 77% 24%,var(--ox-layer-c),transparent 55%),
+ radial-gradient(ellipse at 21% 76%,var(--ox-layer-d),transparent 56%);
+ animation:ocean-x-orbit-b 67s linear infinite;
+}
+.ocean-x-field--c{
+ opacity:.34;
+ background:radial-gradient(ellipse at 20% 76%,var(--ox-layer-b),transparent 55%),
+ radial-gradient(ellipse at 82% 22%,var(--ox-layer-a),transparent 58%);
+ animation:ocean-x-orbit-c 83s linear infinite;
+}
+@keyframes ocean-x-orbit-a{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+@keyframes ocean-x-orbit-b{
+ from{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+}
+@keyframes ocean-x-orbit-c{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) .app-shell{
+ background:transparent!important;color:var(--text);
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]):not([data-inj-page="index"])
+ :is(.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell,.cap-shell){
+ background:transparent!important;color:var(--text);
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"])
+ :is(.app-shell>.topbar,.treasury-header,.rewards-header,.terminal-header,
+ .cc-topbar,.book-topbar,.shell>.header,.cap-header){
+ background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"])
+ #entryGate :is(.entry-overview,.entry-insights){
+ background:var(--card-gradient)!important;
+ border-color:var(--line)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.055),0 14px 37px rgba(0,0,12,.15)!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) #entryGate .entry-wallet{
+ background:var(--card-gradient)!important;border-color:var(--line)!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) #entryGate .entry-actions.entry-flat-v44>.entry-action{
+ background:var(--dock-gradient)!important;border-color:var(--line)!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) #entryGate .home-safe-heading h1>strong{
+ color:var(--text)!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) #entryGate .home-safe-heading h1>span{
+ color:var(--ox-brand)!important;
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) .jn-monogram{
+ --jn-brand-accent:var(--ox-brand);
+}
+html:is([data-theme="ocean-x-electric"],[data-theme="ocean-x-ion"],
+ [data-theme="ocean-x-toxic"],[data-theme="ocean-x-solar"]) .node-pulse-splash{
+ --pulse-accent:var(--ox-brand);
+}
+.theme-swatch.ocean-x-electric{
+ background:linear-gradient(125deg,#061735,#256aff,#04e3cd)!important;
+ border:1px solid rgba(128,237,255,.47)!important;
+}
+.theme-swatch.ocean-x-ion{
+ background:linear-gradient(125deg,#1b113b,#d634ed,#2655f5)!important;
+ border:1px solid rgba(221,173,255,.47)!important;
+}
+.theme-swatch.ocean-x-toxic{
+ background:linear-gradient(125deg,#052221,#0cd88b,#15b2e2)!important;
+ border:1px solid rgba(130,255,190,.49)!important;
+}
+.theme-swatch.ocean-x-solar{
+ background:linear-gradient(125deg,#201439,#f37643,#3678ff)!important;
+ border:1px solid rgba(255,209,166,.47)!important;
+}
+@media(max-width:900px),(hover:none) and (pointer:coarse){
+ .ocean-x-field{width:118vmax;height:118vmax;-webkit-filter:none!important;filter:none!important}
+ .ocean-x-field--a{opacity:.55}
+ .ocean-x-field--b{opacity:.43}
+ .ocean-x-field--c{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .ocean-x-field{animation:none!important;will-change:auto!important}
+}

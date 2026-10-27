@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<defs>
+ <radialGradient id="background" cx="18%" cy="17%" r="115%"><stop stop-color="#233d4b"/><stop offset="60%" stop-color="#081521"/><stop offset="100%" stop-color="#050d17"/></radialGradient>
+ <linearGradient id="letters" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fbfdff"/><stop offset=".57" stop-color="#bdeffc"/><stop offset="1" stop-color="#3be1eb"/></linearGradient>
+ <linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#4afae4"/><stop offset="1" stop-color="#176bdd"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="url(#background)"/>
+<rect x="8" y="8" width="496" height="496" rx="68" fill="none" stroke="#638e9f" stroke-opacity=".56" stroke-width="2"/>
+<path d="M105 155h32v139h-32z M165 294V155h33l71 95v-95h31v139h-33l-71-93v93z" fill="url(#letters)"/>
+<path d="M403 155v94q0 52-54 45l-15-4" fill="none" stroke="url(#letters)" stroke-width="31" stroke-linecap="butt" stroke-linejoin="round"/>
+<g fill="none" stroke="#53dafa" stroke-width="4" stroke-linecap="square" stroke-linejoin="round">
+ <path d="M139 380v-40l30 40v-40"/>
+ <path d="M224 340c-25 0-25 40 0 40s25-40 0-40z"/>
+ <path d="M281 340v40m0-40h10c30 0 30 40 0 40h-10"/>
+ <path d="M372 340h-27v40h27m-27-20h24"/>
+</g>
+<path d="M204 429h105" stroke="url(#line)" stroke-width="6" stroke-linecap="round"/>
+</svg>

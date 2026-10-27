@@ -1,0 +1,295 @@
+/* INJ Node — Command Center / Flash Terminal.
+   A genuinely frameless, single-chart live workstation.
+   Loaded after the classic Command Center and theme styles. */
+html[data-inj-page="command-center"] body.cc-flash-terminal{
+  --cc-flash-muted:color-mix(in srgb,var(--text) 49%,transparent);
+  --cc-flash-faint:color-mix(in srgb,var(--text) 30%,transparent);
+  margin:0!important;
+  overflow:hidden!important;
+  background:var(--page-gradient,none),var(--theme-canvas,var(--bg))!important;
+}
+body.cc-flash-terminal .cc-shell{
+  display:grid!important;
+  height:100dvh!important;min-height:100dvh!important;
+  width:100%!important;
+  grid-template-rows:56px minmax(0,1fr) 25px!important;
+  background:transparent!important;
+  border:0!important;box-shadow:none!important;
+}
+body.cc-flash-terminal .cc-topbar{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  width:100%!important;height:56px!important;min-height:56px!important;
+  padding:0 clamp(18px,2.5vw,44px)!important;
+  background:transparent!important;
+  border:0!important;box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  position:relative!important;top:auto!important;
+}
+body.cc-flash-terminal .cc-brand{flex:0 0 auto!important;gap:12px!important}
+body.cc-flash-terminal .cc-back{
+  width:32px!important;height:32px!important;
+  font-size:23px!important;border:0!important;border-radius:7px!important;
+  box-shadow:none!important;background:transparent!important;color:var(--cc-flash-muted)!important;
+}
+body.cc-flash-terminal .cc-back:hover{color:var(--text)!important;background:transparent!important}
+body.cc-flash-terminal .cc-brand-copy{gap:1px!important}
+body.cc-flash-terminal .cc-brand-copy strong{font-size:.7rem!important;letter-spacing:.17em!important;color:var(--text)!important}
+body.cc-flash-terminal .cc-brand-copy span{font-size:.56rem!important;letter-spacing:.17em!important;color:var(--cc-flash-muted)!important}
+body.cc-flash-terminal .cc-wallet-head{
+  margin-left:auto!important;justify-content:flex-end!important;
+  max-width:min(26vw,260px)!important;gap:7px!important;
+}
+body.cc-flash-terminal .cc-wallet-head span{font-size:.7rem!important;color:var(--text)!important;white-space:nowrap!important}
+body.cc-flash-terminal .cc-wallet-head strong{font-size:.6rem!important;color:var(--cc-flash-muted)!important}
+body.cc-flash-terminal .cc-live-head{gap:12px!important;margin-left:clamp(13px,2vw,32px)!important}
+body.cc-flash-terminal .cc-live-badge{
+  background:none!important;border:0!important;box-shadow:none!important;
+  border-radius:0!important;padding:0!important;letter-spacing:.12em!important;font-size:.63rem!important;
+}
+body.cc-flash-terminal .cc-live-badge i{width:5px!important;height:5px!important}
+body.cc-flash-terminal #ccClock{font-size:.66rem!important;color:var(--cc-flash-muted)!important}
+body.cc-flash-terminal .cc-main{
+  width:100%!important;max-width:none!important;height:100%!important;
+  min-height:0!important;margin:0!important;overflow:hidden!important;
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(106px,0.95fr) minmax(230px,5.45fr) minmax(92px,1.05fr)!important;
+  gap:clamp(7px,1.4vh,20px)!important;
+  padding:10px clamp(22px,3.5vw,66px) 13px!important;
+}
+body.cc-flash-terminal .cc-now{
+  grid-column:1!important;grid-row:1!important;
+  display:grid!important;grid-template-columns:minmax(0,1.65fr) minmax(0,.9fr)!important;
+  align-items:center!important;justify-items:stretch!important;
+  height:auto!important;min-height:0!important;width:100%!important;
+  padding:0!important;gap:clamp(10px,3vw,60px)!important;
+  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;
+  overflow:visible!important;
+}
+body.cc-flash-terminal .cc-now-heading,
+body.cc-flash-terminal .cc-now>article:nth-of-type(n+3){display:none!important}
+body.cc-flash-terminal .cc-now>article:nth-of-type(1),
+body.cc-flash-terminal .cc-now>article:nth-of-type(2){
+  display:flex!important;flex-direction:column!important;
+  gap:clamp(4px,.7vh,9px)!important;align-items:flex-start!important;
+  justify-content:center!important;min-width:0!important;
+  margin:0!important;padding:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+}
+body.cc-flash-terminal .cc-now>article:nth-of-type(2){align-items:flex-end!important;text-align:right!important}
+body.cc-flash-terminal .cc-now-item>span{
+  display:block!important;color:var(--cc-flash-muted)!important;
+  font-size:clamp(.62rem,.75vw,.84rem)!important;
+  letter-spacing:.17em!important;font-weight:800!important;text-transform:uppercase!important;
+}
+body.cc-flash-terminal .cc-now-item>strong{
+  display:block!important;font-size:clamp(1.8rem,3.2vw,4.45rem)!important;
+  line-height:1.06!important;font-weight:780!important;letter-spacing:-.058em!important;
+  color:var(--text)!important;overflow:visible!important;white-space:nowrap!important;
+  min-width:0!important;text-overflow:clip!important;margin:0!important;
+}
+body.cc-flash-terminal .cc-now-market>strong{
+  font-size:clamp(2.2rem,4.6vw,6rem)!important;
+}
+body.cc-flash-terminal .cc-now-item>small{
+  display:block!important;font-size:clamp(.68rem,.85vw,.92rem)!important;
+  line-height:1.2!important;color:var(--cc-flash-muted)!important;
+  font-weight:650!important;letter-spacing:.02em!important;margin:0!important;
+}
+body.cc-flash-terminal #ccChange24.positive{color:var(--up)!important}
+body.cc-flash-terminal #ccChange24.negative{color:var(--down)!important}
+body.cc-flash-terminal .cc-market-stage{
+  grid-column:1!important;grid-row:2!important;
+  height:100%!important;min-height:0!important;min-width:0!important;
+  width:100%!important;display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:39px minmax(0,1fr)!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+  background:transparent!important;overflow:hidden!important;
+}
+body.cc-flash-terminal .cc-market-stage>.cc-section-head{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  height:39px!important;min-height:39px!important;width:100%!important;
+  padding:0 2px!important;margin:0!important;
+  border:0!important;box-shadow:none!important;background:transparent!important;
+}
+body.cc-flash-terminal .cc-market-stage .cc-section-head>div:first-child .cc-eyebrow{
+  display:block!important;font-size:.62rem!important;letter-spacing:.15em!important;
+  color:var(--cc-flash-muted)!important;
+}
+body.cc-flash-terminal .cc-market-stage .cc-section-head h1,
+body.cc-flash-terminal .cc-market-stage .cc-section-head p{display:none!important}
+body.cc-flash-terminal .cc-chart-tools{display:flex!important;flex-wrap:nowrap!important;gap:10px!important;align-items:center!important}
+body.cc-flash-terminal #ccMainRange{display:none!important}
+body.cc-flash-terminal .cc-chart-tools label{display:none!important}
+body.cc-flash-terminal #ccObserve{display:none!important}
+body.cc-flash-terminal #ccLevelsButton{
+  display:block!important;min-height:27px!important;height:27px!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+  color:var(--cc-flash-muted)!important;border-radius:5px!important;
+  padding:0 7px!important;font-size:.65rem!important;letter-spacing:.07em!important;
+}
+body.cc-flash-terminal #ccLevelsButton:hover{color:var(--text)!important}
+body.cc-flash-terminal .cc-flash-timeframes{display:flex;align-items:center;gap:clamp(3px,.6vw,12px)}
+body.cc-flash-terminal .cc-flash-timeframes button{
+  border:0!important;box-shadow:none!important;background:transparent!important;
+  border-radius:5px!important;color:var(--cc-flash-muted)!important;
+  font:750 clamp(.6rem,.7vw,.75rem)/1 system-ui,sans-serif!important;
+  letter-spacing:.03em!important;min-height:28px!important;
+  padding:0 clamp(4px,.45vw,9px)!important;cursor:pointer!important;white-space:nowrap;
+}
+body.cc-flash-terminal .cc-flash-timeframes button[aria-pressed="true"]{color:var(--accent)!important}
+body.cc-flash-terminal .cc-flash-timeframes button:hover{color:var(--text)!important}
+/* All timeframe choices stay in a single frameless row. When the viewport is
+   narrower than the full control strip, only the strip scrolls horizontally. */
+body.cc-flash-terminal .cc-market-stage>.cc-section-head>div:first-child{
+  flex:0 0 auto!important;
+}
+body.cc-flash-terminal .cc-chart-tools{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  max-width:calc(100% - 96px)!important;
+  justify-content:flex-end!important;
+}
+body.cc-flash-terminal .cc-flash-timeframes{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  justify-content:flex-start!important;
+  overscroll-behavior-x:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-width:none!important;
+  scroll-behavior:smooth;
+}
+body.cc-flash-terminal .cc-flash-timeframes::-webkit-scrollbar{display:none!important}
+body.cc-flash-terminal .cc-flash-timeframes button{
+  flex:0 0 auto!important;
+  padding-inline:clamp(6px,.65vw,11px)!important;
+}
+body.cc-flash-terminal .cc-flash-timeframes button[aria-pressed="true"]{
+  background:color-mix(in srgb,var(--accent) 9%,transparent)!important;
+}
+body.cc-flash-terminal .cc-chart-history .cc-chart-feed{
+  letter-spacing:.035em!important;
+}
+@media(max-width:1320px){
+  body.cc-flash-terminal .cc-flash-timeframes{gap:2px!important}
+  body.cc-flash-terminal .cc-flash-timeframes button{padding-inline:6px!important;font-size:.62rem!important}
+}
+
+body.cc-flash-terminal .cc-charts{
+  display:grid!important;height:100%!important;min-height:0!important;
+  width:100%!important;grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;gap:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+}
+body.cc-flash-terminal .cc-charts>.cc-chart:not(.cc-primary){display:none!important}
+body.cc-flash-terminal .cc-charts>.cc-chart.cc-primary{
+  display:grid!important;grid-column:1!important;grid-row:1!important;
+  height:100%!important;min-height:0!important;width:100%!important;min-width:0!important;
+  grid-template-rows:28px minmax(0,1fr) 22px!important;
+  border:0!important;box-shadow:none!important;border-radius:0!important;
+  background:transparent!important;padding:0!important;overflow:hidden!important;
+}
+body.cc-flash-terminal .cc-chart.cc-primary>header{
+  min-height:0!important;height:28px!important;padding:0 5px!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+}
+body.cc-flash-terminal .cc-chart.cc-primary .cc-promote strong{font-size:.66rem!important;color:var(--cc-flash-muted)!important}
+body.cc-flash-terminal .cc-chart.cc-primary .cc-promote small{display:none!important}
+body.cc-flash-terminal .cc-chart-feed{background:none!important;box-shadow:none!important;color:var(--cc-flash-muted)!important}
+body.cc-flash-terminal .cc-chart-body{min-height:0!important;overflow:hidden!important;background:transparent!important}
+body.cc-flash-terminal .cc-chart-body::after{display:none!important;content:none!important}
+body.cc-flash-terminal .cc-chart-body canvas{display:block!important}
+body.cc-flash-terminal .cc-scale{z-index:3!important;right:7px!important}
+body.cc-flash-terminal .cc-scale span,body.cc-flash-terminal .cc-scale b{
+  background:transparent!important;box-shadow:none!important;
+  border:0!important;border-radius:0!important;color:var(--cc-flash-muted)!important;
+}
+body.cc-flash-terminal .cc-scale b{color:var(--text)!important}
+body.cc-flash-terminal .cc-time-axis{
+  height:22px!important;padding:0 8px!important;
+  background:transparent!important;border:0!important;color:var(--cc-flash-muted)!important;
+}
+body.cc-flash-terminal .cc-data-stage{display:none!important}
+body.cc-flash-terminal .cc-flash-strip{
+  display:grid!important;grid-column:1!important;grid-row:3!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  height:100%!important;min-height:0!important;width:100%!important;
+  align-items:center!important;gap:clamp(10px,2.2vw,42px)!important;
+  padding:0!important;margin:0!important;
+  background:transparent!important;box-shadow:none!important;border:0!important;
+}
+body.cc-flash-terminal .cc-flash-metric{
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:center!important;min-width:0!important;gap:clamp(6px,.8vh,12px)!important;
+  border:0!important;background:none!important;box-shadow:none!important;padding:0!important;
+}
+body.cc-flash-terminal .cc-flash-metric>span{
+  color:var(--cc-flash-muted)!important;font-weight:800!important;
+  text-transform:uppercase!important;letter-spacing:.14em!important;
+  font-size:clamp(.57rem,.69vw,.78rem)!important;white-space:nowrap!important;
+}
+body.cc-flash-terminal .cc-flash-value{
+  min-width:0!important;max-width:100%!important;
+  line-height:1.12!important;color:var(--text)!important;
+  font-weight:770!important;letter-spacing:-.042em!important;
+  font-size:clamp(1.05rem,1.8vw,2.55rem)!important;
+  white-space:nowrap!important;
+}
+body.cc-flash-terminal .cc-flash-value>*{
+  display:inline-block!important;font:inherit!important;letter-spacing:inherit!important;
+  color:inherit;vertical-align:baseline!important;margin:0!important;padding:0!important;
+  border:0!important;background:transparent!important;
+}
+body.cc-flash-terminal .cc-flash-value .positive{color:var(--up)!important}
+body.cc-flash-terminal .cc-flash-value .negative{color:var(--down)!important}
+body.cc-flash-terminal .cc-statusbar{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  height:25px!important;min-height:25px!important;
+  gap:8px!important;margin:0!important;padding:0 clamp(22px,3.5vw,66px)!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+}
+body.cc-flash-terminal .cc-statusbar>:not(.inj-brand-credit){display:none!important}
+body.cc-flash-terminal .cc-statusbar .inj-brand-credit{font-size:.54rem!important;color:var(--cc-flash-faint)!important}
+body.cc-flash-terminal .cc-statusbar .inj-brand-credit>*{font-size:inherit!important}
+body.cc-flash-terminal .cc-dialog{background:var(--bg)!important;color:var(--text)!important}
+body.cc-flash-terminal .cc-flash-timeframes button:focus-visible,
+body.cc-flash-terminal .cc-back:focus-visible,
+body.cc-flash-terminal #ccLevelsButton:focus-visible{
+  outline:2px solid var(--accent)!important;outline-offset:2px!important
+}
+/* The classic CSS has many high-priority small-height media rules.
+   Override them to preserve the three-part flash composition. */
+@media(min-width:1100px){
+ body.cc-flash-terminal .cc-main{
+   grid-template-rows:minmax(96px,1fr) minmax(200px,5.2fr) minmax(82px,1.05fr)!important;
+   gap:clamp(7px,1.2vh,16px)!important
+ }
+ body.cc-flash-terminal .cc-now{
+   height:auto!important;min-height:0!important;background:transparent!important
+ }
+ body.cc-flash-terminal .cc-market-stage{
+   grid-row:2!important;border:0!important;box-shadow:none!important
+ }
+ body.cc-flash-terminal .cc-market-stage .cc-section-head{
+   background:transparent!important;height:39px!important;min-height:39px!important;
+ }
+ body.cc-flash-terminal .cc-charts{
+   grid-template-columns:1fr!important;grid-template-rows:minmax(0,1fr)!important;
+   background:transparent!important;gap:0!important;
+ }
+ body.cc-flash-terminal .cc-chart.cc-primary{background:transparent!important}
+}
+@media(max-height:720px) and (min-width:1100px){
+ body.cc-flash-terminal .cc-topbar{height:44px!important;min-height:44px!important}
+ body.cc-flash-terminal .cc-shell{grid-template-rows:44px minmax(0,1fr) 20px!important}
+ body.cc-flash-terminal .cc-main{grid-template-rows:minmax(80px,.95fr) minmax(180px,5fr) minmax(72px,1fr)!important;padding-block:5px!important;gap:5px!important}
+ body.cc-flash-terminal .cc-market-stage{grid-template-rows:33px minmax(0,1fr)!important}
+ body.cc-flash-terminal .cc-market-stage>.cc-section-head{height:33px!important;min-height:33px!important}
+ body.cc-flash-terminal .cc-statusbar{height:20px!important;min-height:20px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.cc-flash-terminal .number-roll-digit-layer{animation:none!important}
+}

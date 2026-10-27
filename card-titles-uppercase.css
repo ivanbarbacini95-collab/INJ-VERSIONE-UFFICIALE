@@ -1,0 +1,45 @@
+/* INJ Node — consistent uppercase headings for card captions across screens.
+   Typography only: no values, wallet names, ticker symbols, form placeholders
+   or user-entered labels are rewritten. */
+:where(
+  .card-label, .section-heading .card-label, .metric-label, .card-title,
+  .card-heading, .card-kicker, .section-label,
+  .entry-wallet-heading, .entry-overview-title, .entry-spark-live-label,
+  .entry-pnl-heading-copy, .entry-converter-title, .entry-converter-wallet-kicker,
+  .wallet-dock-title, .aggregate-heading, .market-terminal-kicker,
+  .market-tf-meta, .reward-heading, .home-safe-heading,
+  .ws-card-heading strong, .ws-card-heading small, .ws-preview h3,
+  .ws-section-title, .ws-section-label, .ws-data-label, .ws-card-title,
+  .treasury-panel > header > div > span,
+  .treasury-panel > header > div > strong,
+  .treasury-metric > span:first-child,
+  .treasury-velocity-grid > div > span:first-child,
+  .treasury-chart-primary > span, .treasury-chart-side > span,
+  .treasury-ownership-head > span:first-child,
+  .treasury-hero-pnl > span, .treasury-kicker,
+  .rewards-kicker, .rewards-total-label, .rewards-list-head,
+  .rewards-total-metrics > div > span, .rewards-wallet-label,
+  .cc-now-item > span:first-child, .cc-panel > header,
+  .cc-eyebrow, .cc-now-heading > span, .cc-chart header strong,
+  .cap-panel-title, .cap-eyebrow, .cap-source-stats > div > span,
+  .wealth-result-label, .wealth-eyebrow, .wealth-kicker,
+  .wealth-all-grid article > span:first-child, .wealth-income article > span:first-child,
+  .ladder-eyebrow, .ladder-metrics > div > span:first-child,
+  .ladder-total-top > span:first-child, .ladder-pick-info > small,
+  .overview article > small:first-child, .inj-mi-snapshot article > span:first-child,
+  .inj-essentials-heading h3, .inj-essentials-donut-heading,
+  .inj-mi-hero h2, .inj-ownership-eyebrow,
+  .mp-meta > strong, .mp-heading, .market-favorites-intro > strong,
+  .heading h2, .detail-chart-header > strong,
+  .book-meta, .columns, .market-price > small
+) {
+  text-transform: uppercase !important;
+  letter-spacing: .045em;
+}
+/* Prevent a mono heading from overlapping actions in resizable workspace cards. */
+:where(.ws-card-heading, .ws-preview, .treasury-panel > header > div, .cap-panel-title > div) {
+  min-width: 0;
+}
+:where(.ws-card-heading strong, .treasury-panel > header > div > strong, .cap-panel-title strong) {
+  overflow-wrap: anywhere;
+}

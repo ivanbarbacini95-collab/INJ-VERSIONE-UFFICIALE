@@ -10,7 +10,7 @@
 try {
   const theme = localStorage.getItem('inj_monitor_theme');
   const style = localStorage.getItem('inj_monitor_ui_style');
-  document.documentElement.dataset.theme = ['navy','black','light','amber'].includes(theme) ? theme : 'navy';
+  document.documentElement.dataset.theme = ['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(theme) ? theme : 'navy';
   document.documentElement.dataset.uiStyle = ['elegant','futuristic','ultra'].includes(style) ? style : 'elegant';
 } catch (_) {}
 </script>
@@ -26,18 +26,54 @@ try {
   }
 })();
 </script>
-<link rel="stylesheet" href="command-center.css?v=15.99.80"/>
+<link rel="stylesheet" href="command-center.css?v=16.00.37"/>
 <script>document.addEventListener('DOMContentLoaded',()=>{const c=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
-<link rel="stylesheet" href="viewport.css?v=15.99.80">
-<script defer src="viewport.js?v=15.99.80"></script>
+<link rel="stylesheet" href="viewport.css?v=16.00.74">
+<script defer src="viewport.js?v=16.06.00"></script>
+  <link rel="stylesheet" href="./top-clarity.css?v=16.00.88">
+<link rel="stylesheet" href="navigation.css?v=160074">
+<script defer src="navigation.js?v=20261027-g1"></script>
+<script defer src="i18n.js?v=160114"></script>
+
+<link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
+<link rel="stylesheet" href="./jn-branding.css?v=160106">
+<link rel="stylesheet" href="./ocean-aurora.css?v=160109">
+<script defer src="./ocean-aurora.js?v=160109"></script>
+<link rel="stylesheet" href="./chromatic-mist.css?v=160110">
+<script defer src="./chromatic-mist.js?v=160110"></script>
+<link rel="stylesheet" href="./theme-harmony.css?v=160114">
+<link rel="stylesheet" href="./velvet-nebula.css?v=160112">
+<script defer src="./velvet-nebula.js?v=160112"></script>
+<link rel="stylesheet" href="./aqua-mirage.css?v=160113">
+<script defer src="./aqua-mirage.js?v=160113"></script>
+<link rel="stylesheet" href="./ocean-x-series.css?v=160114">
+<script defer src="./ocean-x-series.js?v=160114"></script>
+<link rel="stylesheet" href="./scroll-edges.css?v=160129">
+<link rel="stylesheet" href="./section-heading-harmony.css?v=160131">
+<link rel="stylesheet" href="./unified-navigation.css?v=160136">
+<script defer src="./section-heading-harmony.js?v=160131"></script>
+<script defer src="./scroll-edges.js?v=160128"></script>
+<link rel="stylesheet" href="./command-center-flash.css?v=160307">
+<link rel="stylesheet" href="./adaptive-layout.css?v=160600">
+<script defer src="./adaptive-layout.js?v=160600"></script>
+<link rel="manifest" href="./manifest.webmanifest?v=16.06.29">
+<meta name="apple-mobile-web-app-title" content="INJ Node">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/inj-node-minimal-180-v16.06.29.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/inj-node-minimal-192-v16.06.29.png">
+<link rel="icon" type="image/svg+xml" href="./icons/inj-node-minimal-icon-v16.06.29.svg">
+<link rel="stylesheet" href="./inj-uhd.css?v=160710">
+<!-- Global INJ Node terminal typography -->
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="stylesheet" href="./card-titles-uppercase.css?v=20261024">
+<script defer src="./inj-node-insights-config.js?v=1"></script>
+<script defer src="./inj-node-telemetry.js?v=1"></script>
 </head>
-<body>
+<body class="cc-flash-terminal">
 <main class="cc-shell" id="commandCenter">
   <header class="cc-topbar">
     <div class="cc-brand">
       <button id="ccBack" class="cc-back" type="button" aria-label="Torna alla Home">×</button>
-      <svg aria-hidden="true" class="cc-logo" viewBox="0 0 48 48"><path d="M8.5 27.4A16.5 16.5 0 0 1 33.7 9.6"></path><path d="M39.5 20.6A16.5 16.5 0 0 1 14.3 38.4"></path><path d="M15 33V15l18 18V15"></path><circle cx="15" cy="15" r="2.4"></circle><circle cx="33" cy="33" r="2.4"></circle><circle cx="24" cy="24" r="2.75"></circle></svg>
-      <div class="cc-brand-copy"><strong>INJ NODE</strong><span>COMMAND CENTRE · LIVE</span></div>
+      <div class="cc-brand-copy inj-location-title" data-i18n-skip="true"><strong class="inj-location-name">INJ Node</strong><span class="inj-location-section" data-inj-section-name="command-center">Command Center</span></div>
     </div>
     <div class="cc-wallet-head">
       <span id="ccWalletName">Wallet</span>
@@ -89,7 +125,7 @@ try {
         <div class="cc-chart-tools">
           <label for="ccMainRange">Grafico principale</label>
           <select id="ccMainRange">
-            <option value="m1">1 MIN</option><option value="m5">5 MIN</option><option value="m10">10 MIN</option><option selected value="h1">1 ORA</option><option value="d1">1 GIORNO</option><option value="w1">1 SETTIMANA</option>
+            <option value="m1">1 MIN</option><option value="m5">5 MIN</option><option value="m10">10 MIN</option><option selected value="h1">1 ORA</option><option value="h3">3 ORE</option><option value="h6">6 ORE</option><option value="h12">12 ORE</option><option value="d1">1 GIORNO</option><option value="d3">3 GIORNI</option><option value="w1">1 SETTIMANA</option><option value="mo1">1 MESE</option><option value="y1">1 ANNO</option><option value="all">TUTTO (DAL 2020)</option>
           </select>
           <button id="ccLevelsButton" type="button">Livelli</button>
           <button id="ccObserve" type="button" aria-pressed="false">Osservazione</button>
@@ -120,6 +156,11 @@ try {
         <article class="cc-chart cc-chart-1w neutral" data-key="w1">
           <header><button class="cc-promote" data-promote="w1" type="button" aria-label="Porta 1 SETTIMANA nel grafico principale"><strong>1 SETTIMANA</strong><small>Weekly structure</small></button><div class="cc-chart-status"><b class="neutral" id="cc1wChange">—</b><span class="cc-chart-feed">ATTESA</span></div></header>
           <div class="cc-chart-body"><canvas id="ccCanvas1w"></canvas><aside class="cc-scale"><span id="cc1wTop">—</span><span id="cc1wMid">—</span><span id="cc1wBottom">—</span><b id="cc1wMarker">—</b></aside></div><div class="cc-time-axis"><time></time><span></span><time></time></div>
+        </article>
+        <!-- One reused OHLC canvas for 3H / 6H / 12H / 3D / 1M / 1Y / ALL. -->
+        <article class="cc-chart cc-chart-history neutral" id="ccHistoryChart" data-key="extended-inactive" hidden>
+          <header><button class="cc-promote" data-promote="h3" type="button"><strong>STORICO REALE</strong><small>INJ/USDT</small></button><div class="cc-chart-status"><b class="neutral" id="ccHistChange">—</b><span class="cc-chart-feed">ATTESA</span></div></header>
+          <div class="cc-chart-body"><canvas id="ccCanvasHistory"></canvas><aside class="cc-scale"><span id="ccHistTop">—</span><span id="ccHistMid">—</span><span id="ccHistBottom">—</span><b id="ccHistMarker">—</b></aside></div><div class="cc-time-axis"><time></time><span>Storico INJ/USDT</span><time></time></div>
         </article>
       </section>
     </section>
@@ -152,22 +193,14 @@ try {
     </section>
   </section>
 
-  <footer class="cc-statusbar"><span id="ccFooterLive">MERCATO · ATTESA</span><span id="ccLastQuote">Ultimo prezzo —</span><span id="ccWalletState">WALLET · CACHE</span><span>Ultima sync <b id="ccLastSync">—</b></span><span id="ccFooterSystem">API · ATTESA</span></footer>
+  <footer class="cc-statusbar"><span id="ccFooterLive">MERCATO · ATTESA</span><span id="ccLastQuote">Ultimo prezzo —</span><span id="ccWalletState">WALLET · CACHE</span><span>Ultima sync <b id="ccLastSync">—</b></span><span id="ccFooterSystem">API · ATTESA</span><span class="inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></span></footer>
 </main>
 
 <dialog class="cc-dialog" id="ccLevelsDialog"><form id="ccLevelsForm"><header><h2>Livelli personali</h2><button aria-label="Chiudi" data-close="ccLevelsDialog" type="button">×</button></header><p>Prezzi INJ / USDT. Le soglie vengono salvate per questo wallet; lascia vuoto per rimuoverle.</p><label>Livello 1<input id="ccLevel1" inputmode="decimal" min="0.000001" placeholder="Es. 7.50" step="any" type="number"/></label><label>Livello 2<input id="ccLevel2" inputmode="decimal" min="0.000001" placeholder="Es. 10.00" step="any" type="number"/></label><p>Il prezzo medio appare sul grafico quando rientra nella scala visibile. Gli avvisi funzionano mentre il Command Centre è aperto.</p><button type="submit">Salva livelli</button></form></dialog>
 <dialog class="cc-dialog" id="ccEventsDialog"><header><h2>Eventi della sessione</h2><button aria-label="Chiudi" data-close="ccEventsDialog" type="button">×</button></header><ol id="ccEventList"><li>Nessun evento</li></ol></dialog>
-<script defer src="command-center.js?v=15.99.80"></script>
+<script defer src="command-center.js?v=20261026tf1"></script>
+<script defer src="./command-center-flash.js?v=160502"></script>
 
-<script>
-(function(){
-  function loadInjLanguage(){
-    if (window.INJ_I18N || document.querySelector('script[data-inj-i18n]')) return;
-    var s=document.createElement('script');s.src='i18n.js?v=15.99.80';s.async=true;s.dataset.injI18n='1';
-    s.onerror=function(){s.remove();};document.body.appendChild(s);
-  }
-  window.addEventListener('load',function(){window.setTimeout(loadInjLanguage,120);},{once:true});
-})();
-</script>
+
 </body>
 </html>

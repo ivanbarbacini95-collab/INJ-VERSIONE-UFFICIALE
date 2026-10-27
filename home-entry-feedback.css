@@ -1,0 +1,100 @@
+/* INJ Node · Home entry feedback preferences.
+   Only styles two existing-menu-format rows: no overlay, extra scroll surface or layout rewrite. */
+#menuFeedbackSoundButton .menu-action-value,
+#menuFeedbackHapticButton .menu-action-value{
+ font-weight:800;
+ font-variant-numeric:tabular-nums;
+ min-width:37px;
+ text-align:right;
+}
+#menuFeedbackSoundButton[aria-pressed="true"] .menu-action-value,
+#menuFeedbackHapticButton[aria-pressed="true"] .menu-action-value{
+ color:var(--accent,var(--text));
+}
+#menuFeedbackSoundButton[aria-pressed="false"] .menu-action-value,
+#menuFeedbackHapticButton[aria-pressed="false"] .menu-action-value{
+ color:var(--muted);
+}
+#menuFeedbackHapticButton:disabled{
+ opacity:.62;
+ cursor:not-allowed;
+}
+#menuFeedbackHapticButton:disabled .menu-action-copy small{
+ color:var(--muted);
+}
+
+
+/* Simple inline volume control in Settings > Preferences. */
+#headerMenuPanel #menuFeedbackVolumeControl{
+ --volume-percent:40%;
+ display:flex!important;
+ flex-direction:column!important;
+ gap:9px!important;
+ width:100%!important;min-width:0!important;
+ padding:10px 13px 12px!important;margin:0!important;
+ box-sizing:border-box;
+ border-top:1px solid var(--line,rgba(170,170,170,.14));
+ background:color-mix(in srgb,var(--accent,#9ad3ea) 4%,transparent);
+ border-radius:10px;
+}
+#headerMenuPanel .menu-feedback-volume-head{
+ display:flex;align-items:baseline;justify-content:space-between;
+ gap:8px;min-width:0;
+}
+#headerMenuPanel .menu-feedback-volume-head label{
+ font-size:.82rem;font-weight:720;color:var(--text);
+}
+#headerMenuPanel .menu-feedback-volume-head output{
+ color:var(--accent,var(--text));
+ font-size:.78rem;font-weight:800;
+ white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+#headerMenuPanel #menuFeedbackVolumeHint{
+ font-size:.69rem;line-height:1.3;color:var(--muted);
+}
+/* Visible, robust native slider. Keep iOS WebKit's thumb instead of suppressing it. */
+#headerMenuPanel .menu-feedback-volume-slider{
+ display:flex!important;align-items:center!important;gap:10px!important;
+ width:100%!important;min-width:0!important;
+}
+#headerMenuPanel .menu-feedback-volume-slider button{
+ flex:0 0 36px!important;
+ width:36px!important;height:36px!important;
+ display:grid!important;place-items:center!important;
+ border-radius:10px!important;
+ border:1px solid var(--line,rgba(180,190,200,.26))!important;
+ background:color-mix(in srgb,var(--accent,#7dd4e4) 12%,var(--panel,#101e30))!important;
+ color:var(--text)!important;
+ font-size:21px!important;font-weight:650!important;line-height:1!important;
+ padding:0!important;margin:0!important;
+ touch-action:manipulation;
+}
+#headerMenuPanel .menu-feedback-volume-slider button:active{
+ background:color-mix(in srgb,var(--accent,#7dd4e4) 24%,var(--panel,#101e30))!important;
+}
+#headerMenuPanel #menuFeedbackVolume{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ flex:1 1 auto!important;width:100%!important;min-width:0!important;
+ height:36px!important;max-width:100%!important;
+ margin:0!important;padding:0 2px!important;
+ appearance:auto!important;-webkit-appearance:auto!important;
+ accent-color:var(--accent,#69bffa)!important;
+ border:0!important;box-shadow:none!important;
+ background:linear-gradient(90deg,
+  var(--accent,#69bffa) 0%,var(--accent,#69bffa) var(--volume-percent,40%),
+  color-mix(in srgb,var(--line,#708090) 82%,var(--muted,#8a9bad)) var(--volume-percent,40%),
+  color-mix(in srgb,var(--line,#708090) 82%,var(--muted,#8a9bad)) 100%) center / 100% 5px no-repeat!important;
+ cursor:pointer;touch-action:pan-x;
+}
+#headerMenuPanel #menuFeedbackVolume:focus-visible{outline:2px solid var(--accent,#69bffa)!important;outline-offset:3px}
+#headerMenuPanel #menuFeedbackVolumeControl.is-muted{
+ opacity:.62;
+}
+#headerMenuPanel #menuFeedbackVolume:disabled{cursor:not-allowed}
+
+#headerMenuPanel #menuFeedbackVolumeControl.is-muted .menu-feedback-volume-slider button{
+ opacity:.48!important;pointer-events:none!important;
+}
+/* Hide the ordinary vibration row on browsers (including iPhone Safari)
+   that cannot provide the Web Vibration API. No experimental iPhone test. */
+#headerMenuPanel #menuFeedbackHapticButton[hidden]{display:none!important}

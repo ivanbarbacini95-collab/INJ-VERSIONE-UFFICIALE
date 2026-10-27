@@ -1,0 +1,161 @@
+/* INJ Node · Aqua Mirage v16.01.13: animated pastel aqua, mint and lilac.
+   No scroll, layout, chart or data transforms; safe for iOS PWA. */
+:root[data-theme="aqua"]{
+ color-scheme:light;
+ --bg:#d7e9ef;--canvas:#d7e9ef;--theme-canvas:#d7e9ef;--theme-browser:#d7e9ef;
+ --theme-canvas-soft:#eaf5f5;--theme-backdrop:#d7e9ef;
+ --surface:#f5fcfd;--surface-strong:#eff9fb;--surface-soft:#e3f2f5;
+ --panel:#f5fcfd;--panel-strong:#eff9fb;
+ --text:#17394c;--muted:#54778a;--muted-strong:#35596d;
+ --accent:#087d92;--accent-ink:#ffffff;--accent-soft:rgba(8,125,146,.105);
+ --line:rgba(34,100,126,.17);--line-strong:rgba(26,101,133,.28);
+ --up:#067d55;--up-soft:rgba(6,125,85,.115);
+ --down:#bf3854;--down-soft:rgba(191,56,84,.11);
+ --header-glow-a:rgba(94,177,216,.11);--header-glow-b:rgba(118,206,187,.12);
+ --header-edge:rgba(30,124,149,.16);
+ --page-gradient:
+  radial-gradient(ellipse 74% 67% at 8% 4%,rgba(120,187,223,.34),transparent 76%),
+  radial-gradient(ellipse 72% 65% at 95% 13%,rgba(182,165,229,.29),transparent 76%),
+  radial-gradient(ellipse 73% 65% at 86% 98%,rgba(119,213,181,.31),transparent 76%),
+  linear-gradient(144deg,#d4e9f1 0%,#ebeff9 48%,#d8f1eb 100%);
+ --card-gradient:radial-gradient(ellipse at 100% -6%,rgba(138,184,222,.12),transparent 45%),
+  radial-gradient(ellipse at -5% 108%,rgba(112,202,183,.10),transparent 49%),
+  linear-gradient(145deg,rgba(250,254,255,.92),rgba(233,246,250,.91));
+ --market-gradient:radial-gradient(ellipse at 98% 0%,rgba(143,177,229,.16),transparent 48%),
+  radial-gradient(ellipse at 8% 109%,rgba(99,210,194,.13),transparent 47%),
+  linear-gradient(145deg,rgba(250,255,255,.93),rgba(233,244,250,.94));
+ --dock-gradient:linear-gradient(122deg,rgba(250,254,255,.91),rgba(230,246,244,.89));
+ --floating-surface:rgba(246,252,255,.985);
+ --dialog-gradient:linear-gradient(145deg,#fafefe,#e8f3f8);
+ --card-orb:rgba(77,173,208,.060);--card-orb-alt:rgba(153,134,212,.065);
+ --card-inner-highlight:rgba(255,255,255,.75);--card-shadow-accent:rgba(57,131,166,.075);
+ --shadow:0 18px 48px rgba(29,85,111,.13),0 5px 17px rgba(44,113,131,.065);
+ --section-overview:var(--accent);--section-wallet:var(--accent);
+ --section-staking:var(--accent);--section-market:var(--accent);
+ --section-delegations:var(--accent);
+}
+html[data-theme="aqua"],html[data-theme="aqua"] body{
+ background-color:#d7e9ef!important;color-scheme:light;
+}
+html[data-theme="aqua"] body{
+ background-image:var(--page-gradient)!important;background-attachment:scroll!important;
+}
+html[data-theme="aqua"] :is(#entryGate,.app-shell,.treasury-shell,.rewards-shell,
+ .live-page,.book-page,.cc-shell,.shell,.cap-shell){isolation:isolate}
+html[data-theme="aqua"] #entryGate{background:var(--page-gradient)!important}
+html[data-theme="aqua"] #entryGate>.entry-gate-shell:not(.first-access){background:transparent!important}
+.aqua-mirage-atmosphere{display:none}
+html[data-theme="aqua"] .aqua-mirage-atmosphere{
+ display:block;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+}
+html[data-theme="aqua"] .aqua-mirage-field{
+ position:absolute;top:50%;left:50%;width:143vmax;height:143vmax;
+ border-radius:50%;pointer-events:none;transform-origin:center;
+ -webkit-backface-visibility:hidden;backface-visibility:hidden;will-change:transform;
+}
+html[data-theme="aqua"] .aqua-mirage-field--a{
+ opacity:.76;
+ background:radial-gradient(ellipse at 19% 26%,rgba(86,170,220,.38),rgba(129,181,227,.16) 31%,transparent 60%),
+ radial-gradient(ellipse at 81% 71%,rgba(145,137,226,.30),rgba(166,159,222,.11) 33%,transparent 61%);
+ animation:aqua-mirage-orbit-a 83s linear infinite;
+}
+html[data-theme="aqua"] .aqua-mirage-field--b{
+ opacity:.70;
+ background:radial-gradient(ellipse at 77% 23%,rgba(151,208,232,.33),transparent 58%),
+ radial-gradient(ellipse at 20% 77%,rgba(94,203,170,.35),rgba(120,209,185,.12) 32%,transparent 60%);
+ animation:aqua-mirage-orbit-b 107s linear infinite;
+}
+html[data-theme="aqua"] .aqua-mirage-field--c{
+ opacity:.57;
+ background:radial-gradient(ellipse at 22% 24%,rgba(177,151,228,.36),transparent 58%),
+ radial-gradient(ellipse at 76% 77%,rgba(108,204,207,.32),transparent 59%);
+ animation:aqua-mirage-orbit-c 131s linear infinite;
+}
+/* Linear full rotations have identical endpoints: no loop jump. */
+@keyframes aqua-mirage-orbit-a{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+@keyframes aqua-mirage-orbit-b{
+ from{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+}
+@keyframes aqua-mirage-orbit-c{
+ from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+ to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+html[data-theme="aqua"] .app-shell{background:transparent!important;color:var(--text)}
+html[data-theme="aqua"]:not([data-inj-page="index"])
+ :is(.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.shell,.cap-shell){
+ background:transparent!important;color:var(--text);
+}
+html[data-theme="aqua"] :is(.app-shell>.topbar,.treasury-header,.rewards-header,
+ .terminal-header,.cc-topbar,.book-topbar,.shell>.header,.cap-header){
+ background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html[data-theme="aqua"] #entryGate :is(.entry-overview,.entry-insights){
+ background:linear-gradient(141deg,rgba(250,254,255,.85),rgba(225,243,247,.85))!important;
+ color:var(--text)!important;border-color:rgba(46,123,153,.17)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.85),0 15px 36px rgba(47,113,133,.095)!important;
+}
+html[data-theme="aqua"] #entryGate .entry-wallet{
+ background:linear-gradient(145deg,rgba(252,255,255,.88),rgba(228,242,248,.91))!important;
+ color:var(--text)!important;border-color:rgba(40,122,153,.20)!important;
+}
+html[data-theme="aqua"] #entryGate .entry-actions.entry-flat-v44>.entry-action{
+ background:linear-gradient(135deg,rgba(250,255,255,.85),rgba(228,244,246,.88))!important;
+ color:var(--text)!important;border-color:rgba(47,127,153,.21)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.79)!important;
+}
+html[data-theme="aqua"] #entryGate .entry-actions.entry-flat-v44>.entry-action:active{
+ border-color:rgba(8,125,146,.54)!important;
+}
+html[data-theme="aqua"] .app-shell :is(.data-card,.wallet-mini,.wallet-dock,.aggregate-strip),
+html[data-theme="aqua"] :is(.treasury-panel,.treasury-card,.rewards-total-panel,
+ .rewards-card,.market-asset-section,.market-card,.cap-panel,.comparison-card,
+ .menu-control-panel,.market-asset-dialog){
+ color:var(--text);border-color:var(--line);
+}
+html[data-theme="aqua"] .app-shell :is(.data-card,.wallet-mini,.wallet-dock,.aggregate-strip){
+ box-shadow:var(--shadow);
+}
+html[data-theme="aqua"] :is(.search-panel input,.target-input-label input,
+ .reward-sim-control input,.market-asset-dialog input,.cap-panel input){
+ color:var(--text);caret-color:var(--accent);
+}
+html[data-theme="aqua"] .shell .overview article{
+ background:var(--inj-theme-panel)!important;border-color:var(--line)!important;color:var(--text);
+}
+html[data-theme="aqua"] .shell :is(.panel,.toolbar,.market-asset-dialog,.market-asset-dialog[open]){
+ color:var(--text);
+}
+html[data-theme="aqua"] .shell :is(th,.tablewrap th){
+ background:var(--surface-strong)!important;color:var(--muted-strong);
+}
+html[data-theme="aqua"] .shell :is(input,select,button){accent-color:var(--accent)}
+html[data-theme="aqua"] .jn-monogram{--jn-brand-accent:#087e96}
+html[data-theme="aqua"] .node-pulse-splash{--pulse-accent:#087e96}
+html[data-theme="aqua"] #entryGate .home-safe-heading h1>strong{color:#17394c!important}
+html[data-theme="aqua"] #entryGate .home-safe-heading h1>span{color:#087d92!important}
+.theme-swatch.aqua{
+ background:linear-gradient(125deg,#84c4e1 0%,#b4e6eb 24%,#c5b5ec 48%,#a1ddc4 73%,#84c4d8 100%)!important;
+ border:1px solid rgba(40,126,149,.35)!important;
+}
+html[data-theme="aqua"] [data-theme-choice="aqua"]{
+ border-color:rgba(8,125,146,.65)!important;
+}
+@media(max-width:900px),(hover:none) and (pointer:coarse){
+ html[data-theme="aqua"] .aqua-mirage-field{
+  width:116vmax;height:116vmax;-webkit-filter:none!important;filter:none!important;
+ }
+ html[data-theme="aqua"] .aqua-mirage-field--a{opacity:.59}
+ html[data-theme="aqua"] .aqua-mirage-field--b{opacity:.54}
+ html[data-theme="aqua"] .aqua-mirage-field--c{display:none}
+ html[data-theme="aqua"] :is(.app-shell,.treasury-shell,.rewards-shell,
+  .live-page,.book-page,.cc-shell,.cap-shell){
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-theme="aqua"] .aqua-mirage-field{animation:none!important;will-change:auto!important}
+}

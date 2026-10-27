@@ -1,0 +1,125 @@
+/* INJ Node v16.07.03 — installable app icon selector, isolated from Theme. */
+#headerMenuPanel .menu-app-icon-control{
+  display:block;width:100%;min-width:0;height:auto;min-height:0;
+  margin:0;padding:0;
+  background:transparent;border:0;box-shadow:none;
+}
+#headerMenuPanel .menu-app-icon-control:not([open]) .menu-app-icon-panel{display:none!important}
+#headerMenuPanel .menu-app-icon-trigger{
+  list-style:none;cursor:pointer;width:100%;
+  user-select:none;-webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#headerMenuPanel .menu-app-icon-trigger::-webkit-details-marker{display:none}
+#headerMenuPanel .menu-app-icon-trigger::marker{content:""}
+#headerMenuPanel .menu-app-icon-trigger:focus-visible{
+  outline:2px solid var(--accent);outline-offset:-2px;border-radius:13px;
+}
+#headerMenuPanel .menu-app-icon-trigger svg{
+  width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+#headerMenuPanel .menu-app-icon-preview{
+  display:block!important;flex:0 0 36px;
+  width:36px!important;height:36px!important;object-fit:cover;
+  border-radius:10px;border:1px solid var(--line);
+  box-shadow:0 3px 10px color-mix(in srgb,var(--bg) 25%,transparent);
+}
+#headerMenuPanel .menu-app-icon-trigger .menu-action-chevron{
+  flex:0 0 16px!important;width:16px;height:16px;margin-left:0!important;
+  color:var(--muted);transition:transform .2s ease;
+}
+#headerMenuPanel .menu-app-icon-control[open] .menu-app-icon-trigger .menu-action-chevron{
+  transform:rotate(180deg);
+}
+#headerMenuPanel .menu-app-icon-panel{
+  display:block;min-width:0;padding:4px 10px 12px;
+  box-sizing:border-box;
+}
+#headerMenuPanel .menu-app-icon-choices{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;width:100%;min-width:0;
+}
+#headerMenuPanel .menu-app-icon-choice{
+  appearance:none;-webkit-appearance:none;
+  display:flex!important;align-items:center;justify-content:flex-start;
+  flex-direction:row;gap:10px;
+  width:100%;min-width:0;min-height:70px;
+  padding:9px 10px;
+  border:1px solid color-mix(in srgb,var(--accent) 23%,var(--line));
+  border-radius:13px;
+  background:var(--inj-theme-panel,var(--surface-strong));
+  color:var(--text);
+  text-align:left;cursor:pointer;
+  box-shadow:none;transform:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#headerMenuPanel .menu-app-icon-choice img{
+  display:block;width:46px;height:46px;flex:0 0 46px;
+  border-radius:12px;object-fit:cover;
+  border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));
+}
+#headerMenuPanel .menu-app-icon-choice span{
+  min-width:0;flex:1 1 auto;
+  color:var(--text);font-size:12px;font-weight:750;line-height:1.3;
+  overflow-wrap:anywhere;
+}
+#headerMenuPanel .menu-app-icon-choice>i{
+  display:block;width:11px;height:11px;flex:none;
+  border-radius:50%;border:1px solid var(--line);
+  background:transparent;
+}
+#headerMenuPanel .menu-app-icon-choice[aria-pressed="true"]{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),
+             0 0 12px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+#headerMenuPanel .menu-app-icon-choice[aria-pressed="true"]>i{
+  background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 9px color-mix(in srgb,var(--accent) 40%,transparent);
+}
+#headerMenuPanel .menu-app-icon-choice:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
+#headerMenuPanel .menu-app-icon-note{
+  margin:12px 0 10px;
+  color:var(--muted);font-size:11px;line-height:1.55;
+}
+#headerMenuPanel .menu-app-icon-install{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;min-width:0;min-height:42px;
+  border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));
+  border-radius:12px;padding:9px 12px;
+  background:color-mix(in srgb,var(--accent) 10%,var(--surface-strong));
+  color:var(--text);font-size:12px;font-weight:760;
+  text-decoration:none;text-align:center;box-sizing:border-box;
+}
+#headerMenuPanel .menu-app-icon-install svg{
+  display:block;width:16px;height:16px;flex:none;
+  fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+#headerMenuPanel .menu-app-icon-install:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;
+}
+@media(max-width:355px){
+ #headerMenuPanel .menu-app-icon-choice{gap:7px;padding:8px}
+ #headerMenuPanel .menu-app-icon-choice img{width:39px;height:39px;flex-basis:39px}
+}
+@media(prefers-reduced-motion:reduce){
+ #headerMenuPanel .menu-app-icon-trigger .menu-action-chevron{transition:none}
+}
+
+/* v16.07.04 · Browser installation fallback on iPhone standalone PWAs. */
+#headerMenuPanel .menu-app-icon-copy{
+ display:block!important;appearance:none;-webkit-appearance:none;
+ width:100%;min-height:42px;margin:8px 0 0!important;
+ padding:8px 12px!important;border:1px solid var(--line)!important;
+ border-radius:12px!important;background:transparent!important;
+ color:var(--text)!important;font-size:12px!important;
+ font-weight:700;text-align:center;cursor:pointer;
+ box-shadow:none!important;transform:none!important;
+}
+#headerMenuPanel .menu-app-icon-copy:focus-visible{
+ outline:2px solid var(--accent);outline-offset:2px;
+}

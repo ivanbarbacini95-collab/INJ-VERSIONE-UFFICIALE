@@ -1,0 +1,17 @@
+/* Fullscreen locks geometry without disabling data interactions. */
+body.ws-immersive #wsGrid .ws-card{cursor:default!important}
+body.ws-immersive #wsGrid .ws-card-head{cursor:default!important;touch-action:pan-y!important}
+body.ws-immersive #wsGrid :is(.ws-card-controls,.ws-drag,.ws-resize,.ws-pro-context,.ws-pro-history-bar){
+ display:none!important;pointer-events:none!important
+}
+body.ws-immersive #wsGrid .ws-card-head :is(button,[data-action]){pointer-events:none!important}
+
+/* Phone-safe viewing: geometry is inert until the explicit Edit button is pressed. */
+body.ws-view-only #wsGrid .ws-card-head{cursor:default!important;touch-action:pan-y!important}
+body.ws-view-only #wsGrid :is(.ws-card-controls,.ws-resize){display:none!important;pointer-events:none!important}
+body.ws-view-only :is(.ws-pro-context,.ws-pro-history-bar){display:none!important}
+@media(max-width:600px){
+ body.ws-view-only #wsSnap{display:none!important}
+ #wsEdit{font-weight:800;min-width:100px;letter-spacing:.015em}
+ body.ws-mobile-editing #wsEdit{border-color:var(--ws-accent)!important;color:var(--ws-accent)!important;background:color-mix(in srgb,var(--ws-accent) 13%,var(--ws-panel))!important}
+}

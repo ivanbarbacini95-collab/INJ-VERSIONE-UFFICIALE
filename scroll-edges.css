@@ -1,0 +1,230 @@
+/* INJ Node 16.01.28 — edge-contained native scroll on every theme/page.
+   No fixed scroll container, no background blur, no gesture interference. */
+html,body{
+  overscroll-behavior-y:none!important;
+  overscroll-behavior-x:none!important;
+}
+html,body,#entryGate,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,
+#converterView,#performanceTimelineView,.converter-view-main,.performance-timeline-main,
+.shell,.inj-content-frame,.header-menu-panel,.entry-wallets,.entry-pnl-timeline-scroll{
+  overscroll-behavior-y:none!important;
+  -ms-overflow-style:none!important;
+  scrollbar-width:none!important;
+}
+/* Hide visual scroll rails but preserve native touch, wheel, trackpad and keyboard scroll. */
+html,html body,html body *{
+  scrollbar-width:none!important;
+}
+html::-webkit-scrollbar,body::-webkit-scrollbar,
+html body *::-webkit-scrollbar{
+  display:none!important;width:0!important;height:0!important;
+}
+/* Override the previous Home/Dashboard rule that deliberately enabled bounce. */
+html[data-inj-page="index"][data-inj-scroll="home"],
+html[data-inj-page="index"][data-inj-scroll="home"] body,
+html[data-inj-page="index"][data-inj-scroll="dashboard"],
+html[data-inj-page="index"][data-inj-scroll="dashboard"] body,
+html[data-inj-page="index"][data-inj-scroll="home"] #entryGate.entry-gate.visible{
+  overscroll-behavior-y:none!important;
+}
+html[data-inj-page="index"][data-inj-scroll="home"] #entryGate.entry-gate.visible
+ :is(.entry-wallets,.entry-pnl-timeline-scroll){
+  overscroll-behavior-y:none!important;
+}
+/* Home signature, placed after the final B Capital Group launcher. */
+html[data-inj-page="index"] #entryGate + #injHomeBrandFooter{
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:5px;
+  width:100%;
+  margin:0!important;
+  padding:20px 14px max(24px,env(safe-area-inset-bottom))!important;
+  box-sizing:border-box;
+  color:var(--muted-strong,var(--text));
+  font-size:clamp(11px,2.7vw,13px);
+  font-weight:650;
+  line-height:1.4;
+  letter-spacing:.045em;
+  text-align:center;
+  opacity:.76;
+  border:0;
+  background:transparent;
+}
+html[data-inj-page="index"] #injHomeBrandFooter strong{
+  font-size:inherit;
+  font-weight:850;
+  color:var(--text);
+  letter-spacing:.02em;
+}
+html[data-inj-page="index"] #injHomeBrandFooter span{
+  color:color-mix(in srgb,var(--accent) 55%,var(--muted-strong));
+}
+html[data-inj-page="index"] #injHomeBrandFooter{display:none!important}
+html[data-inj-page="index"] #entryGate.entry-gate.visible[aria-hidden="false"] + #injHomeBrandFooter{
+ display:flex!important;
+ position:relative!important;inset:auto!important;float:none!important;
+ clear:both;grid-area:auto!important;order:initial!important;
+ transform:none!important;
+}
+html[data-inj-page="index"] #entryGate.entry-gate.visible:has(.entry-gate-shell.first-access) + #injHomeBrandFooter{
+ display:none!important;
+}
+/* Alternative to a side rail: unobtrusive horizontal position indicator.
+   Render only on the active Home and never over a modal/section. */
+html[data-inj-page="index"] #injScrollProgress{
+  position:fixed;
+  z-index:12;
+  left:50%;
+  bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  transform:translate3d(-50%,0,0);
+  width:74px;height:2px;
+  border-radius:99px;
+  overflow:hidden;
+  background:color-mix(in srgb,var(--accent) 17%,transparent);
+  box-shadow:none;
+  pointer-events:none;
+  opacity:.8;
+  transition:opacity .18s ease;
+}
+html[data-inj-page="index"] #injScrollProgress i{
+  display:block;
+  width:100%;height:100%;
+  background:var(--accent,#72e7db);
+  border-radius:inherit;
+  transform-origin:left center;
+  transform:scaleX(var(--inj-reading-progress,0));
+  will-change:transform;
+}
+html[data-inj-page="index"] #injScrollProgress[hidden],
+html[data-inj-page="index"] body.inj-section-open #injScrollProgress,
+html[data-inj-page="index"] body.menu-overlay-open #injScrollProgress,
+html[data-inj-page="index"] body:has(#converterView.open,#performanceTimelineView.open,.inj-market-portal:not([hidden])) #injScrollProgress{
+  display:none!important;
+}
+@media(min-width:900px){
+ html[data-inj-page="index"] #injScrollProgress{bottom:14px;opacity:.55}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] #injScrollProgress,
+ html[data-inj-page="index"] #injScrollProgress i{transition:none!important}
+}
+
+/* v16.01.29 — Uniform quiet corporate signature at the ACTUAL document end.
+   Never a floating badge; do not enlarge scroll for fixed market terminals. */
+.inj-brand-credit{
+ box-sizing:border-box;
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ justify-content:center;
+ gap:.32em;
+ color:var(--muted-strong,var(--muted,#97a7b9));
+ font-family:inherit;
+ font-size:clamp(10px,2.7vw,12px);
+ font-weight:650;
+ letter-spacing:.025em;
+ line-height:1.4;
+ text-align:center;
+ text-decoration:none!important;
+ white-space:normal;
+ opacity:.72;
+}
+.inj-brand-credit>strong{font-size:inherit;font-weight:850;color:var(--text);letter-spacing:inherit}
+.inj-brand-credit>span{font-size:inherit;font-weight:650;color:color-mix(in srgb,var(--accent,#78ead0) 38%,var(--muted-strong,#9fb4b7))}
+html[data-inj-page="index"] #entryGate + #injHomeBrandFooter{
+ max-width:100%;min-height:0!important;height:auto!important;
+ padding:12px 16px max(23px,env(safe-area-inset-bottom,0px))!important;
+ background:transparent!important;z-index:1!important;pointer-events:none;
+}
+html[data-inj-page="index"] .inj-dashboard-footer{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+ justify-content:space-between!important;gap:6px 16px!important;
+ min-height:42px!important;padding:12px 18px max(16px,env(safe-area-inset-bottom))!important;
+}
+html[data-inj-page="index"] .inj-dashboard-footer .inj-brand-credit{
+ margin-left:auto;flex:0 1 auto;
+}
+/* Restore semantic end-of-page placement in long, document-scrolling sections. */
+html[data-inj-page="treasury"] .inj-long-page-signature,
+html[data-inj-page="live-rewards"] .inj-long-page-signature{
+ display:flex!important;justify-content:center!important;
+ align-items:center!important;gap:5px!important;
+ width:100%!important;margin:14px auto 0!important;
+ padding:15px 12px max(18px,env(safe-area-inset-bottom,0px))!important;
+ font-size:clamp(10px,2.7vw,12px)!important;letter-spacing:.025em!important;
+}
+.inj-section-brand{
+ display:flex!important;justify-content:center!important;align-items:center!important;
+ margin:18px auto 0!important;padding:12px 8px max(20px,env(safe-area-inset-bottom,0px))!important;
+ min-height:0;max-width:100%;
+ background:none!important;border:0!important;
+}
+html[data-inj-market] .panel.market-asset-section > footer .inj-brand-credit{
+ justify-content:flex-end!important;white-space:nowrap!important;
+ flex:none;margin-left:auto;padding-left:12px;
+}
+html[data-inj-page="comparison"] .inj-section-brand,
+html[data-inj-page="visualize-wealth"] .inj-section-brand{
+ margin-top:16px!important;
+}
+html[data-inj-page="index"] :is(.entry-pnl-timeline-foot,.entry-converter-foot) .inj-inline-brand{
+ display:inline-flex!important;flex:0 1 auto;justify-content:flex-end;
+ gap:.25em;opacity:.68;letter-spacing:0;white-space:nowrap;
+ font-size:clamp(9px,1vw,11px);
+}
+html[data-inj-page="index"] .entry-converter-foot{
+ flex-wrap:wrap!important;row-gap:7px!important;
+}
+html[data-inj-page="index"] .entry-converter-foot .inj-inline-brand{
+ margin-left:auto!important;
+}
+html[data-inj-page="live-charts"] .live-footer,
+html[data-inj-page="order-book"] .book-footer{
+ display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+ justify-content:space-between!important;gap:8px!important;
+}
+html[data-inj-page="live-charts"] .live-footer .inj-brand-credit,
+html[data-inj-page="order-book"] .book-footer .inj-brand-credit{
+ flex:none;justify-content:flex-end;
+ font-size:clamp(8px,1.1vw,10px)!important;
+ white-space:nowrap;
+}
+html[data-inj-page="command-center"] .cc-statusbar .inj-brand-credit{
+ margin-left:auto!important;flex:0 0 auto!important;justify-content:flex-end!important;
+ font-size:clamp(8px,.72vw,10px)!important;white-space:nowrap!important;
+}
+@media(max-width:600px){
+ html[data-inj-page="index"] .inj-dashboard-footer{justify-content:center!important}
+ html[data-inj-page="index"] .inj-dashboard-footer .inj-brand-credit{
+  margin:0 auto!important;width:100%!important;
+ }
+ html[data-inj-page="live-charts"] .live-footer .inj-brand-credit,
+ html[data-inj-page="order-book"] .book-footer .inj-brand-credit{
+  font-size:8px!important;letter-spacing:0;
+ }
+ html[data-inj-page="index"] .entry-pnl-timeline-foot .inj-inline-brand{
+  font-size:9px!important;letter-spacing:-.02em!important;
+ }
+ html[data-inj-page="index"] .entry-converter-foot .inj-inline-brand{
+  font-size:9px!important;
+ }
+}
+
+/* Live View is intentionally full-screen: attach the identity to its own
+   viewport bottom rather than creating an extra scrollable row. */
+html[data-inj-page="index"] #focusDisplayDialog .focus-display-shell{
+ position:relative!important;
+}
+html[data-inj-page="index"] #focusDisplayDialog .inj-liveview-credit{
+ position:absolute!important;z-index:1!important;
+ left:50%;right:auto;bottom:max(7px,env(safe-area-inset-bottom,0px));
+ width:max-content;max-width:94%;
+ padding:0 10px;
+ transform:translateX(-50%);
+ pointer-events:none;
+ font-size:clamp(9px,1vw,11px);
+ opacity:.55;
+ white-space:nowrap;
+}

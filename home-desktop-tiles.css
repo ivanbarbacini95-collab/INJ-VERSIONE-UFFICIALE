@@ -1,0 +1,96 @@
+/* INJ Node v16.01.15 · Uniform desktop launcher tiles
+   A single baseline: section title LEFT / theme-aware animated artwork RIGHT.
+   Only the desktop Home; existing mobile 2-column tiles and all page layouts untouched. */
+@media (min-width:1101px) {
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action {
+  --tile-art-width:102px;
+  position:relative!important;
+  box-sizing:border-box!important;
+  display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  justify-content:flex-start!important;align-items:center!important;
+  gap:0!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:76px!important;min-height:76px!important;max-height:none!important;
+  padding:10px calc(var(--tile-art-width) + 35px) 10px 19px!important;
+  margin:0!important;
+  text-align:left!important;
+  overflow:hidden!important;
+ }
+ /* The original icons and chevrons were still visible for Command Centre,
+    creating an inconsistent alignment and reducing its available title width. */
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action > :is(.entry-action-icon,.entry-action-arrow){
+  display:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action > span:not(.entry-action-icon):not(.inj-tile-scene) {
+  box-sizing:border-box!important;
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  position:relative!important;z-index:2!important;
+  align-self:center!important;
+  flex:1 1 auto!important;order:0!important;
+  width:auto!important;max-width:100%!important;min-width:0!important;
+  height:auto!important;min-height:0!important;
+  padding:0!important;margin:0!important;
+  text-align:left!important;
+  background:transparent!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action strong {
+  display:block!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  font-size:clamp(14px,1.08vw,17px)!important;
+  line-height:1.28!important;
+  font-weight:750!important;
+  text-align:left!important;
+  margin:0!important;
+  white-space:normal!important;
+  overflow:visible!important;text-overflow:clip!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action > span.inj-tile-scene {
+  box-sizing:border-box!important;
+  display:block!important;
+  position:absolute!important;z-index:1!important;
+  flex:0 0 auto!important;order:unset!important;
+  top:50%!important;bottom:auto!important;
+  left:auto!important;right:17px!important;
+  width:var(--tile-art-width)!important;
+  max-width:var(--tile-art-width)!important;min-width:0!important;
+  height:58px!important;min-height:0!important;
+  margin:0!important;padding:0!important;
+  opacity:.84!important;
+  transform:translateY(-50%)!important;
+  -webkit-transform:translateY(-50%)!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+  -webkit-filter:none!important;filter:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action > .inj-tile-scene svg {
+  display:block!important;
+  width:100%!important;height:100%!important;
+  overflow:hidden!important;
+ }
+ /* Command Centre is a desktop-only tool; its scene follows the same
+    animation primitives as the other Home sections. */
+ html[data-inj-page="index"] #entryCommandCenterButton{
+  --tile-accent:color-mix(in srgb,var(--accent,#8ae6df) 76%,#8cbaff);
+ }
+}
+/* Keep the status colours and existing animations; accessibility takes priority. */
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] #entryGate .entry-actions
+ #entryCommandCenterButton .inj-tile-scene *{
+  animation:none!important;
+ }
+}

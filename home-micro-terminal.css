@@ -1,0 +1,238 @@
+/* INJ Node · minimal live terminal strip, scoped to Home wallet header. */
+html[data-inj-page="index"] #entryGate .entry-wallet-section > .inj-home-microbar {
+  --micro-accent: var(--accent, #61ddba);
+  --micro-ink: var(--text, #e5f2f0);
+  --micro-muted: var(--muted-strong, #a7bcb9);
+  display:block;
+  grid-column:1 / -1;
+  order:-100!important;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  margin:0 0 12px;
+  padding:0 2px 5px;
+  color:var(--micro-ink);
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  filter:none;
+  isolation:isolate;
+}
+html[data-inj-page="index"] #entryGate .entry-gate-shell.first-access .inj-home-microbar {display:none!important;}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  min-height:15px;
+  gap:10px;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-kicker {
+  min-width:0;
+  font-size:9px;
+  font-weight:780;
+  letter-spacing:.155em;
+  color:var(--micro-muted);
+  white-space:nowrap;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-live {
+  display:inline-flex;
+  align-items:center;
+  flex:0 0 auto;
+  gap:5px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.14em;
+  color:var(--micro-muted);
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-dot {
+  display:inline-block;
+  flex:0 0 auto;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--micro-muted);
+  opacity:.7;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar[data-state="online"] .inj-micro-live {
+  color:var(--up, #4cdda6);
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar[data-state="online"] .inj-micro-dot {
+  background:var(--up, #4cdda6);
+  opacity:1;
+  box-shadow:0 0 7px color-mix(in srgb,var(--up, #4cdda6) 38%,transparent);
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar[data-state="unavailable"] .inj-micro-live,
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-network[data-state="unavailable"] {
+  color:var(--down, #ff7080);
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar[data-state="unavailable"] .inj-micro-dot {
+  background:var(--down, #ff7080);
+  opacity:1;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar[data-state="warning"] .inj-micro-live {
+  color:var(--warning, #e0b767);
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar[data-state="warning"] .inj-micro-dot {
+  background:var(--warning, #e0b767);
+  opacity:1;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-rule {
+  display:block;
+  height:1px;
+  margin:6px 0 8px;
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--micro-accent) 50%,transparent),
+    color-mix(in srgb,var(--micro-accent) 16%,transparent) 74%,
+    transparent);
+  pointer-events:none;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metrics {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  column-gap:8px;
+  width:100%;
+  min-width:0;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metric {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:4px;
+  min-width:0;
+  margin:0;
+  padding:0;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metric:nth-child(2) {
+  align-items:center;
+  text-align:center;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metric:nth-child(3) {
+  align-items:flex-end;
+  text-align:right;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-label {
+  max-width:100%;
+  color:var(--micro-muted);
+  font-size:9px;
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:.09em;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-value {
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  max-width:100%;
+  color:var(--micro-ink);
+  font-size:11px;
+  font-weight:800;
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  letter-spacing:.015em;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-network[data-state="online"] {
+  color:var(--up,#4cdda6);
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-network[data-state="warning"] {
+  color:var(--warning,#e0b767);
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-check {
+  width:7px;
+  height:7px;
+  border:1px solid currentColor;
+  border-radius:50%;
+  flex:0 0 auto;
+  opacity:.9;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-network[data-state="online"] .inj-micro-check {
+  background:currentColor;
+}
+@media(max-width:600px) {
+  html[data-inj-page="index"] #entryGate .entry-wallet-section > .inj-home-microbar {
+    margin:0 0 10px;
+    padding:0 1px 5px;
+  }
+  html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-kicker,
+  html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-live {
+    font-size:8.5px;
+  }
+  html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metrics {column-gap:6px;}
+  html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-label {
+    font-size:8px;
+    letter-spacing:.055em;
+  }
+  html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-value {
+    font-size:10px;
+    letter-spacing:0;
+  }
+}
+@media(max-width:360px) {
+  html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-value {font-size:9px;}
+  html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-label {font-size:7.5px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-inj-page="index"] #entryGate .inj-home-microbar * {
+    animation:none!important;
+    transition:none!important;
+  }
+}
+
+
+/* v16.10.26c — iPhone Home safe-area breathing room.
+   Move the whole Home surface down, without translating content or altering
+   Dashboard and section headers. The existing iOS safe inset remains the base. */
+@media (max-width: 900px) and (pointer: coarse) {
+  html[data-inj-page="index"] #entryGate.entry-gate.visible[aria-hidden="false"]
+    > .entry-gate-shell:not(.first-access) {
+    padding-top: calc(var(--inj-control-inset, 16px) + 14px)!important;
+  }
+}
+
+/* Terminal data: three labels share a row; three values share a row.
+   Preserve left / centered / right alignment across phone widths. */
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metrics {
+  align-items:start;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metric {
+  display:grid;
+  grid-template-rows:14px 17px;
+  align-content:start;
+  align-items:center;
+  justify-items:start;
+  row-gap:4px;
+  min-height:35px;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metric:nth-child(2) {
+  justify-items:center;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-metric:nth-child(3) {
+  justify-items:end;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-label {
+  display:flex;
+  align-items:center;
+  height:14px;
+  min-height:14px;
+  line-height:14px;
+}
+html[data-inj-page="index"] #entryGate .inj-home-microbar .inj-micro-value {
+  height:17px;
+  min-height:17px;
+  line-height:17px;
+  align-self:center;
+}
+
+
+/* The Home hero grid now owns menu placement and title spacing.
+   Retired v16.10.26d's arbitrary 72px hamburger translation. */

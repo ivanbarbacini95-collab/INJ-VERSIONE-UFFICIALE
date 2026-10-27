@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="it" data-inj-page="comparison" data-theme="navy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020708">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Market Cap Comparison · INJ Node</title>
+<style>html,body{margin:0;min-height:100%;background:#020708}html[data-theme="black"],html[data-theme="black"] body{background:#000}html[data-theme="light"],html[data-theme="light"] body{background:#eef5ff;color-scheme:light}html[data-theme="amber"],html[data-theme="amber"] body{background:#060a10}html[data-theme="velvet"],html[data-theme="velvet"] body{background:#0a1024}html[data-theme="aqua"],html[data-theme="aqua"] body{background:#d7e9ef;color-scheme:light}</style>
+<script>try{const theme=localStorage.getItem('inj_monitor_theme');document.documentElement.dataset.theme=['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(theme)?theme:'navy';document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it'}catch(_){}</script>
+<link rel="stylesheet" href="./comparison.css?v=160095">
+<link rel="stylesheet" href="./top-clarity.css?v=16.00.90">
+<link rel="stylesheet" href="./navigation.css?v=160090">
+<script defer src="./navigation.js?v=20261027-g1"></script>
+<script defer src="./comparison.js?v=160095"></script>
+
+<link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
+<link rel="stylesheet" href="./comparison-ab.css?v=160095">
+<link rel="stylesheet" href="./ocean-aurora.css?v=160109">
+<script defer src="./ocean-aurora.js?v=160109"></script>
+<link rel="stylesheet" href="./chromatic-mist.css?v=160110">
+<script defer src="./chromatic-mist.js?v=160110"></script>
+<link rel="stylesheet" href="./theme-harmony.css?v=160114">
+<link rel="stylesheet" href="./velvet-nebula.css?v=160112">
+<script defer src="./velvet-nebula.js?v=160112"></script>
+<link rel="stylesheet" href="./aqua-mirage.css?v=160113">
+<script defer src="./aqua-mirage.js?v=160113"></script>
+<link rel="stylesheet" href="./ocean-x-series.css?v=160114">
+<script defer src="./ocean-x-series.js?v=160114"></script>
+<link rel="stylesheet" href="./scroll-edges.css?v=160129">
+<link rel="stylesheet" href="./section-heading-harmony.css?v=160131">
+<link rel="stylesheet" href="./unified-navigation.css?v=160136">
+<script defer src="./section-heading-harmony.js?v=160131"></script>
+<script defer src="./scroll-edges.js?v=160128"></script>
+<link rel="stylesheet" href="./adaptive-layout.css?v=160600">
+<script defer src="./adaptive-layout.js?v=160600"></script>
+<link rel="manifest" href="./manifest.webmanifest?v=16.06.29">
+<meta name="apple-mobile-web-app-title" content="INJ Node">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/inj-node-minimal-180-v16.06.29.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/inj-node-minimal-192-v16.06.29.png">
+<link rel="icon" type="image/svg+xml" href="./icons/inj-node-minimal-icon-v16.06.29.svg">
+<link rel="stylesheet" href="./inj-uhd.css?v=160710">
+<!-- Global INJ Node terminal typography -->
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="stylesheet" href="./card-titles-uppercase.css?v=20261024">
+<script defer src="./inj-node-insights-config.js?v=1"></script>
+<script defer src="./inj-node-telemetry.js?v=1"></script>
+</head>
+<body>
+<div class="cap-shell">
+ <header class="cap-header">
+  <button type="button" class="cap-home" id="comparisonBack" title="Home" aria-label="Torna alla Home">
+   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7"/><path d="M6.5 10v9h11v-9M10 19v-5h4v5"/></svg>
+  </button>
+  <div class="cap-heading inj-location-title" data-i18n-skip="true"><strong class="inj-location-name">INJ Node</strong><span class="inj-location-section" data-inj-section-name="comparison">Market Cap Comparison</span></div>
+  <div id="comparisonStatus" class="cap-connection"><i></i><span id="comparisonStatusText">SYNC</span></div>
+ </header>
+ <main class="cap-main">
+  <section class="cap-intro">
+   <span class="cap-eyebrow">MARKET CAP COMPARISON</span>
+   <h1 data-t="title">Quanto potrebbe valere?</h1>
+   <p data-t="intro">Scegli A e B. Il confronto e il valore ipotetico del wallet sono calcolati automaticamente.</p>
+  </section>
+  <section class="cap-picker-grid" aria-label="Selezione asset">
+   <article class="cap-panel cap-asset-a">
+    <header class="cap-panel-title"><span class="cap-step">A</span><div><small data-t="starting">ASSET DI PARTENZA</small><h2 data-t="sourceHeading">Asset A</h2></div></header>
+    <div class="cap-search-wrap">
+     <label class="cap-label" for="capSourceSearch" data-t="sourceSearchLabel">Cerca crypto per nome o simbolo</label>
+     <div class="cap-search-row"><icon aria-hidden="true">⌕</icon><input id="capSourceSearch" type="search" autocomplete="off" spellcheck="false" placeholder="INJ · Injective" aria-autocomplete="list" aria-controls="capSourceResults"><span id="capSourceSpin" class="cap-search-spinner" aria-hidden="true"></span></div>
+     <div class="cap-search-results" id="capSourceResults" role="listbox" hidden></div>
+    </div>
+    <div class="cap-selected" id="capSourceSelected"><span class="cap-coin-symbol" id="capSourceSymbol">INJ</span><div><strong id="capSourceName">Injective</strong><small id="capSourceId">injective-protocol</small></div><span class="cap-check">✓</span></div>
+    <div class="cap-source-stats">
+     <div><span data-t="sourceCap">MARKET CAP ATTUALE</span><strong id="capSourceCap">—</strong></div>
+     <div><span data-t="sourcePrice">PREZZO ATTUALE</span><strong id="capSourcePrice">—</strong></div>
+     <div><span data-t="sourceSupply">OFFERTA CIRCOLANTE</span><strong id="capSourceSupply">—</strong></div>
+    </div>
+   </article>
+   <article class="cap-panel cap-asset-b">
+    <header class="cap-panel-title"><span class="cap-step">B</span><div><small data-t="target">MARKET CAP DI RIFERIMENTO</small><h2 data-t="targetHeading">Asset B</h2></div></header>
+    <div class="cap-tabs" role="group" aria-label="Tipo di riferimento">
+     <button type="button" data-target-kind="crypto" class="active" aria-pressed="true" data-t="crypto">Crypto</button>
+     <button type="button" data-target-kind="stock" aria-pressed="false" data-t="stock">Azione</button>
+     <button type="button" data-target-kind="index" aria-pressed="false" data-t="index">Indice</button>
+    </div>
+    <div id="capTargetCryptoPanel">
+     <div class="cap-search-wrap"><label class="cap-label" for="capTargetSearch" data-t="targetSearchLabel">Cerca la crypto di riferimento</label>
+      <div class="cap-search-row"><icon aria-hidden="true">⌕</icon><input id="capTargetSearch" type="search" autocomplete="off" spellcheck="false" placeholder="BTC · Bitcoin" aria-autocomplete="list" aria-controls="capTargetResults"><span id="capTargetSpin" class="cap-search-spinner" aria-hidden="true"></span></div>
+      <div class="cap-search-results" id="capTargetResults" role="listbox" hidden></div>
+     </div>
+     <div class="cap-selected"><span class="cap-coin-symbol" id="capTargetSymbol">BTC</span><div><strong id="capTargetName">Bitcoin</strong><small id="capTargetId">bitcoin</small></div><span class="cap-check">✓</span></div>
+    </div>
+    <div id="capTargetManualPanel" hidden>
+     <div class="cap-search-wrap cap-manual-search">
+       <label class="cap-label" for="capManualName" data-t="manualNameLabel">Cerca per nome o ticker</label>
+       <div class="cap-search-row"><span class="cap-magnifier" aria-hidden="true">⌕</span><input id="capManualName" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-autocomplete="list" aria-controls="capManualSuggestions" aria-expanded="false" placeholder="Apple, AAPL, S&P 500…"></div>
+       <div id="capManualSuggestions" class="cap-search-results" role="listbox" hidden></div>
+     </div>
+     <div class="cap-manual-selected" id="capManualSelected" hidden>
+       <span class="cap-coin-symbol" id="capManualTicker">—</span>
+       <strong id="capManualSelectedName">—</strong>
+       <span class="cap-manual-check" aria-hidden="true">✓</span>
+     </div>
+     <div id="capStockStatus" class="cap-stock-status" role="status" aria-live="polite" hidden></div>
+     <div class="cap-manual-values" id="capManualValues">
+      <label><span class="cap-label" data-t="manualCapLabel">Capitalizzazione di riferimento</span><input id="capManualCap" class="cap-input" type="text" inputmode="decimal" autocomplete="off" placeholder="es. 3200"></label>
+      <label><span class="cap-label" data-t="manualScale">Unità · USD</span><select id="capManualScale" class="cap-input"><option value="1000000000" data-t="billions">Miliardi (B)</option><option value="1000000000000" data-t="trillions">Migliaia di miliardi (T)</option><option value="1000000" data-t="millions">Milioni (M)</option><option value="1" data-t="fullUsd">USD interi</option></select></label>
+     </div>
+     <p class="cap-help" id="capManualHint" data-t="manualWarning">Le capitalizzazioni sono automatiche: nessun valore da inserire a mano.</p>
+    </div>
+    <div class="cap-target-foot"><span data-t="targetCap">CAPITALIZZAZIONE DI RIFERIMENTO</span><strong id="capTargetCap">—</strong><small id="capTargetMeta" data-t="autoSource">Dati crypto CoinGecko · USD</small></div>
+   </article>
+  </section>
+  <section class="cap-scenario" aria-labelledby="capResultTitle">
+   <div class="cap-scenario-head"><div><span class="cap-eyebrow">RISULTATO</span><h2 id="capResultTitle" data-t="scenario">Scenario a pari market cap</h2></div><span class="cap-scenario-state" id="capScenarioState" data-t="ready">ANALISI</span></div>
+   <div class="cap-results-grid">
+    <div class="cap-result cap-result-main"><span data-t="multiples">MOLTIPLICATORE</span><strong id="capMultiple">—</strong><small data-t="multipleHelp">Rapporto fra capitalizzazioni</small></div>
+    <div class="cap-result"><span data-t="projectedPrice">PREZZO TEORICO</span><strong id="capProjectedPrice">—</strong><small data-t="supplyAssumption">Offerta circolante invariata</small></div>
+    <div class="cap-result cap-result-secondary"><span data-t="priceChange">VARIAZIONE TEORICA</span><strong id="capPriceChange">—</strong><small data-t="vsNow">Rispetto al prezzo attuale</small></div>
+   </div>
+   <details class="cap-advanced" id="capAdvanced">
+    <summary data-t="moreDetails">Mostra i dettagli del calcolo</summary>
+    <div class="cap-compare-bars" aria-label="Confronto market cap">
+    <div class="cap-bar-name"><span id="capBarSourceLabel">INJ</span><strong id="capBarSourceValue">—</strong></div><div class="cap-bar-track"><span id="capBarSource" class="cap-bar-fill source"></span></div>
+    <div class="cap-bar-name"><span id="capBarTargetLabel">BTC</span><strong id="capBarTargetValue">—</strong></div><div class="cap-bar-track"><span id="capBarTarget" class="cap-bar-fill target"></span></div>
+   </div>
+    <p class="cap-disclaimer" data-t="disclaimer">Simulazione matematica: non prevede il prezzo futuro, non considera variazioni dell'offerta, liquidità o impatto di mercato.</p>
+   </details>
+  </section>
+  <section class="cap-wallet" aria-labelledby="capWalletTitle">
+   <div class="cap-wallet-head"><div><span class="cap-eyebrow">YOUR WALLET</span><h2 id="capWalletTitle" data-t="portfolioTitle">Valore del wallet selezionato</h2><p id="capWalletName">—</p></div><span id="capWalletFresh" class="cap-wallet-state">SYNC</span></div>
+   <div class="cap-wallet-cards">
+    <div><span data-t="holdings">INJ POSSEDUTI</span><strong id="capWalletInj">—</strong><small data-t="included">Disponibili + staking + reward</small></div>
+    <div><span data-t="currentWallet">VALORE ATTUALE · USD</span><strong id="capWalletNow">—</strong><small data-t="walletNowHelp">INJ al prezzo attuale</small></div>
+    <div class="cap-wallet-future"><span data-t="futureWallet">VALORE IPOTETICO · USD</span><strong id="capWalletFuture">—</strong><small id="capWalletFutureHelp" data-t="walletFutureHelp">Se INJ raggiungesse la market cap selezionata</small></div>
+   </div>
+   <p class="cap-wallet-note" id="capWalletNote" data-t="walletNote">Il controvalore ipotetico si calcola quando la crypto di partenza è INJ. Il wallet non viene modificato.</p>
+  </section>
+  <footer class="cap-footer"><span data-t="sources">Fonti: CoinGecko (crypto), Nasdaq giornaliero (azioni USA), stime parziali indici supportati.</span><span id="capUpdatedAt">—</span></footer>
+ <footer class="inj-section-brand inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
+ </main>
+</div>
+</body>
+</html>

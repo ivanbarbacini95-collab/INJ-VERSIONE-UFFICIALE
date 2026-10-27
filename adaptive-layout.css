@@ -1,0 +1,232 @@
+/* INJ NODE · Adaptive System v16.06.00
+   Shared responsive refinements for all first-party pages.
+   It never changes html/body scroll ownership, document heights, touch-action,
+   overlays, native chart data, or JavaScript financial calculations.
+   Layout scales by viewport and independently of touch/mouse capabilities. */
+:root {
+  --inj-fluid-space:clamp(12px,1.5vw,28px);
+  --inj-fluid-gap:clamp(10px,1.2vw,22px);
+  --inj-fluid-panel-gap:clamp(12px,1.5vw,28px);
+  --inj-fluid-copy:clamp(12px,.82vw,16px);
+  --inj-fluid-label:clamp(10px,.72vw,13px);
+  --inj-fluid-heading:clamp(18px,1.65vw,29px);
+}
+html[data-inj-page] :is(
+  .entry-gate-shell,.entry-overview,.entry-overview-main,.entry-overview-stats,
+  .entry-insights,.entry-insights-head,.entry-desktop-metrics,
+  .treasury-main,.treasury-grid,.treasury-panel,.treasury-hero-copy,
+  .treasury-chart-summary,.treasury-allocation-side,.treasury-velocity-grid,
+  .rewards-main,.rewards-layout,.rewards-list-panel,.rewards-total-wallets,
+  .cc-main,.cc-market-stage,.cc-data-stage,.cc-data-deck,.cc-panel,
+  .cap-main,.cap-picker-grid,.cap-panel,.cap-scenario,.cap-results-grid,
+  .wealth-main,.wealth-results,.wealth-all-grid,.wealth-income-grid,
+  .wealth-growth,.wealth-growth-chart,.terminal-shell,.chart-column
+) {
+  min-width:0;
+  box-sizing:border-box;
+}
+html[data-inj-market] :is(
+  .shell,.inj-mi-hero,.inj-mi-snapshot,.inj-essentials,.overview,
+  .panel,.toolbar,.tools,.tablewrap,.detailstats
+) { min-width:0;box-sizing:border-box; }
+
+/* Fluid text stays within columns without forcing a sideways document width. */
+html[data-inj-page] :is(
+  .treasury-hero-copy,.treasury-panel,.cc-panel,.cap-panel,
+  .wealth-result,.rewards-list-panel,.entry-overview
+) :is(strong,small,span) {
+  max-width:100%;
+}
+html[data-inj-page] :is(.treasury-chart-ranges,.cc-chart-tools,.entry-price-timebar),
+html[data-inj-market] :is(.detail-ranges,.inj-mi-switch,.toolbar) {
+  max-width:100%;
+}
+
+/* Charts that fill a host are fluid; only their outer host changes width. */
+html[data-inj-page="live-charts"] :is(.chart-column,.chart-stage,.plot),
+html[data-inj-page="command-center"] :is(.cc-chart,.cc-chart-body,.cc-charts),
+html[data-inj-page="treasury"] :is(.treasury-spark-stage,.treasury-chart-summary),
+html[data-inj-page="visualize-wealth"] :is(.wealth-growth-chart,.wealth-growth-results) {
+  min-width:0;
+  max-width:100%;
+}
+html[data-inj-page="live-charts"] :is(.chart-stage,.chart-column),
+html[data-inj-page="command-center"] .cc-chart-body { isolation:isolate; }
+
+/* Home launcher grid and wider sections must not overflow a 1:1 PWA iframe. */
+@media (max-width:599px) {
+ :root{
+  --inj-fluid-space:12px;
+  --inj-fluid-gap:10px;
+  --inj-fluid-panel-gap:12px;
+ }
+ html[data-inj-page="index"] :is(
+  .entry-gate-shell,.entry-overview,.entry-insights,.entry-actions,
+  .entry-desktop-metrics,.entry-overview-stats
+ ) { min-width:0;max-width:100%; }
+ html[data-inj-page="index"] .entry-action {
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="index"] .entry-action :is(strong,small){
+  min-width:0;
+  overflow-wrap:break-word;
+ }
+ html[data-inj-page="treasury"] :is(.treasury-grid,.treasury-metrics,.treasury-allocation-metrics){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div {
+  min-width:0;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div>small {
+  overflow-wrap:anywhere;
+ }
+ html[data-inj-page="live-rewards"] :is(.rewards-layout,.rewards-list,.rewards-total-wallets){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="command-center"] :is(.cc-now,.cc-data-deck,.cc-chart-tools){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="command-center"] .cc-chart{
+  min-width:0;
+ }
+ html[data-inj-page="comparison"] :is(.cap-picker-grid,.cap-results-grid,.cap-wallet-cards){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="visualize-wealth"] :is(.wealth-results,.wealth-all-grid,.wealth-income-grid){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-market] :is(.inj-mi-snapshot,.inj-essentials-pair,.overview){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-market] .inj-essentials-donut-body{
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="order-book"] :is(.book-shell,.columns,.levels){
+  min-width:0;
+ }
+}
+
+/* Narrow landscape phones and compact foldables: content gets priority. */
+@media (max-height:530px) and (orientation:landscape) {
+ html[data-inj-page="live-charts"] .terminal-header {
+  min-height:0;padding-block:6px;
+ }
+ html[data-inj-page="command-center"] :is(.cc-topbar,.cc-now){
+  min-height:0;
+ }
+ html[data-inj-page="index"] .node-ambient-ring.r2,
+ html[data-inj-page="index"] .node-ambient-ring.r3{
+  display:none!important;
+ }
+}
+/* Tablet: preserve independent columns until the viewport truly needs stacking. */
+@media (min-width:600px) and (max-width:1023px){
+ :root{
+  --inj-fluid-space:clamp(16px,2.5vw,26px);
+  --inj-fluid-gap:clamp(12px,1.8vw,20px);
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div{
+  min-width:0;
+ }
+ html[data-inj-page="live-rewards"] .rewards-layout,
+ html[data-inj-page="comparison"] .cap-picker-grid {
+  min-width:0;
+ }
+ html[data-inj-page="command-center"] :is(.cc-market-stage,.cc-data-deck){
+  min-width:0;
+ }
+ html[data-inj-market] .inj-mi-snapshot{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+ }
+}
+/* Desktop: give terminal data space while keeping proportions predictable. */
+@media (min-width:1024px) and (max-width:1799px){
+ :root{--inj-fluid-space:clamp(19px,2vw,34px)}
+ html[data-inj-page="treasury"] .treasury-velocity-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div{min-width:0}
+ html[data-inj-market] .inj-mi-snapshot{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+ }
+}
+/* Widescreen/ultrawide: no stretched text/tiles, but charts can use extra width. */
+@media (min-width:1800px) {
+ :root{
+  --inj-fluid-space:clamp(24px,2.2vw,58px);
+  --inj-fluid-gap:clamp(17px,1.3vw,32px);
+  --inj-fluid-panel-gap:clamp(20px,1.6vw,40px);
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready>.app-shell{
+  width:100%;max-width:2260px!important;margin-inline:auto!important;
+ }
+ html[data-inj-page="index"] #entryGate .entry-gate-shell:not(.first-access){
+  width:100%;max-width:2200px!important;margin-inline:auto!important;
+ }
+ html[data-inj-page="treasury"] .treasury-shell,
+ html[data-inj-page="live-rewards"] .rewards-shell,
+ html[data-inj-page="comparison"] .cap-shell,
+ html[data-inj-page="visualize-wealth"] .wealth-shell{
+  width:100%;max-width:2160px!important;margin-inline:auto!important;
+ }
+ html[data-inj-market] .shell{
+  max-width:2200px!important;margin-inline:auto!important;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:clamp(15px,1.4vw,32px)!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-shell{
+  width:100%;max-width:none!important;
+ }
+ html[data-inj-page="command-center"] .cc-main{
+  max-width:none!important;
+ }
+ html[data-inj-market] .inj-mi-snapshot{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ }
+}
+/* Large monitor viewing comfort, including 49-inch 32:9 panels. */
+@media (min-width:2560px) {
+ :root{
+  --inj-fluid-copy:clamp(15px,.75vw,19px);
+  --inj-fluid-label:clamp(12px,.65vw,16px);
+  --inj-fluid-heading:clamp(24px,1.4vw,35px);
+ }
+ html[data-inj-page="command-center"] .cc-topbar,
+ html[data-inj-page="live-charts"] .terminal-header{
+  padding-inline:clamp(28px,2vw,70px);
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div{
+  min-height:126px;
+ }
+}
+/* Avoid accidental animation jank on touch/mobile in heavy decorative layers. */
+@media (hover:none) and (pointer:coarse) {
+ html[data-inj-page="index"] .node-ambient-ring.r3 {display:none}
+ html[data-inj-page="treasury"] .treasury-hero-orbit {
+  filter:none!important;
+ }
+}
+/* Stronger platform accessibility settings always win. */
+@media (prefers-reduced-motion:reduce) {
+ html[data-inj-page] :is(
+  .node-ambient-element,.node-ambient-ring,.treasury-hero-orbit,
+  .rewards-total-orbit,.reward-flow,.number-change-digit
+ ) {animation:none!important}
+ html[data-inj-page] :is(
+  .treasury-progress i,.treasury-allocation-bar i,.cc-chart,
+  .entry-action,.rewards-total-orbit
+ ),html[data-inj-market] :is(.inj-essentials-gauge-progress,.inj-mi-snapshot article){
+  transition-duration:0s!important;
+ }
+}
+/* Prevent print layouts from inheriting desktop fixed viewport sizes. */
+@media print {
+ html[data-inj-page] :is(.treasury-main,.cap-main,.wealth-main,.rewards-main){
+  max-width:100%!important;
+ }
+}

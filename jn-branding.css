@@ -1,0 +1,186 @@
+/* INJ Node · JN identity and Home title v16.01.03
+   One vector-free monogram everywhere the previous orbital brand appeared.
+   Does not change scroll geometry, sections or modal positioning. */
+html[data-inj-page="index"] .jn-monogram,
+html[data-inj-page="command-center"] .jn-monogram,
+.jn-monogram {
+  display:inline-flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  width:36px!important;
+  height:36px!important;
+  min-width:36px!important;
+  min-height:36px!important;
+  padding:0!important;
+  margin:0!important;
+  border:1px solid color-mix(in srgb,var(--accent,#72e7d0) 22%,transparent)!important;
+  border-radius:11px!important;
+  background:#0a1519!important;
+  font:900 19px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  letter-spacing:-.125em!important;
+  text-shadow:none!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
+  vertical-align:middle!important;
+  white-space:nowrap!important;
+  transform:none!important;
+  filter:none!important;-webkit-filter:none!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+.jn-monogram > .jn-monogram-j{
+  display:inline!important;
+  width:auto!important;height:auto!important;
+  color:#fff!important;
+  font:inherit!important;
+  letter-spacing:inherit!important;
+}
+.jn-monogram > .jn-monogram-n{
+  display:inline!important;
+  width:auto!important;height:auto!important;
+  color:#75e9d1!important;
+  font:inherit!important;
+  letter-spacing:0!important;
+}
+/* One compact identity, across Home, Settings, Dashboard, System and fullscreen. */
+.entry-brand .jn-monogram{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;font-size:18px!important}
+.menu-control-brand .jn-monogram{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;font-size:21px!important}
+.brand.header-title .jn-monogram{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;font-size:18px!important;margin-right:7px!important}
+.system-status-brand .jn-monogram,.focus-display-brand .jn-monogram{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important}
+.cc-brand .jn-monogram{width:39px!important;height:39px!important;min-width:39px!important;min-height:39px!important;font-size:21px!important}
+@media(max-width:700px){
+ .menu-control-brand .jn-monogram{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;font-size:20px!important}
+}
+/* Safe title: inside the established wallet section, never forcing hidden
+   Home grid areas visible or changing scroll / header positioning. */
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .home-safe-heading{
+  display:none!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access) .entry-wallet-section > .home-safe-heading{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  margin:0 0 10px!important;
+  padding:0 8px 1px!important;
+  gap:1px!important;
+  text-align:center!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate .home-safe-heading > h1{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  color:var(--text,#f4f8f8)!important;
+  font-size:clamp(22px,3.5vw,30px)!important;
+  font-weight:800!important;
+  line-height:1.07!important;
+  letter-spacing:-.045em!important;
+  white-space:nowrap!important;
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:center!important;
+  gap:.25em!important;
+}
+html[data-inj-page="index"] body #entryGate .home-safe-heading > h1 > strong,
+html[data-inj-page="index"] body #entryGate .home-safe-heading > h1 > span {
+  font:inherit!important;
+  display:inline!important;
+  white-space:nowrap!important;
+  text-shadow:none!important;
+  filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate .home-safe-heading > h1 > strong {
+  color:#f5fbfc!important;
+  font-weight:900!important;
+}
+html[data-inj-page="index"] body #entryGate .home-safe-heading > h1 > span {
+  color:#75e9d1!important;
+  font-weight:560!important;
+}
+:root[data-theme="light"] body #entryGate .home-safe-heading > h1 > strong {color:#112b33!important}
+:root[data-theme="light"] body #entryGate .home-safe-heading > h1 > span {color:#087b89!important}
+:root[data-theme="black"] body #entryGate .home-safe-heading > h1 > span {color:#d9f0ed!important}
+:root[data-theme="amber"] body #entryGate .home-safe-heading > h1 > span {color:var(--accent,#dfbb83)!important}
+html[data-inj-page="index"] body #entryGate .home-safe-heading > h1 > strong{
+  font:inherit!important;
+  font-weight:900!important;
+  color:var(--text,#f4f8f8)!important;
+}
+html[data-inj-page="index"] body #entryGate .home-safe-heading > h1 > span{
+  display:inline!important;
+  margin-left:.19em!important;
+  font:inherit!important;
+  font-weight:620!important;
+  color:var(--accent,#75e9d1)!important;
+}
+html[data-inj-page="index"] body #entryGate .home-safe-heading > p{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  color:var(--muted-strong,#9cb1ba)!important;
+  font-size:clamp(12px,2.6vw,15px)!important;
+  font-weight:570!important;
+  line-height:1.16!important;
+  white-space:normal!important;
+}
+@media(max-width:700px){
+ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access) .entry-wallet-section > .home-safe-heading{
+  margin-bottom:8px!important;
+  padding-block:0!important;
+ }
+ html[data-inj-page="index"] body #entryGate .home-safe-heading > h1{font-size:clamp(22px,6vw,27px)!important}
+ html[data-inj-page="index"] body #entryGate .home-safe-heading > p{font-size:12px!important}
+}
+/* Keep JN compact and in normal header flow; never position it over content. */
+.brand.header-title,.menu-control-brand,.system-status-brand,.focus-display-brand,.cc-brand{
+  min-width:0!important;
+}
+.brand.header-title .jn-monogram,
+.menu-control-brand .jn-monogram,
+.system-status-brand .jn-monogram,
+.focus-display-brand .jn-monogram,
+.cc-brand .jn-monogram{
+  position:relative!important;
+  inset:auto!important;
+  flex:0 0 auto!important;
+  width:29px!important;
+  height:29px!important;
+  min-width:29px!important;
+  min-height:29px!important;
+  font-size:16px!important;
+  line-height:1!important;
+  margin:0 6px 0 0!important;
+  transform:none!important;
+  z-index:auto!important;
+  pointer-events:none!important;
+}
+.menu-control-brand > div,.cc-brand-copy{
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+@media(max-width:390px){
+ .brand.header-title .jn-monogram,.menu-control-brand .jn-monogram,
+ .system-status-brand .jn-monogram,.focus-display-brand .jn-monogram,
+ .cc-brand .jn-monogram{
+   width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important;
+   font-size:15px!important;margin-right:4px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){.jn-monogram{transition:none!important;animation:none!important}}

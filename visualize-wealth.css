@@ -1,0 +1,70 @@
+/* Theme-aware standalone net worth simulator. No fixed scroll containers, backdrop blur or blocking overlays. */
+:root{--bg:#020708;--panel:#09181b;--panel-strong:#0d2327;--text:#f5fffd;--muted:#8eaaa8;--accent:#78ead0;--accent-soft:rgba(120,234,208,.09);--up:#45dba4;--line:rgba(120,234,208,.16);--theme-canvas:#020708;--page-gradient:linear-gradient(152deg,#07191b,#020708 58%,#0b1222);color-scheme:dark}
+html[data-theme="black"]{--bg:#000;--panel:#0d0d0f;--panel-strong:#17171a;--text:#f3f3f4;--muted:#9d9da4;--accent:#e2e3e5;--accent-soft:rgba(255,255,255,.09);--line:rgba(255,255,255,.13);--theme-canvas:#000;--page-gradient:linear-gradient(#111,#000)}
+html[data-theme="light"]{color-scheme:light;--bg:#edf5fc;--panel:#fff;--panel-strong:#f1f7fc;--text:#162e43;--muted:#687c90;--accent:#077d9b;--accent-soft:rgba(7,125,155,.09);--line:rgba(12,64,110,.17);--theme-canvas:#edf5fc;--page-gradient:linear-gradient(#fff,#edf5fc)}
+html[data-theme="amber"]{--bg:#060a0f;--panel:#0e1620;--panel-strong:#14212a;--text:#f4f4f6;--muted:#9ca5af;--accent:#e2b68e;--accent-soft:rgba(226,182,142,.1);--line:rgba(221,175,139,.18);--theme-canvas:#060a0f;--page-gradient:linear-gradient(#141b23,#060a0f)}
+*{box-sizing:border-box}html{min-height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{min-height:100dvh;overflow-x:hidden;overflow-y:auto;margin:0;background:var(--page-gradient),var(--theme-canvas,var(--bg))!important;color:var(--text);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-overflow-scrolling:touch}
+button,input{font:inherit;color:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wealth-shell{width:min(100%,1020px);margin:0 auto;padding:0 clamp(17px,4vw,46px) max(35px,env(safe-area-inset-bottom,0px))}
+.wealth-header{display:flex;align-items:center;gap:13px;min-height:78px;padding:17px 0 11px;border-bottom:1px solid var(--line);position:relative;z-index:2}
+.wealth-home{flex:0 0 44px;width:44px;height:44px;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:grid;place-items:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.wealth-home svg{width:21px;height:21px;display:block}
+.wealth-heading{display:grid;gap:0;min-width:0}.wealth-heading span,.wealth-eyebrow,.wealth-kicker{font-size:10px;font-weight:800;letter-spacing:.15em;color:var(--accent)}
+.wealth-heading strong{font-size:clamp(16px,2.3vw,21px);letter-spacing:-.035em;line-height:1.23;white-space:normal}
+.wealth-eyebrow{margin-left:auto;white-space:nowrap;opacity:.75}
+.wealth-main{max-width:810px;margin:auto;padding-top:clamp(32px,6vh,74px)}.wealth-intro{text-align:center}.wealth-kicker{margin:0 0 9px}
+.wealth-intro h1{font-size:clamp(30px,5.6vw,55px);letter-spacing:-.065em;line-height:1.09;margin:0;font-weight:800}
+.wealth-description{font-size:clamp(12px,2.4vw,15px);color:var(--muted);margin:12px auto 0;max-width:540px}
+.wealth-control{width:min(100%,620px);margin:clamp(29px,5.2vh,46px) auto 0;text-align:center}
+.wealth-control label{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:.15em}
+.wealth-input-shell{margin-top:11px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border-bottom:1px solid var(--line);padding:5px 8px 11px;background:transparent;transition:border-color .2s}
+.wealth-input-shell:focus-within{border-color:var(--accent)}.wealth-currency{font-size:clamp(27px,5vw,44px);font-weight:750;color:var(--accent)}
+.wealth-input-shell input{border:0;background:transparent;outline:none!important;box-shadow:none!important;min-width:0;width:calc(100% - 110px);max-width:390px;text-align:center;font-size:clamp(37px,7vw,75px);font-weight:850;letter-spacing:-.065em;line-height:1.2;font-variant-numeric:tabular-nums;appearance:none;border-radius:0;padding:0}
+.wealth-input-shell input::placeholder{color:var(--muted);opacity:.55}.wealth-unit{color:var(--muted);font-weight:750;font-size:13px;align-self:flex-end;margin-bottom:13px}
+.wealth-control>p{margin:11px 0 0;color:var(--muted);font-size:12px}
+.wealth-subcontext{margin-top:29px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px 12px;text-align:center;min-height:27px;font-size:12px;color:var(--muted)}
+.wealth-status{font-size:10px;letter-spacing:.075em;font-weight:800;color:var(--accent)}
+.wealth-results{width:100%;margin:clamp(22px,4vh,40px) auto 0;text-align:center}
+.wealth-result{padding:clamp(17px,3vh,28px) 0}.wealth-result-label{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:.15em;margin:0 0 10px}
+.wealth-amount{display:block;min-width:0;max-width:100%;overflow-wrap:anywhere;line-height:1.14;font-weight:850;letter-spacing:-.055em;font-variant-numeric:tabular-nums;transition:color .16s}
+.wealth-primary .wealth-amount{font-size:clamp(36px,7vw,75px);color:var(--text)}.wealth-secondary .wealth-amount{font-size:clamp(31px,6vw,57px);color:var(--accent)}
+.wealth-result-detail{color:var(--muted);font-size:12px;margin:11px 0 0;overflow-wrap:anywhere}
+.wealth-divider{height:1px;width:75%;margin:auto;background:linear-gradient(90deg,transparent,var(--line) 24%,var(--line) 76%,transparent)}
+.wealth-footnote{text-align:center;color:var(--muted);font-size:11px;margin:21px auto 0;max-width:670px}
+@media(max-width:750px),(pointer:coarse) and (max-width:1100px){
+.wealth-header{padding-top:max(65px,calc(env(safe-area-inset-top,0px) + 15px));min-height:125px}
+.wealth-eyebrow{display:none}.wealth-main{padding-top:27px}.wealth-control{margin-top:27px}
+.wealth-subcontext{margin-top:23px}.wealth-results{margin-top:18px}.wealth-result{padding:22px 0}
+}
+@media(max-width:390px){
+.wealth-shell{padding-inline:12px}.wealth-input-shell{gap:4px}
+.wealth-input-shell input{width:calc(100% - 80px);font-size:clamp(33px,10vw,48px)}
+.wealth-currency{font-size:28px}.wealth-unit{font-size:11px}
+.wealth-primary .wealth-amount{font-size:clamp(32px,9vw,45px)}.wealth-secondary .wealth-amount{font-size:clamp(29px,8vw,40px)}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Desktop / embedded PWA: give Potential Value one explicit scrolling
+   surface. The parent Home remains fixed only while this section is open. */
+@media (min-width:821px) and (hover:hover) and (pointer:fine){
+  html[data-inj-page="visualize-wealth"]{
+    height:100%!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  html[data-inj-page="visualize-wealth"] body{
+    height:100dvh!important;
+    min-height:0!important;
+    max-height:100dvh!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    scroll-behavior:auto!important;
+  }
+  html[data-inj-page="visualize-wealth"] .wealth-shell{
+    min-height:100%;
+    height:auto!important;
+    overflow:visible!important;
+  }
+}

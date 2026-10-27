@@ -1,0 +1,44 @@
+/* Order Book card: native stacked asks -> last price -> bids, fully resizeable. */
+.ws-card[data-type="orderbook"]{container-type:size}
+.ws-card[data-type="orderbook"] .ws-card-body,
+.ws-preview[data-type="orderbook"] .ws-card-body{min-height:0;min-width:0;overflow:hidden;justify-content:flex-start}
+.ws-book.ws-book-stacked{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);gap:0;min-height:0;min-width:0;width:100%;height:100%;flex:1 1 0;overflow:hidden}
+.ws-book-stacked>.ws-book-ask,.ws-book-stacked>.ws-book-bid{display:block;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin}
+.ws-book-stacked>section h3{position:sticky;top:0;z-index:3;min-height:20px;margin:0;padding:4px 6px;background:var(--ws-panel);font:800 10px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.05em;text-transform:uppercase}
+.ws-book-stacked>.ws-book-ask h3{color:var(--ws-negative,var(--down,#ff6175))}
+.ws-book-stacked>.ws-book-bid h3{color:var(--ws-positive,var(--up,#32d6a0))}
+.ws-book-stacked .ws-book-columns,.ws-book-stacked .ws-book-level{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.9fr) minmax(0,1fr);align-items:center;gap:clamp(3px,1cqw,9px);width:100%;min-width:0;padding:4px clamp(3px,1cqw,9px);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:clamp(9px,1.5cqw,13px);line-height:1.2;font-variant-numeric:tabular-nums}
+.ws-book-stacked .ws-book-columns{position:sticky;top:20px;z-index:2;background:var(--ws-panel);border-bottom:1px solid var(--ws-line);color:var(--ws-muted);font-size:clamp(8px,1.25cqw,10px);font-weight:700;letter-spacing:0}
+.ws-book-stacked .ws-book-level{isolation:isolate;position:relative;min-height:22px;white-space:nowrap;background:transparent}
+.ws-book-stacked .ws-book-level::before{content:"";position:absolute;z-index:-1;inset:2px 0 2px auto;width:var(--depth,0%);background:linear-gradient(90deg,transparent,color-mix(in srgb,currentColor 17%,transparent));pointer-events:none}
+.ws-book-stacked .ws-book-level>*{min-width:0;white-space:nowrap}
+.ws-book-stacked .ws-book-level-size,.ws-book-stacked .ws-book-level-total,.ws-book-stacked .ws-book-columns span:not(:first-child){text-align:right}
+.ws-book-stacked .ws-book-level-price{font-weight:850}
+.ws-book-stacked .ws-book-level-total{color:var(--ws-muted)}
+.ws-book-stacked .ws-book-price{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:100%;min-width:0;max-width:100%;min-height:52px;padding:7px 3px;text-align:center;flex-shrink:0;border-block:1px solid var(--ws-line);background:color-mix(in srgb,var(--ws-panel) 80%,var(--ws-bg));color:var(--ws-fg)}
+.ws-book-price-label{font:800 9px/1 ui-monospace,monospace;color:var(--ws-muted);letter-spacing:.12em}
+.ws-book-price-line{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;max-width:100%}
+.ws-book-stacked .ws-book-live-price{display:block;max-width:100%;font:850 clamp(16px,5cqw,36px)/1.12 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ws-book-stacked .ws-book-live-arrow{font-size:clamp(13px,2.5cqw,22px);opacity:.8;flex-shrink:0}
+.ws-book-stacked .ws-book-price[data-trend="up"] .ws-book-price-line{color:var(--ws-positive,var(--up,#32d6a0))}
+.ws-book-stacked .ws-book-price[data-trend="down"] .ws-book-price-line{color:var(--ws-negative,var(--down,#ff6175))}
+@container (max-width:340px){.ws-book-stacked .ws-book-columns,.ws-book-stacked .ws-book-level{gap:3px;padding-inline:3px}.ws-book-stacked .ws-book-level{font-size:clamp(8px,2.7cqw,10px)}.ws-book-stacked .ws-book-columns{font-size:8px}}
+@container (max-width:235px){.ws-book-stacked .ws-book-columns,.ws-book-stacked .ws-book-level{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ws-book-stacked .ws-book-columns span:last-child,.ws-book-stacked .ws-book-level span:last-child{grid-column:1/-1;text-align:right}.ws-book-stacked .ws-book-level span:last-child{font-size:9px}.ws-book-stacked .ws-book-price{min-height:44px;padding-block:4px}.ws-book-price-label{font-size:8px}}
+@container (max-height:315px){.ws-book-stacked>section h3{min-height:16px;padding-block:2px;font-size:9px}.ws-book-stacked .ws-book-columns{top:16px;padding-block:2px}.ws-book-stacked .ws-book-level{min-height:19px;padding-block:2px}.ws-book-stacked .ws-book-price{min-height:42px;padding-block:4px}.ws-book-price-label{font-size:8px}}
+body.ws-immersive .ws-card[data-type="orderbook"] .ws-card-body{justify-content:flex-start!important}
+
+/* Order Book PRO: larger legible rows, scrollable sides, and native SIZE/STEP selection. */
+.ws-section-body[data-widget="orderbook"]{display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;overflow:hidden;gap:3px}
+.ws-section-body[data-widget="orderbook"]>.ws-book.ws-book-stacked{min-height:0;flex:1 1 0;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr) auto minmax(0,1fr)!important}
+.ws-book-toolbar{display:flex;align-items:center;justify-content:space-between;min-width:0;min-height:34px;flex-shrink:0;padding:1px 5px 4px;gap:10px;border-bottom:1px solid var(--ws-line)}
+.ws-book-pair{font:750 11px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.05em;color:var(--ws-muted)}
+.ws-book-step-label{display:flex;align-items:center;gap:9px;font:700 11px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.06em;color:var(--ws-muted)}
+.ws-book-step{font:750 12px/1.2 ui-monospace,Menlo,monospace;min-width:86px;max-width:130px;min-height:29px;padding:3px 8px;color:var(--ws-fg);background:var(--ws-panel);border:1px solid var(--ws-line);border-radius:6px;cursor:pointer}
+.ws-book-stacked>.ws-book-ask,.ws-book-stacked>.ws-book-bid{overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin;scrollbar-gutter:stable;overscroll-behavior-y:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.ws-book-stacked>section h3{font-size:11px;min-height:22px}
+.ws-book-stacked .ws-book-columns,.ws-book-stacked .ws-book-level{font-size:clamp(11px,1.8cqw,15px);line-height:1.35}
+.ws-book-stacked .ws-book-columns{font-size:clamp(10px,1.35cqw,12px);top:22px}
+.ws-book-stacked .ws-book-level{min-height:27px}
+@container (max-width:340px){.ws-book-stacked .ws-book-columns,.ws-book-stacked .ws-book-level{font-size:11px}.ws-book-stacked>section h3{font-size:10px}.ws-book-stacked .ws-book-columns{font-size:9px}}
+@container (max-width:235px){.ws-book-stacked .ws-book-columns,.ws-book-stacked .ws-book-level{font-size:10px}.ws-book-stacked .ws-book-level{min-height:25px}}
+@container (max-height:315px){.ws-book-stacked .ws-book-level{min-height:23px}.ws-book-toolbar{min-height:29px}.ws-book-stacked .ws-book-columns{top:18px}}

@@ -1,0 +1,124 @@
+<!doctype html>
+<html data-inj-page="live-rewards" data-inj-viewport="91" lang="it" data-theme="navy">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07121b">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>INJ NODE · Live Rewards</title>
+  <script>
+    try {
+      const savedTheme = (localStorage.getItem('inj_monitor_theme') === 'dynamic' ? 'ocean' : localStorage.getItem('inj_monitor_theme'));
+      const theme = ['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(savedTheme) ? savedTheme : 'navy';
+      document.documentElement.dataset.theme = theme;
+      const themeColors = { navy:'#07121b', black:'#090b0e', light:'#f8fbff', amber:'#0a111a', ocean:'#07131f', chromatic:'#111323', velvet:'#0a1024', aqua:'#d7e9ef', 'ocean-x-electric':'#06132d', 'ocean-x-ion':'#130c2c', 'ocean-x-toxic':'#061c1d', 'ocean-x-solar':'#1b122c' };
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', (themeColors[theme] || '#080d12'));
+    } catch (_) {}
+  </script>
+  <link rel="stylesheet" href="./live-rewards.css?v=16.05.02">
+  <link rel="stylesheet" href="./reward-velocity.css?v=160122">
+  <link rel="stylesheet" href="./viewport.css?v=16.00.74">
+  <script defer src="./viewport.js?v=16.06.00"></script>
+  <script defer src="./live-rewards.js?v=160502"></script>
+  <link rel="stylesheet" href="./top-clarity.css?v=16.00.88">
+<link rel="stylesheet" href="navigation.css?v=160074">
+<script defer src="navigation.js?v=20261027-g1"></script>
+<script defer src="i18n.js?v=160114"></script>
+
+<link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
+<link rel="stylesheet" href="./ocean-aurora.css?v=160109">
+<script defer src="./ocean-aurora.js?v=160109"></script>
+<link rel="stylesheet" href="./chromatic-mist.css?v=160110">
+<script defer src="./chromatic-mist.js?v=160110"></script>
+<link rel="stylesheet" href="./theme-harmony.css?v=160114">
+<link rel="stylesheet" href="./velvet-nebula.css?v=160112">
+<script defer src="./velvet-nebula.js?v=160112"></script>
+<link rel="stylesheet" href="./aqua-mirage.css?v=160113">
+<script defer src="./aqua-mirage.js?v=160113"></script>
+<link rel="stylesheet" href="./ocean-x-series.css?v=160114">
+<script defer src="./ocean-x-series.js?v=160114"></script>
+<link rel="stylesheet" href="./scroll-edges.css?v=160129">
+<link rel="stylesheet" href="./section-heading-harmony.css?v=160131">
+<link rel="stylesheet" href="./unified-navigation.css?v=160136">
+<script defer src="./section-heading-harmony.js?v=160131"></script>
+<script defer src="./scroll-edges.js?v=160128"></script>
+<link rel="stylesheet" href="./adaptive-layout.css?v=160600">
+<script defer src="./adaptive-layout.js?v=160600"></script>
+<link rel="manifest" href="./manifest.webmanifest?v=16.06.29">
+<meta name="apple-mobile-web-app-title" content="INJ Node">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/inj-node-minimal-180-v16.06.29.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/inj-node-minimal-192-v16.06.29.png">
+<link rel="icon" type="image/svg+xml" href="./icons/inj-node-minimal-icon-v16.06.29.svg">
+<link rel="stylesheet" href="./inj-uhd.css?v=160710">
+<!-- Global INJ Node terminal typography -->
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="stylesheet" href="./card-titles-uppercase.css?v=20261024">
+<script defer src="./inj-node-insights-config.js?v=1"></script>
+<script defer src="./inj-node-telemetry.js?v=1"></script>
+</head>
+<body>
+  <div class="rewards-shell">
+    <header class="rewards-header">
+      <a class="rewards-close" id="rewardsClose" href="./index.html" aria-label="Torna alla Home" title="Home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7"></path><path d="M6.5 10v9h11v-9M10 19v-5h4v5"></path></svg>
+      </a>
+      <div class="rewards-title inj-location-title" data-i18n-skip="true"><strong class="inj-location-name">INJ Node</strong><span class="inj-location-section" data-inj-section-name="live-rewards">Live Rewards</span></div>
+      <div class="rewards-head-status"><strong id="rewardsHeaderPrice">—</strong><span class="rewards-live sync" id="rewardsLiveBadge"><i></i>LIVE</span></div>
+    </header>
+
+    <main class="rewards-main">
+      <section class="rewards-intro">
+        <div>
+          <span class="rewards-kicker" id="rewardsKicker">5 WALLET GESTITI</span>
+          <h1>Reward che maturano <em>in tempo reale</em></h1>
+          <p id="rewardVelocityIntro">I reward partono da un dato verificato on-chain e scorrono secondo staking e APR netto di ciascun wallet. Le scie Reward Velocity mostrano una velocità stimata, non transazioni della rete; toccale per i dettagli. Il saldo disponibile resta escluso.</p>
+        </div>
+        <div class="rewards-sync-meta"><i></i><span id="rewardsUpdated">Sincronizzazione…</span></div>
+      </section>
+
+      <section class="rewards-layout">
+        <div class="rewards-list-panel">
+          <div class="rewards-list-head">
+            <div><span>WALLET</span><small>Nome · indirizzo</small></div>
+            <div><span>REWARD STAKING LIVE</span><small>Saldo wallet escluso</small></div>
+          </div>
+          <div class="rewards-list" id="rewardsList" aria-live="polite"></div>
+        </div>
+
+        <aside class="rewards-total-panel">
+          <div class="rewards-total-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="rewards-total-label">TOTAL STAKING REWARDS · LIVE</span>
+          <div class="rewards-total-value"><strong id="rewardsTotal">—</strong><small>INJ</small></div>
+          <div class="rewards-total-fiat" id="rewardsTotalFiat">—</div>
+          <div class="reward-flow reward-flow-total reward-runway-live" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="rewards-total-metrics">
+            <div><span>24H</span><strong id="rewardsTotalDay">—</strong></div>
+            <div><span>STAKING TOTALE</span><strong id="rewardsTotalStaked">—</strong></div>
+            <div><span>APR MEDIO</span><strong id="rewardsApr">—</strong></div>
+            <div class="rewards-total-wallets"><span>WALLET</span><strong class="rewards-total-status"><i></i><b id="rewardsWalletStatus">0/5 LIVE</b></strong></div>
+          </div>
+        </aside>
+      </section>
+    <footer class="inj-long-page-signature inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
+</main>
+  </div>
+
+  <div class="reward-editor" id="rewardEditor" hidden aria-hidden="true">
+    <div class="reward-editor-backdrop" data-editor-close></div>
+    <form class="reward-editor-card" id="rewardEditorForm">
+      <span>RINOMINA WALLET</span>
+      <strong id="rewardEditorAddress">—</strong>
+      <label for="rewardEditorInput">Nome wallet</label>
+      <input id="rewardEditorInput" maxlength="28" autocomplete="off" spellcheck="false" placeholder="Es. Ledger principale">
+      <div class="reward-editor-actions">
+        <button type="button" data-editor-close>Annulla</button>
+        <button type="submit">Salva</button>
+      </div>
+    </form>
+  </div>
+
+  
+</body>
+</html>

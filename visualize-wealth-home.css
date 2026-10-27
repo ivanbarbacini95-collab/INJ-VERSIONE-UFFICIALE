@@ -1,0 +1,322 @@
+/* v16.01.21 — Wealth launcher baseline, gemstone art and theme-aware Treasury spotlight.
+   Home only. No backdrop blur, no fixed layers, no scroll/gesture interception. */
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryVisualizeWealthButton{
+ --tile-accent:var(--accent,#78ead0);
+ position:relative!important;box-sizing:border-box!important;
+ display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+ justify-content:flex-start!important;align-items:center!important;
+ gap:0!important;min-width:0!important;width:100%!important;
+ height:76px!important;min-height:76px!important;
+ padding:11px 127px 11px 20px!important;text-align:left!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton > :is(.entry-action-icon,.entry-action-arrow){
+ display:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton > span:not(.entry-action-icon):not(.inj-tile-scene){
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex:1 1 auto!important;order:0!important;align-self:center!important;
+ width:auto!important;max-width:100%!important;min-width:0!important;
+ height:auto!important;padding:0!important;margin:0!important;
+ position:relative!important;z-index:2!important;text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton strong{
+ display:block!important;min-width:0!important;max-width:100%!important;
+ margin:0!important;font-size:clamp(14px,1.1vw,17px)!important;
+ font-weight:800!important;line-height:1.25!important;letter-spacing:-.02em!important;
+ white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+ text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton > .inj-tile-scene{
+ display:block!important;position:absolute!important;z-index:1!important;
+ flex:none!important;order:unset!important;align-self:auto!important;
+ left:auto!important;right:18px!important;top:50%!important;bottom:auto!important;
+ width:98px!important;height:58px!important;max-width:98px!important;min-width:0!important;
+ margin:0!important;padding:0!important;
+ transform:translateY(-50%)!important;-webkit-transform:translateY(-50%)!important;
+ opacity:.9!important;overflow:hidden!important;pointer-events:none!important;
+ color:var(--tile-accent)!important;
+ filter:none!important;-webkit-filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton > .inj-tile-scene svg{
+ display:block!important;width:100%!important;height:100%!important;overflow:hidden!important;
+}
+/* Treasury is always the final featured launcher and inherits every theme's accent. */
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{
+ --tile-accent:var(--accent,#78ead0);
+ order:99!important;
+ border:1px solid color-mix(in srgb,var(--tile-accent) 58%,var(--line,transparent))!important;
+ background:
+   radial-gradient(ellipse at 90% 48%,color-mix(in srgb,var(--tile-accent) 16%,transparent),transparent 65%),
+   linear-gradient(112deg,color-mix(in srgb,var(--tile-accent) 12%,var(--surface,#09181b)),
+                       color-mix(in srgb,var(--tile-accent) 4%,var(--surface-strong,#0c1820)))!important;
+ box-shadow:
+   0 0 0 1px color-mix(in srgb,var(--tile-accent) 11%,transparent),
+   0 0 22px color-mix(in srgb,var(--tile-accent) 18%,transparent),
+   inset 0 1px 0 color-mix(in srgb,var(--tile-accent) 35%,transparent)!important;
+}
+html[data-inj-page="index"] body #entryGate #entryTreasuryButton .inj-tile-scene{
+ opacity:1!important;color:var(--tile-accent)!important;
+}
+html[data-inj-page="index"] body #entryGate #entryTreasuryButton strong{
+ font-weight:850!important;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate #entryTreasuryButton:hover{
+  border-color:color-mix(in srgb,var(--tile-accent) 85%,var(--line,transparent))!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--tile-accent) 19%,transparent),
+             0 0 29px color-mix(in srgb,var(--tile-accent) 25%,transparent),
+             inset 0 1px 0 color-mix(in srgb,var(--tile-accent) 40%,transparent)!important;
+ }
+}
+@media(max-width:1100px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryVisualizeWealthButton{
+  grid-column:1/-1!important;grid-row:auto!important;
+  height:73px!important;min-height:73px!important;
+  padding:11px 106px 11px 18px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton > .inj-tile-scene{
+  right:13px!important;width:81px!important;max-width:81px!important;height:52px!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryVisualizeWealthButton strong{
+  font-size:clamp(13px,3.6vw,16px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{
+  grid-column:1/-1!important;grid-row:auto!important;
+  height:78px!important;min-height:78px!important;
+ }
+}
+@media(max-width:370px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryVisualizeWealthButton{padding-right:92px!important;padding-left:15px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton > .inj-tile-scene{right:10px!important;width:72px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate
+ #entryVisualizeWealthButton .inj-tile-scene *,
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .inj-tile-scene *{animation:none!important}
+}
+
+/* v16.01.23 — The Wealth launcher is an anchor unlike most Home buttons.
+   Remove browser default link underline across all themes and input states. */
+html[data-inj-page="index"] body #entryGate #entryVisualizeWealthButton,
+html[data-inj-page="index"] body #entryGate #entryVisualizeWealthButton:is(:link,:visited,:hover,:active,:focus-visible),
+html[data-inj-page="index"] body #entryGate #entryVisualizeWealthButton > span:not(.entry-action-icon):not(.inj-tile-scene),
+html[data-inj-page="index"] body #entryGate #entryVisualizeWealthButton strong{
+  text-decoration:none!important;
+  text-decoration-line:none!important;
+  -webkit-text-decoration:none!important;
+}
+
+/* v16.01.26 — B Capital Group on the Home card ONLY.
+   Theme-colored highlight retained; original inner Treasury header restored. */
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{
+ display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+ align-items:center!important;justify-content:flex-start!important;
+ gap:0!important;min-width:0!important;max-width:100%!important;
+ height:78px!important;min-height:78px!important;
+ padding:12px 20px!important;text-align:left!important;text-decoration:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton:is(:link,:visited,:hover,:active,:focus-visible){text-decoration:none!important}
+html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton > :is(.entry-action-icon,.entry-action-arrow){display:none!important}
+html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton > .treasury-entry-copy{
+ position:relative!important;z-index:2!important;box-sizing:border-box!important;
+ display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+ align-items:center!important;justify-content:space-between!important;
+ align-self:center!important;flex:1 1 100%!important;order:0!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ gap:12px!important;padding:0!important;margin:0!important;text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > strong{
+ display:block!important;flex:1 1 auto!important;
+ width:auto!important;min-width:0!important;max-width:100%!important;
+ margin:0!important;padding:0!important;
+ color:var(--text)!important;font-size:clamp(15px,1.25vw,19px)!important;
+ font-weight:900!important;line-height:1.16!important;letter-spacing:-.025em!important;
+ text-align:left!important;white-space:nowrap!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;text-decoration:none!important;-webkit-line-clamp:unset!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > .treasury-entry-subtitle{
+ display:inline-flex!important;flex:0 0 auto!important;align-items:center!important;
+ justify-content:flex-end!important;width:auto!important;max-width:40%!important;
+ padding:0 0 0 10px!important;margin:0!important;
+ border-left:1px solid color-mix(in srgb,var(--tile-accent,var(--accent)) 42%,transparent);
+ color:var(--tile-accent,var(--accent))!important;
+ font-size:clamp(10px,.8vw,12px)!important;line-height:1.2!important;
+ font-weight:900!important;letter-spacing:.075em!important;white-space:nowrap!important;
+ text-align:right!important;text-decoration:none!important;
+}
+@media(max-width:1100px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{
+  grid-column:1/-1!important;grid-row:auto!important;
+  height:78px!important;min-height:78px!important;padding:12px 17px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > strong{font-size:clamp(14px,3.8vw,18px)!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > .treasury-entry-subtitle{
+  font-size:clamp(10px,2.7vw,12px)!important;letter-spacing:.035em!important;
+ }
+}
+@media(max-width:370px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{padding:11px 12px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton > .treasury-entry-copy{gap:6px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > strong{font-size:13.5px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > .treasury-entry-subtitle{
+  font-size:9px!important;padding-left:6px!important;
+ }
+}
+
+/* v16.01.27 — Keep INJ Treasury readable BEFORE the animated Treasury artwork.
+   Reserved right-hand art column prevents overlapping text at every breakpoint.
+   Scope: Home launcher only; the Treasury screen stays unchanged. */
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{
+ padding:12px 121px 12px 20px!important;
+ gap:0!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton > .treasury-entry-copy{
+ position:relative!important;
+ z-index:2!important;
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ flex:1 1 auto!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+ gap:12px!important;
+ padding:0!important;
+ margin:0!important;
+ pointer-events:none;
+}
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton .treasury-entry-subtitle{
+ position:relative!important;
+ z-index:3!important;
+ flex-shrink:0!important;
+ order:1!important;
+ color:var(--tile-accent,var(--accent))!important;
+ background:transparent!important;
+ opacity:1!important;
+ white-space:nowrap!important;
+ text-shadow:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton > .inj-tile-scene{
+ display:block!important;
+ position:absolute!important;
+ z-index:1!important;
+ pointer-events:none!important;
+ box-sizing:border-box!important;
+ top:50%!important;
+ bottom:auto!important;
+ right:16px!important;
+ left:auto!important;
+ width:88px!important;
+ max-width:88px!important;
+ min-width:0!important;
+ height:58px!important;
+ margin:0!important;
+ padding:0!important;
+ flex:none!important;
+ align-self:auto!important;
+ transform:translateY(-50%)!important;
+ -webkit-transform:translateY(-50%)!important;
+ opacity:.87!important;
+ overflow:hidden!important;
+ filter:none!important;
+ -webkit-filter:none!important;
+ color:var(--tile-accent,var(--accent))!important;
+}
+html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton > .inj-tile-scene svg{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+}
+@media(max-width:1100px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{padding:11px 99px 11px 17px!important}
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton > .inj-tile-scene{
+  right:12px!important;width:74px!important;max-width:74px!important;height:53px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton > .treasury-entry-copy{gap:8px!important}
+}
+@media(max-width:430px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{padding:11px 77px 11px 12px!important}
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton > .inj-tile-scene{
+  right:7px!important;width:60px!important;max-width:60px!important;height:49px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton > .treasury-entry-copy{gap:5px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > strong{
+  font-size:clamp(12px,3.4vw,14px)!important;letter-spacing:-.04em!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-subtitle{
+  max-width:none!important;
+  font-size:clamp(9px,2.65vw,11px)!important;
+  letter-spacing:0!important;
+  padding-left:7px!important;
+ }
+}
+@media(max-width:340px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton{padding-right:69px!important}
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton > .inj-tile-scene{right:5px!important;width:52px!important;max-width:52px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-copy > strong{font-size:12px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryTreasuryButton .treasury-entry-subtitle{font-size:9px!important;padding-left:5px!important}
+}

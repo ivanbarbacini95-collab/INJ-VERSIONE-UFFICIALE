@@ -1,0 +1,33 @@
+/* v2026.10.26 — Timeframe rail matches Command Center, a single swipeable row. */
+#livePage .timeframe-bar{
+  box-sizing:border-box!important;display:flex!important;flex-wrap:nowrap!important;
+  justify-content:flex-start!important;align-items:center!important;
+  width:100%!important;min-width:0!important;max-width:none!important;
+  overflow-x:auto!important;overflow-y:hidden!important;
+  gap:clamp(3px,.6vw,10px)!important;
+  padding:5px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left))!important;
+  scroll-padding-inline:20px;overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;
+}
+#livePage .timeframe-bar::-webkit-scrollbar{display:none!important}
+#livePage .timeframe-bar .timeframe{
+  flex:0 0 auto!important;width:auto!important;min-width:42px!important;
+  height:29px!important;min-height:29px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  padding:0 9px!important;white-space:nowrap!important;
+  border:1px solid transparent;border-radius:6px!important;
+  font-size:clamp(.55rem,.75vw,.70rem)!important;font-weight:850!important;
+  letter-spacing:.03em;line-height:1;
+}
+#livePage .timeframe-bar .timeframe[data-range="all"]{min-width:58px!important}
+#livePage .timeframe-bar .timeframe.active{
+  background:color-mix(in srgb,var(--accent) 10%,var(--surface))!important;
+  border-color:color-mix(in srgb,var(--accent) 28%,var(--line))!important;
+  color:var(--text)!important;
+}
+#livePage .timeframe-bar .timeframe.active::after{left:20%!important;right:20%!important;bottom:0!important}
+#livePage.focus-mode .timeframe-bar{padding-block:3px!important}
+@media(max-width:700px){
+  #livePage .timeframe-bar{gap:3px!important;padding-block:4px!important}
+  #livePage .timeframe-bar .timeframe{height:27px!important;min-height:27px!important;padding-inline:8px!important;font-size:.60rem!important}
+}

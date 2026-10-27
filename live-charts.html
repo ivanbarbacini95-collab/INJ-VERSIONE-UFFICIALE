@@ -6,28 +6,63 @@
   <meta name="theme-color" content="#050506">
 
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="INJ Node">
   <title>Live Charts · INJ Node</title>
   <script>
     try {
       const theme = localStorage.getItem('inj_monitor_theme');
-      document.documentElement.dataset.theme = ['navy','black','light','amber'].includes(theme) ? theme : 'navy';
+      document.documentElement.dataset.theme = ['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(theme) ? theme : 'navy';
     } catch (_) {}
   </script>
-  <link rel="stylesheet" href="live-charts.css?v=15.99.80">
+  <link rel="stylesheet" href="live-charts.css?v=16.00.37">
 <script>document.addEventListener('DOMContentLoaded',()=>{const c=getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim();if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
-<link rel="stylesheet" href="viewport.css?v=15.99.80">
-<script defer src="viewport.js?v=15.99.80"></script>
+<link rel="stylesheet" href="viewport.css?v=16.00.74">
+<script defer src="viewport.js?v=16.06.00"></script>
+  <link rel="stylesheet" href="./top-clarity.css?v=16.00.88">
+<link rel="stylesheet" href="navigation.css?v=160074">
+<script defer src="navigation.js?v=20261027-g1"></script>
+<script defer src="i18n.js?v=160114"></script>
+
+<link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
+<link rel="stylesheet" href="./ocean-aurora.css?v=160109">
+<script defer src="./ocean-aurora.js?v=160109"></script>
+<link rel="stylesheet" href="./chromatic-mist.css?v=160110">
+<script defer src="./chromatic-mist.js?v=160110"></script>
+<link rel="stylesheet" href="./theme-harmony.css?v=160114">
+<link rel="stylesheet" href="./velvet-nebula.css?v=160112">
+<script defer src="./velvet-nebula.js?v=160112"></script>
+<link rel="stylesheet" href="./aqua-mirage.css?v=160113">
+<script defer src="./aqua-mirage.js?v=160113"></script>
+<link rel="stylesheet" href="./ocean-x-series.css?v=160114">
+<script defer src="./ocean-x-series.js?v=160114"></script>
+<link rel="stylesheet" href="./scroll-edges.css?v=160129">
+<link rel="stylesheet" href="./section-heading-harmony.css?v=160131">
+<link rel="stylesheet" href="./unified-navigation.css?v=160136">
+<link rel="stylesheet" href="./live-charts-open-history.css?v=160140">
+<script defer src="./section-heading-harmony.js?v=160131"></script>
+<script defer src="./scroll-edges.js?v=160128"></script>
+<link rel="stylesheet" href="./adaptive-layout.css?v=160600">
+<script defer src="./adaptive-layout.js?v=160600"></script>
+<link rel="manifest" href="./manifest.webmanifest?v=16.06.29">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/inj-node-minimal-180-v16.06.29.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/inj-node-minimal-192-v16.06.29.png">
+<link rel="icon" type="image/svg+xml" href="./icons/inj-node-minimal-icon-v16.06.29.svg">
+<link rel="stylesheet" href="./inj-uhd.css?v=160710">
+<!-- Global INJ Node terminal typography -->
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="stylesheet" href="./card-titles-uppercase.css?v=20261024">
+<link rel="stylesheet" href="./live-charts-timeframe-rail.css?v=20261026tf1">
+<script defer src="./inj-node-insights-config.js?v=1"></script>
+<script defer src="./inj-node-telemetry.js?v=1"></script>
 </head>
 <body>
   <main class="live-page" id="livePage">
     <header class="terminal-header">
       <button class="icon-button back-button" id="liveChartsBack" type="button" aria-label="Torna alla Home">×</button>
 
-      <div class="brand" aria-label="INJ Node">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8.5 27.4A16.5 16.5 0 0 1 33.7 9.6"/><path d="M39.5 20.6A16.5 16.5 0 0 1 14.3 38.4"/><path d="M15 33V15l18 18V15"/><circle cx="15" cy="15" r="2.4"/><circle cx="33" cy="33" r="2.4"/><circle cx="24" cy="24" r="2.75"/></svg>
-        <span>INJ NODE</span>
+      <div class="brand inj-location-brand" data-i18n-skip="true" aria-label="Live Charts">
+        <span class="inj-location-section">LIVE CHARTS</span>
       </div>
 
       <div class="market-heading">
@@ -46,26 +81,19 @@
     </header>
 
     <nav class="timeframe-bar" id="timeframeBar" aria-label="Seleziona timeframe">
-      <button class="timeframe active" type="button" data-range="m1"><b>1</b><span>MIN</span></button>
-      <button class="timeframe" type="button" data-range="m5"><b>5</b><span>MIN</span></button>
-      <button class="timeframe" type="button" data-range="m15"><b>15</b><span>MIN</span></button>
-      <button class="timeframe extra-mobile" type="button" data-range="m30"><b>30</b><span>MIN</span></button>
-      <button class="timeframe" type="button" data-range="h1"><b>1</b><span>ORA</span></button>
-      <button class="timeframe" type="button" data-range="h4"><b>4</b><span>ORE</span></button>
-      <button class="timeframe" type="button" data-range="d1"><b>1</b><span>G</span></button>
-      <button class="timeframe" type="button" data-range="w1"><b>1</b><span>S</span></button>
-      <button class="timeframe extra-mobile" type="button" data-range="mo1"><b>1</b><span>MESE</span></button>
-      <button class="timeframe extra-mobile" type="button" data-range="y1"><b>1</b><span>Y</span></button>
-      <button class="timeframe extra-mobile" type="button" data-range="all"><b>ALL</b></button>
-      <div class="timeframe-more-wrap">
-        <button class="timeframe-more-toggle" id="moreTimeframesToggle" type="button" aria-expanded="false"><b>MORE</b></button>
-        <div class="timeframe-more-menu" id="moreTimeframesMenu" aria-hidden="true">
-          <button class="timeframe-more-option" type="button" data-range="m30"><b>30</b><span>MIN</span></button>
-          <button class="timeframe-more-option" type="button" data-range="mo1"><b>1</b><span>MESE</span></button>
-          <button class="timeframe-more-option" type="button" data-range="y1"><b>1</b><span>Y</span></button>
-          <button class="timeframe-more-option" type="button" data-range="all"><b>ALL</b></button>
-        </div>
-      </div>
+      <button class="timeframe active" type="button" data-range="m1" aria-label="1 minuto" aria-pressed="true">1m</button>
+      <button class="timeframe" type="button" data-range="m5" aria-label="5 minuti" aria-pressed="false">5m</button>
+      <button class="timeframe" type="button" data-range="m10" aria-label="10 minuti" aria-pressed="false">10m</button>
+      <button class="timeframe" type="button" data-range="h1" aria-label="1 ora" aria-pressed="false">1H</button>
+      <button class="timeframe" type="button" data-range="h3" aria-label="3 ore" aria-pressed="false">3H</button>
+      <button class="timeframe" type="button" data-range="h6" aria-label="6 ore" aria-pressed="false">6H</button>
+      <button class="timeframe" type="button" data-range="h12" aria-label="12 ore" aria-pressed="false">12H</button>
+      <button class="timeframe" type="button" data-range="d1" aria-label="1 giorno" aria-pressed="false">1G</button>
+      <button class="timeframe" type="button" data-range="d3" aria-label="3 giorni" aria-pressed="false">3G</button>
+      <button class="timeframe" type="button" data-range="w1" aria-label="1 settimana" aria-pressed="false">1S</button>
+      <button class="timeframe" type="button" data-range="mo1" aria-label="1 mese" aria-pressed="false">1M</button>
+      <button class="timeframe" type="button" data-range="y1" aria-label="1 anno" aria-pressed="false">1Y</button>
+      <button class="timeframe" type="button" data-range="all" aria-label="Storico INJ dal 21 ottobre 2020" aria-pressed="false">TUTTO</button>
     </nav>
 
     <section class="terminal-shell" id="terminalShell" data-range-key="m1" aria-label="Grafico realtime Injective">
@@ -73,6 +101,8 @@
         <div class="chart-column">
           <div class="plot" id="plot">
             <canvas id="mainCanvas" aria-label="Grafico Live INJ USDT"></canvas>
+            <span class="chart-history-caption" id="historyViewing" hidden>STORICO · DATI LIVE ATTIVI</span>
+            <button id="returnToLive" class="chart-return-live" type="button" hidden aria-label="Torna al grafico in tempo reale"><i></i> TORNA A LIVE <span>↗</span></button>
             <div class="loading" id="chartLoading"><i></i><span>SYNC</span></div>
             <div class="chart-watermark" aria-hidden="true"><span>INJ</span><small id="watermarkRange">1 MIN</small></div>
             <div class="ema-legend" aria-hidden="true"><span class="ema12">EMA 12</span><span class="ema26">EMA 26</span><span class="ema50">EMA 50</span><span class="ema200">EMA 200</span></div>
@@ -106,20 +136,13 @@
     </section>
 
     <footer class="live-footer">
-      <small><b id="footerRange">1 MIN</b> · CANDLE LIVE · trascina sul grafico per leggere prezzo e ora</small>
+      <small><b id="footerRange">1 MIN</b> · CANDLE LIVE</small>
+      <span class="inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></span>
     </footer>
   </main>
-  <script src="live-charts.js?v=15.99.54" defer></script>
+  <script src="live-charts.js?v=20261026tf1" defer></script>
+<script defer src="./chart-haptics.js?v=160720"></script>
 
-<script>
-(function(){
-  function loadInjLanguage(){
-    if (window.INJ_I18N || document.querySelector('script[data-inj-i18n]')) return;
-    var s=document.createElement('script');s.src='i18n.js?v=15.99.80';s.async=true;s.dataset.injI18n='1';
-    s.onerror=function(){s.remove();};document.body.appendChild(s);
-  }
-  window.addEventListener('load',function(){window.setTimeout(loadInjLanguage,120);},{once:true});
-})();
-</script>
+
 </body>
 </html>

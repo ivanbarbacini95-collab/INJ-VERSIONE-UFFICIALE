@@ -1,24 +1,62 @@
 <!doctype html>
-<html data-inj-page="treasury" data-inj-viewport="80" lang="it" data-theme="navy">
+<html data-inj-page="treasury" data-inj-viewport="89" lang="it" data-theme="navy">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07121b">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title>INJ NODE · Treasury</title>
   <script>
     try {
-      const savedTheme = localStorage.getItem('inj_monitor_theme');
-      const theme = ['navy','black','light','amber'].includes(savedTheme) ? savedTheme : 'navy';
+      const savedTheme = (localStorage.getItem('inj_monitor_theme') === 'dynamic' ? 'ocean' : localStorage.getItem('inj_monitor_theme'));
+      const theme = ['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(savedTheme) ? savedTheme : 'navy';
       document.documentElement.dataset.theme = theme;
-      const themeColors = { navy:'#07121b', black:'#090b0e', light:'#f8fbff', amber:'#0a111a' };
-      document.querySelector('meta[name=\"theme-color\"]')?.setAttribute('content', themeColors[theme]);
+      const themeColors = { navy:'#07121b', black:'#090b0e', light:'#f8fbff', amber:'#0a111a', ocean:'#07131f', chromatic:'#111323', velvet:'#0a1024', aqua:'#d7e9ef', 'ocean-x-electric':'#06132d', 'ocean-x-ion':'#130c2c', 'ocean-x-toxic':'#061c1d', 'ocean-x-solar':'#1b122c' };
+      document.querySelector('meta[name=\"theme-color\"]')?.setAttribute('content', (themeColors[theme] || '#080d12'));
     } catch (_) {}
   </script>
-  <link rel="stylesheet" href="./treasury.css?v=15.99.80">
+  <link rel="stylesheet" href="./treasury.css?v=16.00.37">
 <script>document.addEventListener('DOMContentLoaded',()=>{const c=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
-<link rel="stylesheet" href="viewport.css?v=15.99.80">
-<script defer src="viewport.js?v=15.99.80"></script>
+<link rel="stylesheet" href="viewport.css?v=16.00.74">
+<script defer src="viewport.js?v=16.06.00"></script>
+  <link rel="stylesheet" href="./top-clarity.css?v=16.00.88">
+<link rel="stylesheet" href="navigation.css?v=160074">
+<script defer src="navigation.js?v=20261027-g1"></script>
+<script defer src="i18n.js?v=160124"></script>
+
+<link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
+<link rel="stylesheet" href="./treasury-ownership.css?v=16102501">
+<link rel="stylesheet" href="./ocean-aurora.css?v=160109">
+<script defer src="./ocean-aurora.js?v=160109"></script>
+<link rel="stylesheet" href="./chromatic-mist.css?v=160110">
+<script defer src="./chromatic-mist.js?v=160110"></script>
+<link rel="stylesheet" href="./theme-harmony.css?v=160114">
+<link rel="stylesheet" href="./velvet-nebula.css?v=160112">
+<script defer src="./velvet-nebula.js?v=160112"></script>
+<link rel="stylesheet" href="./aqua-mirage.css?v=160113">
+<script defer src="./aqua-mirage.js?v=160113"></script>
+<link rel="stylesheet" href="./ocean-x-series.css?v=160114">
+<script defer src="./ocean-x-series.js?v=160114"></script>
+<link rel="stylesheet" href="./scroll-edges.css?v=160129">
+<link rel="stylesheet" href="./section-heading-harmony.css?v=160131">
+<link rel="stylesheet" href="./unified-navigation.css?v=160136">
+<script defer src="./section-heading-harmony.js?v=160131"></script>
+<script defer src="./scroll-edges.js?v=160128"></script>
+<link rel="stylesheet" href="./treasury-production-center.css?v=160525">
+<link rel="stylesheet" href="./adaptive-layout.css?v=160600">
+<script defer src="./adaptive-layout.js?v=160600"></script>
+<link rel="manifest" href="./manifest.webmanifest?v=16.06.29">
+<meta name="apple-mobile-web-app-title" content="INJ Node">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/inj-node-minimal-180-v16.06.29.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/inj-node-minimal-192-v16.06.29.png">
+<link rel="icon" type="image/svg+xml" href="./icons/inj-node-minimal-icon-v16.06.29.svg">
+<link rel="stylesheet" href="./treasury-ownership-theme.css?v=160702">
+<link rel="stylesheet" href="./inj-uhd.css?v=160710">
+<!-- Global INJ Node terminal typography -->
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="stylesheet" href="./card-titles-uppercase.css?v=20261024">
+<script defer src="./inj-node-insights-config.js?v=1"></script>
+<script defer src="./inj-node-telemetry.js?v=1"></script>
 </head>
 <body>
   <div class="treasury-shell">
@@ -26,9 +64,9 @@
       <a class="treasury-close" id="treasuryClose" href="./index.html" aria-label="Torna alla Home" title="Home">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7"></path><path d="M6.5 10v9h11v-9M10 19v-5h4v5"></path></svg>
       </a>
-      <div class="treasury-title">
-        <span>INJ NODE</span>
-        <strong>Treasury</strong>
+      <div class="treasury-title inj-location-title" data-i18n-skip="true">
+        <strong class="inj-location-name">INJ Node</strong>
+        <span class="inj-location-section" data-inj-section-name="treasury">INJ Treasury</span>
       </div>
       <div class="treasury-market-reference">
         <strong id="treasuryHeaderPrice">—</strong>
@@ -54,6 +92,18 @@
         </div>
       </section>
 
+      <section class="treasury-ownership" aria-label="Percentuali dei wallet nel Treasury">
+        <div class="treasury-ownership-head">
+          <span id="treasuryOwnershipTitle">QUOTE DEI WALLET</span>
+          <small id="treasuryOwnershipSummary">5 WALLET · 100%</small>
+        </div>
+        <div class="treasury-ownership-window" id="treasuryOwnershipWindow" tabindex="0" aria-label="Scorri per visualizzare tutte le quote dei wallet">
+          <div class="treasury-ownership-track" id="treasuryOwnershipTrack">
+            <span class="treasury-ownership-loading">Sincronizzazione quote wallet…</span>
+          </div>
+        </div>
+      </section>
+
       <section class="treasury-grid">
         <article class="treasury-panel treasury-allocation-panel">
           <header><div><span>ALLOCATION</span><strong>Composizione Treasury</strong></div><small id="treasuryWalletCount">—</small></header>
@@ -68,7 +118,16 @@
             </div>
           </div>
           <div class="treasury-metrics treasury-allocation-metrics" aria-label="Dettaglio patrimonio Treasury">
-            <article class="treasury-metric treasury-metric-reward"><span>REWARD DISPONIBILI</span><strong id="treasuryRewards">—</strong><small id="treasuryRewardsWorth">—</small></article>
+            <article class="treasury-metric treasury-metric-reward reward-accent-frame reward-accent-inline">
+              <span>REWARD DISPONIBILI</span>
+              <div class="treasury-reward-value-runway">
+                <strong id="treasuryRewards">—</strong>
+                <span class="treasury-reward-runway" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                </span>
+              </div>
+              <small id="treasuryRewardsWorth">—</small>
+            </article>
             <article class="treasury-metric"><span>INJ DISPONIBILI</span><strong id="treasuryAvailable">—</strong><small id="treasuryAvailableWorth">—</small></article>
             <article class="treasury-metric"><span>IN STAKING</span><strong id="treasuryStaked">—</strong><small id="treasuryStakedWorth">—</small></article>
             <article class="treasury-metric"><span>STAKING RATIO</span><strong id="treasuryStakeRatio">—</strong><small>quota del totale</small></article>
@@ -93,6 +152,12 @@
 
         <article class="treasury-panel treasury-session-panel">
           <header><div><span>TOTAL INJ GROWTH</span><strong>Crescita Treasury</strong></div><small id="treasurySessionDelta">+0,0000 INJ</small></header>
+          <div class="treasury-chart-ranges treasury-growth-ranges" id="treasuryGrowthRanges" aria-label="Intervallo crescita Treasury">
+            <button type="button" class="active" data-growth-range="d1" aria-pressed="true">1G</button>
+            <button type="button" data-growth-range="w1" aria-pressed="false" disabled>1S</button>
+            <button type="button" data-growth-range="m1" aria-pressed="false" disabled>1M</button>
+            <button type="button" data-growth-range="all" aria-pressed="false">ALL</button>
+          </div>
           <div class="treasury-chart-summary" aria-hidden="true">
             <div class="treasury-chart-overlay treasury-growth-overlay">
               <div class="treasury-chart-primary">
@@ -121,7 +186,7 @@
 
         <article class="treasury-panel treasury-networth-panel">
           <header><div><span>TOTAL NET WORTH GROWTH</span><strong>Andamento patrimonio</strong></div><small id="treasuryWorthDelta">—</small></header>
-          <div class="treasury-worth-ranges" id="treasuryWorthRanges" aria-label="Intervallo andamento patrimonio">
+          <div class="treasury-chart-ranges treasury-worth-ranges" id="treasuryWorthRanges" aria-label="Intervallo andamento patrimonio">
             <button type="button" class="active" data-worth-range="d1" aria-pressed="true">1G</button>
             <button type="button" data-worth-range="w1" aria-pressed="false" disabled>1S</button>
             <button type="button" data-worth-range="m1" aria-pressed="false" disabled>1M</button>
@@ -146,7 +211,7 @@
           </div>
           <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Andamento storico del patrimonio totale. Tocca o trascina per leggere valore e data nel tempo.">
             <svg class="treasury-sparkline treasury-worth-sparkline" id="treasuryWorthSparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
-            <span class="treasury-worth-axis" aria-hidden="true"><b id="treasuryWorthAxisTop">—</b><b id="treasuryWorthAxisMid">—</b><b id="treasuryWorthAxisBottom">—</b></span>
+            <span class="treasury-worth-axis" aria-hidden="true"><b id="treasuryWorthAxisTop">—</b><b id="treasuryWorthAxisBottom">—</b></span>
             <span class="treasury-chart-live-dot treasury-worth-end-dot" id="treasuryWorthLiveDot" hidden aria-hidden="true"></span>
             <span class="treasury-spark-cursor" id="treasuryWorthCursor" hidden aria-hidden="true"><i></i></span>
             <span class="treasury-spark-tooltip" id="treasuryWorthTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
@@ -173,19 +238,11 @@
           </div>
         </article>
       </section>
-    </main>
+    <footer class="inj-long-page-signature inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
+</main>
   </div>
-  <script src="./treasury.js?v=15.99.80" defer></script>
+  <script src="./treasury.js?v=16.10.25.01" defer></script>
 
-<script>
-(function(){
-  function loadInjLanguage(){
-    if (window.INJ_I18N || document.querySelector('script[data-inj-i18n]')) return;
-    var s=document.createElement('script');s.src='i18n.js?v=15.99.80';s.async=true;s.dataset.injI18n='1';
-    s.onerror=function(){s.remove();};document.body.appendChild(s);
-  }
-  window.addEventListener('load',function(){window.setTimeout(loadInjLanguage,120);},{once:true});
-})();
-</script>
+
 </body>
 </html>

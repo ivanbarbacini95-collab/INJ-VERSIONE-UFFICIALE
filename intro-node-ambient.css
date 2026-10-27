@@ -1,0 +1,102 @@
+/* INJ Node intro · ambient intelligence field.
+   Lightweight CSS transforms only: no canvas or blur layer on iPhone.
+   The primary INJ NODE mark, pulse and existing max-5s boot timing remain. */
+html[data-inj-page="index"] body #bootSplash.node-pulse-splash{
+  --ambient-line:color-mix(in srgb,var(--pulse-accent) 29%,transparent);
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-field{
+  position:absolute!important;inset:0!important;z-index:0!important;
+  pointer-events:none!important;overflow:hidden!important;
+  opacity:1!important;contain:layout paint!important;
+  transform:none!important;filter:none!important;-webkit-backdrop-filter:none!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-ring{
+  position:absolute;left:50%;top:50%;
+  border:1px solid var(--ambient-line);border-radius:50%;
+  transform:translate(-50%,-50%) rotate(0deg);
+  opacity:.29;box-sizing:border-box;pointer-events:none;
+  animation:node-ambient-spin 13s linear infinite;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-ring.r1{
+  width:min(71vw,470px);height:min(71vw,470px);
+  border-style:dashed;border-spacing:14px;animation-duration:15s;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-ring.r2{
+  width:min(99vw,675px);height:min(99vw,675px);
+  border-style:dotted;animation-duration:23s;animation-direction:reverse;opacity:.2;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-ring.r3{
+  width:min(139vw,945px);height:min(139vw,945px);
+  animation-duration:31s;opacity:.13;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element{
+  position:absolute;left:var(--ambient-x);top:var(--ambient-y);z-index:0;
+  color:var(--pulse-accent);opacity:var(--ambient-opacity,.5);
+  transform:translate3d(-50%,-50%,0);
+  animation:node-ambient-float var(--ambient-duration,3.4s)
+   var(--ambient-delay,0s) ease-in-out infinite alternate;
+  white-space:nowrap;pointer-events:none!important;
+  user-select:none;-webkit-user-select:none;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-dot{
+  width:4px;height:4px;display:block;border-radius:50%;
+  background:currentColor;box-shadow:0 0 10px currentColor;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-dot.large{
+  width:6px;height:6px;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-ticker{
+  font:750 clamp(9px,1.4vw,11px)/1.4 ui-monospace,SFMono-Regular,monospace;
+  letter-spacing:.15em;text-shadow:0 0 15px var(--pulse-accent);
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-line{
+  display:block;width:30px;height:12px;opacity:.4;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-line svg{
+  width:100%;height:100%;display:block;stroke:currentColor;
+  fill:none;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-cross{
+  display:block;width:10px;height:10px;opacity:.42;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-cross::before,
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-cross::after{
+  content:"";position:absolute;display:block;background:currentColor;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-cross::before{
+  width:10px;height:1px;top:4px;left:0;
+}
+html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-cross::after{
+  width:1px;height:10px;left:4px;top:0;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-stage{
+  z-index:2!important;
+  /* With the former B Capital splash image gone, restore true vertical centering. */
+  top:0!important;
+}
+html[data-inj-page="index"] body #bootSplash .node-pulse-name{
+  position:relative!important;z-index:3!important;
+}
+@keyframes node-ambient-spin{
+  from{transform:translate(-50%,-50%) rotate(0deg)}
+  to{transform:translate(-50%,-50%) rotate(360deg)}
+}
+@keyframes node-ambient-float{
+  from{transform:translate3d(-50%,-50%,0) scale(.82);opacity:calc(var(--ambient-opacity,.5) * .55)}
+  to{transform:translate3d(calc(-50% + var(--ambient-dx,6px)),calc(-50% + var(--ambient-dy,-8px)),0) scale(1.1);
+     opacity:var(--ambient-opacity,.5)}
+}
+@media(max-width:600px){
+ html[data-inj-page="index"] body #bootSplash .node-ambient-element[data-hide-mobile="true"]{display:none!important}
+ html[data-inj-page="index"] body #bootSplash .node-ambient-ring.r3{display:none!important}
+ html[data-inj-page="index"] body #bootSplash .node-ambient-ring.r2{opacity:.15}
+ html[data-inj-page="index"] body #bootSplash .node-ambient-element.is-ticker{font-size:8px!important}
+}
+@media(max-height:480px) and (orientation:landscape){
+ html[data-inj-page="index"] body #bootSplash .node-ambient-ring.r2,
+ html[data-inj-page="index"] body #bootSplash .node-ambient-ring.r3{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #bootSplash .node-ambient-element,
+ html[data-inj-page="index"] body #bootSplash .node-ambient-ring{animation:none!important}
+}

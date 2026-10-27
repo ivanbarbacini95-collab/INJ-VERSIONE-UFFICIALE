@@ -1,4 +1,4 @@
-/* v15.99.80 — Full-page geometry. Content keeps safe-area padding inside. */
+/* v16.00.12 — Full-page geometry + native scroll performance. */
 html[data-inj-viewport] {
   --inj-viewport-height: 100vh;
 }
@@ -94,8 +94,8 @@ html[data-inj-viewport] .treasury-shell{
 /* Lock document scroll only while a modal section or the menu is open. */
 html[data-inj-viewport]:has(.performance-timeline-view.open),
 html[data-inj-viewport]:has(.converter-view.open),
-html[data-inj-viewport]:has(.focus-display-dialog:not([hidden])),
-html[data-inj-viewport]:has(.pulse-view-dialog:not([hidden])),
+html[data-inj-viewport]:has(.focus-display-dialog.mode-active:not(.mode-parked)),
+html[data-inj-viewport]:has(.pulse-view-dialog.mode-active:not(.mode-parked)),
 html[data-inj-viewport]:has(body.menu-overlay-open),
 html[data-inj-viewport] body.menu-overlay-open,
 html[data-inj-viewport] body.focus-display-open,
@@ -139,4 +139,29 @@ html[data-inj-viewport] #converterView .converter-view-main{
 }
 html[data-inj-viewport] #converterView .entry-converter{
  height:auto!important;min-height:0!important;max-width:1120px!important;align-self:safe center!important;
+}
+
+
+/* v16.00.12 — Native wheel/trackpad scrolling performance.
+   Keep scrolling on the browser compositor and avoid fixed-background repaints. */
+html[data-inj-viewport],
+html[data-inj-viewport] body,
+html[data-inj-viewport] #entryGate,
+html[data-inj-viewport] .treasury-shell,
+html[data-inj-viewport] #performanceTimelineView,
+html[data-inj-viewport] #converterView,
+html[data-inj-viewport] .header-menu-panel,
+html[data-inj-viewport] .book-page .levels {
+  scroll-behavior:auto!important;
+}
+html[data-inj-viewport] body {
+  background-attachment:scroll!important;
+}
+/* Large fixed ambient layers are visually identical while paused during a
+   wheel gesture, but no longer compete with the compositor for every frame. */
+html[data-inj-viewport].inj-native-scrolling body::before,
+html[data-inj-viewport].inj-native-scrolling body::after,
+html[data-inj-viewport].inj-native-scrolling #entryGate::before,
+html[data-inj-viewport].inj-native-scrolling #entryGate::after {
+  animation-play-state:paused!important;
 }

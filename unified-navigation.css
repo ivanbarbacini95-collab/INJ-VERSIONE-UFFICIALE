@@ -1,0 +1,484 @@
+/* INJ Node v16.01.35 — canonical responsive navigation geometry.
+ * ONE safe-area inset, ONE back control, ONE readable section title.
+ * Replaces dashboard-livecharts-top, ios-top-alignment and
+ * section-header-consistency; do not layer those patch stylesheets again.
+ * Pure presentation: no scroll-state, data, chart or theme mutations. */
+:root {
+  --inj-header-back: 44px;
+  --inj-header-gap: 10px;
+  --inj-header-air: 8px;
+  --inj-header-safe: max(8px,calc(env(safe-area-inset-top,0px) + var(--inj-header-air)));
+  --inj-control-inset: var(--inj-header-safe);
+}
+/* Keep existing title localization and theme colors. */
+.inj-location-title,.inj-location-brand {
+  min-width:0!important;
+  text-align:left!important;
+  text-decoration:none!important;
+}
+.inj-location-title > .inj-location-name,
+.inj-location-brand > .inj-location-name {
+  display:block!important;white-space:nowrap!important;
+}
+.inj-location-title > .inj-location-section,
+.inj-location-brand > .inj-location-section {
+  display:block!important;white-space:nowrap!important;
+}
+/* Never leave Home lettering visually behind Dashboard.
+   Transition underlays remain untouched until actually dismissed. */
+html[data-inj-page="index"] body:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+  > #entryGate[aria-hidden="true"]:not(.immersive-underlay):not(.dashboard-underlay),
+html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+  > #injHomeBrandFooter,
+html[data-inj-page="index"] body:not(.boot-loading) > #bootSplash {
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+@media(max-width:900px) {
+  /* A single source for iPhone and mobile web/PWA inset.
+     Do not apply this a second time to the containing page. */
+  :root{
+    --inj-header-safe:max(10px,calc(env(safe-area-inset-top,0px) + 7px));
+  }
+  /* Shell padding previously counted the notch/status inset again. */
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell,
+  html[data-inj-page="treasury"] .treasury-shell,
+  html[data-inj-page="live-rewards"] .rewards-shell,
+  html[data-inj-page="live-charts"] .live-page,
+  html[data-inj-page="order-book"] .book-page,
+  html[data-inj-market] body > .shell {
+    padding-top:0!important;
+    margin-top:0!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell {
+    position:relative!important;top:0!important;inset-inline:auto!important;
+    transform:none!important;-webkit-transform:none!important;
+  }
+  /* Standard navigation: 44px button, title after it, operational controls
+     on the right. No absolute text, no button overlays. */
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > .topbar,
+  html[data-inj-page="treasury"] .treasury-header,
+  html[data-inj-page="live-rewards"] .rewards-header,
+  html[data-inj-page="comparison"] .cap-header,
+  html[data-inj-page="visualize-wealth"] .wealth-header,
+  html[data-inj-market] .shell > .header {
+    position:relative!important;top:0!important;
+    display:grid!important;
+    grid-template-columns:var(--inj-header-back) minmax(0,1fr) auto!important;
+    grid-template-rows:44px!important;
+    align-items:center!important;
+    justify-items:stretch!important;
+    gap:var(--inj-header-gap)!important;
+    width:100%!important;height:auto!important;
+    min-height:calc(var(--inj-header-safe) + 54px)!important;
+    max-height:none!important;
+    margin-top:0!important;
+    padding-top:var(--inj-header-safe)!important;
+    padding-bottom:10px!important;
+    box-sizing:border-box!important;
+    transform:none!important;-webkit-transform:none!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > .topbar {
+    padding-left:max(6px,env(safe-area-inset-left,0px))!important;
+    padding-right:max(6px,env(safe-area-inset-right,0px))!important;
+    border-bottom:0!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main{
+    margin-top:0!important;padding-top:0!important;
+  }
+  /* Left-side navigation control owns column 1. */
+  html[data-inj-page="index"] .app-shell > .topbar > #dashboardHomeButton,
+  html[data-inj-page="treasury"] .treasury-header > .treasury-close,
+  html[data-inj-page="live-rewards"] .rewards-header > .rewards-close,
+  html[data-inj-page="comparison"] .cap-header > .cap-home,
+  html[data-inj-page="visualize-wealth"] .wealth-header > .wealth-home,
+  html[data-inj-market] .shell > .header > #marketBack {
+    grid-column:1!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    translate:none!important;transform:none!important;
+    display:grid!important;place-items:center!important;
+    width:44px!important;height:44px!important;
+    min-width:44px!important;min-height:44px!important;
+    max-width:44px!important;max-height:44px!important;
+    justify-self:start!important;align-self:center!important;
+    padding:0!important;margin:0!important;
+    box-sizing:border-box!important;
+    z-index:3!important;
+    pointer-events:auto!important;
+  }
+  /* Human-readable location title directly after the button. */
+  html[data-inj-page="index"] .app-shell > .topbar > .header-title.inj-location-brand,
+  html[data-inj-page="treasury"] .treasury-header > .treasury-title.inj-location-title,
+  html[data-inj-page="live-rewards"] .rewards-header > .rewards-title.inj-location-title,
+  html[data-inj-page="comparison"] .cap-header > .cap-heading.inj-location-title,
+  html[data-inj-page="visualize-wealth"] .wealth-header > .wealth-heading.inj-location-title,
+  html[data-inj-market] .shell > .header > .brand.inj-location-title {
+    grid-column:2!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    display:flex!important;flex-direction:column!important;
+    justify-content:center!important;align-items:flex-start!important;
+    justify-self:start!important;align-self:center!important;
+    width:auto!important;height:auto!important;
+    min-width:0!important;max-width:100%!important;
+    padding:0!important;margin:0!important;
+    translate:none!important;transform:none!important;
+    text-align:left!important;
+  }
+  /* Right side must not displace title or obscure the button. */
+  html[data-inj-page="index"] .app-shell > .topbar > #dashboardHeaderActions,
+  html[data-inj-page="treasury"] .treasury-header > .treasury-market-reference,
+  html[data-inj-page="live-rewards"] .rewards-header > .rewards-head-status,
+  html[data-inj-page="comparison"] .cap-header > .cap-connection,
+  html[data-inj-page="visualize-wealth"] .wealth-header > .wealth-eyebrow,
+  html[data-inj-market] .shell > .header > .live {
+    grid-column:3!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    justify-self:end!important;align-self:center!important;
+    min-width:0!important;max-width:100%!important;
+    margin:0!important;transform:none!important;
+  }
+  html[data-inj-page="index"] .app-shell > .topbar .inj-location-name,
+  html[data-inj-page="treasury"] .treasury-header .inj-location-name,
+  html[data-inj-page="live-rewards"] .rewards-header .inj-location-name,
+  html[data-inj-page="comparison"] .cap-header .inj-location-name,
+  html[data-inj-page="visualize-wealth"] .wealth-header .inj-location-name,
+  html[data-inj-market] .shell > .header .inj-location-name {
+    font-size:clamp(14px,3.8vw,18px)!important;
+    line-height:1.06!important;
+    font-weight:900!important;
+  }
+  html[data-inj-page="index"] .app-shell > .topbar .inj-location-section,
+  html[data-inj-page="treasury"] .treasury-header .inj-location-section,
+  html[data-inj-page="live-rewards"] .rewards-header .inj-location-section,
+  html[data-inj-page="comparison"] .cap-header .inj-location-section,
+  html[data-inj-page="visualize-wealth"] .wealth-header .inj-location-section,
+  html[data-inj-market] .shell > .header .inj-location-section {
+    font-size:clamp(9px,2.65vw,11px)!important;
+    line-height:1.22!important;letter-spacing:.035em!important;
+  }
+  /* Market maintains the semantic h1 and its TOP 200 label. */
+  html[data-inj-market] .shell > .header .brand > h1.inj-location-section {
+    display:flex!important;flex-wrap:wrap!important;
+    align-items:baseline!important;gap:5px!important;
+    margin:0!important;padding:0!important;
+    color:var(--accent)!important;
+    font-size:clamp(9px,2.65vw,11px)!important;
+  }
+  html[data-inj-market] .shell > .header .brand h1 em {
+    font-size:9px!important;
+  }
+  /* Converter/Performance are inside the Home document and already have their
+     own scroll owner. Move the safe inset to their header only. */
+  html[data-inj-page="index"] #converterView.open > .converter-view-shell,
+  html[data-inj-page="index"] #performanceTimelineView.open > .performance-timeline-shell {
+    padding-top:0!important;
+  }
+  html[data-inj-page="index"] #converterView.open .converter-view-header,
+  html[data-inj-page="index"] #performanceTimelineView.open .performance-timeline-header {
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) auto!important;
+    grid-template-rows:44px!important;
+    align-items:center!important;gap:10px!important;
+    min-height:calc(var(--inj-header-safe) + 54px)!important;
+    height:auto!important;
+    padding:var(--inj-header-safe) max(6px,env(safe-area-inset-right,0px)) 10px max(6px,env(safe-area-inset-left,0px))!important;
+    margin-top:0!important;box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] #converterView.open .converter-view-header > :first-child,
+  html[data-inj-page="index"] #performanceTimelineView.open .performance-timeline-header > :first-child {
+    grid-column:1!important;grid-row:1!important;
+    width:44px!important;height:44px!important;
+    align-self:center!important;justify-self:start!important;
+    position:relative!important;inset:auto!important;margin:0!important;
+  }
+  html[data-inj-page="index"] #converterView.open .converter-view-title,
+  html[data-inj-page="index"] #performanceTimelineView.open .performance-timeline-title {
+    grid-column:2!important;grid-row:1!important;
+    display:flex!important;flex-direction:column!important;
+    justify-content:center!important;align-items:flex-start!important;
+    position:relative!important;inset:auto!important;align-self:center!important;
+    min-width:0!important;margin:0!important;transform:none!important;
+  }
+
+  /* Order Book: preserve price and grouping controls while giving the title
+     its own readable column next to the close button. */
+  html[data-inj-page="order-book"] .book-topbar {
+    position:relative!important;top:0!important;
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) auto!important;
+    grid-template-rows:44px!important;
+    column-gap:8px!important;
+    align-items:center!important;
+    min-height:calc(var(--inj-header-safe) + 54px)!important;
+    height:auto!important;
+    padding:var(--inj-header-safe) 8px 10px!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="order-book"] .book-page {padding-top:0!important}
+  html[data-inj-page="order-book"] .book-topbar > #bookBack {
+    grid-column:1!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    width:44px!important;height:44px!important;
+    justify-self:start!important;align-self:center!important;
+    padding:0!important;margin:0!important;
+    transform:none!important;z-index:3!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar > .book-brand {
+    grid-column:2!important;grid-row:1!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:flex-start!important;justify-content:center!important;
+    position:relative!important;inset:auto!important;
+    min-width:0!important;max-width:100%!important;
+    margin:0!important;transform:none!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar > .pair {
+    display:none!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar > .top-actions {
+    grid-column:3!important;grid-row:1!important;
+    justify-self:end!important;align-self:center!important;
+    gap:6px!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar .group-label span{
+    display:none!important;
+  }
+  /* Retain the real-time state dot, but save space by omitting its tiny word. */
+  html[data-inj-page="order-book"] .book-topbar .top-actions > .status{
+    display:flex!important;align-items:center!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar .top-actions > .status b{
+    display:none!important;
+  }
+  /* Full-screen Command Center: keep header visible without a second scroll
+     or the old fixed 56px grid row clipping the top safe inset. */
+  html[data-inj-page="command-center"] .cc-topbar {
+    position:relative!important;top:0!important;
+    box-sizing:border-box!important;
+    height:auto!important;
+    min-height:calc(var(--inj-header-safe) + 54px)!important;
+    max-height:none!important;
+    padding:var(--inj-header-safe) 10px 10px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-rows:44px!important;
+    gap:8px!important;align-items:center!important;
+  }
+  html[data-inj-page="command-center"] .cc-topbar > .cc-brand{
+    grid-column:1!important;grid-row:1!important;
+    display:flex!important;align-items:center!important;gap:10px!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="command-center"] #ccBack {
+    display:grid!important;place-items:center!important;
+    position:relative!important;inset:auto!important;
+    flex:0 0 44px!important;
+    width:44px!important;height:44px!important;
+    margin:0!important;transform:none!important;
+  }
+  html[data-inj-page="command-center"] .cc-brand-copy.inj-location-title > .inj-location-section{
+    display:block!important;visibility:visible!important;
+    font-size:10px!important;white-space:nowrap!important;
+  }
+  html[data-inj-page="command-center"] .cc-topbar > .cc-live-head{
+    grid-column:2!important;grid-row:1!important;
+    align-self:center!important;justify-self:end!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="command-center"] .cc-wallet-head{
+    display:none!important;
+  }
+  @media(min-width:760px){
+    html[data-inj-page="command-center"] .cc-wallet-head{display:flex!important}
+    html[data-inj-page="command-center"] .cc-topbar{
+      grid-template-columns:minmax(0,1fr) minmax(0,.75fr) auto!important;
+    }
+    html[data-inj-page="command-center"] .cc-wallet-head{
+      grid-column:2!important;grid-row:1!important;
+    }
+    html[data-inj-page="command-center"] .cc-live-head{
+      grid-column:3!important;grid-row:1!important;
+    }
+  }
+
+  /* LIVE CHARTS: row 1 = close | LIVE CHARTS | actions; row 2 = actual
+     centered price. No absolute-positioned title to overlap the X. */
+  html[data-inj-page="live-charts"] .live-page {
+    padding-top:0!important;
+    margin-top:0!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header {
+    display:grid!important;
+    position:relative!important;top:0!important;
+    grid-template-columns:44px minmax(0,1fr) auto!important;
+    grid-template-rows:44px minmax(46px,auto)!important;
+    column-gap:10px!important;row-gap:3px!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:calc(var(--inj-header-safe) + 107px)!important;
+    max-height:none!important;
+    padding:var(--inj-header-safe) max(8px,env(safe-area-inset-right,0px)) 7px max(8px,env(safe-area-inset-left,0px))!important;
+    align-items:center!important;box-sizing:border-box!important;
+    overflow:visible!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > #liveChartsBack {
+    display:grid!important;place-items:center!important;
+    grid-column:1!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    top:auto!important;left:auto!important;right:auto!important;
+    bottom:auto!important;
+    translate:none!important;transform:none!important;
+    align-self:center!important;justify-self:start!important;
+    width:44px!important;height:44px!important;
+    min-height:44px!important;
+    padding:0!important;margin:0!important;
+    z-index:8!important;pointer-events:auto!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .brand.inj-location-brand {
+    display:flex!important;visibility:visible!important;
+    grid-column:2!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    top:auto!important;left:auto!important;
+    bottom:auto!important;right:auto!important;
+    translate:none!important;transform:none!important;
+    flex-direction:row!important;align-items:center!important;
+    justify-content:flex-start!important;align-self:center!important;
+    justify-self:start!important;
+    min-width:0!important;max-width:100%!important;
+    height:44px!important;width:auto!important;
+    margin:0!important;padding:0!important;gap:0!important;
+    z-index:3!important;pointer-events:none!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .brand .inj-location-section {
+    display:block!important;visibility:visible!important;opacity:1!important;
+    color:var(--accent,#78ead0)!important;
+    font-size:clamp(11px,3.2vw,14px)!important;
+    line-height:1.15!important;letter-spacing:.025em!important;
+    font-weight:950!important;white-space:nowrap!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .header-actions {
+    grid-column:3!important;grid-row:1!important;
+    display:flex!important;align-items:center!important;justify-content:flex-end!important;
+    position:relative!important;inset:auto!important;
+    align-self:center!important;justify-self:end!important;
+    margin:0!important;padding:0!important;
+    transform:none!important;z-index:6!important;
+    gap:5px!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .connection-pill{
+    display:none!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .market-heading{
+    grid-column:1/-1!important;grid-row:2!important;
+    display:grid!important;justify-items:center!important;
+    align-items:center!important;justify-self:center!important;
+    align-self:center!important;
+    position:relative!important;inset:auto!important;
+    top:auto!important;left:auto!important;right:auto!important;
+    bottom:auto!important;translate:none!important;transform:none!important;
+    width:max-content!important;max-width:100%!important;
+    margin:0 auto!important;padding:0!important;
+    gap:0!important;text-align:center!important;z-index:2!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .market-pair{
+    display:flex!important;justify-content:center!important;
+    align-items:center!important;gap:5px!important;
+    flex-wrap:nowrap!important;white-space:nowrap!important;
+    margin:0!important;padding:0!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .market-price-row{
+    display:flex!important;flex-direction:column!important;
+    justify-content:center!important;align-items:center!important;
+    flex-wrap:nowrap!important;gap:0!important;
+    min-width:0!important;width:auto!important;
+    max-width:100%!important;margin:0!important;padding:0!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header #headerLivePrice{
+    display:block!important;
+    font-size:clamp(17px,4.7vw,24px)!important;
+    line-height:1.08!important;
+    width:auto!important;min-width:0!important;
+    margin:0!important;padding:0!important;
+    text-align:center!important;white-space:nowrap!important;
+    font-variant-numeric:tabular-nums!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header #headerRangeChange{
+    display:block!important;
+    font-size:clamp(8px,2.4vw,10px)!important;
+    line-height:1.2!important;
+    margin:0!important;padding:0!important;
+    text-align:center!important;white-space:nowrap!important;
+  }
+  @media(max-width:365px){
+    html[data-inj-page="live-charts"] .terminal-header{
+      column-gap:5px!important;
+      grid-template-columns:40px minmax(0,1fr) auto!important;
+    }
+    html[data-inj-page="live-charts"] .terminal-header > #liveChartsBack{
+      width:40px!important;height:40px!important;min-height:40px!important;
+    }
+    html[data-inj-page="live-charts"] .terminal-header .brand .inj-location-section{
+      font-size:10px!important;letter-spacing:0!important;
+    }
+  }
+}
+/* Desktop layout and the fixed Command Center remain unchanged beyond
+   the existing section identity styling. */
+
+
+/* v16.01.37 — Dashboard document-origin repair.
+   Home, splash, and parked section hosts precede .app-shell in the DOM.
+   During Dashboard mode they MUST NOT reserve even one pixel of flow height.
+   Keep .app-shell in normal flow: turning it absolute breaks iPhone touch-scroll
+   boundary detection and can make long Dashboard pages unscrollable. */
+@media(max-width:900px){
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open){
+  display:block!important;
+  margin-top:0!important;
+  padding-top:0!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > #bootSplash,
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > #entryGate,
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > #injHomeBrandFooter,
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > #injScrollProgress,
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > #performanceTimelineView:not(.open),
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > #converterView:not(.open){
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > .app-shell{
+  display:block!important;
+  position:relative!important;
+  inset:auto!important;
+  top:0!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  float:none!important;
+  clear:both!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  margin-top:calc(0px - var(--inj-dashboard-leading-space,0px))!important;
+  padding-top:0!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.dashboard-home-return):not(.entry-live-launch)
+   > .app-shell > .topbar {
+  margin-top:0!important;
+  top:0!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+ }
+}

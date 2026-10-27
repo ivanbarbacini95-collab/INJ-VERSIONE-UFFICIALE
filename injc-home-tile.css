@@ -1,0 +1,150 @@
+/* INJ Node · INJC ETF full-width launcher, isolated from the other tiles.
+   Loaded after the Home grid so mobile and desktop always use the same row. */
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryInjcEtfButton {
+  --tile-accent:color-mix(in srgb,var(--accent,#87e9db) 71%,#e3c489);
+  box-sizing:border-box!important;
+  position:relative!important;
+  isolation:isolate!important;
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  order:13!important;
+  grid-column:1/-1!important;
+  grid-row:auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:78px!important;
+  min-height:78px!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:12px 125px 12px 20px!important;
+  gap:0!important;
+  border-radius:18px!important;
+  border:1px solid color-mix(in srgb,var(--tile-accent) 30%,var(--line,transparent))!important;
+  background:linear-gradient(112deg,
+    color-mix(in srgb,var(--tile-accent) 8%,var(--surface,#09181f)),
+    color-mix(in srgb,var(--tile-accent) 2%,var(--surface-strong,#112b32)))!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--tile-accent) 18%,transparent)!important;
+  text-decoration:none!important;
+  text-align:left!important;
+  overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInjcEtfButton
+ > :is(.entry-action-icon,.entry-action-arrow){display:none!important}
+html[data-inj-page="index"] body #entryGate #entryInjcEtfButton
+ > span:not(.entry-action-icon):not(.inj-tile-scene){
+  display:flex!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  z-index:2!important;
+  flex:1 1 auto!important;
+  order:0!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  align-self:center!important;
+  width:auto!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInjcEtfButton strong{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  font-size:clamp(15px,1.25vw,18px)!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  text-align:left!important;
+  color:var(--text)!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInjcEtfButton > .inj-tile-scene {
+  display:block!important;
+  box-sizing:border-box!important;
+  position:absolute!important;
+  z-index:1!important;
+  top:50%!important;
+  bottom:auto!important;
+  right:16px!important;
+  left:auto!important;
+  flex:none!important;
+  order:unset!important;
+  width:100px!important;
+  max-width:100px!important;
+  min-width:0!important;
+  height:58px!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:.96!important;
+  transform:translateY(-50%)!important;
+  -webkit-transform:translateY(-50%)!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] body #entryGate #entryInjcEtfButton > .inj-tile-scene svg {
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:visible!important;
+  fill:none;
+  stroke:var(--tile-accent);
+  stroke-linejoin:round;
+  stroke-linecap:round;
+  stroke-width:1.6;
+}
+html[data-inj-page="index"] #entryInjcEtfButton .etf-art-paper{
+  fill:color-mix(in srgb,var(--tile-accent) 8%,transparent);
+  stroke:color-mix(in srgb,var(--tile-accent) 57%,transparent);
+}
+html[data-inj-page="index"] #entryInjcEtfButton .etf-art-label {
+  stroke:none;
+  fill:var(--tile-accent);
+  font:800 15px/1 ui-monospace,SFMono-Regular,monospace;
+  letter-spacing:1px;
+}
+html[data-inj-page="index"] #entryInjcEtfButton .etf-art-seal {
+  fill:var(--surface,#0a1b22);
+  stroke-width:2;
+}
+html[data-inj-page="index"] #entryInjcEtfButton .etf-art-bolt {
+  stroke-width:2.3;
+}
+@media(max-width:1100px) {
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryInjcEtfButton {
+   grid-column:1/-1!important;
+   height:76px!important;
+   min-height:76px!important;
+   padding:12px 115px 12px 19px!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryInjcEtfButton strong {
+   font-size:clamp(15px,3.9vw,17px)!important;
+ }
+}
+@media(max-width:360px) {
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryInjcEtfButton {
+   padding-left:14px!important;
+   padding-right:99px!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryInjcEtfButton > .inj-tile-scene {
+   width:80px!important;
+   right:11px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] #entryInjcEtfButton .inj-tile-scene *{
+  animation:none!important;
+ }
+}

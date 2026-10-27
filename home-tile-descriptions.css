@@ -1,0 +1,65 @@
+/* Home navigation microdescriptions · text only; current premium artwork untouched. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > span:not(.entry-action-icon):not(.inj-tile-scene) {
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:3px!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action .inj-tile-description {
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;padding:0!important;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:11px!important;line-height:1.25!important;font-weight:500!important;
+  letter-spacing:.01em!important;text-transform:none!important;
+  color:color-mix(in srgb,var(--text,#dbe9f8) 75%,transparent)!important;
+  text-decoration:none!important;
+  white-space:normal!important;overflow-wrap:normal!important;
+  text-align:left!important;
+}
+@media(max-width:799px) {
+  /* Eight pixels of extra breathing room avoid overlapping the title and existing artwork. */
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton) {
+    height:116px!important;min-height:116px!important;
+    padding-bottom:11px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton)
+  > span:not(.entry-action-icon):not(.inj-tile-scene) {
+    align-items:center!important;
+    gap:3px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton) .inj-tile-description {
+    font-size:10.5px!important;
+    line-height:1.2!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+}
+@media(hover:hover) and (pointer:fine) {
+  html[data-inj-page="index"] #entryGate .entry-actions.entry-flat-v44
+  > .entry-action:hover .inj-tile-description {
+    color:var(--text,#eff7ff)!important;
+  }
+}
+/* A tiny tactile cue; reuses current precision icons, without moving the cards. */
+html[data-inj-page="index"] #entryGate .entry-actions.entry-flat-v44
+> .entry-action:active > .inj-precision-icon svg {
+  transform:scale(.975);
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-inj-page="index"] #entryGate .entry-actions.entry-flat-v44
+  > .entry-action:active > .inj-precision-icon svg {transform:none!important;}
+}

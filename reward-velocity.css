@@ -1,0 +1,144 @@
+/* INJ Node v16.01.22 — Reward Velocity / Luminous Streams.
+   Visual estimate only: separate per-wallet animation based on verified delegations
+   and weighted validator APR; does not change distribution-module balances. */
+html[data-inj-page="live-rewards"] .reward-velocity{
+  --velocity-color:color-mix(in srgb,var(--accent,#78ead0) 42%,#48e5b3);
+  --velocity-duration:8s;
+  --velocity-phase:0s;
+  width:100%;min-width:0;margin-top:5px;
+}
+html[data-inj-page="live-rewards"] .reward-velocity[data-velocity-index="0"]{
+  --velocity-color:color-mix(in srgb,var(--accent,#78ead0) 38%,#3be5ad);
+}
+html[data-inj-page="live-rewards"] .reward-velocity[data-velocity-index="1"]{
+  --velocity-color:color-mix(in srgb,var(--accent,#78ead0) 36%,#74b8ff);
+}
+html[data-inj-page="live-rewards"] .reward-velocity[data-velocity-index="2"]{
+  --velocity-color:color-mix(in srgb,var(--accent,#78ead0) 36%,#bd9aff);
+}
+html[data-inj-page="live-rewards"] .reward-velocity[data-velocity-index="3"]{
+  --velocity-color:color-mix(in srgb,var(--accent,#78ead0) 35%,#ffc575);
+}
+html[data-inj-page="live-rewards"] .reward-velocity[data-velocity-index="4"]{
+  --velocity-color:color-mix(in srgb,var(--accent,#78ead0) 36%,#ff93bb);
+}
+html[data-inj-page="live-rewards"] .reward-velocity-toggle{
+  display:grid;grid-template-columns:minmax(0,1fr);width:100%;min-width:0;
+  gap:5px;padding:5px 0 4px;margin:0;border:0;border-radius:8px;
+  background:transparent;color:var(--text);text-align:left;
+  cursor:pointer;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-toggle:focus-visible{
+  outline:2px solid var(--velocity-color);outline-offset:4px;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-heading,
+html[data-inj-page="live-rewards"] .reward-velocity-summary{
+  min-width:0;display:flex;justify-content:space-between;align-items:center;gap:8px;
+  font-size:.53rem;line-height:1.2;font-weight:850;
+  font-variant-numeric:tabular-nums;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-heading>span{
+  color:var(--muted-strong);font-size:.5rem;letter-spacing:.09em;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-heading b{
+  color:var(--velocity-color);font-size:.5rem;letter-spacing:.08em;
+  white-space:nowrap;font-weight:950;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-summary{color:var(--muted-strong)}
+html[data-inj-page="live-rewards"] .reward-velocity-summary>span{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.58rem;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-summary small{
+  color:var(--velocity-color);font-size:.49rem;
+  font-weight:900;letter-spacing:.07em;white-space:nowrap;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-track{
+  position:relative;display:block;width:100%;height:15px;min-height:15px;
+  overflow:hidden;isolation:isolate;border-radius:10px;
+  background:transparent;pointer-events:none;contain:paint;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-track::before{
+  content:"";position:absolute;left:0;right:0;top:50%;height:1px;
+  transform:translateY(-50%);background:color-mix(in srgb,var(--velocity-color) 24%,transparent);
+}
+html[data-inj-page="live-rewards"] .reward-velocity-travel{
+  position:absolute;inset:0;display:block;
+  transform:translate3d(-100%,0,0);
+  animation:rvVelocityTravel var(--velocity-duration) linear infinite;
+  animation-delay:var(--velocity-phase);
+  will-change:transform,opacity;pointer-events:none;
+}
+html[data-inj-page="live-rewards"] .reward-velocity-travel i{
+  position:absolute;right:0;top:50%;width:34%;height:2px;
+  border-radius:6px;transform:translateY(-50%);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--velocity-color) 45%,transparent),var(--velocity-color));
+}
+html[data-inj-page="live-rewards"] .reward-velocity-travel b{
+  position:absolute;right:0;top:50%;width:7px;height:7px;
+  border-radius:50%;transform:translate(30%,-50%);
+  background:var(--velocity-color);
+  box-shadow:0 0 6px color-mix(in srgb,var(--velocity-color) 68%,transparent);
+}
+html[data-inj-page="live-rewards"] .reward-velocity-beacon{
+  position:absolute;right:2px;top:50%;width:8px;height:8px;
+  transform:translateY(-50%) scale(.7);
+  border:1px solid var(--velocity-color);border-radius:50%;
+  opacity:.13;pointer-events:none;
+}
+html[data-inj-page="live-rewards"] .reward-velocity.velocity-idle .reward-velocity-travel{
+  animation:none!important;opacity:0!important;will-change:auto;
+}
+html[data-inj-page="live-rewards"] .reward-velocity.velocity-idle .reward-velocity-track::before{
+  background:var(--line-strong,var(--line));
+}
+html[data-inj-page="live-rewards"] .reward-velocity.velocity-idle .reward-velocity-beacon{opacity:0}
+html[data-inj-page="live-rewards"] .reward-velocity-detail[hidden]{display:none!important}
+html[data-inj-page="live-rewards"] .reward-velocity-detail{
+  min-width:0;margin-top:3px;padding:5px 0 1px;
+  border-top:1px solid color-mix(in srgb,var(--velocity-color) 23%,var(--line));
+  display:grid;gap:3px;
+  color:var(--muted-strong);font-size:.53rem;line-height:1.3;
+  overflow-wrap:anywhere;
+}
+html[data-inj-page="live-rewards"] .reward-row.velocity-expanded{
+  border-color:color-mix(in srgb,var(--velocity-color,var(--accent)) 45%,var(--line));
+}
+html[data-inj-page="live-rewards"] .reward-row.velocity-expanded .reward-velocity-track{
+  height:19px;min-height:19px;
+}
+@keyframes rvVelocityTravel{
+  0%{transform:translate3d(-100%,0,0);opacity:0}
+  6%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translate3d(0,0,0);opacity:0}
+}
+@media(min-width:1000px){
+  html[data-inj-page="live-rewards"] .reward-card-content{gap:7px}
+  html[data-inj-page="live-rewards"] .reward-velocity{margin-top:0}
+  html[data-inj-page="live-rewards"] .reward-velocity-heading>span{font-size:clamp(.43rem,.52vw,.54rem)}
+  html[data-inj-page="live-rewards"] .reward-velocity-summary>span{font-size:clamp(.48rem,.6vw,.62rem)}
+  html[data-inj-page="live-rewards"] .reward-velocity-detail{font-size:clamp(.43rem,.52vw,.56rem)}
+}
+@media(max-width:560px){
+  html[data-inj-page="live-rewards"] .reward-velocity{margin-top:4px}
+  html[data-inj-page="live-rewards"] .reward-velocity-toggle{gap:6px}
+  html[data-inj-page="live-rewards"] .reward-velocity-track{height:20px;min-height:20px}
+  html[data-inj-page="live-rewards"] .reward-velocity-heading>span{font-size:.52rem}
+  html[data-inj-page="live-rewards"] .reward-velocity-summary>span{font-size:.63rem}
+  html[data-inj-page="live-rewards"] .reward-velocity-detail{font-size:.58rem}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="live-rewards"] .reward-velocity-travel{
+    animation:none!important;transform:translate3d(0,0,0)!important;
+    opacity:.4!important;will-change:auto;
+  }
+  html[data-inj-page="live-rewards"] .reward-velocity-beacon{opacity:.22}
+}
+
+/* Color identity follows the wallet container too (expanded-card outline). */
+html[data-inj-page="live-rewards"] .reward-row:nth-child(1){--velocity-color:color-mix(in srgb,var(--accent,#78ead0) 38%,#3be5ad)}
+html[data-inj-page="live-rewards"] .reward-row:nth-child(2){--velocity-color:color-mix(in srgb,var(--accent,#78ead0) 36%,#74b8ff)}
+html[data-inj-page="live-rewards"] .reward-row:nth-child(3){--velocity-color:color-mix(in srgb,var(--accent,#78ead0) 36%,#bd9aff)}
+html[data-inj-page="live-rewards"] .reward-row:nth-child(4){--velocity-color:color-mix(in srgb,var(--accent,#78ead0) 35%,#ffc575)}
+html[data-inj-page="live-rewards"] .reward-row:nth-child(5){--velocity-color:color-mix(in srgb,var(--accent,#78ead0) 36%,#ff93bb)}

@@ -1,0 +1,918 @@
+/* Original Home settings and native section exits retain their own layout. */
+.inj-content-frame{position:fixed;inset:0;width:100%;height:100dvh;border:0;z-index:2147483600;background:var(--theme-canvas,#07111f)}
+body.inj-section-open{overflow:hidden!important}
+/* One viewport-sized surface; scrolling belongs to its content only. */
+html[data-inj-viewport]:has(#converterView.open,#performanceTimelineView.open,#focusDisplayDialog.mode-active:not(.mode-parked),.inj-content-frame,#injMarketPortal:not([hidden])),
+html[data-inj-viewport]:has(#converterView.open,#performanceTimelineView.open,#focusDisplayDialog.mode-active:not(.mode-parked),.inj-content-frame,#injMarketPortal:not([hidden])) body{
+ overflow:hidden!important;overscroll-behavior:none!important;
+}
+html[data-inj-viewport] #converterView,
+html[data-inj-viewport] #performanceTimelineView,
+html[data-inj-viewport] #focusDisplayDialog,
+html[data-inj-viewport] #liveChartsDialog{
+ position:fixed!important;inset:0!important;width:100%!important;
+ height:var(--inj-viewport-height,100dvh)!important;max-height:var(--inj-viewport-height,100dvh)!important;
+ min-height:0!important;box-sizing:border-box;overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior:none!important;background:var(--page-gradient),var(--bg)!important;
+}
+html[data-inj-viewport] #converterView .converter-view-shell,
+html[data-inj-viewport] #performanceTimelineView .performance-timeline-shell{
+ height:auto!important;min-height:100%!important;max-height:none!important;overflow:visible!important;
+ box-sizing:border-box!important;grid-template-rows:auto auto!important;
+}
+html[data-inj-viewport] #converterView .converter-view-main{
+ height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;
+ padding:20px clamp(12px,4vw,40px)!important;box-sizing:border-box!important;
+}
+html[data-inj-viewport] #converterView .entry-converter{
+ width:100%!important;max-width:960px!important;margin:0 auto!important;height:auto!important;
+ min-height:0!important;padding:clamp(18px,3vw,32px)!important;box-sizing:border-box!important;
+}
+html[data-inj-viewport] #focusDisplayDialog .focus-display-shell{
+ height:100%!important;min-height:100%!important;max-height:none!important;box-sizing:border-box!important;
+}
+canvas,svg,[class*="chart-stage"],[class*="spark-stage"]{touch-action:pan-y pinch-zoom!important}
+#entryPulseButton,#entryFlowButton,#pulseViewDialog{display:none!important}
+@media(max-width:600px){
+ .entry-converter-flow{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important}.entry-converter-arrow{display:none!important}.entry-converter-field{min-width:0!important;width:100%!important}.entry-converter-head,.entry-converter-foot{flex-wrap:wrap;gap:12px}.converter-view-header small{white-space:normal!important}
+}
+/* All section roots share the Home palette, including direct page opens. */
+html:not([data-inj-page="index"])[data-theme="navy"]{
+--bg:#020708;
+--surface:#071515;
+--surface-strong:#0b1e1e;
+--surface-soft:#102a29;
+--theme-canvas:#020708;
+--page-gradient:linear-gradient(150deg, #061519 0%, #020708 46%, #0c0a1a 100%);
+--text:#f4fffc;
+--muted:#809c99;
+--muted-strong:#bed8d4;
+--accent:#7ef2d4;
+--line:rgba(153, 241, 224, .085);
+--up:#39e58c;
+--down:#ff5f70;
+}
+html:not([data-inj-page="index"])[data-theme="black"]{
+--bg:#000000;
+--surface:#050505;
+--surface-strong:#0a0a0b;
+--surface-soft:#111113;
+--theme-canvas:#000000;
+--page-gradient:radial-gradient(ellipse at 50% -22%, rgba(255, 255, 255, .035), transparent 34rem),
+    linear-gradient(155deg, #050505 0%, #000000 52%, #030303 100%);
+--text:#f4f4f5;
+--muted:#77777d;
+--muted-strong:#b9b9be;
+--accent:#e3e5e8;
+--line:rgba(255, 255, 255, .060);
+--up:#39e58c;
+--down:#ff5f70;
+}
+html:not([data-inj-page="index"])[data-theme="light"]{
+--bg:#edf4fb;
+--surface:#ffffff;
+--surface-strong:#f4f8fd;
+--surface-soft:#e9f1f9;
+--theme-canvas:#eef5ff;
+--page-gradient:radial-gradient(circle at 10% -8%, rgba(74, 154, 238, .15), transparent 34rem),
+    radial-gradient(circle at 91% 2%, rgba(46, 194, 220, .08), transparent 30rem),
+    linear-gradient(148deg, #fbfdff 0%, #eef5fc 50%, #f7fbff 100%);
+--text:#11263d;
+--muted:#667c93;
+--muted-strong:#3f5870;
+--accent:#087fa4;
+--line:rgba(31, 72, 111, .085);
+--up:#087d4c;
+--down:#d33d50;
+}
+html:not([data-inj-page="index"])[data-theme="amber"]{
+--bg:#05080d;
+--surface:#0b1118;
+--surface-strong:#111923;
+--surface-soft:#18222d;
+--theme-canvas:#030816;
+--page-gradient:radial-gradient(ellipse at 8% -10%, rgba(54, 83, 121, .16), transparent 35rem),
+    radial-gradient(ellipse at 94% 3%, rgba(199, 139, 88, .050), transparent 30rem),
+    radial-gradient(ellipse at 69% 114%, rgba(104, 74, 120, .045), transparent 38rem),
+    linear-gradient(151deg, #0a111a 0%, #05080d 51%, #0c0d12 100%);
+--text:#f5f6f7;
+--muted:#87919c;
+--muted-strong:#c7cdd2;
+--accent:#d6b28e;
+--line:rgba(220, 200, 178, .085);
+--up:#39e58c;
+--down:#ff5f70;
+}
+html:not([data-inj-page="index"]){
+ --canvas:var(--bg);--panel:var(--surface);--surface2:var(--surface-strong);--surface-2:var(--surface-strong);--surface-3:var(--surface-soft);
+ --muted2:var(--muted-strong);--muted-2:var(--muted-strong);--positive:var(--up);--negative:var(--down);--theme-browser:var(--bg);
+ background:var(--bg)!important;color:var(--text);
+}
+html:not([data-inj-page="index"]) body{background:var(--page-gradient),var(--bg)!important;color:var(--text);overscroll-behavior:none!important}
+html:not([data-inj-page="index"]) .treasury-shell,
+html:not([data-inj-page="index"]) .rewards-shell,
+html:not([data-inj-page="index"]) .live-page,
+html:not([data-inj-page="index"]) .book-page,
+html:not([data-inj-page="index"]) .cc-shell{background:var(--page-gradient),var(--bg)!important}
+.treasury-header::before,.treasury-header::after,.rewards-header::before,.rewards-header::after{content:none!important;display:none!important}
+html[data-inj-viewport] .live-page,html[data-inj-viewport] .book-page,html[data-inj-viewport] .cc-shell{
+ height:var(--inj-viewport-height,100dvh)!important;min-height:0!important;max-height:none!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:none!important;
+}
+/* A single document scroller avoids an unscrollable body trapping wheel input. */
+html:not([data-inj-page="index"]) body,html[data-inj-page]:not([data-inj-page="index"]) body{height:auto!important;overflow:visible!important}
+/* Align the existing Home controls at one safe-area-aware top inset. */
+:root{--inj-control-inset:calc(8px + env(safe-area-inset-top,0px))}
+html[data-inj-viewport] .treasury-shell,
+html[data-inj-viewport] .rewards-shell,
+html[data-inj-viewport] .live-page,
+html[data-inj-viewport] .book-page,
+html[data-inj-viewport] .cc-shell,
+html[data-inj-viewport] #converterView .converter-view-shell,
+html[data-inj-viewport] #performanceTimelineView .performance-timeline-shell{padding-top:0!important}
+html[data-inj-viewport] .treasury-header,
+html[data-inj-viewport] .rewards-header,
+html[data-inj-viewport] .terminal-header,
+html[data-inj-viewport] .book-topbar,
+html[data-inj-viewport] .cc-topbar,
+html[data-inj-viewport] .converter-view-header,
+html[data-inj-viewport] .performance-timeline-header,
+html[data-inj-viewport] .app-shell>.topbar{
+ padding-top:var(--inj-control-inset)!important;min-height:60px;align-items:start!important;
+}
+#treasuryClose,#rewardsClose,#bookBack,#ccBack,#closeConverterButton,#closePerformanceTimelineButton,#dashboardHomeButton,#marketBack{
+ align-self:start!important;margin-top:0!important;width:44px;height:44px;box-sizing:border-box;
+}
+#liveChartsBack{top:var(--inj-control-inset)!important;translate:none!important;width:44px;height:44px}
+#closeFocusDisplayButton{top:var(--inj-control-inset)!important}
+html:not([data-inj-page]) body>.shell{padding-top:0!important}
+html:not([data-inj-page]) body>.shell>.header{padding-top:var(--inj-control-inset)!important;align-items:start!important;min-height:60px}
+/* Safe-area spacing is applied once in the header padding. */
+.treasury-header,.rewards-header{top:0!important}
+
+/* Navigation sits on the page's own themed gradient, without a separate slab.
+   In-flow headers scroll with their section so content cannot pass behind them. */
+html[data-theme] body :is(.app-shell > .topbar,.treasury-header,.rewards-header,
+ .terminal-header,.book-topbar,.cc-topbar,.converter-view-header,
+ .performance-timeline-header,.shell > .header,.entry-home-top) {
+ background:transparent!important;
+ box-shadow:none!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html[data-theme] body :is(.treasury-header,.rewards-header,.cc-topbar) {
+ position:relative!important;top:auto!important;
+}
+
+/* v16.00.74 — one native document scroller on Home and Dashboard.
+   No nested 100svh Home scrollbox after exiting an iframe or overlay. */
+html[data-inj-page="index"][data-inj-scroll="home"],
+html[data-inj-page="index"][data-inj-scroll="home"] body,
+html[data-inj-page="index"][data-inj-scroll="dashboard"],
+html[data-inj-page="index"][data-inj-scroll="dashboard"] body {
+  position:static!important;
+  top:auto!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:pan-y pinch-zoom!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-page="index"][data-inj-scroll="home"] #entryGate.entry-gate.visible:not(.immersive-underlay):not(.dashboard-underlay) {
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:var(--inj-viewport-height,100dvh)!important;
+  max-height:none!important;
+  overflow:visible!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:pan-y pinch-zoom!important;
+}
+html[data-inj-page="index"][data-inj-scroll="home"] #entryGate.entry-gate.visible .entry-gate-shell:not(.first-access) {
+  height:auto!important;
+  min-height:var(--inj-viewport-height,100dvh)!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+@media (max-width:900px), (pointer:coarse) {
+  html[data-inj-page="index"][data-inj-scroll="home"] #entryGate.entry-gate.visible :is(.entry-wallets,.entry-pnl-timeline-scroll) {
+    overscroll-behavior-y:auto!important;
+  }
+}
+
+/* v16.00.76 — Fully-used viewport for Performance Timeline and INJ Converter.
+   The header remains accessible; flexible content occupies the remaining height.
+   Short/landscape screens can still scroll their content when necessary. */
+html[data-inj-page="index"] #performanceTimelineView.open,
+html[data-inj-page="index"] #converterView.open {
+  height:var(--inj-viewport-height,100dvh)!important;
+  min-height:var(--inj-viewport-height,100dvh)!important;
+  max-height:var(--inj-viewport-height,100dvh)!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  align-items:stretch!important;
+  justify-items:stretch!important;
+}
+html[data-inj-page="index"] #performanceTimelineView .performance-timeline-shell,
+html[data-inj-page="index"] #converterView .converter-view-shell {
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+  width:100%!important;
+  max-width:none!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:none!important;
+  gap:clamp(8px,1.25vh,16px)!important;
+  align-content:stretch!important;
+  box-sizing:border-box!important;
+}
+html[data-inj-page="index"] #performanceTimelineView .performance-timeline-main,
+html[data-inj-page="index"] #converterView .converter-view-main {
+  display:grid!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:0!important;
+  align-items:stretch!important;
+  justify-items:stretch!important;
+}
+html[data-inj-page="index"] #performanceTimelineView .performance-timeline-main > .entry-pnl-timeline{
+  display:grid!important;
+  grid-template-rows:auto auto minmax(0,1fr) auto!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  gap:clamp(8px,1.2vh,16px)!important;
+  align-content:stretch!important;
+}
+html[data-inj-page="index"] #performanceTimelineView .entry-pnl-timeline-scroll{
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-page="index"] #converterView .converter-view-main > .entry-converter {
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  width:100%!important;
+  max-width:none!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  gap:clamp(12px,2vh,34px)!important;
+  padding:clamp(15px,2.5vw,34px)!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-flow {
+  flex:1 1 auto!important;
+  align-content:center!important;
+  align-items:center!important;
+  width:100%!important;
+  min-height:0!important;
+  gap:clamp(10px,1.7vw,26px)!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-foot {
+  flex:0 0 auto!important;
+}
+@media (max-width:720px) {
+  html[data-inj-page="index"] #converterView .entry-converter-flow {
+    align-content:space-evenly!important;
+    gap:clamp(6px,1.2vh,16px)!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-input{
+    min-height:52px!important;
+  }
+}
+@media (max-height:620px) {
+  html[data-inj-page="index"] #performanceTimelineView .performance-timeline-shell,
+  html[data-inj-page="index"] #converterView .converter-view-shell {
+    height:auto!important;
+    min-height:100%!important;
+  }
+  html[data-inj-page="index"] #performanceTimelineView .performance-timeline-main > .entry-pnl-timeline{
+    height:auto!important;
+    min-height:320px!important;
+  }
+  html[data-inj-page="index"] #performanceTimelineView .entry-pnl-timeline-scroll{
+    height:180px!important;
+    min-height:180px!important;
+  }
+  html[data-inj-page="index"] #converterView .converter-view-main > .entry-converter{
+    height:auto!important;
+    min-height:100%!important;
+  }
+}
+/* The parent PWA remains themed while isolated section documents load. */
+.inj-section-cover {
+  position:fixed;
+  inset:0;
+  z-index:2147483599;
+  display:grid;
+  place-items:center;
+  background:var(--page-gradient),var(--theme-canvas,var(--bg,#020708));
+  pointer-events:none;
+  color:var(--muted-strong,var(--text,#e7f6f5));
+}
+.inj-section-cover .inj-section-loading-mark {
+  font:800 clamp(14px,3vw,19px)/1.2 system-ui,-apple-system,sans-serif;
+  letter-spacing:.23em;
+  opacity:.60;
+}
+.inj-content-frame:not([data-ready="true"]) {
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.inj-content-frame[data-ready="true"] {
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  background:var(--theme-canvas,var(--bg,#020708))!important;
+}
+
+/* v16.00.80 · Converter on iOS: numbers never collide with currency symbols.
+   Native input scrolls horizontally for long amounts; full form scrolls with keyboard. */
+html[data-inj-page="index"] #converterView .entry-converter,
+html[data-inj-page="index"] #converterView .entry-converter-field,
+html[data-inj-page="index"] #converterView .entry-converter-head,
+html[data-inj-page="index"] #converterView .entry-converter-foot {
+  min-width:0!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-input {
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  gap:10px!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-input input {
+  display:block!important;
+  flex:1 1 0%!important;
+  width:0!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  padding:0!important;
+  white-space:nowrap!important;
+  text-overflow:clip!important;
+  overflow-x:auto!important;
+  font-size:clamp(16px,2vw,24px)!important;
+  line-height:1.35!important;
+  box-sizing:border-box!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-input b{
+  flex:0 0 auto!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-foot {
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  gap:8px 14px!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-foot > *,
+html[data-inj-page="index"] #converterView .entry-converter-head > * {
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.4!important;
+}
+@media (max-width:720px){
+  html[data-inj-page="index"] #converterView .entry-converter-head{
+    flex-wrap:wrap!important;
+    gap:8px!important;
+    align-items:flex-start!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-flow{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:space-evenly!important;
+    width:100%!important;
+    min-height:0!important;
+    gap:clamp(10px,1.4vh,17px)!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-field{
+    display:grid!important;
+    grid-template-rows:auto auto!important;
+    flex:0 0 auto!important;
+    min-width:0!important;
+    width:100%!important;
+    gap:5px!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-input{
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-height:52px!important;
+    height:clamp(52px,7vh,66px)!important;
+    padding:0 12px!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-input input{
+    height:100%!important;
+    min-height:0!important;
+    font-size:clamp(16px,4.7vw,22px)!important;
+  }
+  html[data-inj-page="index"] #converterView .converter-view-main > .entry-converter{
+    padding:clamp(12px,2vh,19px)!important;
+    gap:clamp(10px,1.5vh,18px)!important;
+  }
+  /* Editing lets WebKit scroll the whole form instead of squeezing fields
+     into the keyboard-reduced visual viewport. */
+  html[data-inj-page="index"] #converterView:focus-within{
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  html[data-inj-page="index"] #converterView:focus-within .converter-view-shell,
+  html[data-inj-page="index"] #converterView:focus-within .converter-view-main{
+    height:auto!important;
+    min-height:100%!important;
+    overflow:visible!important;
+  }
+  html[data-inj-page="index"] #converterView:focus-within .converter-view-main > .entry-converter{
+    height:auto!important;
+    min-height:0!important;
+    justify-content:flex-start!important;
+  }
+  html[data-inj-page="index"] #converterView:focus-within .entry-converter-flow{
+    flex:0 0 auto!important;
+    justify-content:flex-start!important;
+  }
+}
+@media (max-height:650px){
+  html[data-inj-page="index"] #converterView .converter-view-shell,
+  html[data-inj-page="index"] #converterView .converter-view-main{
+    height:auto!important;
+    min-height:100%!important;
+    overflow:visible!important;
+  }
+  html[data-inj-page="index"] #converterView .converter-view-main > .entry-converter{
+    height:auto!important;
+    min-height:100%!important;
+  }
+}
+
+
+/* v16.00.87 — iPhone Home tiles: one layout model for every active launcher.
+   Legacy ID-scoped grid rules still exist in style.css; a flex column with
+   ID-specific selectors prevents Dashboard / Live View using different rows.
+   First-access onboarding, desktop and native scroll remain untouched. */
+@media (max-width:900px), (pointer:coarse) and (max-width:1100px) {
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {
+    display:grid!important;
+    flex-direction:unset!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:none!important;
+    grid-auto-columns:minmax(0,1fr)!important;
+    grid-auto-rows:auto!important;
+    grid-auto-flow:row!important;
+    gap:9px!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    justify-items:stretch!important;
+    align-items:stretch!important;
+    align-content:start!important;
+  }
+  /* Old stylesheet explicitly forces Command Center visible below 1100px.
+     Keep that desktop-only destination out of the phone layout. */
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryCommandCenterButton.entry-action-commandcenter {
+    display:none!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) {
+    display:flex!important;
+    flex-direction:column!important;
+    flex-wrap:nowrap!important;
+    justify-content:center!important;
+    align-items:center!important;
+    align-content:center!important;
+    justify-items:center!important;
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:100px!important;
+    min-height:100px!important;
+    max-height:none!important;
+    box-sizing:border-box!important;
+    padding:11px 8px!important;
+    margin:0!important;
+    gap:9px!important;
+    border-radius:16px!important;
+    text-align:center!important;
+    text-decoration:none!important;
+    -webkit-tap-highlight-color:transparent;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) > .entry-action-icon {
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 37px!important;
+    order:0!important;
+    width:37px!important;
+    min-width:37px!important;
+    max-width:37px!important;
+    height:37px!important;
+    min-height:37px!important;
+    max-height:37px!important;
+    padding:0!important;
+    margin:0!important;
+    align-self:center!important;
+    justify-self:center!important;
+    border-radius:11px!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) > .entry-action-icon svg {
+    display:block!important;
+    width:19px!important;
+    height:19px!important;
+    min-width:19px!important;
+    min-height:19px!important;
+    margin:auto!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) > span:not(.entry-action-icon) {
+    display:flex!important;
+    flex:0 0 auto!important;
+    order:1!important;
+    flex-direction:row!important;
+    justify-content:center!important;
+    align-items:center!important;
+    align-self:center!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding:0!important;
+    margin:0!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) strong {
+    display:-webkit-box!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2!important;
+    line-clamp:2!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    font-size:clamp(12px,3.2vw,13.5px)!important;
+    font-weight:800!important;
+    line-height:1.2!important;
+    letter-spacing:-.015em!important;
+    text-align:center!important;
+    margin:0!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) > .entry-action-arrow { display:none!important; }
+  /* Nine destinations on iPhone: four complete pairs + Treasury, last row. */
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton.entry-action-treasury:last-child {
+    display:flex!important;
+    flex-direction:row!important;
+    justify-content:center!important;
+    align-items:center!important;
+    grid-column:1 / -1!important;
+    width:100%!important;
+    height:73px!important;
+    min-height:73px!important;
+    padding:12px 16px!important;
+    gap:13px!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton.entry-action-treasury:last-child > .entry-action-icon {
+    flex:0 0 37px!important;
+    margin:0!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton.entry-action-treasury:last-child > span:not(.entry-action-icon) {
+    flex:0 1 auto!important;
+    width:auto!important;
+    min-width:0!important;
+    padding:0!important;
+    margin:0!important;
+    justify-content:flex-start!important;
+    text-align:left!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton.entry-action-treasury:last-child strong {
+    font-size:14px!important;
+    -webkit-line-clamp:1!important;
+    line-clamp:1!important;
+    text-align:left!important;
+  }
+}
+@media (max-width:360px) {
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {gap:7px!important;}
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) {height:97px!important;min-height:97px!important;padding:9px 6px!important;gap:7px!important;}
+}
+@media (prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,#entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,#entryTreasuryButton) {transition:none!important;}
+}
+
+
+/* v16.00.88 — Isolated INJ Converter viewport on iPhone.
+   Never let the Home bleed through; editing uses native in-panel scroll.
+   16px+ input text avoids Safari's automatic focus zoom while still allowing
+   user pinch zoom for accessibility. */
+html[data-inj-page="index"] #converterView.open {
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483500!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:var(--inj-viewport-height,100dvh)!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:hidden!important;
+  opacity:1!important;
+  visibility:visible!important;
+  isolation:isolate!important;
+  pointer-events:auto!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  transition:none!important;
+  background:var(--page-gradient),var(--theme-canvas,var(--bg,#020708))!important;
+  background-color:var(--theme-canvas,var(--bg,#020708))!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+/* Hide the painted Home while this opaque page is active. Returning Home
+   simply removes .open; no second Home has to be mounted or reloaded. */
+html[data-inj-page="index"]:has(#converterView.open) #entryGate {
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] #converterView.open > .converter-view-shell,
+html[data-inj-page="index"] #converterView.open:focus-within > .converter-view-shell {
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  padding:max(10px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))!important;
+  margin:0!important;
+  overflow:hidden!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+html[data-inj-page="index"] #converterView.open .converter-view-header {
+  position:relative!important;
+  top:auto!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  z-index:1!important;
+}
+html[data-inj-page="index"] #converterView.open .converter-view-main,
+html[data-inj-page="index"] #converterView.open:focus-within .converter-view-main {
+  display:grid!important;
+  width:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  height:100%!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  align-items:safe center!important;
+  justify-items:stretch!important;
+  overscroll-behavior-y:contain!important;
+}
+html[data-inj-page="index"] #converterView.open .converter-view-main > .entry-converter,
+html[data-inj-page="index"] #converterView.open:focus-within .converter-view-main > .entry-converter {
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  width:100%!important;
+  flex:0 0 auto!important;
+  align-self:safe center!important;
+  justify-content:space-between!important;
+}
+html[data-inj-page="index"] #converterView.open .entry-converter-input input {
+  font-size:max(16px,1rem)!important;
+  -webkit-text-size-adjust:100%!important;
+  text-size-adjust:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:720px){
+  html[data-inj-page="index"] #converterView.open .entry-converter-flow,
+  html[data-inj-page="index"] #converterView.open:focus-within .entry-converter-flow {
+    flex:0 0 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    justify-content:flex-start!important;
+    gap:clamp(9px,1.4vh,16px)!important;
+  }
+  html[data-inj-page="index"] #converterView.open .entry-converter-field {
+    flex:0 0 auto!important;
+  }
+  html[data-inj-page="index"] #converterView.open .entry-converter-input input {
+    font-size:16px!important;
+    line-height:1.25!important;
+  }
+}
+
+/* v16.00.88 · Selected-wallet valuation inside the isolated Converter. */
+html[data-inj-page="index"] #converterView .entry-converter-wallet {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  min-width:0!important;
+  width:100%!important;
+  gap:10px 16px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 19%,var(--line))!important;
+  background:color-mix(in srgb,var(--surface-strong) 86%,var(--bg))!important;
+  border-radius:15px!important;
+  padding:12px 15px!important;
+  box-sizing:border-box!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-wallet-copy {
+  display:grid!important;gap:2px!important;min-width:0!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-wallet-kicker,
+html[data-inj-page="index"] #converterView .entry-converter-wallet-balances small {
+  color:var(--muted)!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  letter-spacing:.055em!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-wallet-copy > strong {
+  color:var(--text)!important;
+  font-size:14px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-wallet-copy > small {
+  color:var(--muted)!important;
+  font-size:10px!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-wallet-balances {
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px 16px!important;
+  min-width:0!important;
+  grid-column:1 / -1!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-wallet-balances > span{
+  display:grid!important;
+  min-width:0!important;
+  gap:2px!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-wallet-balances strong{
+  display:block!important;
+  color:var(--text)!important;
+  font-size:clamp(15px,2.4vw,22px)!important;
+  font-variant-numeric:tabular-nums!important;
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] #converterView #entryConverterWalletUsd{
+  color:var(--up)!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-use-wallet{
+  padding:9px 13px!important;
+  min-width:110px!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  border-radius:10px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 38%,var(--line))!important;
+  color:var(--accent)!important;
+  background:color-mix(in srgb,var(--accent) 8%,var(--surface-strong))!important;
+  font:750 12px/1.25 system-ui,-apple-system,sans-serif!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+}
+html[data-inj-page="index"] #converterView .entry-converter-use-wallet:disabled{
+  opacity:.48!important;
+  cursor:default!important;
+}
+@media(max-width:720px){
+  html[data-inj-page="index"] #converterView .entry-converter-wallet{
+    padding:10px 12px!important;
+    gap:8px!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-wallet-balances{
+    gap:8px!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-wallet-balances strong{
+    font-size:clamp(14px,4vw,19px)!important;
+  }
+  html[data-inj-page="index"] #converterView .entry-converter-use-wallet{
+    padding:9px!important;
+    min-width:103px!important;
+    font-size:11px!important;
+  }
+}
+
+/* v16.00.90 — Market Cap Comparison directly below INJ Treasury.
+   Keep these final two destinations full-width on mobile, with a compact
+   horizontal icon/label row and no empty grid cell. No scroll locks. */
+@media (max-width:900px), (pointer:coarse) and (max-width:1100px) {
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton.entry-action-treasury,
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryComparisonButton.entry-action-comparison {
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    justify-content:center!important;
+    align-items:center!important;
+    align-content:center!important;
+    grid-column:1 / -1!important;
+    grid-row:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:73px!important;
+    height:73px!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:12px 16px!important;
+    gap:13px!important;
+    border-radius:16px!important;
+    text-decoration:none!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryComparisonButton > .entry-action-icon,
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton > .entry-action-icon {
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 37px!important;
+    width:37px!important;
+    min-width:37px!important;
+    height:37px!important;
+    margin:0!important;
+    padding:0!important;
+    align-self:center!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryComparisonButton > span:not(.entry-action-icon),
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton > span:not(.entry-action-icon) {
+    display:flex!important;
+    flex:0 1 auto!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+    width:auto!important;
+    min-width:0!important;
+    padding:0!important;
+    margin:0!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryComparisonButton strong,
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryTreasuryButton strong {
+    display:block!important;
+    width:auto!important;
+    max-width:100%!important;
+    min-width:0!important;
+    font-size:clamp(12px,3.5vw,14px)!important;
+    line-height:1.25!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    text-align:left!important;
+    margin:0!important;
+  }
+  html[data-inj-page="index"] .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryComparisonButton > .entry-action-arrow {
+    display:none!important;
+  }
+}
+
+/* v16.10.27 — No sideways document overscroll/back navigation.
+   Only actual x-scroll components (wallet rail, chart tools, timeline) can pan. */
+html,html body {
+  overscroll-behavior-x:none!important;
+}
+html[data-inj-page="index"] #entryGate,
+html[data-inj-page] .inj-content-frame,
+html[data-inj-page] .treasury-shell,
+html[data-inj-page] .live-page,
+html[data-inj-page] .book-page,
+html[data-inj-page] .cc-shell {
+  overscroll-behavior-x:none!important;
+}

@@ -1,0 +1,31 @@
+/* Workspace chrome only: native theme colors and chart/value treatments remain intact. */
+body{
+ background:
+  radial-gradient(ellipse 90% 65% at 12% -12%,color-mix(in srgb,var(--ws-accent) 5%,transparent),transparent 72%),
+  radial-gradient(ellipse 70% 80% at 110% 100%,color-mix(in srgb,var(--ws-fg) 2%,transparent),transparent 75%),
+  var(--page-gradient,linear-gradient(135deg,var(--ws-bg),var(--ws-bg))),var(--ws-bg);
+}
+.ws-card{
+ border:1px solid transparent;border-radius:18px;
+ background:var(--card-gradient,linear-gradient(150deg,var(--ws-panel),var(--ws-panel))) padding-box,
+  linear-gradient(145deg,color-mix(in srgb,var(--ws-fg) 23%,var(--ws-line)),var(--ws-line) 40%,color-mix(in srgb,var(--ws-accent) 15%,var(--ws-line))) border-box;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ws-fg) 4%,transparent),0 8px 24px color-mix(in srgb,var(--ws-bg) 20%,transparent);
+}
+.ws-card::after{display:none}
+.ws-card[data-style=glass]{background:linear-gradient(145deg,color-mix(in srgb,var(--ws-panel) 82%,transparent),color-mix(in srgb,var(--ws-panel) 92%,transparent)) padding-box,linear-gradient(145deg,color-mix(in srgb,var(--ws-fg) 19%,transparent),var(--ws-line)) border-box}
+.ws-card[data-style=bare]{background:transparent;box-shadow:none;border-color:var(--ws-line)}
+.ws-card.no-border{background:var(--card-gradient,linear-gradient(var(--ws-panel),var(--ws-panel))) padding-box;border-color:transparent;box-shadow:none}
+body.ws-immersive .ws-card{
+ border:1px solid transparent!important;border-radius:16px;
+ background:var(--card-gradient,linear-gradient(150deg,var(--ws-panel),var(--ws-panel))) padding-box,
+  linear-gradient(145deg,color-mix(in srgb,var(--ws-fg) 24%,var(--ws-line)),var(--ws-line) 42%,color-mix(in srgb,var(--ws-accent) 14%,var(--ws-line))) border-box!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ws-fg) 4%,transparent),0 8px 24px color-mix(in srgb,var(--ws-bg) 20%,transparent)!important;
+}
+.ws-catalog-controls{position:sticky;top:0;z-index:3;background:var(--ws-bg);padding-bottom:18px;border-bottom:1px solid var(--ws-line)}
+.ws-source-modes{display:flex;gap:6px;flex-wrap:wrap}
+.ws-source-modes button{flex:1;min-width:120px;font-size:12px;background:var(--ws-panel);color:var(--ws-fg);border-color:var(--ws-line);min-height:42px}
+.ws-source-modes button[aria-pressed=true]{border-color:var(--ws-accent);box-shadow:inset 0 0 0 1px var(--ws-accent)}
+.ws-source-modes button:disabled{opacity:.4;cursor:default}
+.ws-source-summary{font-size:12px;color:var(--ws-muted);line-height:1.5;margin:0}
+.ws-preview-source{display:block;color:var(--ws-muted);font-size:10px;margin:-5px 0 9px;overflow-wrap:anywhere}
+#wsSpecificWallet{width:100%;min-height:44px}

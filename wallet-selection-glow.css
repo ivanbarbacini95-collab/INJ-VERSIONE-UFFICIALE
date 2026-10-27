@@ -1,0 +1,78 @@
+/* INJ Node v16.06.30 — Theme-aware Dashboard wallet selection.
+   Theme-colored individual tiles; no enclosing wallet rail rectangle. Pure presentation:
+   no scroll rules, touch handlers, wallet calculations or theme overrides. */
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-dock-title,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock::before,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock::after,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets::before,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets::after,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip::before,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip::after{
+  content:none!important;
+  display:none!important;
+}
+/* Unselected wallet cards share the same gradient as other dashboard cards. */
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini {
+  background:var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  min-width:0;
+  box-sizing:border-box;
+
+  border:1px solid color-mix(in srgb,var(--accent) 13%,var(--line))!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease!important;
+}
+/* Selected wallet keeps its own theme gradient plus an accent glow. */
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini.active {
+  background:radial-gradient(ellipse at 94% 0%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 57%),var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  border-color:color-mix(in srgb,var(--accent) 82%,var(--line))!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),
+    0 0 17px color-mix(in srgb,var(--accent) 19%,transparent),
+    0 0 29px color-mix(in srgb,var(--accent) 9%,transparent)!important;
+  -webkit-box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),
+    0 0 17px color-mix(in srgb,var(--accent) 19%,transparent),
+    0 0 29px color-mix(in srgb,var(--accent) 9%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini.active .wallet-mini-name{
+  color:var(--accent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini.active .wallet-mini-status{
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 11%,transparent),
+             0 0 12px color-mix(in srgb,var(--accent) 40%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini .wallet-mini-main:focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:3px!important;
+  border-radius:inherit;
+}
+@media (hover:hover) and (pointer:fine) {
+ html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini:not(.active):hover{
+   border-color:color-mix(in srgb,var(--accent) 48%,var(--line))!important;
+   box-shadow:0 0 12px color-mix(in srgb,var(--accent) 10%,transparent)!important;
+ }
+}
+@media (prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini{
+   transition:none!important;
+   animation:none!important;
+ }
+}

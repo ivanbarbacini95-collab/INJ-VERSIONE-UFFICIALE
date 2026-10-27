@@ -1,0 +1,137 @@
+/* v16.01.32 — Dashboard starts at the same safe-area baseline as Home.
+   The inactive Home and boot surfaces may not reserve space or leave ghost
+   lettering above Dashboard after the return transition. */
+html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.entry-live-launch):not(.focus-display-open):not(.menu-overlay-open):not(.chart-overlay-open):not(.pulse-view-open) > #entryGate,
+html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.entry-live-launch):not(.focus-display-open):not(.menu-overlay-open):not(.chart-overlay-open):not(.pulse-view-open) > #injHomeBrandFooter,
+html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.entry-live-launch):not(.focus-display-open):not(.menu-overlay-open):not(.chart-overlay-open):not(.pulse-view-open) > #bootSplash{
+ display:none!important;
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open):not(.entry-live-launch):not(.focus-display-open):not(.menu-overlay-open):not(.chart-overlay-open):not(.pulse-view-open) > .app-shell{
+ position:relative!important;inset:auto!important;
+ top:0!important;left:auto!important;right:auto!important;
+ margin-top:0!important;margin-bottom:0!important;
+ padding-top:0!important;
+ transform:none!important;-webkit-transform:none!important;
+ min-height:100dvh!important;
+}
+html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > .topbar{
+ position:relative!important;top:0!important;
+ margin:0!important;
+ min-height:0!important;
+ height:auto!important;
+ padding-top:var(--inj-control-inset,calc(8px + env(safe-area-inset-top,0px)))!important;
+ padding-bottom:8px!important;
+ align-items:center!important;
+}
+html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main{
+ margin-top:0!important;
+ padding-top:0!important;
+}
+/* Live Charts owns a fixed-height trading header. Centre the actual price,
+   rather than centering the price+percentage as one asymmetrical group. */
+html[data-inj-page="live-charts"] .terminal-header{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+ align-items:center!important;
+ position:relative!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand{
+ display:flex!important;
+ position:absolute!important;
+ top:50%!important;left:max(49px,calc(env(safe-area-inset-left,0px) + 49px))!important;
+ right:auto!important;
+ transform:translateY(-50%)!important;
+ margin:0!important;padding:0!important;
+ width:auto!important;max-width:130px!important;
+ height:auto!important;
+ pointer-events:none!important;
+ z-index:4!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand .inj-location-section{
+ display:block!important;color:var(--accent,#63b7ff)!important;
+ font-size:clamp(10px,1vw,13px)!important;
+ font-weight:950!important;line-height:1.1!important;
+ letter-spacing:.055em!important;
+ white-space:nowrap!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .market-heading{
+ grid-column:2!important;grid-row:1!important;
+ justify-self:center!important;align-self:center!important;
+ display:grid!important;justify-items:center!important;
+ position:relative!important;
+ top:auto!important;left:auto!important;right:auto!important;
+ transform:none!important;
+ width:max-content!important;max-width:none!important;
+ margin:0!important;padding:0!important;gap:2px!important;
+ text-align:center!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .market-price-row{
+ display:flex!important;flex-direction:column!important;
+ justify-content:center!important;align-items:center!important;gap:1px!important;
+ width:max-content!important;min-width:0!important;
+ margin:0 auto!important;
+}
+html[data-inj-page="live-charts"] .terminal-header #headerLivePrice{
+ display:block!important;width:max-content!important;min-width:0!important;
+ max-width:100%!important;margin:0 auto!important;padding:0!important;
+ white-space:nowrap!important;text-align:center!important;
+ font-variant-numeric:tabular-nums;
+}
+html[data-inj-page="live-charts"] .terminal-header #headerRangeChange{
+ display:block!important;margin:0!important;padding:0!important;
+ font-size:.46rem!important;line-height:1!important;
+ white-space:nowrap!important;text-align:center!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .market-pair{
+ justify-content:center!important;white-space:nowrap!important;
+}
+html[data-inj-page="live-charts"] .terminal-header .header-actions{
+ grid-column:3!important;grid-row:1!important;justify-self:end!important;
+ align-self:center!important;
+ position:relative!important;z-index:5!important;
+}
+@media(max-width:700px){
+ html[data-inj-page="live-charts"] .terminal-header{
+  min-height:75px!important;
+  padding-left:max(42px,calc(env(safe-area-inset-left,0px) + 42px))!important;
+  padding-right:max(40px,calc(env(safe-area-inset-right,0px) + 40px))!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand{
+  top:calc(var(--inj-control-inset,8px) + 20px)!important;
+  left:max(47px,calc(env(safe-area-inset-left,0px) + 47px))!important;
+  transform:translateY(-50%)!important;
+  width:95px!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand .inj-location-section{
+  font-size:10px!important;letter-spacing:.015em!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .market-heading{
+  padding:0!important;grid-column:2!important;justify-self:center!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header #headerLivePrice{
+  font-size:clamp(14px,4.5vw,21px)!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header #headerRangeChange{
+  font-size:8px!important;
+ }
+}
+@media(max-width:390px){
+ html[data-inj-page="live-charts"] .terminal-header{
+  min-height:87px!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .brand.inj-location-brand{
+  top:calc(var(--inj-control-inset,8px) + 8px)!important;
+  left:max(40px,calc(env(safe-area-inset-left,0px) + 40px))!important;
+  transform:none!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .market-heading{
+  align-self:end!important;
+  margin-bottom:4px!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-header .header-actions{
+  align-self:start!important;
+  margin-top:4px!important;
+ }
+}

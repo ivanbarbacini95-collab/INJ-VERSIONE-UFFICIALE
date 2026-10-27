@@ -1,0 +1,83 @@
+/* Performance Timeline — two independent layouts, responsive without modifying the underlying P/L values. */
+#performanceTimelineView .entry-pnl-layout-switch {
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+  padding:3px;
+  border:1px solid var(--border, rgba(144,164,195,.25));
+  border-radius:10px;
+  background:var(--panel, rgba(100,120,150,.09));
+  flex-shrink:0;
+}
+#performanceTimelineView .entry-pnl-layout-switch > button {
+  appearance:none;
+  border:0;
+  background:transparent;
+  color:var(--text-muted, var(--muted, #98a7b7));
+  font:inherit;
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.06em;
+  line-height:1.2;
+  min-height:28px;
+  padding:5px 10px;
+  border-radius:7px;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:color .15s ease,background .15s ease,box-shadow .15s ease;
+}
+#performanceTimelineView .entry-pnl-layout-switch > button.active {
+  color:var(--text, #eef5ff);
+  background:var(--accent-soft, rgba(86,150,242,.18));
+  box-shadow:inset 0 0 0 1px var(--border, rgba(150,178,215,.24));
+}
+#performanceTimelineView .entry-pnl-layout-switch > button:focus-visible {
+  outline:2px solid var(--accent, #64aeed);
+  outline-offset:2px;
+}
+#performanceTimelineView #entryPnlTimeline[data-layout-mode="fit"] .entry-pnl-timeline-scroll {
+  overflow-x:hidden!important;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+}
+#performanceTimelineView #entryPnlTimeline[data-layout-mode="fit"] .entry-pnl-timeline-track {
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  column-gap:0!important;
+  padding-inline:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+#performanceTimelineView #entryPnlTimeline[data-layout-mode="fit"] .entry-pnl-day {
+  flex:0 0 var(--pnl-slot)!important;
+  width:var(--pnl-slot)!important;
+  min-width:0!important;
+  max-width:var(--pnl-slot)!important;
+  margin-inline:0!important;
+  padding-inline:0!important;
+  box-sizing:border-box!important;
+}
+#performanceTimelineView #entryPnlTimeline[data-layout-mode="fit"] .entry-pnl-candle {
+  width:max(1px, min(11px, calc(var(--pnl-slot) - 2px)))!important;
+  max-width:100%!important;
+  margin-inline:auto!important;
+}
+#performanceTimelineView #entryPnlTimeline[data-layout-mode="fit"][data-fit-dense="1"] .entry-pnl-day > .entry-pnl-value,
+#performanceTimelineView #entryPnlTimeline[data-layout-mode="fit"][data-fit-dense="1"] .entry-pnl-day > small {
+  display:none!important;
+}
+@media (max-width:650px) {
+  #performanceTimelineView .entry-pnl-head-tools {
+    display:flex;
+    flex-wrap:wrap!important;
+    justify-content:flex-end;
+    gap:6px!important;
+  }
+  #performanceTimelineView .entry-pnl-layout-switch > button {
+    font-size:9px;
+    min-height:27px;
+    padding:5px 7px;
+  }
+}

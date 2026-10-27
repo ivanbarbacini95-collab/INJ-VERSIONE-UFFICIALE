@@ -1,4 +1,4 @@
-/* INJ Node v15.99.80 — one viewport measurement for every full-page surface. */
+/* INJ Node v16.00.12 — native-scroll optimized viewport management. */
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -6,12 +6,21 @@
   let probe;
   let lastHeight = 0;
   let lastScroll = -1;
+  let scrollIdleTimer = 0;
+  let lastScrollActivity = 0;
   const editable = () => document.activeElement?.matches('input,textarea,[contenteditable="true"]');
+
+  function syncDocumentTop() {
+    const scroll = Math.max(0, window.scrollY || 0);
+    if (scroll !== lastScroll) {
+      root.style.setProperty('--inj-document-top', scroll + 'px');
+      lastScroll = scroll;
+    }
+  }
 
   function measure() {
     frame = 0;
-    const scroll = Math.max(0, window.scrollY || 0);
-    if (scroll !== lastScroll) { root.style.setProperty('--inj-document-top', scroll + 'px'); lastScroll = scroll; }
+    syncDocumentTop();
     if (!probe && document.body) {
       probe = document.createElement('div');
       probe.setAttribute('aria-hidden', 'true');
@@ -32,6 +41,31 @@
   function schedule() {
     if (!frame) frame = requestAnimationFrame(measure);
   }
+
+  function settleNativeScroll() {
+    const elapsed = performance.now() - lastScrollActivity;
+    if (elapsed < 155) {
+      // One low-frequency trailing check, never a timer reset per scroll event.
+      scrollIdleTimer = window.setTimeout(settleNativeScroll, Math.max(60, 175 - elapsed));
+      return;
+    }
+    scrollIdleTimer = 0;
+    root.classList.remove('inj-native-scrolling');
+    syncDocumentTop();
+  }
+  function markNativeScroll() {
+    // Avoid creating/cancelling a timer on every 60–120Hz touch/wheel event.
+    // Browser-native scrolling remains entirely under WebKit's control.
+    lastScrollActivity = performance.now();
+    if (!root.classList.contains('inj-native-scrolling')) root.classList.add('inj-native-scrolling');
+    if (!scrollIdleTimer) scrollIdleTimer = window.setTimeout(settleNativeScroll, 180);
+  }
+  function nativeScrollEnd() {
+    if (scrollIdleTimer) window.clearTimeout(scrollIdleTimer);
+    scrollIdleTimer = 0;
+    root.classList.remove('inj-native-scrolling');
+    syncDocumentTop();
+  }
   function syncTheme() {
     const css = getComputedStyle(root);
     const color = (css.getPropertyValue('--canvas') || css.getPropertyValue('--theme-canvas') || css.getPropertyValue('--bg')).trim();
@@ -40,50 +74,14 @@
 
   // Only reject an outward gesture at a real boundary. Never move scrollTop:
   // rewriting the position here causes the visible one-pixel snap on release.
-  let gesture = null;
-  document.addEventListener('touchstart', (event) => {
-    if (event.touches.length !== 1) { gesture = null; return; }
-    const touch = event.touches[0];
-    gesture = { target: event.target, x: touch.clientX, y: touch.clientY, lastY: touch.clientY };
-  }, { passive: true });
-  document.addEventListener('touchmove', (event) => {
-    if (!gesture || event.touches.length !== 1 || event.defaultPrevented) return;
-    const touch = event.touches[0];
-    const dx = touch.clientX - gesture.x, dy = touch.clientY - gesture.y;
-    const step = touch.clientY - gesture.lastY;
-    gesture.lastY = touch.clientY;
-    if (Math.abs(dx) >= Math.abs(dy) || Math.abs(dy) < 4 || Math.abs(step) < 0.2) return;
-    if (window.visualViewport && Math.abs(window.visualViewport.scale - 1) > 0.02) return;
-    const documentScroller = document.scrollingElement || root;
-    let node = gesture.target instanceof Element ? gesture.target : gesture.target?.parentElement;
-    while (node && node !== documentScroller) {
-      const css = getComputedStyle(node);
-      if (/(auto|scroll|overlay)/.test(css.overflowY) && node.scrollHeight > node.clientHeight + 1) {
-        const end = node.scrollHeight - node.clientHeight;
-        if ((step > 0 && node.scrollTop > 1) || (step < 0 && node.scrollTop < end - 1)) return;
-        // A nested panel owns its scroll: don't hand the gesture to Home behind it.
-        if (event.cancelable) event.preventDefault();
-        return;
-      }
-      node = node.parentElement;
-    }
-    if (getComputedStyle(root).overflowY === 'hidden') {
-      if (event.cancelable) event.preventDefault();
-      return;
-    }
-    const end = Math.max(0, documentScroller.scrollHeight - documentScroller.clientHeight);
-    if ((step > 0 && documentScroller.scrollTop <= 1) ||
-        (step < 0 && documentScroller.scrollTop >= end - 1)) {
-      if (event.cancelable) event.preventDefault();
-    }
-  }, { passive: false });
-  const releaseGesture = () => { gesture = null; };
-  document.addEventListener('touchend', releaseGesture, { passive: true });
-  document.addEventListener('touchcancel', releaseGesture, { passive: true });
-
-  root.dataset.injViewport = '80';
+  root.dataset.injViewport = '160008';
   window.addEventListener('resize', schedule, { passive: true });
-  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('scroll', markNativeScroll, { passive: true });
+  window.addEventListener('scrollend', nativeScrollEnd, { passive: true });
+  // Capture the current document offset immediately before a control can open
+  // an absolute/fullscreen surface. This replaces the old per-frame scroll work.
+  document.addEventListener('pointerdown', syncDocumentTop, { passive: true, capture: true });
+  document.addEventListener('keydown', syncDocumentTop, { passive: true, capture: true });
   window.visualViewport?.addEventListener('resize', schedule, { passive: true });
   window.addEventListener('pageshow', () => { schedule(); syncTheme(); });
   window.addEventListener('orientationchange', () => { schedule(); setTimeout(schedule, 250); }, { passive: true });

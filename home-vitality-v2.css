@@ -1,0 +1,193 @@
+/* INJ NODE Home Vitality v2 · artwork-first launcher cards
+   This loads after navigation.css and home-vitality.css on Home only.
+   All existing button IDs, links and click handlers are preserved. */
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,
+ #entryTreasuryButton,#entryComparisonButton) > .entry-action-icon {
+ display:none!important;
+}
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton,
+ #entryTreasuryButton,#entryComparisonButton) > .entry-action-arrow{
+ display:none!important;
+}
+/* The art itself is now primary, unobstructed and exempt from mobile span rules. */
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > .entry-action > .inj-tile-scene {
+ display:block!important;
+ flex:none!important;
+ align-self:auto!important;
+ min-width:0!important;max-width:none!important;
+ position:absolute!important;
+ z-index:1!important;
+ width:120px!important;height:60px!important;
+ top:50%!important;right:16px!important;
+ margin:0!important;padding:0!important;
+ opacity:.72!important;
+ transform:translateY(-50%)!important;
+ pointer-events:none!important;
+ -webkit-filter:none!important;filter:none!important;
+ overflow:visible!important;
+}
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > .entry-action > .inj-tile-scene svg {width:100%!important;height:100%!important;display:block!important;}
+/* Ordinary cards retain their clean text baseline on desktop. */
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton)
+ > span:not(.entry-action-icon):not(.inj-tile-scene){
+ position:relative!important;z-index:2!important;
+ min-width:0!important;
+}
+/* Treasury and Comparison: left-aligned names, artwork parked on the right. */
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryTreasuryButton,#entryComparisonButton){
+ display:flex!important;flex-direction:row!important;
+ justify-content:flex-start!important;align-items:center!important;
+ min-width:0!important;
+ padding:12px 124px 12px 20px!important;
+ gap:0!important;
+}
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryTreasuryButton,#entryComparisonButton) > span:not(.entry-action-icon):not(.inj-tile-scene){
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ order:0!important;flex:1 1 auto!important;
+ position:relative!important;z-index:2!important;
+ margin:0!important;padding:0!important;
+ min-width:0!important;max-width:100%!important;width:auto!important;
+ text-align:left!important;
+}
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryTreasuryButton,#entryComparisonButton) strong {
+ text-align:left!important;
+ white-space:normal!important;overflow:visible!important;
+ text-overflow:clip!important;
+ font-size:clamp(14px,3.6vw,18px)!important;
+ line-height:1.22!important;
+}
+html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryTreasuryButton,#entryComparisonButton) > .inj-tile-scene {
+ right:20px!important;top:50%!important;width:90px!important;height:58px!important;
+ opacity:.80!important;
+ transform:translateY(-50%)!important;
+}
+/* Give the P/L beneath the price chart a visible, legible role. */
+html[data-inj-page="index"] #entryInsights .entry-price-pnl {
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) auto!important;
+ gap:10px 16px!important;
+ align-items:center!important;
+ min-width:0!important;
+ min-height:65px!important;
+ padding:11px 14px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#78ead0) 28%,var(--line,transparent))!important;
+ border-radius:13px!important;
+ background:color-mix(in srgb,var(--accent,#78ead0) 5%,var(--surface-strong,#10242a))!important;
+}
+html[data-inj-page="index"] #entryInsights .entry-price-pnl > div{
+ display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;gap:3px!important;
+ min-width:0!important;
+}
+html[data-inj-page="index"] #entryInsights .entry-price-pnl > div > span{
+ font-size:clamp(11px,1.3vw,13px)!important;
+ line-height:1.25!important;
+ font-weight:850!important;letter-spacing:.07em!important;
+ color:var(--text,#fff)!important;
+}
+html[data-inj-page="index"] #entryInsights .entry-price-pnl > div > small{
+ font-size:clamp(10px,1.15vw,12px)!important;
+ line-height:1.35!important;
+ color:var(--muted-strong,var(--muted,#9db5b3))!important;
+}
+html[data-inj-page="index"] #entryInsights #entryInsightPnl {
+ display:block!important;
+ width:auto!important;max-width:100%!important;min-width:0!important;
+ font-size:clamp(21px,2.9vw,32px)!important;
+ font-weight:900!important;line-height:1.16!important;
+ letter-spacing:-.035em!important;
+ font-variant-numeric:tabular-nums!important;
+ white-space:nowrap!important;
+ overflow:visible!important;text-overflow:clip!important;
+ text-align:right!important;
+}
+@media (max-width:900px), (pointer:coarse) and (max-width:1100px){
+ /* The first eight tiles keep the existing two-column structure. */
+ html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton){
+  display:flex!important;flex-direction:column!important;
+  justify-content:flex-end!important;align-items:center!important;
+  gap:0!important;padding:9px 7px 14px!important;
+ }
+ html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton) > .inj-tile-scene {
+  top:10px!important;left:18%!important;right:auto!important;
+  width:64%!important;height:47px!important;
+  opacity:.86!important;
+  transform:none!important;
+ }
+ html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton)
+ > span:not(.entry-action-icon):not(.inj-tile-scene){
+   flex:0 0 auto!important;order:1!important;
+   width:100%!important;min-width:0!important;max-width:100%!important;
+   margin:0!important;padding:0!important;
+   align-self:center!important;justify-content:center!important;
+ }
+ html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton) strong{
+  display:block!important;
+  width:100%!important;
+  text-align:center!important;
+  font-size:clamp(12px,3.3vw,14px)!important;
+  line-height:1.2!important;
+  overflow:visible!important;
+ }
+ html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryTreasuryButton,#entryComparisonButton){
+  display:flex!important;
+  grid-column:1 / -1!important;
+  height:73px!important;min-height:73px!important;
+  justify-content:flex-start!important;
+  padding:11px 105px 11px 19px!important;
+ }
+ html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryTreasuryButton,#entryComparisonButton) > .inj-tile-scene {
+  left:auto!important;right:14px!important;top:50%!important;
+  width:83px!important;height:52px!important;transform:translateY(-50%)!important;
+ }
+ html[data-inj-page="index"] .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+ > :is(#entryTreasuryButton,#entryComparisonButton) strong{
+  font-size:clamp(13px,3.6vw,16px)!important;
+  text-align:left!important;
+ }
+ html[data-inj-page="index"] #entryInsights .entry-price-pnl{
+  min-height:72px!important;padding:12px 13px!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,auto)!important;
+ }
+ html[data-inj-page="index"] #entryInsights #entryInsightPnl{
+  font-size:clamp(20px,5.5vw,26px)!important;
+ }
+}
+@media(max-width:390px){
+ html[data-inj-page="index"] #entryInsights .entry-price-pnl{
+  grid-template-columns:1fr!important;
+  row-gap:6px!important;
+ }
+ html[data-inj-page="index"] #entryInsights #entryInsightPnl{
+  text-align:left!important;
+  font-size:clamp(22px,6vw,28px)!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] .entry-gate-shell .inj-tile-scene *,
+ html[data-inj-page="index"] .entry-gate-shell .inj-tile-scene{
+  animation:none!important;transition:none!important;
+ }
+}

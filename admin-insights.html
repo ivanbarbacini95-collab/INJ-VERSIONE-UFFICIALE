@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it" data-inj-page="admin-insights"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#080e17">
+<title>Admin Insights · INJ Node</title>
+<link rel="stylesheet" href="./leaflet-1.9.4.css?v=20261027mapfix1">
+<link rel="stylesheet" href="./admin-insights.css?v=20261027mapfix1">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+<script defer src="./inj-node-insights-config.js?v=cloudflare1"></script>
+<script defer src="./admin-insights-auth.js?v=20261027cf1"></script>
+<script defer src="./admin-insights-dashboard.js?v=20261027mapfix1"></script>
+</head><body>
+<header class="admin-topnav">
+<a href="./index.html" class="admin-home" id="adminGoHome" aria-label="Torna alla Home INJ Node">← HOME</a>
+<span class="admin-label">B CAPITAL GROUP · CONTROL CENTER</span>
+<span id="adminConnectStatus" class="admin-label">ACCESSO RISERVATO</span>
+</header>
+<section id="adminGate" class="admin-gate" aria-label="Accesso amministratore">
+<div class="admin-login">
+<p class="eyebrow">B CAPITAL GROUP / SECURE ACCESS</p>
+<h2>INJ NODE · ADMIN INSIGHTS</h2>
+<p>Accesso riservato all'amministratore. Analisi degli accessi live, del tempo di utilizzo, dei wallet osservati e delle aree geografiche.</p>
+<form id="adminLoginForm">
+<label for="adminUsername">NOME UTENTE</label>
+<input id="adminUsername" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="180">
+<label for="adminPassword">PASSWORD</label>
+<input id="adminPassword" name="password" type="password" autocomplete="current-password" required maxlength="1024">
+<button id="adminLoginButton" type="submit">ACCEDI ALLE STATISTICHE</button>
+<div id="adminLoginError" class="admin-gate-error" role="alert" hidden></div>
+</form>
+<p class="admin-login-note">La sessione è protetta dal server. Non memorizziamo la password sul dispositivo.</p>
+</div></section>
+<section id="adminDashboard" hidden>
+<div class="admin-topnav" style="padding-top:0;justify-content:flex-end">
+<button id="adminLogout" class="admin-signout" type="button">ESCI DALL'AREA ADMIN</button>
+</div>
+  <div class="ambient" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="masthead">
+      <div class="identity">
+        <div class="brand-mark">B<span>●</span></div>
+        <div><p class="eyebrow">B CAPITAL GROUP <span class="divider">/</span> INTELLIGENCE</p><h1>INJ NODE <em>INSIGHTS</em></h1><p class="subline">Audience intelligence &amp; geographic activity</p></div>
+      </div>
+      <div class="mast-right"><div class="connection"><i class="signal"></i><span id="connectionState">CONNESSIONE…</span></div><div class="updated" id="lastUpdate">—</div></div>
+    </header>
+
+    <section class="toolbar" aria-label="Filtro dashboard">
+      <div class="selectgroup"><span>INTERVALLO</span>
+        <button data-days="7">7 G</button><button data-days="30" class="active">30 G</button><button data-days="90">90 G</button>
+      </div>
+      <div class="toolbar-note"><span class="dot"></span> Aggiornamento automatico ogni 10 secondi <button id="refreshButton" title="Aggiorna statistiche" aria-label="Aggiorna statistiche">↻</button></div>
+    </section>
+
+    <div class="admin-connect-hint" id="adminDataNotice" hidden>Le statistiche sono protette. Il database e il collegamento con Insights devono essere attivi per visualizzare dati reali.</div>
+    <section class="kpis" aria-label="Indicatori principali">
+      <article class="metric live"><span>ONLINE ADESSO <b>● LIVE</b></span><strong id="kLive">—</strong><small>Sessioni attive · ultimi 90 secondi</small><div class="metric-underline"></div></article>
+      <article class="metric"><span>ACCESSI OGGI</span><strong id="kToday">—</strong><small>Nuove sessioni consenzienti</small><div class="metric-underline"></div></article>
+      <article class="metric"><span>ACCESSI TOTALI</span><strong id="kTotal">—</strong><small>Dall'attivazione del monitoraggio</small><div class="metric-underline"></div></article>
+      <article class="metric"><span>TEMPO MEDIO</span><strong id="kDuration">—</strong><small>Tempo attivo stimato per sessione</small><div class="metric-underline"></div></article>
+      <article class="metric"><span>ULTIMI 7 GIORNI</span><strong id="kWeek">—</strong><small>Sessioni recenti</small><div class="metric-underline"></div></article>
+    </section>
+
+    <section class="main-grid">
+      <article class="panel map-panel">
+        <div class="panel-head"><div><span class="panel-kicker">01 / GLOBAL PRESENCE</span><h2>ACCESS MAP <span class="tiny-live">LIVE</span></h2><p>Zone di provenienza indicative degli accessi · storico persistente</p></div><div class="map-summary"><strong id="mapAreaCount">0</strong><span>AREE RILEVATE</span></div></div>
+        <div class="map-stage"><div id="map" role="img" aria-label="Mappa non satellitare delle zone approssimative da cui provengono gli accessi"></div><div class="map-overlay"><div><i class="pulse-dot"></i> Ultimi 2 minuti</div><div><i class="saved-dot"></i> Storico conservato</div></div></div>
+        <div class="map-footer"><span>POSIZIONE APPROSSIMATIVA · GRIGLIA 0,5°</span><span>© OpenStreetMap contributors</span></div>
+      </article>
+      <article class="panel country-panel"><div class="panel-head"><div><span class="panel-kicker">02 / GEO DISTRIBUTION</span><h2>ZONE PIÙ ATTIVE</h2><p>Le aree con più accessi registrati</p></div></div><div id="topLocations" class="ranking"><div class="empty">Nessuna area registrata</div></div><div class="country-foot">Non vengono memorizzati indirizzi IP o coordinate GPS.</div></article>
+    </section>
+
+    <section class="analytics-grid">
+      <article class="panel chart-panel"><div class="panel-head"><div><span class="panel-kicker">03 / ACTIVITY</span><h2>EVOLUZIONE ACCESSI</h2><p>Nuove sessioni per giorno</p></div></div><div class="line-chart-wrap"><svg id="trafficChart" viewBox="0 0 720 230" preserveAspectRatio="none" aria-label="Grafico degli accessi per giorno"></svg><div class="chart-axis" id="chartAxis"><span>—</span><span>—</span></div></div></article>
+      <article class="panel rank-panel"><div class="panel-head"><div><span class="panel-kicker">04 / ENGAGEMENT</span><h2>SEZIONI PIÙ VISITATE</h2><p>Interazioni tracciate nelle sezioni di INJ Node</p></div></div><div id="topSections" class="ranking"></div></article>
+      <article class="panel rank-panel"><div class="panel-head"><div><span class="panel-kicker">05 / INTEREST</span><h2>WALLET PIÙ OSSERVATI</h2><p>Indirizzi pubblici abbreviati · eventi di visualizzazione</p></div></div><div id="topWallets" class="ranking"></div></article>
+      <article class="panel device-panel"><div class="panel-head"><div><span class="panel-kicker">06 / AUDIENCE</span><h2>DISPOSITIVI</h2><p>Distribuzione delle sessioni per dispositivo</p></div></div><div class="device-track" id="deviceTrack"></div><div class="device-list" id="deviceList"></div><div class="latest-head">ULTIME ATTIVITÀ</div><div id="recentEvents" class="event-list"></div></article>
+    </section>
+    <footer class="footer"><span>INJ NODE INSIGHTS <b>BY B CAPITAL GROUP</b></span><span>Solo eventi con consenso · dati aggregati · dashboard privata</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</section>
+</body></html>

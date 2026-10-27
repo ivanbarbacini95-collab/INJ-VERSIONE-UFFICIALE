@@ -1,0 +1,273 @@
+/* Reward Ladder · isolated, theme-aware fullscreen section */
+:root{--rl-bg:#060e18;--rl-text:#e9f7fb;--rl-muted:#89a6b6;--rl-panel:#112534;--rl-inner:#173343;--rl-line:rgba(157,211,224,.13);--rl-accent:#59dec3;--rl-glow:rgba(60,215,189,.22);--rl-pending:#496175;--rl-btn:#17313d;--rl-shadow:rgba(0,0,0,.2)}
+html[data-theme="black"]{--rl-bg:#050606;--rl-panel:#14191b;--rl-inner:#20272a;--rl-line:rgba(225,246,246,.11);--rl-accent:#a3eee3;--rl-glow:rgba(163,238,227,.14);--rl-btn:#1e282b}
+html[data-theme="light"],html[data-theme="aqua"]{--rl-bg:#eaf4f8;--rl-text:#12303c;--rl-muted:#55707d;--rl-panel:#fff;--rl-inner:#eff7f9;--rl-line:rgba(14,49,64,.12);--rl-accent:#087d77;--rl-glow:rgba(32,166,158,.11);--rl-pending:#8caab2;--rl-btn:#dcebed;--rl-shadow:rgba(33,78,91,.1)}
+html[data-theme="amber"]{--rl-bg:#0c121a;--rl-panel:#1a2732;--rl-inner:#243341;--rl-accent:#f2bd78;--rl-glow:rgba(242,189,120,.15)}
+html[data-theme="ocean"],html[data-theme^="ocean-x"]{--rl-bg:#071320;--rl-panel:#102536;--rl-inner:#1a364a;--rl-accent:#62c9fc;--rl-glow:rgba(98,201,252,.17)}
+html[data-theme="velvet"],html[data-theme="chromatic"]{--rl-bg:#0b1022;--rl-panel:#151e35;--rl-inner:#232d49;--rl-accent:#ae9eff;--rl-glow:rgba(174,158,255,.15)}
+html,body{margin:0;min-height:100%;width:100%;background:var(--rl-bg)!important;color:var(--rl-text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%;overflow-x:hidden;overscroll-behavior-x:none}
+*,*:before,*:after{box-sizing:border-box}
+body{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+[hidden]{display:none!important}
+.ladder-page{position:relative;isolation:isolate;min-height:100svh;min-height:100dvh;background:radial-gradient(ellipse 75% 40% at 45% -12%,var(--rl-glow),transparent 85%),var(--rl-bg);padding-bottom:max(24px,env(safe-area-inset-bottom))}
+.ladder-header{width:100%;height:auto;min-height:73px;padding:calc(env(safe-area-inset-top,0px) + 10px) clamp(17px,4.2vw,44px) 14px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--rl-line);position:relative;z-index:2}
+.ladder-back{width:41px;height:41px;min-width:41px;display:grid;place-items:center;color:var(--rl-text);border:1px solid var(--rl-line);border-radius:14px;text-decoration:none;background:var(--rl-inner);touch-action:manipulation}
+.ladder-back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ladder-heading{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ladder-heading span{font-size:9px;font-weight:800;letter-spacing:.23em;color:var(--rl-muted)}
+.ladder-heading strong{font-size:17px;letter-spacing:.01em;font-weight:730;white-space:nowrap}
+.ladder-live{margin-left:auto;display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:9px;color:var(--rl-accent);letter-spacing:.1em;font-weight:750}
+.ladder-live i{height:6px;width:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.ladder-live.is-offline{color:var(--rl-muted)}
+.ladder-main{width:min(100%,1020px);margin-inline:auto;padding:clamp(24px,5vw,44px) clamp(17px,4.2vw,43px) 30px;display:flex;flex-direction:column;gap:0}
+.ladder-eyebrow{font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--rl-accent)}
+.ladder-intro h1{font-size:clamp(36px,7vw,62px);line-height:1.06;letter-spacing:-.05em;font-weight:770;margin:12px 0 12px}
+.ladder-intro h1 em{font-style:normal;color:var(--rl-accent)}
+.ladder-intro p{margin:0;max-width:680px;font-size:clamp(12px,2.6vw,14px);line-height:1.6;color:var(--rl-muted)}
+.ladder-selector{margin-top:26px;border:1px solid var(--rl-line);border-radius:20px;background:var(--rl-panel);padding:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ladder-mode{display:flex;gap:5px;border-radius:14px;background:var(--rl-inner);padding:4px;max-width:100%}
+.ladder-mode button{border:0;border-radius:11px;padding:12px 14px;min-height:42px;color:var(--rl-muted);font:750 12px inherit;font-size:12px;font-weight:740;cursor:pointer;background:transparent;white-space:nowrap;touch-action:manipulation}
+.ladder-mode button.is-active{background:var(--rl-btn);color:var(--rl-text);box-shadow:inset 0 0 0 1px var(--rl-line)}
+.ladder-pick{min-width:0;display:flex;align-items:center;gap:13px;flex:1;justify-content:flex-end}
+.ladder-pick-info{min-width:0;display:flex;flex-direction:column;gap:4px;text-align:right}
+.ladder-pick-info small{font-weight:760;color:var(--rl-muted);font-size:9px;letter-spacing:.13em}
+.ladder-pick-info strong{font-size:13px;font-weight:760;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:210px}
+.ladder-pick select{border-radius:12px;border:1px solid var(--rl-line);background:var(--rl-inner);color:var(--rl-text);min-height:42px;max-width:200px;min-width:105px;padding:0 27px 0 11px;font:600 12px -apple-system,BlinkMacSystemFont,sans-serif;touch-action:manipulation}
+.ladder-pick select:disabled{opacity:.4}
+.ladder-overview{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;margin:17px 0 34px}
+.ladder-total{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:7px;min-height:184px;border-radius:20px;border:1px solid var(--rl-line);padding:24px;background:var(--rl-panel)}
+.ladder-total-top{display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:1;font-size:10px;font-weight:800;letter-spacing:.11em;color:var(--rl-muted)}
+.ladder-data-tag{font-size:9px;color:var(--rl-accent);white-space:nowrap}
+.ladder-total strong{z-index:1;font-size:clamp(36px,6vw,56px);line-height:1.18;font-weight:760;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.ladder-total>span{z-index:1;font-size:13px;color:var(--rl-muted);font-variant-numeric:tabular-nums}
+.ladder-glow{pointer-events:none;position:absolute;inset:auto -30px -110px 20%;height:185px;border-radius:50%;background:var(--rl-glow);filter:blur(50px);opacity:.7}
+.ladder-metrics{border:1px solid var(--rl-line);border-radius:20px;background:var(--rl-panel);display:flex;flex-direction:column;justify-content:space-evenly;padding:15px 20px;min-width:0}
+.ladder-metrics>div{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 0}
+.ladder-metrics>div+div{border-top:1px solid var(--rl-line)}
+.ladder-metrics span{color:var(--rl-muted);font-weight:720;letter-spacing:.05em;font-size:10px}
+.ladder-metrics strong{font-size:16px;font-weight:760;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ladder-roadmap-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}
+.ladder-roadmap-head h2{font-size:clamp(21px,4vw,28px);margin:8px 0 0;letter-spacing:-.035em}
+.ladder-current-step{font-size:11px;font-weight:730;letter-spacing:.03em;color:var(--rl-accent);text-align:right;padding-bottom:3px}
+.ladder-steps{display:flex;flex-direction:column;gap:11px;align-items:stretch}
+.ladder-step{border:1px solid var(--rl-line);border-radius:17px;background:var(--rl-panel);padding:16px 18px;display:flex;flex-direction:column;gap:12px;transition:border-color .3s,background-color .3s;contain:layout style}
+.ladder-step[data-state="active"]{border-color:color-mix(in srgb,var(--rl-accent) 45%,transparent)}
+.ladder-step[data-state="done"]{opacity:.79}
+.ladder-step-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ladder-step-target{display:flex;align-items:center;gap:11px;min-width:0}
+.ladder-step-number{height:28px;width:28px;flex:0 0 28px;display:grid;place-items:center;background:var(--rl-inner);border-radius:9px;color:var(--rl-muted);font-size:11px;font-weight:800}
+.ladder-step-money{font-size:22px;letter-spacing:-.035em;font-weight:780;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ladder-step-status{font-size:10px;letter-spacing:.1em;color:var(--rl-muted);font-weight:740;white-space:nowrap}
+.ladder-step[data-state="active"] .ladder-step-status,.ladder-step[data-state="done"] .ladder-step-status{color:var(--rl-accent)}
+.ladder-track{width:100%;height:7px;background:var(--rl-inner);border-radius:99px;overflow:hidden;position:relative}
+.ladder-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,color-mix(in srgb,var(--rl-accent) 55%,transparent),var(--rl-accent));transition:width 850ms linear;position:relative}
+.ladder-step[data-state="active"] .ladder-fill::after{content:"";position:absolute;right:0;top:0;height:100%;width:20px;border-radius:inherit;background:rgba(255,255,255,.4);filter:blur(4px);animation:ladder-light 2.3s ease-in-out infinite alternate}
+@keyframes ladder-light{from{opacity:.15}to{opacity:.9}}
+.ladder-step-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;min-width:0}
+.ladder-step-progress{font-size:11px;color:var(--rl-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ladder-step-eta{font-size:11px;font-weight:720;color:var(--rl-muted);text-align:right;min-width:0;font-variant-numeric:tabular-nums}
+.ladder-step[data-state="active"] .ladder-step-eta{color:var(--rl-accent)}
+.ladder-bottom{display:flex;flex-direction:column;gap:15px;padding:20px 1px}
+.ladder-bottom p{font-size:11px;color:var(--rl-muted);line-height:1.6;max-width:760px;margin:0}
+.ladder-sync-footer{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ladder-sync-footer span{font-size:11px;color:var(--rl-muted)}
+.ladder-sync-footer button{border-radius:12px;border:1px solid var(--rl-line);color:var(--rl-text);background:var(--rl-btn);padding:11px 14px;min-height:42px;font:700 12px -apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;gap:8px;cursor:pointer;touch-action:manipulation}
+.ladder-sync-footer button svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ladder-sync-footer button:disabled{opacity:.5}
+.ladder-footer-brand{text-align:center;padding:25px 0 10px;color:var(--rl-muted);font-size:11px;font-weight:760;letter-spacing:.14em}
+.ladder-footer-brand span{display:block;margin-top:6px;font-size:9px;font-weight:600;letter-spacing:.1em}
+@media(max-width:620px){.ladder-main{padding-top:24px}.ladder-selector{align-items:stretch;padding:11px}.ladder-mode{width:100%}.ladder-mode button{flex:1;min-width:0;white-space:normal}.ladder-pick{justify-content:space-between;width:100%}.ladder-pick-info{text-align:left}.ladder-pick select{max-width:54%;flex:1}.ladder-overview{grid-template-columns:1fr;gap:10px;margin-bottom:27px}.ladder-total{min-height:150px;padding:20px}.ladder-metrics{padding:10px 17px}.ladder-step{padding:15px 14px}.ladder-step-money{font-size:20px}.ladder-step-status{font-size:9px}.ladder-step-foot{align-items:flex-start}.ladder-step-eta{max-width:52%}}
+@media(prefers-reduced-motion:reduce){.ladder-fill{transition:none}.ladder-step[data-state="active"] .ladder-fill::after{animation:none}}
+
+/* INJ NODE · Reward Ladder v16.07.39
+   Always read the live Home theme variables via navigation.js.
+   Explicit foreground colors eliminate black headings on dark themes. */
+html[data-inj-page="reward-ladder"] {
+  --rl-bg:var(--theme-canvas,var(--bg,#060e18));
+  --rl-text:var(--text,#e9f7fb);
+  --rl-muted:var(--muted-strong,var(--muted,#92b4c4));
+  --rl-panel:var(--surface,#112534);
+  --rl-inner:var(--surface-strong,#173343);
+  --rl-line:color-mix(in srgb,var(--line,rgba(157,211,224,.15)) 84%,var(--accent,#59dec3) 16%);
+  --rl-accent:var(--accent,#59dec3);
+  --rl-btn:var(--surface-soft,var(--surface-strong,#173343));
+  --rl-glow:color-mix(in srgb,var(--accent,#59dec3) 18%,transparent);
+  --rl-shine:color-mix(in srgb,var(--accent,#59dec3) 45%,#ffffff);
+}
+html[data-inj-page="reward-ladder"]:not([data-inj-page="index"]) body {
+  color:var(--rl-text)!important;
+  background:var(--rl-bg)!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-page{
+  color:var(--rl-text)!important;
+  background:
+    radial-gradient(ellipse 70% 32% at 45% -11%,var(--rl-glow),transparent 87%),
+    var(--page-gradient,linear-gradient(145deg,var(--rl-bg),var(--rl-bg)))!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-page :is(.ladder-intro h1,
+  .ladder-roadmap-head h2,.ladder-heading strong,.ladder-pick-info strong,
+  .ladder-total>strong,.ladder-metrics strong,.ladder-step-money) {
+  color:var(--rl-text)!important;
+  -webkit-text-fill-color:currentColor;
+}
+html[data-inj-page="reward-ladder"] .ladder-intro h1 em{
+  color:var(--rl-accent)!important;
+  -webkit-text-fill-color:var(--rl-accent)!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-page :is(
+  .ladder-intro p,.ladder-pick-info small,
+  .ladder-total-top,.ladder-total>span:not(.ladder-data-tag),
+  .ladder-metrics span,.ladder-step-progress,.ladder-step-eta,
+  .ladder-step-status,.ladder-step-number,.ladder-bottom p,
+  .ladder-sync-footer span,.ladder-footer-brand,
+  .ladder-heading>span) {
+  color:var(--rl-muted);
+}
+html[data-inj-page="reward-ladder"] .ladder-page :is(
+ .ladder-eyebrow,.ladder-data-tag,.ladder-current-step,
+ .ladder-step[data-state="active"] .ladder-step-status,
+ .ladder-step[data-state="done"] .ladder-step-status,
+ .ladder-step[data-state="active"] .ladder-step-eta) {
+  color:var(--rl-accent)!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-mode button.is-active,
+html[data-inj-page="reward-ladder"] #ladderWalletPicker,
+html[data-inj-page="reward-ladder"] .ladder-sync-footer button {
+  color:var(--rl-text)!important;
+  -webkit-text-fill-color:currentColor;
+}
+html[data-inj-page="reward-ladder"] .ladder-mode button:not(.is-active){
+  color:var(--rl-muted)!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-selector,
+html[data-inj-page="reward-ladder"] .ladder-total,
+html[data-inj-page="reward-ladder"] .ladder-metrics,
+html[data-inj-page="reward-ladder"] .ladder-step{
+  background:color-mix(in srgb,var(--rl-panel) 95%,transparent)!important;
+  border-color:color-mix(in srgb,var(--rl-accent) 12%,var(--rl-line))!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="active"]{
+  border-color:color-mix(in srgb,var(--rl-accent) 55%,var(--rl-line))!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--rl-accent) 10%,transparent),
+    0 0 18px color-mix(in srgb,var(--rl-accent) 6%,transparent);
+}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="done"]{
+  opacity:1!important;
+  border-color:color-mix(in srgb,var(--rl-accent) 20%,var(--rl-line))!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="done"] .ladder-step-money{
+  color:var(--rl-text)!important;
+}
+/* Quiet empty track and a multitone, theme-derived fill.
+   Only the actual filled section clips the sweeping light. */
+html[data-inj-page="reward-ladder"] .ladder-track {
+  height:9px;
+  border-radius:999px;
+  isolation:isolate;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--rl-inner) 88%,#000 12%),
+    color-mix(in srgb,var(--rl-inner) 97%,var(--rl-accent) 3%));
+  box-shadow:inset 0 1px 3px color-mix(in srgb,var(--rl-text) 11%,transparent);
+  overflow:visible;
+}
+html[data-inj-page="reward-ladder"] .ladder-fill{
+  isolation:isolate;
+  overflow:hidden;
+  min-width:0;
+  position:relative;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(93deg,
+    color-mix(in srgb,var(--rl-accent) 44%,var(--rl-inner)) 0%,
+    color-mix(in srgb,var(--rl-accent) 77%,#87dbff) 56%,
+    var(--rl-accent) 100%)!important;
+  box-shadow:0 0 12px color-mix(in srgb,var(--rl-accent) 22%,transparent),
+    inset 0 1px 0 color-mix(in srgb,#fff 28%,transparent);
+  transition:width .85s linear,box-shadow .35s ease;
+}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="active"] .ladder-fill{
+  box-shadow:0 0 14px color-mix(in srgb,var(--rl-accent) 42%,transparent),
+    inset 0 1px 0 color-mix(in srgb,#fff 34%,transparent);
+}
+/* The gleam starts at the beginning of the filled segment and ends
+   at its current right edge; it cannot spill into the empty track. */
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="active"] .ladder-fill::after{
+  content:"";position:absolute;inset:0!important;right:0!important;
+  height:100%!important;width:100%!important;
+  pointer-events:none;
+  border-radius:inherit;
+  opacity:.8;
+  background:linear-gradient(100deg,transparent 0%,
+    color-mix(in srgb,var(--rl-shine) 12%,transparent) 30%,
+    color-mix(in srgb,#fff 75%,var(--rl-shine)) 50%,
+    color-mix(in srgb,var(--rl-shine) 12%,transparent) 70%,transparent 100%);
+  background-size:44px 100%;
+  background-repeat:no-repeat;
+  background-position:-52px center;
+  filter:none!important;
+  animation:ladder-sweep 3s linear infinite!important;
+}
+@keyframes ladder-sweep {
+  0%{background-position:-52px center;opacity:.5}
+  14%{opacity:.9}
+  86%{opacity:.9}
+  100%{background-position:calc(100% + 52px) center;opacity:.5}
+}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="done"] .ladder-fill::after{
+  content:none!important;animation:none!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-beacon{
+  position:absolute;
+  top:50%;left:var(--ladder-progress,0%);
+  height:9px;width:9px;
+  border:2px solid color-mix(in srgb,#fff 67%,var(--rl-accent));
+  background:var(--rl-accent);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--rl-accent) 16%,transparent),
+    0 0 15px 3px color-mix(in srgb,var(--rl-accent) 35%,transparent);
+  opacity:0;pointer-events:none;z-index:2;
+  transition:left .85s linear,opacity .3s ease;
+}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="active"]
+  .ladder-beacon{opacity:1}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="active"]
+  .ladder-fill::before{content:none!important}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="done"] .ladder-step-eta{
+  color:var(--rl-muted)!important;
+}
+html[data-inj-page="reward-ladder"] .ladder-step-number{
+  color:var(--rl-text)!important;
+  background:color-mix(in srgb,var(--rl-accent) 10%,var(--rl-inner));
+}
+html[data-inj-page="reward-ladder"] .ladder-step[data-state="done"] .ladder-step-number{
+  color:var(--rl-accent)!important;
+  background:color-mix(in srgb,var(--rl-accent) 15%,var(--rl-inner));
+}
+html[data-inj-page="reward-ladder"] .ladder-mode button:focus-visible,
+html[data-inj-page="reward-ladder"] #ladderWalletPicker:focus-visible,
+html[data-inj-page="reward-ladder"] .ladder-sync-footer button:focus-visible,
+html[data-inj-page="reward-ladder"] .ladder-back:focus-visible{
+  outline:2px solid var(--rl-accent)!important;
+  outline-offset:3px;
+}
+@media(max-width:620px){
+ html[data-inj-page="reward-ladder"] .ladder-overview{gap:12px}
+ html[data-inj-page="reward-ladder"] .ladder-total strong{
+   font-size:clamp(33px,9vw,48px);overflow-wrap:anywhere
+ }
+ html[data-inj-page="reward-ladder"] .ladder-step{
+   gap:11px;min-height:112px;
+ }
+ html[data-inj-page="reward-ladder"] .ladder-step-foot{gap:8px;flex-wrap:wrap}
+ html[data-inj-page="reward-ladder"] .ladder-step-eta{margin-left:auto;max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="reward-ladder"] .ladder-step[data-state="active"] .ladder-fill::after{
+   animation:none!important;opacity:.38;background-position:right center
+ }
+ html[data-inj-page="reward-ladder"] .ladder-beacon{
+   transition:none!important
+ }
+ html[data-inj-page="reward-ladder"] .ladder-fill{transition:none!important}
+}

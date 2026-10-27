@@ -1,0 +1,30 @@
+{
+  "id": "./install-icon-pulse.html",
+  "name": "INJ Node",
+  "short_name": "INJ Node",
+  "start_url": "./install-icon-pulse.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071320",
+  "theme_color": "#071320",
+  "icons": [
+    {
+      "src": "./icons/inj-node-pulse-192-v16.07.03.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/inj-node-pulse-512-v16.07.03.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/inj-node-pulse-180-v16.07.03.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

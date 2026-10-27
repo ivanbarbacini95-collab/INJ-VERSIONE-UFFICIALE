@@ -1,0 +1,147 @@
+/* INJ Node · iPhone crisp viewport / keyboard patch v16.00.95
+   This file is loaded AFTER navigation.css, which previously reintroduced
+   sticky translucent strips and a clipped converter viewport on iOS. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+ /* No blurred screen-top compositor layers on mobile/PWA. */
+ html[data-theme],html[data-theme] body {
+   -webkit-filter:none!important;filter:none!important;
+   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+   background-attachment:scroll!important;
+ }
+ html[data-theme] body :is(.entry-home-top,.entry-gate-shell,.entry-gate,.app-shell>.topbar,
+ .terminal-header,.treasury-header,.rewards-header,.book-topbar,.cc-topbar,
+ .converter-view-header,.performance-timeline-header,.cap-header,
+ .shell>.header,.header,.market-header,.rewards-page,.treasury-shell,.live-page,.book-page,.cc-shell) {
+   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+   -webkit-filter:none!important;filter:none!important;
+   -webkit-mask-image:none!important;mask-image:none!important;
+   -webkit-backface-visibility:visible!important;backface-visibility:visible!important;
+ }
+ html[data-theme] body :is(.entry-gate,.entry-gate-shell,.entry-home-top,
+ .terminal-header,.treasury-header,.rewards-header,.book-topbar,.cc-topbar,
+ .converter-view-header,.performance-timeline-header,.cap-header,.app-shell>.topbar)::before,
+ html[data-theme] body :is(.entry-gate,.entry-gate-shell,.entry-home-top,
+ .terminal-header,.treasury-header,.rewards-header,.book-topbar,.cc-topbar,
+ .converter-view-header,.performance-timeline-header,.cap-header,.app-shell>.topbar)::after{
+   content:none!important;display:none!important;
+ }
+ /* Do not put a translucent fixed strip over text when bouncing at the top. */
+ html[data-theme] body :is(.terminal-header,.treasury-header,.rewards-header,.book-topbar,
+ .cc-topbar,.converter-view-header,.performance-timeline-header,.cap-header,
+ .app-shell>.topbar,.shell>.header) {
+   position:relative!important;top:auto!important;
+   transform:none!important;-webkit-transform:none!important;
+   will-change:auto!important;
+   background-image:none!important;
+ }
+ html[data-theme] body :is(.entry-gate,.treasury-shell,.rewards-shell,.live-page,
+ .book-page,.cc-shell,.cap-shell) {
+   transform:none!important;-webkit-transform:none!important;
+ }
+}
+/* Live Charts header: give the price a real grid cell and a full line box. */
+html[data-inj-page="live-charts"] .terminal-header {
+   box-sizing:border-box!important;
+   display:grid!important;
+   grid-template-columns:minmax(36px,44px) minmax(0,1fr) auto!important;
+   column-gap:8px!important;
+   align-items:center!important;
+   padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right))
+           8px max(8px,env(safe-area-inset-left))!important;
+   height:auto!important;min-height:92px!important;
+   overflow:visible!important;
+}
+html[data-inj-page="live-charts"] .terminal-header #liveChartsBack {
+  position:relative!important;inset:auto!important;
+  top:auto!important;left:auto!important;
+  translate:none!important;transform:none!important;
+  align-self:center!important;justify-self:start!important;
+  width:40px!important;height:40px!important;
+}
+html[data-inj-page="live-charts"] .market-heading {
+  display:grid!important;justify-self:stretch!important;justify-items:start!important;
+  min-width:0!important;max-width:100%!important;
+  overflow:visible!important;gap:3px!important;
+}
+html[data-inj-page="live-charts"] .market-price-row {
+  display:flex!important;align-items:baseline!important;flex-wrap:wrap!important;
+  gap:1px 9px!important;max-width:100%!important;min-width:0!important;
+  overflow:visible!important;
+}
+html[data-inj-page="live-charts"] #headerLivePrice {
+  display:block!important;
+  font-size:clamp(19px,4.9vw,29px)!important;
+  line-height:1.25!important;letter-spacing:-.025em!important;
+  white-space:nowrap!important;overflow:visible!important;
+  text-overflow:clip!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="live-charts"] .header-actions{
+  justify-self:end!important;align-self:center!important;min-width:0!important;
+}
+@media(max-width:700px){
+ html[data-inj-page="live-charts"] .terminal-header{
+   min-height:92px!important;grid-template-columns:40px minmax(0,1fr) auto!important;
+   gap:7px!important;
+ }
+ html[data-inj-page="live-charts"] .market-pair{flex-wrap:wrap!important;gap:3px 6px!important;}
+ html[data-inj-page="live-charts"] .market-price-row>.range-change{font-size:10px!important;line-height:1.2!important;}
+ html[data-inj-page="live-charts"] .connection-pill{display:none!important;}
+ html[data-inj-page="live-charts"] .header-actions{gap:4px!important;}
+ html[data-inj-page="live-charts"] .header-actions .focus-button{padding:0 5px!important;}
+}
+@media(max-width:390px){
+ html[data-inj-page="live-charts"] #headerLivePrice{font-size:18px!important;}
+ html[data-inj-page="live-charts"] .header-actions .indicator-toggle{display:none!important;}
+}
+/* INJ Converter: retain one page height when the iOS virtual keyboard opens.
+   The keyboard may cover lower content, which stays reachable via native
+   scrolling inside the converter; it must NEVER shrink and clip the shell. */
+html[data-inj-page="index"] #converterView.open {
+  height:var(--inj-converter-locked-height,100dvh)!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  transform:none!important;-webkit-transform:none!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html[data-inj-page="index"] #converterView.open > .converter-view-shell{
+ height:100%!important;max-height:100%!important;min-height:0!important;
+ grid-template-rows:auto minmax(0,1fr)!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="index"] #converterView.open .converter-view-main,
+html[data-inj-page="index"] #converterView.open:focus-within .converter-view-main {
+ display:block!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ -webkit-overflow-scrolling:touch!important;
+ overscroll-behavior-y:contain!important;
+ scroll-behavior:auto!important;
+ min-height:0!important;height:100%!important;max-height:none!important;
+ padding:clamp(14px,3vh,36px) 0 max(42px,env(safe-area-inset-bottom))!important;
+}
+html[data-inj-page="index"] #converterView.open .converter-view-main > .entry-converter,
+html[data-inj-page="index"] #converterView.open:focus-within .converter-view-main > .entry-converter {
+ width:100%!important;height:auto!important;min-height:0!important;
+ max-height:none!important;transform:none!important;-webkit-transform:none!important;
+ align-self:start!important;margin:0 auto!important;
+}
+html[data-inj-page="index"] #converterView.open .entry-converter-input input {
+ font-size:16px!important;
+ line-height:1.4!important;
+ transform:none!important;-webkit-transform:none!important;
+ zoom:1!important;min-height:42px!important;
+}
+html[data-inj-page="index"] #converterView.open:focus-within .entry-converter-flow,
+html[data-inj-page="index"] #converterView.open .entry-converter-flow {
+ transform:none!important;-webkit-transform:none!important;
+}
+@media(max-width:720px){
+ html[data-inj-page="index"] #converterView.open .converter-view-main,
+ html[data-inj-page="index"] #converterView.open:focus-within .converter-view-main {
+  padding-top:12px!important;padding-bottom:150px!important;
+ }
+ html[data-inj-page="index"] #converterView.open .entry-converter-field{min-width:0!important;}
+ html[data-inj-page="index"] #converterView.open .entry-converter-input input{
+  font-size:16px!important;min-width:0!important;
+ }
+}

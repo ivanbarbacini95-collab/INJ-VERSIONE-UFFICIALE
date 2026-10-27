@@ -1,0 +1,139 @@
+/* INJ Node · iPad Dashboard alignment · v16.07.22
+   Keeps iPhone layout, wallet logic, animation and the native document scroller intact.
+   Fixes legacy implicit grid tracks and asymmetric hero-card heights on tablets. */
+@media (min-width:600px) and (max-width:1400px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top {
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > :is(
+    .wallet-dock,.aggregate-strip,.overview-grid,.metrics-grid,.analytics-grid
+  ) {
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    margin-inline:0!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .overview-grid {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    gap:clamp(10px,1.4vw,17px)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #accountDetail > .data-card {
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:auto!important;
+    align-self:stretch!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #worthCard :is(
+    .hero-number,.hero-secondary,.worth-performance-stack,.allocation-labels
+  ){
+    min-width:0;
+    max-width:100%;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid {
+    display:grid!important;
+    grid-auto-flow:row!important;
+    align-items:stretch!important;
+    gap:clamp(10px,1.4vw,17px)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid > .data-card {
+    grid-row:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:128px!important;
+    height:auto!important;
+    box-sizing:border-box!important;
+    align-self:stretch!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .analytics-grid {
+    display:grid!important;
+    gap:clamp(10px,1.4vw,17px)!important;
+    align-items:stretch!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .analytics-grid > .data-card {
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top #validatorCard {
+    grid-column:1/-1!important;
+  }
+}
+/* Portrait / compact iPads: natural reading order, two equal metric columns.
+   The last APR card spans both columns, preventing an orphan half row. */
+@media (min-width:600px) and (max-width:1180px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > .data-card {
+    grid-column:auto!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #aprCard {
+    grid-column:1/-1!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .analytics-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .analytics-grid > .data-card {
+    grid-column:1/-1!important;
+    grid-row:auto!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #ownedTotalCard .owned-total-main {
+    min-width:0!important;
+  }
+}
+/* Smaller split-screen iPad windows require stacked hero cards. */
+@media (min-width:600px) and (max-width:759px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .overview-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #ownedTotalCard {
+    grid-column:1/-1!important;
+    grid-row:1!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #availableCard {
+    grid-column:1!important;
+    grid-row:2!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #stakedCard {
+    grid-column:2!important;
+    grid-row:2!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #rewardsCard {
+    grid-column:1!important;
+    grid-row:3!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #aprCard {
+    grid-column:2!important;
+    grid-row:3!important;
+  }
+}
+/* Wide iPads in landscape: three metrics above two, with no unused tracks. */
+@media (min-width:1181px) and (max-width:1400px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid {
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > .data-card:nth-child(-n+3) {
+    grid-column:span 2!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > .data-card:nth-child(n+4) {
+    grid-column:span 3!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .analytics-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .analytics-grid > :is(#yieldCard,#targetCard) {
+    grid-column:auto!important;
+    grid-row:auto!important;
+  }
+}

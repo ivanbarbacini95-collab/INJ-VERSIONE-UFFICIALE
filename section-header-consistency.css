@@ -1,0 +1,306 @@
+/* INJ Node v16.01.34 — coherent section headers without cross-page drift.
+   One navigation row on iPhone, no extra document padding or scroll locks.
+   Loaded LAST, after legacy responsive and safe-area header overrides. */
+
+@media (max-width:900px) {
+  /* Dashboard: the name belongs next to Home like Converter and Market,
+     NOT in the centre of the whole screen. */
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+    > .app-shell > .topbar {
+      display:grid!important;
+      grid-template-columns:44px minmax(0,1fr) auto!important;
+      grid-template-rows:minmax(44px,auto)!important;
+      gap:10px!important;
+      align-items:center!important;
+      padding-left:max(8px,env(safe-area-inset-left,0px))!important;
+      padding-right:max(8px,env(safe-area-inset-right,0px))!important;
+      padding-bottom:8px!important;
+      width:100%!important;
+      box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+    > .app-shell > .topbar > #dashboardHomeButton {
+      grid-column:1!important;grid-row:1!important;
+      position:relative!important;inset:auto!important;
+      align-self:center!important;justify-self:start!important;
+      width:44px!important;height:44px!important;min-width:44px!important;
+      margin:0!important;transform:none!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+    > .app-shell > .topbar > .header-title.inj-location-brand {
+      grid-column:2!important;grid-row:1!important;
+      justify-self:start!important;align-self:center!important;
+      position:relative!important;inset:auto!important;
+      width:auto!important;min-width:0!important;max-width:100%!important;
+      margin:0!important;padding:0!important;transform:none!important;
+      text-align:left!important;
+      align-items:flex-start!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open)
+    > .app-shell > .topbar > #dashboardHeaderActions {
+      grid-column:3!important;grid-row:1!important;
+      justify-self:end!important;align-self:center!important;
+      min-width:0!important;max-width:100%!important;
+      position:relative!important;inset:auto!important;margin:0!important;
+  }
+
+  /* Standalone document sections: same 44px back target, 10px gap, title,
+     then right-side live indicator/actions. Never make the title absolute. */
+  html[data-inj-page="treasury"] .treasury-header,
+  html[data-inj-page="live-rewards"] .rewards-header,
+  html[data-inj-page="comparison"] .cap-header,
+  html[data-inj-page="visualize-wealth"] .wealth-header,
+  html[data-inj-market] .shell > .header {
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) auto!important;
+    grid-template-rows:minmax(44px,auto)!important;
+    gap:10px!important;
+    align-items:center!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="treasury"] .treasury-header > .treasury-close,
+  html[data-inj-page="live-rewards"] .rewards-header > .rewards-close,
+  html[data-inj-page="comparison"] .cap-header > .cap-home,
+  html[data-inj-page="visualize-wealth"] .wealth-header > .wealth-home,
+  html[data-inj-market] .shell > .header > #marketBack {
+    grid-column:1!important;grid-row:1!important;
+    width:44px!important;height:44px!important;min-width:44px!important;
+    align-self:center!important;justify-self:start!important;
+    position:relative!important;inset:auto!important;
+    margin:0!important;transform:none!important;
+  }
+  html[data-inj-page="treasury"] .treasury-header > .treasury-title,
+  html[data-inj-page="live-rewards"] .rewards-header > .rewards-title,
+  html[data-inj-page="comparison"] .cap-header > .cap-heading,
+  html[data-inj-page="visualize-wealth"] .wealth-header > .wealth-heading,
+  html[data-inj-market] .shell > .header > .brand {
+    grid-column:2!important;grid-row:1!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:flex-start!important;justify-content:center!important;
+    justify-self:start!important;align-self:center!important;
+    min-width:0!important;max-width:100%!important;
+    position:relative!important;inset:auto!important;
+    padding:0!important;margin:0!important;transform:none!important;
+    text-align:left!important;
+  }
+  html[data-inj-page="treasury"] .treasury-header > .treasury-market-reference,
+  html[data-inj-page="live-rewards"] .rewards-header > .rewards-head-status,
+  html[data-inj-page="comparison"] .cap-header > .cap-connection,
+  html[data-inj-page="visualize-wealth"] .wealth-header > .wealth-eyebrow,
+  html[data-inj-market] .shell > .header > .live {
+    grid-column:3!important;grid-row:1!important;
+    align-self:center!important;justify-self:end!important;
+    position:relative!important;inset:auto!important;
+    min-width:0!important;margin:0!important;
+  }
+  html[data-inj-page="visualize-wealth"] .wealth-header {
+    min-height:calc(var(--inj-control-inset,16px) + 54px)!important;
+    height:auto!important;padding-bottom:10px!important;
+  }
+
+  /* Embedded Home screens use the same button/title line without touching
+     their independent scroll or keyboard behavior. */
+  html[data-inj-page="index"] #converterView.open .converter-view-header,
+  html[data-inj-page="index"] #performanceTimelineView.open .performance-timeline-header {
+    display:flex!important;align-items:center!important;
+    gap:10px!important;
+    height:auto!important;
+  }
+  html[data-inj-page="index"] #converterView.open .converter-view-title,
+  html[data-inj-page="index"] #performanceTimelineView.open .performance-timeline-title {
+    align-items:flex-start!important;justify-content:center!important;
+    flex:1 1 auto!important;min-width:0!important;
+    margin:0!important;transform:none!important;
+  }
+
+  /* Order Book has four controls; keep its price/grouping slots but place
+     the section identity directly after the back button. */
+  html[data-inj-page="order-book"] .book-topbar {
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) auto auto!important;
+    grid-template-rows:minmax(44px,auto)!important;
+    gap:8px!important;align-items:center!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar > #bookBack {
+    grid-column:1!important;grid-row:1!important;
+    position:relative!important;inset:auto!important;
+    justify-self:start!important;align-self:center!important;
+    width:44px!important;height:44px!important;
+    margin:0!important;transform:none!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar > .book-brand {
+    grid-column:2!important;grid-row:1!important;
+    justify-self:start!important;align-self:center!important;
+    min-width:0!important;max-width:100%!important;
+    position:relative!important;inset:auto!important;
+    transform:none!important;margin:0!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar > .pair {
+    grid-column:3!important;grid-row:1!important;
+    align-self:center!important;justify-self:end!important;
+  }
+  html[data-inj-page="order-book"] .book-topbar > .top-actions {
+    grid-column:4!important;grid-row:1!important;
+    align-self:center!important;justify-self:end!important;
+  }
+
+  /* Command Center's extra wallet/status row is retained. */
+  html[data-inj-page="command-center"] .cc-topbar {
+    height:auto!important;
+    min-height:calc(var(--inj-control-inset,16px) + 52px)!important;
+    padding-bottom:8px!important;
+    align-items:center!important;
+  }
+  html[data-inj-page="command-center"] .cc-brand {
+    align-items:center!important;gap:10px!important;min-width:0!important;
+  }
+  html[data-inj-page="command-center"] .cc-brand > #ccBack {
+    display:grid!important;place-items:center!important;
+    flex:0 0 44px!important;
+    width:44px!important;height:44px!important;
+    position:relative!important;inset:auto!important;
+    transform:none!important;
+  }
+  html[data-inj-page="command-center"] .cc-brand-copy.inj-location-title > .inj-location-section {
+    display:block!important;visibility:visible!important;
+    font-size:10px!important;
+  }
+
+  /* LIVE CHARTS is different. Two clear header rows on an iPhone:
+       row 1: [ X ] [ LIVE CHARTS ] [ IND / FOCUS ]
+       row 2:            INJ/USDT + LIVE PRICE
+     The second row spans the FULL width, so the price is geometrically
+     centered in the viewport, independently of the controls. */
+  html[data-inj-page="live-charts"] .terminal-header {
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) auto!important;
+    grid-template-rows:44px minmax(45px,auto)!important;
+    column-gap:10px!important;row-gap:3px!important;
+    padding:5px max(10px,env(safe-area-inset-right,0px))
+            7px max(10px,env(safe-area-inset-left,0px))!important;
+    width:100%!important;
+    box-sizing:border-box!important;
+    height:auto!important;
+    min-height:100px!important;
+    align-items:center!important;
+    overflow:visible!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > #liveChartsBack {
+    grid-column:1!important;grid-row:1!important;
+    position:relative!important;
+    inset:auto!important;top:auto!important;left:auto!important;
+    right:auto!important;bottom:auto!important;
+    translate:none!important;transform:none!important;
+    align-self:center!important;justify-self:start!important;
+    width:44px!important;height:44px!important;
+    margin:0!important;z-index:8!important;
+    pointer-events:auto!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .brand.inj-location-brand {
+    grid-column:2!important;grid-row:1!important;
+    position:relative!important;
+    inset:auto!important;top:auto!important;left:auto!important;
+    right:auto!important;bottom:auto!important;
+    translate:none!important;transform:none!important;
+    align-self:center!important;justify-self:start!important;
+    display:flex!important;flex-direction:row!important;
+    align-items:center!important;justify-content:flex-start!important;
+    min-width:0!important;max-width:100%!important;
+    width:auto!important;height:44px!important;
+    margin:0!important;padding:0!important;
+    z-index:3!important;
+    pointer-events:none!important;
+    white-space:nowrap!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .brand .inj-location-section {
+    display:block!important;visibility:visible!important;opacity:1!important;
+    color:var(--accent,#64e6c6)!important;
+    font-size:clamp(11px,3.1vw,14px)!important;
+    font-weight:950!important;line-height:1.2!important;
+    letter-spacing:.045em!important;
+    text-shadow:none!important;white-space:nowrap!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .header-actions {
+    grid-column:3!important;grid-row:1!important;
+    display:flex!important;align-items:center!important;justify-content:flex-end!important;
+    justify-self:end!important;align-self:center!important;
+    position:relative!important;inset:auto!important;
+    margin:0!important;padding:0!important;
+    transform:none!important;min-width:0!important;
+    gap:6px!important;z-index:6!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .market-heading {
+    grid-column:1/-1!important;grid-row:2!important;
+    display:grid!important;justify-items:center!important;
+    align-items:center!important;justify-self:center!important;align-self:center!important;
+    position:relative!important;
+    inset:auto!important;top:auto!important;left:auto!important;
+    right:auto!important;bottom:auto!important;
+    transform:none!important;translate:none!important;
+    width:max-content!important;max-width:100%!important;
+    min-width:0!important;
+    margin:0 auto!important;padding:0!important;
+    gap:1px!important;text-align:center!important;
+    z-index:2!important;pointer-events:none!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .market-pair {
+    display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    margin:0!important;padding:0!important;
+    white-space:nowrap!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header .market-price-row {
+    display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+    align-items:baseline!important;justify-content:center!important;
+    gap:6px!important;
+    width:auto!important;max-width:100%!important;
+    margin:0!important;padding:0!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header #headerLivePrice {
+    display:block!important;
+    font-size:clamp(17px,4.7vw,24px)!important;
+    line-height:1.13!important;
+    white-space:nowrap!important;
+    margin:0!important;padding:0!important;
+    text-align:center!important;
+    font-variant-numeric:tabular-nums!important;
+  }
+  /* Put percent on a separate line: it must not shift the price's center. */
+  html[data-inj-page="live-charts"] .terminal-header .market-price-row {
+    flex-direction:column!important;align-items:center!important;gap:0!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header #headerRangeChange {
+    display:block!important;
+    font-size:clamp(8px,2.3vw,10px)!important;
+    line-height:1.1!important;
+    margin:0!important;padding:0!important;
+    text-align:center!important;white-space:nowrap!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header #connectionState {
+    display:none!important;
+  }
+  html[data-inj-page="live-charts"] .terminal-header > .header-actions .focus-button {
+    flex:0 0 auto!important;
+    min-height:32px!important;
+    margin:0!important;
+  }
+  @media(max-width:365px){
+    html[data-inj-page="live-charts"] .terminal-header {
+      grid-template-columns:40px minmax(0,1fr) auto!important;
+      column-gap:6px!important;
+    }
+    html[data-inj-page="live-charts"] .terminal-header > #liveChartsBack {
+      width:40px!important;height:40px!important;
+    }
+    html[data-inj-page="live-charts"] .terminal-header > .brand .inj-location-section {
+      font-size:10px!important;letter-spacing:0!important;
+    }
+    html[data-inj-page="live-charts"] .terminal-header > .header-actions {
+      gap:4px!important;
+    }
+  }
+}
+/* Desktop terminal stays single-row. The existing centered-price grid remains
+   untouched there, while the title stays after the X. */

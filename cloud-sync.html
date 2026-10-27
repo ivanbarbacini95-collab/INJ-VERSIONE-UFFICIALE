@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html data-inj-page="cloud-sync" lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08151b">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Cloud Sync · INJ Node</title>
+<link rel="stylesheet" href="./cloud-sync.css?v=20261027b1">
+<script defer src="./cloud-sync-config.js?v=20261027b1"></script>
+<script defer src="./cloud-sync.js?v=20261027origin2"></script>
+</head>
+<body>
+<div class="cs-shell">
+  <header class="cs-header">
+    <a href="./index.html" id="cloudSyncBack" class="cs-back" aria-label="Torna alla Home">← HOME</a>
+    <span class="cs-header-right">INJ NODE <span class="cs-dot"></span> PERSONAL CLOUD</span>
+  </header>
+  <main>
+    <div class="cs-hero">
+      <span class="cs-eyebrow">B CAPITAL GROUP / PERSONAL DATA</span>
+      <div class="cs-titleline"><div class="cs-emblem" aria-hidden="true">☁</div><div><h1>CLOUD <em>SYNC</em></h1><p>Le tue impostazioni, su tutti i tuoi dispositivi.</p></div></div>
+      <div class="cs-state" id="cloudSyncState" role="status" aria-live="polite">Verifica del servizio…</div>
+    </div>
+    <section class="cs-card" id="cloudSyncEntry">
+      <span class="cs-eyebrow">01 / IDENTITÀ PERSONALE</span>
+      <h2>Il tuo account privato</h2>
+      <p>Collega una passkey protetta dal dispositivo. Puoi usare Face ID, Touch ID o una chiave di sicurezza supportata. Nessuna password da ricordare.</p>
+      <div class="cs-actions">
+        <button type="button" class="cs-primary" id="cloudSyncRegister">CREA ACCOUNT</button>
+        <button type="button" class="cs-secondary" id="cloudSyncLogin">ACCEDI CON PASSKEY</button>
+      </div>
+      <p class="cs-small">Non viene inviato nulla al cloud finché non scegli di salvare. Utilizza preferibilmente il dominio definitivo di INJ Node: le passkey sono associate al dominio.</p>
+    </section>
+    <section class="cs-card" id="cloudSyncAccount" hidden>
+      <div class="cs-heading"><div><span class="cs-eyebrow">02 / IL TUO ARCHIVIO</span><h2>Account collegato</h2></div><span class="cs-online">● CONNESSO</span></div>
+      <div class="cs-metrics">
+        <div><span>STATO CLOUD</span><strong id="csBackupStatus">Non ancora salvato</strong></div>
+        <div><span>ULTIMO BACKUP</span><strong id="csUpdatedAt">—</strong></div>
+        <div><span>VOCI LOCALI</span><strong id="csLocalCount">0</strong></div>
+      </div>
+      <p id="csCloudDifference" class="cs-note">Nessun backup automatico iniziale. Scegli tu se inviare le impostazioni locali o ripristinare quelle archiviate.</p>
+      <div class="cs-actions">
+        <button id="csSave" type="button" class="cs-primary">SALVA SUL CLOUD</button>
+        <button id="csRestore" type="button" class="cs-secondary">RIPRISTINA SU QUESTO DISPOSITIVO</button>
+      </div>
+      <label class="cs-toggle"><input id="csAuto" type="checkbox" disabled><span><strong>Backup automatico</strong><small>Disponibile dopo il primo salvataggio manuale. Controlla modifiche ogni 15 secondi; non sovrascrive versioni cloud diverse.</small></span></label>
+      <div class="cs-divider"></div>
+      <div class="cs-actions cs-actions-small">
+        <button id="csAddKey" type="button" class="cs-outline">AGGIUNGI UN'ALTRA PASSKEY</button>
+        <button id="csLogout" type="button" class="cs-outline">ESCI</button>
+        <button id="csDelete" type="button" class="cs-danger">ELIMINA ACCOUNT CLOUD</button>
+      </div>
+    </section>
+    <div class="cs-message" role="alert" id="csMessage" hidden></div>
+    <footer>INJ NODE BY B CAPITAL GROUP · SYNC FACOLTATIVA · NESSUNA CHIAVE PRIVATA</footer>
+  </main>
+</div>
+</body>
+</html>

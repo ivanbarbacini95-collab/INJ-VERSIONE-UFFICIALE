@@ -1,0 +1,30 @@
+/* INJ Node — global trading-terminal typography
+   Supply Mono is a commercial typeface. This project does not redistribute it.
+   If a licensed Supply Mono family is installed on the device, the browser uses it.
+   Otherwise IBM Plex Mono (OFL) and the OS monospace stack are used.
+   See SUPPLY-MONO-SETUP.md before embedding licensed webfonts.
+*/
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap");
+
+:root {
+  --inj-node-terminal-font: "Supply Mono", "PP Supply Mono", "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+
+/* Explicitly override mixed hard-coded system and numerical font declarations
+   in the section styles, without changing their layout or font sizes.
+   Do not touch SVG descendants: chart lettering and icons are owned by SVG. */
+html,
+body,
+body :not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad),
+dialog,
+dialog :not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad) {
+  font-family: var(--inj-node-terminal-font) !important;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Keep native controls consistent even when browser UA rules override inherit. */
+html :is(button, input, select, option, textarea) {
+  font-family: var(--inj-node-terminal-font) !important;
+}
+
+/* Existing icon-font family rules are intentionally preserved. */

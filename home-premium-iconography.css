@@ -1,0 +1,122 @@
+/* INJ Node · Style B — Luxury Fintech Motion Icons (2026.10.27).
+   Boutique metallic outlines, fewer shapes and one restrained motion detail.
+   Decorative Home glyphs only; no impact on data, clicks or language. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+> .entry-action > .inj-tile-scene.inj-luxury-icon {
+  --lux-ink:color-mix(in srgb,var(--tile-accent,var(--accent,#e0c49b)) 24%,#dfc49a);
+  color:var(--lux-ink)!important;
+  opacity:.86!important;
+  -webkit-filter:none!important;filter:none!important;
+  isolation:isolate;
+  pointer-events:none!important;user-select:none;
+}
+/* Contrasting bronze on the two pale themes. */
+html[data-theme="light"][data-inj-page="index"] body #entryGate .inj-luxury-icon,
+html[data-theme="aqua"][data-inj-page="index"] body #entryGate .inj-luxury-icon {
+  color:color-mix(in srgb,var(--tile-accent,var(--accent,#a58962)) 20%,#806447)!important;
+  opacity:.95!important;
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon > svg{
+  display:block!important;width:100%!important;height:100%!important;
+  fill:none!important;stroke:none!important;overflow:visible!important;
+  transform:none!important;transform-origin:center;
+  -webkit-filter:drop-shadow(0 1px 3px rgba(0,0,0,.10));
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.10));
+  transition:filter .28s ease,opacity .28s ease;
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon .pi-panel{
+  fill:currentColor;fill-opacity:.025;
+  stroke:currentColor;stroke-opacity:.65;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon .pi-detail{
+  fill:none;stroke:currentColor;stroke-opacity:.72;stroke-width:1.45;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon .pi-hair{
+  fill:none;stroke:currentColor;stroke-opacity:.35;stroke-width:1;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon .pi-strong{
+  fill:none;stroke:currentColor;stroke-opacity:.98;stroke-width:1.85;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon .pi-led{
+  fill:currentColor;fill-opacity:.85;stroke:none;
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon .pi-type{
+  fill:currentColor;stroke:none;opacity:.92;
+  font:750 14px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.12em;
+}
+/* The single animated detail is a soft 8-second brightening, never a flash. */
+@keyframes inj-luxury-breathe{
+  0%,100%{opacity:.52}
+  48%,57%{opacity:1}
+}
+html[data-inj-page="index"] body #entryGate .inj-luxury-icon .pi-motion{
+  animation:inj-luxury-breathe 8s ease-in-out infinite;
+}
+html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44
+> .entry-action:nth-child(3n+2) .inj-luxury-icon .pi-motion {animation-delay:-2s}
+html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44
+> .entry-action:nth-child(3n+3) .inj-luxury-icon .pi-motion {animation-delay:-4s}
+/* Shrink illustrations roughly 18–20%, leave existing label positions untouched. */
+@media(max-width:799px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > .inj-tile-scene.inj-luxury-icon {
+    display:block!important;
+    top:11px!important;left:50%!important;right:auto!important;bottom:auto!important;
+    width:90px!important;height:48px!important;
+    max-width:78%!important;min-height:0!important;
+    margin:0!important;padding:0!important;
+    transform:translateX(-50%)!important;
+    -webkit-transform:translateX(-50%)!important;
+    opacity:.84!important;
+  }
+}
+@media(min-width:800px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > .inj-tile-scene.inj-luxury-icon {
+    width:91px!important;height:52px!important;
+    max-width:100%!important;
+  }
+}
+/* Preserve the three wide-card layouts and right-side art; just reduce its size. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> :is(#entryInjcEtfButton,#entryWorkspaceButton,#entryTreasuryButton)
+> .inj-tile-scene.inj-luxury-icon {
+  width:82px!important;height:48px!important;
+  max-width:82px!important;min-width:0!important;min-height:0!important;
+  top:50%!important;right:18px!important;left:auto!important;bottom:auto!important;
+  transform:translateY(-50%)!important;
+  -webkit-transform:translateY(-50%)!important;
+  opacity:.86!important;
+}
+@media(max-width:360px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-actions.entry-flat-v44
+  > :is(#entryInjcEtfButton,#entryWorkspaceButton,#entryTreasuryButton)
+  > .inj-tile-scene.inj-luxury-icon{
+    width:70px!important;max-width:70px!important;right:11px!important;
+  }
+}
+@media(hover:hover) and (pointer:fine){
+  html[data-inj-page="index"] body #entryGate
+  .entry-actions.entry-flat-v44 > .entry-action:hover > .inj-luxury-icon svg {
+    -webkit-filter:drop-shadow(0 0 5px color-mix(in srgb,var(--accent,#ccaa83) 22%,transparent));
+    filter:drop-shadow(0 0 5px color-mix(in srgb,var(--accent,#ccaa83) 22%,transparent));
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #entryGate .inj-luxury-icon *,
+  html[data-inj-page="index"] body #entryGate .inj-luxury-icon > svg{
+    animation:none!important;transition:none!important;
+  }
+}

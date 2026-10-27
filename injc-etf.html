@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="it" data-inj-page="injc-etf" data-theme="navy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07121b">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="description" content="INJC ETF Terminal — Canary Staked INJ ETF, stato SEC, mercato INJ e grafico Nasdaq in INJ Node.">
+<title>INJC ETF Terminal · INJ Node</title>
+<script>
+try {
+  const theme=localStorage.getItem('inj_monitor_theme');
+  document.documentElement.dataset.theme=['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(theme)?theme:'navy';
+  document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
+} catch (_) {}
+</script>
+<link rel="stylesheet" href="./navigation.css?v=160090">
+<script defer src="./navigation.js?v=20261027-g1"></script>
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="manifest" href="./manifest.webmanifest?v=16.06.29">
+<style>
+:root {color-scheme:dark;--etf-bg:var(--theme-canvas,#071019);--etf-card:var(--surface,#111c26);--etf-ink:var(--text,#e7f6f5);--etf-muted:var(--muted,#8ca0aa);--etf-accent:var(--accent,#83e5d8);--etf-line:var(--line,rgba(151,203,217,.17));--etf-gold:#efc888;--etf-up:#5ad9a4}
+* {box-sizing:border-box}
+html {min-height:100%;background:#061018;scroll-behavior:smooth}
+html[data-theme="black"]{background:#000}
+html[data-theme="light"],html[data-theme="aqua"]{color-scheme:light;background:#ecf5fb;--etf-bg:var(--theme-canvas,#ecf5fb);--etf-card:var(--surface,#fff);--etf-ink:var(--text,#182939);--etf-muted:var(--muted,#56687a);--etf-accent:var(--accent,#177e93);--etf-line:var(--line,rgba(40,75,90,.17));--etf-gold:#9f6919;--etf-up:#218259}
+html[data-theme="black"]{--etf-bg:var(--theme-canvas,#000)}
+html[data-theme="amber"]{--etf-bg:var(--theme-canvas,#060a0d);--etf-accent:var(--accent,#dfbc77)}
+html[data-theme="velvet"],html[data-theme="chromatic"]{--etf-bg:var(--theme-canvas,#0b1024)}
+html[data-theme^="ocean-x-"]{--etf-bg:var(--theme-canvas,#091324)}
+body{margin:0;min-height:100vh;color:var(--etf-ink);background:var(--etf-bg);font-family:var(--inj-node-terminal-font,ui-monospace,monospace);font-variant-numeric:tabular-nums}
+html[data-theme="light"] body,html[data-theme="aqua"] body {--etf-card:var(--surface,#f7fbff);--etf-ink:var(--text,#172536);--etf-muted:var(--muted,#526577);--etf-line:var(--line,rgba(27,56,73,.15))}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 35% at 86% 0%,color-mix(in srgb,var(--etf-accent) 12%,transparent),transparent 80%);opacity:.9}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--etf-accent);outline-offset:4px}
+.etf-shell{position:relative;width:min(1430px,100%);margin:auto;padding:0 clamp(16px,3.8vw,54px) 42px}
+.etf-top{min-height:84px;display:flex;align-items:center;gap:16px;padding-top:env(safe-area-inset-top);border-bottom:1px solid var(--etf-line)}
+.etf-back{flex:none;width:44px;height:44px;display:grid;place-items:center;color:var(--etf-ink);border-radius:13px;border:1px solid var(--etf-line);background:color-mix(in srgb,var(--etf-card) 84%,transparent)}
+.etf-back svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.etf-headbrand{display:flex;flex-direction:column;gap:3px;min-width:0}
+.etf-headbrand small,.eyebrow,.section-head small,.footnote-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--etf-muted);font-weight:700}
+.etf-headbrand strong{font-size:14px;letter-spacing:.065em;white-space:nowrap}
+.head-right{margin-left:auto;display:flex;align-items:center;gap:9px}
+.status-pill{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid color-mix(in srgb,var(--etf-gold) 40%,transparent);background:color-mix(in srgb,var(--etf-gold) 9%,transparent);color:var(--etf-gold);padding:9px 12px;border-radius:100px;font-size:10px;letter-spacing:.08em;font-weight:800}
+.status-pill i,.live-pill i{height:6px;width:6px;border-radius:50%;background:currentColor;display:block}
+.refresh{width:40px;height:40px;border-radius:12px;background:transparent;border:1px solid var(--etf-line);color:var(--etf-muted);font-size:20px}
+.etf-hero{padding:clamp(30px,5vw,66px) 0 34px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:20px;align-items:stretch}
+.hero-info{min-width:0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--etf-accent);font-size:11px}
+.eyebrow:before{content:"";width:27px;height:1px;background:currentColor}
+.hero-info h1{font-size:clamp(70px,12vw,154px);line-height:.98;letter-spacing:-.075em;margin:16px 0 10px;font-weight:750}
+.hero-info h1 span{background:linear-gradient(120deg,var(--etf-ink) 26%,var(--etf-accent) 100%);color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,19px);line-height:1.5;font-weight:650;margin:0 0 22px;max-width:620px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:9px}
+.hero-meta span{border:1px solid var(--etf-line);border-radius:9px;padding:8px 11px;font-size:10px;letter-spacing:.1em;color:var(--etf-muted)}
+.hero-meta b{color:var(--etf-ink)}
+.hero-side{position:relative;border:1px solid color-mix(in srgb,var(--etf-accent) 22%,var(--etf-line));border-radius:20px;background:linear-gradient(132deg,color-mix(in srgb,var(--etf-card) 92%,transparent),color-mix(in srgb,var(--etf-accent) 7%,var(--etf-card)));padding:24px;min-height:245px;display:flex;flex-direction:column;overflow:hidden}
+.hero-side:after{content:"INJC";position:absolute;right:-4px;bottom:-22px;font-size:100px;font-weight:800;letter-spacing:-.1em;opacity:.055;pointer-events:none}
+.hero-side strong{display:block;font-size:clamp(20px,2.5vw,30px);letter-spacing:-.055em;line-height:1.22;margin:16px 0 10px;max-width:370px}
+.hero-side p{font-size:12px;line-height:1.7;color:var(--etf-muted);margin:0}
+.hero-side a{position:relative;z-index:1;display:inline-flex;align-self:flex-start;margin-top:auto;padding-top:18px;color:var(--etf-accent);font-size:11px;font-weight:700}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:29px 0 12px;flex-wrap:wrap}
+.section-head h2{margin:0;font-size:clamp(17px,2.2vw,23px);font-weight:750;letter-spacing:-.035em}
+.section-head small{text-align:right;line-height:1.5}
+.quote-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:11px}
+.metric{min-width:0;padding:20px 19px 18px;border-top:1px solid var(--etf-line);background:linear-gradient(150deg,color-mix(in srgb,var(--etf-card) 79%,transparent),color-mix(in srgb,var(--etf-card) 52%,transparent));border-radius:14px}
+.metric label{font-size:10px;letter-spacing:.13em;color:var(--etf-muted);display:block;line-height:1.5}
+.metric strong{font-size:clamp(22px,2.4vw,36px);letter-spacing:-.04em;display:block;margin-top:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.metric span{display:block;color:var(--etf-muted);font-size:10px;margin-top:7px;line-height:1.45}
+.metric .positive{color:var(--etf-up)}.metric .negative{color:#fd8c94}
+.metric-primary{border-top:2px solid var(--etf-accent)}
+.metric-primary strong{color:var(--etf-accent)}
+.live-pill{display:inline-flex;align-items:center;gap:7px;color:var(--etf-muted);font-size:10px;font-weight:750}
+.live-pill.is-live{color:var(--etf-up)}
+.info-strip{display:flex;gap:8px;align-items:center;margin:10px 1px 0;color:var(--etf-muted);font-size:11px;line-height:1.5}
+.panel-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.7fr);gap:14px}
+.panel{border:1px solid var(--etf-line);border-radius:18px;background:color-mix(in srgb,var(--etf-card) 78%,transparent);overflow:hidden;min-width:0}
+.panel-top{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:17px 19px;border-bottom:1px solid var(--etf-line)}
+.panel-top strong{font-size:12px;font-weight:800;letter-spacing:.04em}
+.panel-top small{font-size:10px;color:var(--etf-muted)}
+.chart-tabrow{display:flex;gap:6px;flex-wrap:wrap}
+.chart-tabrow button{background:transparent;border:1px solid var(--etf-line);border-radius:8px;color:var(--etf-muted);font-size:10px;padding:8px 10px;font-weight:700}
+.chart-tabrow button.active{background:color-mix(in srgb,var(--etf-accent) 12%,transparent);border-color:var(--etf-accent);color:var(--etf-ink)}
+.chart-slot{height:380px;position:relative;display:grid;place-items:center;overflow:hidden}
+.chart-empty{padding:26px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:13px;max-width:420px}
+.chart-mark{display:grid;place-items:center;width:74px;height:74px;border-radius:20px;border:1px solid color-mix(in srgb,var(--etf-accent) 35%,var(--etf-line));font-size:25px;color:var(--etf-accent);background:color-mix(in srgb,var(--etf-accent) 7%,transparent)}
+.chart-empty strong{font-size:19px}
+.chart-empty p{font-size:12px;line-height:1.7;color:var(--etf-muted);margin:0}
+.load-chart{background:var(--etf-accent);border:0;color:#082329;border-radius:10px;padding:12px 17px;font-size:11px;font-weight:900;margin-top:3px}
+.chart-loaded{width:100%;height:100%;display:none}
+.chart-loaded > div{width:100%;height:100%}
+.chart-slot.is-loaded .chart-loaded{display:block}
+.chart-slot.is-loaded .chart-empty{display:none}
+.chart-footer{border-top:1px solid var(--etf-line);padding:12px 17px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--etf-muted)}
+.chart-footer a,.source-link{color:var(--etf-accent);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--etf-accent) 30%,transparent);text-underline-offset:4px}
+.fund-body{padding:15px 19px}
+.fund-row{display:flex;justify-content:space-between;align-items:baseline;gap:15px;padding:15px 0;border-bottom:1px solid var(--etf-line)}
+.fund-row:last-child{border-bottom:0}
+.fund-row span{color:var(--etf-muted);font-size:11px}
+.fund-row strong{font-size:clamp(16px,1.8vw,23px);font-weight:750;text-align:right}
+.fund-note{padding:14px 19px 18px;margin:0;color:var(--etf-muted);font-size:11px;line-height:1.65;background:color-mix(in srgb,var(--etf-accent) 3%,transparent)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:22px 8px 25px}
+.stage{padding:0 15px;position:relative;min-width:0}
+.stage:not(:last-child):after{content:"";position:absolute;left:42px;right:-1px;top:11px;height:1px;background:var(--etf-line)}
+.stage-dot{height:22px;width:22px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--etf-line);color:var(--etf-muted);font-size:10px;background:var(--etf-card);position:relative;z-index:1}
+.stage.past .stage-dot{color:#082329;border-color:var(--etf-accent);background:var(--etf-accent)}
+.stage strong{display:block;font-size:11px;margin-top:14px;line-height:1.4}
+.stage span{display:block;font-size:10px;color:var(--etf-muted);line-height:1.5;margin-top:5px}
+.staking-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;padding:22px}
+.staking-gauge{height:10px;background:color-mix(in srgb,var(--etf-gold) 17%,var(--etf-card));display:flex;border-radius:10px;overflow:hidden}
+.staking-gauge span{display:block;width:70%;background:linear-gradient(90deg,var(--etf-accent),var(--etf-up))}
+.staking-gauge i{display:block;width:30%;background:var(--etf-gold);opacity:.62}
+.gauge-labels{display:flex;justify-content:space-between;color:var(--etf-muted);font-size:10px;margin-top:11px;gap:8px}
+.gauge-labels b{color:var(--etf-ink)}
+.staking-copy{font-size:12px;color:var(--etf-muted);line-height:1.8}
+.sources{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--etf-line);padding:22px 1px 0;margin-top:36px}
+.sources p{font-size:11px;color:var(--etf-muted);line-height:1.6;max-width:660px;margin:0}
+.sources .links{display:flex;gap:18px;flex-wrap:wrap;font-size:11px}
+.brand-footer{text-align:center;margin:40px 0 0;font-size:10px;color:var(--etf-muted);letter-spacing:.13em}
+.brand-footer strong{color:var(--etf-ink)}
+@media(max-width:920px){.etf-hero,.panel-grid{grid-template-columns:1fr}.etf-hero{gap:0}.hero-side{min-height:190px}.quote-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.etf-shell{padding-left:15px;padding-right:15px}.etf-top{min-height:78px}.head-right .refresh{display:none}.etf-headbrand strong{font-size:12px}.status-pill{font-size:9px;padding:8px}.hero-info h1{font-size:77px}.etf-hero{padding-top:27px}.hero-side{padding:18px;margin-top:16px;min-height:190px}.metric{padding:15px 13px}.metric strong{font-size:23px}.metric label{font-size:9px}.timeline{grid-template-columns:1fr 1fr;gap:22px 0}.stage:nth-child(2):after{display:none}.stage strong{margin-top:11px}.staking-row{grid-template-columns:1fr}.panel-top{flex-wrap:wrap}.chart-slot{height:340px}.sources{align-items:flex-start}.hero-meta{gap:6px}}
+/* iPhone PWA: keep the header text and Home control below the translucent
+   upper system region. Offset the shell once, never the scroll container. */
+@supports (-webkit-touch-callout:none) {
+ @media (max-width:540px) and (pointer:coarse) {
+  .etf-shell{padding-top:18px}
+  .etf-top{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;filter:none!important}
+ }
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+<script defer src="./inj-node-insights-config.js?v=1"></script>
+<script defer src="./inj-node-telemetry.js?v=1"></script>
+</head>
+<body>
+<div class="etf-shell">
+<header class="etf-top">
+<a class="etf-back" href="./index.html" id="injcBack" aria-label="Torna alla Home" title="Home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M7 10v10h10V10M10 20v-6h4v6"/></svg></a>
+<div class="etf-headbrand"><small>INJ NODE / CAPITAL MARKETS</small><strong>INJC ETF TERMINAL</strong></div>
+<div class="head-right"><span class="status-pill" aria-label="Stato: in attesa di quotazione"><i></i><span data-it="PRE-LANCIO" data-en="PRE-LAUNCH">PRE-LANCIO</span></span><button class="refresh" id="etfRefresh" type="button" aria-label="Aggiorna prezzo INJ" title="Aggiorna prezzo INJ">↻</button></div>
+</header>
+<main>
+<section class="etf-hero" aria-label="INJC ETF">
+<div class="hero-info">
+<div class="eyebrow">NASDAQ / INJECTIVE / STAKING</div>
+<h1><span>INJC</span></h1>
+<p class="hero-sub">Canary Staked INJ ETF</p>
+<div class="hero-meta">
+<span><b>EMITTENTE</b> CANARY CAPITAL</span>
+<span><b>ASSET</b> INJ</span>
+<span><b>BORSA</b> NASDAQ (PREVISTA)</span>
+</div>
+</div>
+<aside class="hero-side">
+<div class="eyebrow" data-it="STATO DEL FONDO" data-en="FUND STATUS">STATO DEL FONDO</div>
+<strong data-it="Il prossimo capitolo di Injective sui mercati tradizionali." data-en="Injective's next chapter in traditional markets.">Il prossimo capitolo di Injective sui mercati tradizionali.</strong>
+<p data-it="Il prospetto SEC del 23 ottobre 2026 è preliminare. Quotazione e negoziazione non sono ancora confermate." data-en="The October 23, 2026 SEC prospectus is preliminary. Listing and first trading day are not yet confirmed.">Il prospetto SEC del 23 ottobre 2026 è preliminare. Quotazione e negoziazione non sono ancora confermate.</p>
+<a href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126023446/inj-s1a_102326.htm" target="_blank" rel="noopener noreferrer" data-it="LEGGI IL PROSPETTO SEC ↗" data-en="READ SEC PROSPECTUS ↗">LEGGI IL PROSPETTO SEC ↗</a>
+</aside>
+</section>
+<section aria-label="Dati di mercato">
+<div class="section-head"><h2 data-it="Market Overview" data-en="Market Overview">Market Overview</h2><span class="live-pill" id="etfSpotStatus"><i></i><span data-it="INJ SPOT · IN CONNESSIONE" data-en="INJ SPOT · CONNECTING">INJ SPOT · IN CONNESSIONE</span></span></div>
+<div class="quote-grid">
+<article class="metric metric-primary"><label>INJ / USD · SPOT</label><strong id="etfSpotPrice">—</strong><span id="etfSpotSource">CoinGecko · in attesa</span></article>
+<article class="metric"><label data-it="INJ · VARIAZIONE 24H" data-en="INJ · 24H CHANGE">INJ · VARIAZIONE 24H</label><strong id="etfSpotChange">—</strong><span data-it="Mercato crypto 24/7" data-en="Crypto market 24/7">Mercato crypto 24/7</span></article>
+<article class="metric"><label>INJC · LAST TRADE</label><strong>—</strong><span data-it="Nessuna quotazione confermata" data-en="No confirmed market quote">Nessuna quotazione confermata</span></article>
+<article class="metric"><label>INJC · VOLUME / NAV</label><strong>—</strong><span data-it="Disponibili dopo il lancio" data-en="Available after launch">Disponibili dopo il lancio</span></article>
+</div>
+<div class="info-strip" id="etfLastUpdated" aria-live="polite">● <span data-it="Prezzo INJ spot e prezzo della quota ETF sono strumenti differenti." data-en="INJ spot price and ETF share price are different instruments.">Prezzo INJ spot e prezzo della quota ETF sono strumenti differenti.</span></div>
+</section>
+<section aria-label="Grafico e caratteristiche fondo">
+<div class="section-head"><h2 data-it="Trading &amp; Fund Data" data-en="Trading &amp; Fund Data">Trading &amp; Fund Data</h2><small data-it="LA QUOTA ETF NON EQUIVALE A 1 INJ" data-en="ONE ETF SHARE DOES NOT EQUAL 1 INJ">LA QUOTA ETF NON EQUIVALE A 1 INJ</small></div>
+<div class="panel-grid">
+<div class="panel">
+<div class="panel-top"><strong>LIVE CHART</strong><div class="chart-tabrow" role="group" aria-label="Strumento grafico"><button type="button" class="active" aria-pressed="true" data-symbol="NASDAQ:INJC">INJC / NASDAQ</button><button type="button" aria-pressed="false" data-symbol="BINANCE:INJUSDT">INJ / SPOT</button></div></div>
+<div class="chart-slot" id="etfChartSlot">
+<div class="chart-empty" id="etfChartEmpty">
+<div class="chart-mark">↗</div>
+<strong id="etfChartTitle">INJC / NASDAQ</strong>
+<p id="etfChartMessage" data-it="Grafico del ticker previsto. Quando il simbolo sarà disponibile su TradingView potrai consultarne prezzi e storico. Nessun dato simulato." data-en="Chart for the proposed ticker. When the symbol becomes available on TradingView you will be able to see its price history. No simulated data.">Grafico del ticker previsto. Quando il simbolo sarà disponibile su TradingView potrai consultarne prezzi e storico. Nessun dato simulato.</p>
+<button class="load-chart" id="etfLoadChart" type="button" data-it="CARICA GRAFICO" data-en="LOAD CHART">CARICA GRAFICO</button>
+</div>
+<div class="chart-loaded" id="etfChartLoaded" aria-label="Grafico TradingView"></div>
+</div>
+<div class="chart-footer"><span data-it="Fonte grafico: TradingView · provider esterno" data-en="Chart source: TradingView · third-party provider">Fonte grafico: TradingView · provider esterno</span><a href="https://www.tradingview.com/symbols/NASDAQ-INJC/" id="etfTradingViewLink" target="_blank" rel="noopener noreferrer" data-it="APRI SU TRADINGVIEW ↗" data-en="OPEN ON TRADINGVIEW ↗">APRI SU TRADINGVIEW ↗</a></div>
+</div>
+<div class="panel">
+<div class="panel-top"><strong>FUND SNAPSHOT</strong><small>SEC · 23 OCT 2026</small></div>
+<div class="fund-body">
+<div class="fund-row"><span data-it="Capitale seed previsto (fino a)" data-en="Proposed seed investment (up to)">Capitale seed previsto (fino a)</span><strong>$15M</strong></div>
+<div class="fund-row"><span data-it="Prezzo quota seed previsto" data-en="Proposed seed share price">Prezzo quota seed previsto</span><strong>$25.00</strong></div>
+<div class="fund-row"><span data-it="Sottostante" data-en="Underlying asset">Sottostante</span><strong>INJ</strong></div>
+<div class="fund-row"><span data-it="Borsa proposta" data-en="Proposed exchange">Borsa proposta</span><strong>NASDAQ</strong></div>
+<div class="fund-row"><span data-it="Sponsor" data-en="Sponsor">Sponsor</span><strong>CANARY</strong></div>
+</div>
+<p class="fund-note" data-it="I 15 milioni e i 25 dollari sono valori di seed indicati nel prospetto, non flussi già registrati né il prezzo di mercato futuro." data-en="$15 million and $25 are preliminary seed terms, not confirmed inflows or a future trading price.">I 15 milioni e i 25 dollari sono valori di seed indicati nel prospetto, non flussi già registrati né il prezzo di mercato futuro.</p>
+</div>
+</div>
+</section>
+<section aria-label="Percorso quotazione">
+<div class="section-head"><h2 data-it="Listing Roadmap" data-en="Listing Roadmap">Listing Roadmap</h2><small data-it="STATO DOCUMENTALE AL 23 OTT 2026" data-en="FILING STATUS AS OF OCT 23, 2026">STATO DOCUMENTALE AL 23 OTT 2026</small></div>
+<div class="panel">
+<div class="timeline">
+<div class="stage past"><span class="stage-dot">✓</span><strong>FORM S-1/A</strong><span data-it="Emendamento n. 4 depositato · 23/10/2026" data-en="Amendment No. 4 filed · Oct 23, 2026">Emendamento n. 4 depositato · 23/10/2026</span></div>
+<div class="stage"><span class="stage-dot">2</span><strong>SEC EFFECT</strong><span data-it="Efficacia non confermata" data-en="Effectiveness not confirmed">Efficacia non confermata</span></div>
+<div class="stage"><span class="stage-dot">3</span><strong>NASDAQ LISTING</strong><span data-it="Data ancora da confermare" data-en="Date not yet confirmed">Data ancora da confermare</span></div>
+<div class="stage"><span class="stage-dot">4</span><strong>FIRST TRADE</strong><span data-it="Prezzo e volumi quando disponibili" data-en="Price and volume when available">Prezzo e volumi quando disponibili</span></div>
+</div>
+</div>
+</section>
+<section aria-label="Staking ETF">
+<div class="section-head"><h2>STAKING ECONOMICS</h2><small data-it="SCENARIO PREVISTO NEL PROSPETTO" data-en="PLANNED STRUCTURE IN PROSPECTUS">SCENARIO PREVISTO NEL PROSPETTO</small></div>
+<div class="panel staking-row">
+<div><div class="staking-gauge"><span></span><i></i></div><div class="gauge-labels"><span><b>70%</b> <span data-it="reward netti al fondo" data-en="rewards retained by fund">reward netti al fondo</span></span><span><b>30%</b> <span data-it="commissioni staking" data-en="staking fees">commissioni staking</span></span></div></div>
+<div class="staking-copy" data-it="Il piano prevede di destinare parte degli INJ del fondo allo staking. Il 70% indicato riguarda la ripartizione dei reward, non un rendimento annuo del 70%. Struttura soggetta a modifiche." data-en="The fund plans to stake part of its INJ holdings. The 70% represents the share of staking rewards retained by the fund, not a 70% annual yield. Terms may change.">Il piano prevede di destinare parte degli INJ del fondo allo staking. Il 70% indicato riguarda la ripartizione dei reward, non un rendimento annuo del 70%. Struttura soggetta a modifiche.</div>
+</div>
+</section>
+<div class="sources"><p data-it="INJC è un ETF proposto, non INJ spot. Le statistiche ETF restano non disponibili fino all'integrazione di un feed affidabile; il grafico TradingView può visualizzare INJC quando il provider lo indicizza. Stato normativo non verificato automaticamente: consultare l'ultimo filing SEC." data-en="INJC is a proposed ETF, not INJ spot. ETF statistics remain unavailable until a reliable quote feed is integrated; TradingView may show INJC once indexed. Regulatory status is not updated automatically: check the SEC filings.">INJC è un ETF proposto, non INJ spot. Prezzo, AUM, NAV, volumi e flussi del fondo non vengono inventati: saranno mostrati tramite provider affidabili solo quando disponibili. Stato normativo non verificato automaticamente; leggere l'ultimo filing SEC.</p><div class="links"><a class="source-link" href="https://www.sec.gov/edgar/browse/?CIK=2073616" target="_blank" rel="noopener noreferrer">SEC EDGAR ↗</a><a class="source-link" href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126023446/inj-s1a_102326.htm" target="_blank" rel="noopener noreferrer">S-1/A ↗</a></div></div>
+<footer class="brand-footer"><strong>INJ NODE</strong> / BY B CAPITAL GROUP</footer>
+</main>
+</div>
+<script>
+(() => {
+'use strict';
+const $=id=>document.getElementById(id);
+let language=document.documentElement.lang==='en'?'en':'it';
+const currentTheme=()=>{const t=document.documentElement.dataset.theme;return t==='light'||t==='aqua'?'light':'dark'};
+const tr=(it,en)=>language==='en'?en:it;
+const applyLanguage=()=>{
+ language=(localStorage.getItem('inj_node_language_v1')==='en')?'en':'it';
+ document.documentElement.lang=language;
+ document.querySelectorAll('[data-it][data-en]').forEach(el=>{el.textContent=el.getAttribute('data-'+language)});
+};
+const setStatus=(text,isLive)=>{
+ const parent=$('etfSpotStatus');parent.classList.toggle('is-live',isLive);
+ parent.querySelector('span').textContent=text;
+};
+let requestController=null,lastSpot=0;
+async function refreshSpot(force=false){
+ if(!force&&Date.now()-lastSpot<62000)return;
+ if(requestController)requestController.abort();
+ const ctrl=new AbortController();requestController=ctrl;
+ const timeout=setTimeout(()=>ctrl.abort(),10000);
+ setStatus(tr('INJ SPOT · SINCRONIZZAZIONE','INJ SPOT · SYNCING'),false);
+ try {
+  const url='https://api.coingecko.com/api/v3/simple/price?ids=injective-protocol&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true';
+  const res=await fetch(url,{cache:'no-store',signal:ctrl.signal,headers:{'accept':'application/json'}});
+  if(!res.ok)throw Error('CoinGecko '+res.status);
+  const row=(await res.json())['injective-protocol'];
+  const price=Number(row?.usd),change=Number(row?.usd_24h_change);
+  if(!Number.isFinite(price)||price<=0)throw Error('Invalid quote');
+  const stale=Number(row?.last_updated_at)&&Date.now()/1000-Number(row.last_updated_at)>900;
+  if(stale)throw Error('Stale quote');
+  $('etfSpotPrice').textContent='$'+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4});
+  $('etfSpotChange').textContent=Number.isFinite(change)?(change>0?'+':'')+change.toFixed(2)+'%':'—';
+  $('etfSpotChange').className=Number.isFinite(change)?(change<0?'negative':'positive'):'';
+  $('etfSpotSource').textContent='COINGECKO · INJ/USD';
+  setStatus(tr('INJ SPOT · LIVE','INJ SPOT · LIVE'),true);
+  $('etfLastUpdated').textContent=tr('INJ spot aggiornato: ','INJ spot updated: ')+new Date().toLocaleTimeString(language==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit'})+tr(' · Non è il prezzo dell’ETF.',' · This is not the ETF share price.');
+  lastSpot=Date.now();
+ } catch(err) {
+  if(err.name==='AbortError'&&ctrl!==requestController)return;
+  $('etfSpotPrice').textContent='—';$('etfSpotChange').textContent='—';
+  $('etfSpotSource').textContent=tr('CoinGecko · dati non disponibili','CoinGecko · data unavailable');
+  setStatus(tr('INJ SPOT · NON DISPONIBILE','INJ SPOT · UNAVAILABLE'),false);
+  $('etfLastUpdated').textContent=tr('Prezzo spot momentaneamente non disponibile. Nessun valore simulato.','Spot price temporarily unavailable. No simulated values.');
+ } finally {clearTimeout(timeout);if(requestController===ctrl)requestController=null}
+}
+let ticker='NASDAQ:INJC';
+const charts={
+ 'NASDAQ:INJC':{url:'https://www.tradingview.com/symbols/NASDAQ-INJC/',name:'INJC / NASDAQ',message:['Il ticker è previsto nel prospetto. Il grafico dipende dalla disponibilità dei dati presso TradingView. Nessuna quotazione simulata.','The ticker appears in the prospectus. Chart data depend on availability at TradingView. No simulated quotes.']},
+ 'BINANCE:INJUSDT':{url:'https://www.tradingview.com/symbols/INJUSDT/',name:'INJ / SPOT',message:['Grafico del token Injective sul mercato crypto, distinto dalla quota ETF INJC.','Injective spot token chart, separate from the INJC ETF share.']}
+};
+function clearChart(){
+ $('etfChartSlot').classList.remove('is-loaded');
+ const holder=$('etfChartLoaded');holder.replaceChildren();
+}
+function selectTicker(next){
+ if(!charts[next]||next===ticker)return;
+ ticker=next;clearChart();
+ document.querySelectorAll('[data-symbol]').forEach(b=>{const active=b.dataset.symbol===next;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+ $('etfChartTitle').textContent=charts[next].name;
+ $('etfChartMessage').textContent=charts[next].message[language==='en'?1:0];
+ $('etfTradingViewLink').href=charts[next].url;
+}
+function loadChart(){
+ const holder=$('etfChartLoaded');
+ holder.replaceChildren();
+ const wrap=document.createElement('div');wrap.className='tradingview-widget-container';wrap.style.height='100%';wrap.style.width='100%';
+ const widget=document.createElement('div');widget.className='tradingview-widget-container__widget';widget.style.height='100%';widget.style.width='100%';wrap.appendChild(widget);
+ const tag=document.createElement('script');tag.type='text/javascript';tag.async=true;tag.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+ tag.textContent=JSON.stringify({autosize:true,symbol:ticker,interval:'D',timezone:'Etc/UTC',theme:currentTheme(),style:'1',locale:language,enable_publishing:false,allow_symbol_change:false,hide_side_toolbar:false,hide_top_toolbar:false,save_image:false,calendar:false,support_host:'https://www.tradingview.com'});
+ wrap.appendChild(tag);holder.appendChild(wrap);
+ $('etfChartSlot').classList.add('is-loaded');
+}
+document.querySelectorAll('[data-symbol]').forEach(b=>b.addEventListener('click',()=>selectTicker(b.dataset.symbol)));
+$('etfLoadChart').addEventListener('click',loadChart);
+$('etfRefresh').addEventListener('click',()=>refreshSpot(true));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshSpot()});
+window.addEventListener('storage',e=>{if(e.key==='inj_node_language_v1'){applyLanguage();if(!$('etfChartSlot').classList.contains('is-loaded'))selectTicker(ticker)}});
+window.addEventListener('message',e=>{if(e.origin!==location.origin||e.data?.type!=='injnode:etf:language')return;applyLanguage()});
+applyLanguage();refreshSpot(true);setInterval(()=>{if(!document.hidden)refreshSpot()},90000);
+})();
+</script>
+</body>
+</html>
