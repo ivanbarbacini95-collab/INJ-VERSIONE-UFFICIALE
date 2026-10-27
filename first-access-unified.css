@@ -163,3 +163,120 @@ html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access #entr
   padding:0 12px!important;font-size:12px!important;
  }
 }
+
+
+/* First-access mobile layout correction — 27 Oct 2026.
+   Keep the input and the CTA in different grid rows to eliminate overlap
+   from inherited entry-gate/button rules on mobile Safari. */
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-form{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:9px!important;
+  min-width:0!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-field{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:58px!important;
+  position:relative!important;
+  flex:none!important;
+  padding:5px!important;
+  overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-field #entryWalletInput{
+  display:block!important;
+  position:static!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-form > #entryWalletContinue {
+  display:flex!important;
+  position:relative!important;
+  inset:auto!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  float:none!important;
+  flex:0 0 auto!important;
+  align-self:stretch!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:52px!important;
+  min-height:52px!important;
+  box-sizing:border-box!important;
+  margin:13px 0 0!important;
+  padding:0 18px!important;
+  border-radius:12px!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  translate:none!important;
+  white-space:nowrap!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  z-index:auto!important;
+  -webkit-appearance:none!important;
+  appearance:none!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-form > #entryWalletStatus {
+  display:block!important;
+  align-self:stretch!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:9px 0 0!important;
+  overflow-wrap:break-word!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-cloud-recovery {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  position:relative!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-height:46px!important;
+  margin:14px 0 0!important;
+  padding:10px 12px!important;
+  border:1px solid color-mix(in srgb,var(--accent,#70d6d4) 29%,transparent)!important;
+  border-radius:12px!important;
+  color:var(--muted-strong,var(--text,#eff))!important;
+  background:color-mix(in srgb,var(--accent,#70d6d4) 6%,transparent)!important;
+  text-decoration:none!important;
+  text-align:center!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  overflow-wrap:anywhere!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-cloud-recovery strong {
+  font-size:inherit!important;
+  color:var(--accent,#70d6d4)!important;
+  font-weight:760!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-cloud-recovery svg{
+  flex:none!important;
+  width:15px!important;
+  height:15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+}
+@media(max-width:580px){
+  html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding-form > #entryWalletContinue{
+    height:52px!important;min-height:52px!important;padding:0 12px!important;
+    font-size:14px!important;
+  }
+  html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access .entry-onboarding{
+    padding:clamp(20px,5.2vw,26px) 18px!important;
+  }
+}
+@media(max-height:740px){
+  html[data-inj-page="index"] body #entryGate .entry-gate-shell.first-access{
+    justify-content:flex-start!important;
+    min-height:100dvh!important;
+  }
+}
