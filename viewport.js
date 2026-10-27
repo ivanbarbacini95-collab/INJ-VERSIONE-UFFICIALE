@@ -68,7 +68,12 @@
   }
   function syncTheme() {
     const css = getComputedStyle(root);
-    const color = (css.getPropertyValue('--canvas') || css.getPropertyValue('--theme-canvas') || css.getPropertyValue('--bg')).trim();
+    // iOS installed PWAs can paint their native status region from theme-color.
+    // The Home's bright ambient background begins beneath it: use the same
+    // deliberate transition tone, not the previous near-black canvas.
+    const isHomePage = root.dataset.injPage === 'index';
+    const statusTone = isHomePage ? css.getPropertyValue('--inj-status-tone').trim() : '';
+    const color = statusTone || (css.getPropertyValue('--canvas') || css.getPropertyValue('--theme-canvas') || css.getPropertyValue('--bg')).trim();
     if (color) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
   }
 
