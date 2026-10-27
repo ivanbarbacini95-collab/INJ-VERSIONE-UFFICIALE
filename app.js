@@ -3256,16 +3256,66 @@ function renderWalletControls() {
   $('savedWalletCount').textContent = `${state.wallets.length} salvat${state.wallets.length === 1 ? 'o' : 'i'}`;
   renderMenuWalletContext();
   renderWalletCards();
-  renderWalletManager();
+  // Never replace an input that the user is editing; this used to interrupt
+  // typing during background RPC refreshes, especially on iPhone PWA.
+  const editingManagerName = $('walletDialog')?.open
+    && document.activeElement?.closest?.('#walletManagerList');
+  if (!editingManagerName) renderWalletManager();
   renderAggregate();
   if ($('entryGate')?.classList.contains('visible')) renderEntryGate();
+}
+
+function setWalletManagerAddStatus(text, isError = false) {
+  const host = $('walletManagerAddStatus');
+  if (!host) return;
+  host.textContent = text;
+  host.classList.toggle('error', Boolean(isError));
+}
+
+function addWalletFromManager(event) {
+  event.preventDefault();
+  const addressInput = $('walletManagerAddress');
+  const nameInput = $('walletManagerName');
+  const address = String(addressInput?.value || '').trim().toLowerCase();
+  const name = normalizeWalletLabel(nameInput?.value);
+  if (!validAddress(address)) {
+    setWalletManagerAddStatus('Inserisci un indirizzo Injective valido che inizi con inj1.', true);
+    addressInput?.focus({ preventScroll: true });
+    return;
+  }
+  if (state.wallets.some(wallet => wallet.address === address)) {
+    setWalletManagerAddStatus('Questo wallet è già salvato. Puoi aprirlo dalla lista qui sotto.', true);
+    return;
+  }
+  try {
+    // Persist before network activity; the UI must never depend on the RPC.
+    ensureSavedWallet(address, name);
+    state.entrySelectedAddress = address;
+    activateWalletImmediately(address, name);
+    // Keep the manager open so multiple wallets can be added consecutively.
+    if (addressInput) addressInput.value = '';
+    if (nameInput) nameInput.value = '';
+    if (document.activeElement?.closest?.('#walletManagerAddForm')) document.activeElement.blur();
+    setWalletManagerAddStatus('Wallet salvato e selezionato. Puoi aggiungerne subito un altro.');
+    void loadWallet(false, address).catch(error => {
+      console.warn('Wallet added locally; background sync unavailable:', error);
+      setWalletSkeleton(false);
+    });
+  } catch (error) {
+    console.warn('Unable to persist added wallet:', error);
+    setWalletManagerAddStatus('Impossibile salvare sul dispositivo. Controlla lo spazio di archiviazione.', true);
+  }
 }
 
 function openWalletManager(address = '') {
   renderWalletManager();
   const dialog = $('walletDialog');
   if (!dialog.open) dialog.showModal();
-  if (!address) return;
+  if (!address) {
+    // Do not show the iOS keyboard until the user taps an input.
+    setWalletManagerAddStatus('Inserisci un indirizzo pubblico per aggiungere un wallet.');
+    return;
+  }
   requestAnimationFrame(() => {
     const input = [...dialog.querySelectorAll('.wallet-manager-copy input')]
       .find((field) => field.dataset.walletAddress === address);
@@ -4858,13 +4908,15 @@ function activateWalletImmediately(address, requestedLabel = '') {
 
 function setLoading(loading) {
   state.loading = loading;
-  $('loadButton').disabled = loading;
+  // Network refreshes must not lock the address form; starting a new wallet
+  // invalidates the previous walletRequest and can proceed immediately.
+  $('loadButton').disabled = false;
   const refreshMenuButton = $('refreshMenuButton');
   if (refreshMenuButton) {
     refreshMenuButton.disabled = loading;
     refreshMenuButton.classList.toggle('loading', loading);
   }
-  $('loadButton').textContent = loading ? 'Lettura…' : 'Apri';
+  $('loadButton').textContent = 'Apri';
 }
 
 function setWalletSkeleton(visible) {
@@ -4887,6 +4939,12 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
   // Feedback immediato: selezione e snapshot locale cambiano prima delle chiamate di rete.
   if (switchingWallet) activateWalletImmediately(address, requestedLabel);
   else {
+    // A renamed wallet or the same saved address should update right away,
+    // even when the asynchronous RPC request is already underway.
+    if (requestedLabel) {
+      ensureSavedWallet(address, requestedLabel);
+      renderWalletControls();
+    }
     state.walletPendingAddress = address;
     renderWalletCards();
     setStatus('', 'Aggiornamento wallet…');
@@ -8202,7 +8260,36 @@ function bindEvents() {
   bindEntryConverter();
   $('addressForm').addEventListener('submit', (event) => {
     event.preventDefault();
-    loadWallet(true, $('addressInput').value, $('walletNameInput')?.value || '');
+    const address = String($('addressInput').value || '').trim().toLowerCase();
+    const name = normalizeWalletLabel($('walletNameInput')?.value);
+    if (!validAddress(address)) {
+      toast('Inserisci un indirizzo Injective valido');
+      $('addressInput')?.focus({ preventScroll: true });
+      return;
+    }
+    // Persist a new address immediately, regardless of the current refresh.
+    if (!state.wallets.some(wallet => wallet.address === address)) {
+      try {
+        ensureSavedWallet(address, name);
+        state.entrySelectedAddress = address;
+        activateWalletImmediately(address, name);
+        toast('Wallet aggiunto e salvato');
+      } catch (error) {
+        console.warn('Wallet save failed:', error);
+        toast('Impossibile salvare il wallet sul dispositivo');
+        return;
+      }
+    }
+    void loadWallet(false, address, name).catch(error => {
+      console.warn('Wallet background sync failed:', error);
+      setWalletSkeleton(false);
+    });
+  });
+  $('walletManagerAddForm')?.addEventListener('submit', addWalletFromManager);
+  $('walletManagerAddress')?.addEventListener('input', () => {
+    if ($('walletManagerAddStatus')?.classList.contains('error')) {
+      setWalletManagerAddStatus('Il wallet sarà salvato immediatamente.');
+    }
   });
   $('entryMenuButton')?.addEventListener('click', (event) => {
     event.preventDefault();
