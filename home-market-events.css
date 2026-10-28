@@ -493,3 +493,76 @@ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)
 @media(prefers-reduced-motion:reduce){
  html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars>span{animation:none!important}
 }
+
+/* 2026-10-28 · Seamless drag-to-inspect crypto tape.
+ * JavaScript owns horizontal movement; CSS marquee must never race it. */
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only{
+ overflow:hidden!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-viewport{
+ touch-action:pan-y!important;
+ cursor:grab!important;user-select:none!important;-webkit-user-select:none!important;
+ overscroll-behavior-x:contain!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-viewport:active{cursor:grabbing!important}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-track{
+ display:flex!important;align-items:center!important;
+ width:max-content!important;max-width:none!important;
+ flex:none!important;gap:30px!important;
+ animation:none!important;animation-play-state:paused!important;
+ transition:none!important;will-change:transform;
+ -webkit-transform:translateZ(0);
+ backface-visibility:hidden;-webkit-backface-visibility:hidden;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-group{
+ display:inline-flex!important;flex:none!important;
+ align-items:center!important;gap:27px!important;
+ white-space:nowrap!important;width:max-content!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-item{
+ display:inline-flex!important;flex:none!important;align-items:center!important;
+ gap:7px!important;white-space:nowrap!important;
+ font-variant-numeric:tabular-nums;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-global{
+ padding-left:12px!important;
+ border-left:1px solid color-mix(in srgb,var(--accent,#8ae4ce) 25%,transparent)!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-global .inj-market-ticker-symbol{
+ color:var(--accent,#8ae4ce)!important;
+ font-size:10px!important;letter-spacing:.04em!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-price{
+ color:var(--text,#e9faf6);font-size:11px!important;font-weight:700;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-change{
+ font-size:10px!important;font-style:normal!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-price.positive{color:var(--up,#57e3b0)!important}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-price.negative{color:var(--down,#ff8894)!important}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only.is-stale{
+ border-color:color-mix(in srgb,#d8ad65 46%,var(--line,#374653))!important;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only.is-stale:after{
+ content:"!";position:absolute;right:3px;top:3px;
+ display:grid;place-items:center;width:12px;height:12px;
+ border-radius:50%;font-size:9px;font-weight:900;color:#ffda9c;
+ background:color-mix(in srgb,#ffda9c 12%,var(--surface,#09181f));
+ pointer-events:none;
+}
+html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-viewport:focus-visible{
+ outline:2px solid var(--accent,#8ae4ce);outline-offset:-2px;border-radius:7px;
+}
+@media(max-width:390px){
+ html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-group{gap:22px!important}
+ html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-track{gap:24px!important}
+ html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-item{gap:5px!important}
+ html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-symbol,
+ html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-price{font-size:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-viewport{
+  overflow:hidden!important;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)!important;
+ }
+}
