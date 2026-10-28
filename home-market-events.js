@@ -294,18 +294,6 @@
   ];
   return names.find(([pattern])=>pattern.test(t))?.[1]||t;
  }
- function metric(labelIt,labelEn,value){
-  const e=elt('span','inj-events-metric');
-  e.append(elt('small',null,tr(labelIt,labelEn)),elt('strong',null,nice(value)));
-  if(!validActual(value))e.classList.add('is-unavailable');
-  return e;
- }
- function trio(e){
-  const result=elt('span','inj-events-metrics');
-  result.append(metric('PRECEDENTE','PREVIOUS',e.previous),metric('PREVISIONE','FORECAST',e.forecast),metric('EFFETTIVO','ACTUAL',e.actual));
-  return result;
- }
-
  function list(){
   const events=visibleEvents(), host=$('injEventsRows');
   host.replaceChildren();updatePeriodUI();
@@ -319,7 +307,7 @@
    $('injEventsFeaturedTitle').textContent=translatedEventTitle(next.title);
    $('injEventsFeaturedCountdown').textContent=countdown(Date.parse(next.date)-now());
    const details=$('injEventsFeaturedDetails');details.replaceChildren();
-   details.append(trio(next));
+   // Numerical metrics stay in the detail sheet, not the calendar preview.
    const more=elt('button','inj-events-feature-open',tr('VEDI DETTAGLI','VIEW DETAILS')+' ↗');
    more.type='button';more.addEventListener('click',()=>showResult(next,false));details.append(more);
   }
@@ -350,7 +338,7 @@
    if(released){status.classList.add('released');status.textContent=tr('PUBBLICATO','RELEASED')}
    else if(future){status.classList.add('upcoming');status.textContent=countdown(Date.parse(event.date)-now())}
    else{status.classList.add('pending');status.textContent=tr('IN ATTESA','PENDING')}
-   heading.append(status);main.append(heading,trio(event));
+   heading.append(status);main.append(heading);
    button.append(time,main,elt('span','inj-events-item-chevron','›'));
    button.addEventListener('click',()=>showResult(event,false));
    host.append(button);
