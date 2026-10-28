@@ -566,3 +566,131 @@ html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-marke
   overflow:hidden!important;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)!important;
  }
 }
+
+/* 2026-10-28: Market Events v7 — unified horizontal ★★★, uncluttered previews. */
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton > .inj-events-tile-stars{
+ display:inline-block!important;
+ position:absolute!important;
+ top:50%!important;
+ right:21px!important;
+ left:auto!important;
+ bottom:auto!important;
+ z-index:5!important;
+ width:max-content!important;
+ min-width:max-content!important;
+ max-width:none!important;
+ height:auto!important;
+ min-height:0!important;
+ max-height:none!important;
+ flex:0 0 auto!important;
+ align-self:auto!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:none!important;
+ box-shadow:none!important;
+ overflow:visible!important;
+ white-space:nowrap!important;
+ word-break:keep-all!important;
+ overflow-wrap:normal!important;
+ writing-mode:horizontal-tb!important;
+ text-orientation:mixed!important;
+ text-align:center!important;
+ font:800 22px/1 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ letter-spacing:5px!important;
+ color:var(--accent,#b9a1e5)!important;
+ opacity:.94;
+ transform:translateY(-50%)!important;
+ animation:inj-macro-stars-row 3.4s ease-in-out infinite!important;
+ pointer-events:none!important;
+ -webkit-user-select:none!important;
+ user-select:none!important;
+}
+@keyframes inj-macro-stars-row{
+ 0%,100%{opacity:.72;text-shadow:0 0 2px color-mix(in srgb,var(--accent,#b9a1e5) 16%,transparent)}
+ 45%{opacity:1;text-shadow:0 0 10px color-mix(in srgb,var(--accent,#b9a1e5) 70%,transparent),0 0 16px color-mix(in srgb,var(--accent,#b9a1e5) 30%,transparent)}
+ 70%{opacity:.88;text-shadow:0 0 5px color-mix(in srgb,var(--accent,#b9a1e5) 35%,transparent)}
+}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton > .inj-events-tile-copy{
+ min-width:0!important;
+ flex:1 1 0%!important;
+ max-width:100%!important;
+}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton > .inj-events-tile-copy strong{
+ overflow:hidden!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryMarketEventsButton.entry-action{
+ padding-right:113px!important;
+}
+@media(max-width:420px){
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton > .inj-events-tile-stars{
+  right:12px!important;
+  font-size:19px!important;
+  letter-spacing:3px!important;
+ }
+ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryMarketEventsButton.entry-action{
+  padding-right:88px!important;
+ }
+}
+
+/* Preview cards are intentionally brief. Full figures stay in the tapped event sheet. */
+.inj-events-feature .inj-events-metrics,
+.inj-events-item .inj-events-row-metrics{
+ display:none!important;
+}
+.inj-events-feature{gap:12px!important}
+.inj-events-feature-details{
+ display:flex!important;
+ flex-direction:row!important;
+ justify-content:flex-end!important;
+ align-items:center!important;
+ gap:8px!important;
+}
+.inj-events-feature-open{
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ border:1px solid color-mix(in srgb,var(--accent,#89e4c4) 38%,var(--line,#334957))!important;
+ border-radius:9px!important;
+ padding:9px 13px!important;
+ margin:0!important;
+ background:color-mix(in srgb,var(--accent,#89e4c4) 7%,transparent)!important;
+}
+.inj-events-item{
+ min-height:73px!important;
+ padding-block:13px!important;
+ grid-template-columns:65px minmax(0,1fr) 12px!important;
+ align-items:center!important;
+}
+.inj-events-item-main{
+ gap:3px!important;
+ justify-content:center!important;
+}
+.inj-events-item-headline{
+ gap:6px!important;
+}
+.inj-events-item-chevron{
+ align-self:center!important;
+ padding-top:0!important;
+}
+.inj-events-item-time{
+ align-self:center!important;
+}
+@media(max-width:700px){
+ .inj-events-item{
+  grid-template-columns:54px minmax(0,1fr) 10px!important;
+  gap:8px!important;
+ }
+}
+@media(max-width:365px){
+ .inj-events-item{
+  grid-template-columns:46px minmax(0,1fr) 10px!important;
+  gap:6px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton > .inj-events-tile-stars{animation:none!important}
+}
