@@ -16,7 +16,7 @@
  const read=()=>{try{return JSON.parse(localStorage.getItem(STORE)||'{}')}catch{return {}}};
  const config=read();
  const state={
-   open:false,events:[],source:'',coverage:'',sourceURL:'',days:[1,3,7,14,30].includes(+config.days)?+config.days:7,
+   open:false,events:[],source:'',coverage:'',sourceURL:'',period:['today','tomorrow','dayAfter','thisWeek','nextWeek'].includes(config.period)?config.period:'thisWeek',
    region:['ALL','US','EU','ASIA'].includes(config.region)?config.region:'ALL',
    reminder:[5,10,15,30].includes(+config.reminder)?+config.reminder:10,
    alerts:config.alerts===true,initialized:false,
@@ -29,7 +29,7 @@
   try{
    const compact=(obj)=>Object.fromEntries(Object.entries(obj).slice(-120));
    localStorage.setItem(STORE,JSON.stringify({
-    days:state.days,region:state.region,reminder:state.reminder,alerts:state.alerts,
+    period:state.period,region:state.region,reminder:state.reminder,alerts:state.alerts,
     seen:compact(state.seen),notified:compact(state.notified),results:compact(state.results)
    }));
   }catch{}
@@ -97,73 +97,127 @@
    else host.append(elt('span',null,tr('Fonte non disponibile','Source unavailable')));
  }
  function localClock(d){return dateFmt(d,{hour:'2-digit',minute:'2-digit',hourCycle:'h23'})}
+
+ // Date ranges are device-local, with midnight and exclusive end even across DST.
+ const dayStart=(d,offset=0)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+offset);
+ function selectedRange(){
+  const d=new Date(),dow=(d.getDay()+6)%7;
+  let a,b;
+  switch(state.period){
+   case 'today':a=dayStart(d);b=dayStart(d,1);break;
+   case 'tomorrow':a=dayStart(d,1);b=dayStart(d,2);break;
+   case 'dayAfter':a=dayStart(d,2);b=dayStart(d,3);break;
+   case 'nextWeek':a=dayStart(d,7-dow);b=dayStart(d,14-dow);break;
+   default:a=dayStart(d,-dow);b=dayStart(d,7-dow);
+  }
+  return {start:+a,end:+b};
+ }
+ function visibleEvents(){
+  const {start,end}=selectedRange();
+  return state.events.filter(e=>{
+   const ts=Date.parse(e.date);
+   return ts>=start&&ts<end&&(state.region==='ALL'||e.region===state.region);
+  }).sort(byDate);
+ }
+ function updatePeriodUI(){
+  for(const btn of document.querySelectorAll('#injEventsPeriod [data-period]'))
+   btn.setAttribute('aria-pressed',String(btn.dataset.period===state.period));
+  const {start,end}=selectedRange();
+  const fmt=t=>dateFmt(t,{day:'numeric',month:'short'});
+  const label=$('injEventsRangeLabel');
+  if(label)label.textContent=(end-start<3*86400000?fmt(start):fmt(start)+' – '+fmt(end-1));
+ }
+ function translatedEventTitle(t){
+  if(!String(document.documentElement.lang||'it').toLowerCase().startsWith('it'))return t;
+  const names=[
+   [/^fed.s monetary policy statement$/i,'Comunicato di politica monetaria della Fed'],
+   [/^fed interest rate decision$/i,'Decisione sui tassi di interesse della Fed'],
+   [/^fomc press conference$/i,'Conferenza stampa FOMC'],
+   [/^gross domestic product annualized$/i,'PIL annualizzato'],
+   [/^gross domestic product price index$/i,'Indice dei prezzi del PIL'],
+   [/^consumer price index(?: \(cpi\))?$/i,'Indice dei prezzi al consumo (CPI)'],
+   [/^core consumer price index(?: \(cpi\))?$/i,'Indice dei prezzi al consumo core'],
+   [/^non.farm payrolls?$/i,'Occupati non agricoli (NFP)'],
+   [/^unemployment rate$/i,'Tasso di disoccupazione'],
+   [/^retail sales$/i,'Vendite al dettaglio'],
+   [/^initial jobless claims$/i,'Richieste iniziali di disoccupazione'],
+   [/^pce price index$/i,'Indice dei prezzi PCE'],
+   [/^core pce price index$/i,'Indice dei prezzi PCE core'],
+   [/^ecb interest rate decision$/i,'Decisione sui tassi della BCE'],
+   [/^ecb press conference$/i,'Conferenza stampa BCE'],
+   [/^bank of japan interest rate decision$/i,'Decisione sui tassi della Banca del Giappone'],
+   [/^boe interest rate decision$/i,'Decisione sui tassi della Banca d’Inghilterra']
+  ];
+  return names.find(([pattern])=>pattern.test(t))?.[1]||t;
+ }
+ function metric(labelIt,labelEn,value){
+  const e=elt('span','inj-events-metric');
+  e.append(elt('small',null,tr(labelIt,labelEn)),elt('strong',null,nice(value)));
+  if(!validActual(value))e.classList.add('is-unavailable');
+  return e;
+ }
+ function trio(e){
+  const result=elt('span','inj-events-metrics');
+  result.append(metric('PRECEDENTE','PREVIOUS',e.previous),metric('PREVISIONE','FORECAST',e.forecast),metric('EFFETTIVO','ACTUAL',e.actual));
+  return result;
+ }
+
  function list(){
-  const events=state.events.filter(e=>state.region==='ALL'||e.region===state.region).sort(byDate);
-  const host=$('injEventsRows');host.replaceChildren();
+  const events=visibleEvents(), host=$('injEventsRows');
+  host.replaceChildren();updatePeriodUI();
   $('injEventsCount').textContent=String(events.length);
-  const upcoming=events.find(e=>Date.parse(e.date)>=now()-60000);
-  $('injEventsNext').textContent=upcoming?countdown(Date.parse(upcoming.date)-now()):'—';
+  const next=events.find(e=>Date.parse(e.date)>=now()-60000);
+  $('injEventsNext').textContent=next?countdown(Date.parse(next.date)-now()):'—';
   $('injEventsDataStatus').textContent=state.source?tr('AGGIORNATO','UPDATED'):'OFFLINE';
-  const featured=$('injEventsFeatured');
-  featured.hidden=!upcoming;
-  if(upcoming){
-    const eventTime=dateFmt(upcoming.date,{weekday:'short',day:'numeric',month:'short'})+' · '+localClock(upcoming.date);
-    $('injEventsFeaturedTime').textContent=upcoming.country+'  /  '+eventTime;
-    $('injEventsFeaturedTitle').textContent=upcoming.title;
-    $('injEventsFeaturedCountdown').textContent=countdown(Date.parse(upcoming.date)-now());
-    const details=$('injEventsFeaturedDetails');details.replaceChildren();
-    if(validActual(upcoming.forecast))details.append(elt('span',null,tr('Atteso ','Forecast ')+upcoming.forecast));
-    if(validActual(upcoming.previous))details.append(elt('span',null,tr('Precedente ','Previous ')+upcoming.previous));
-    const view=elt('button','inj-events-feature-open',tr('VEDI DETTAGLI ↗','VIEW DETAILS ↗'));view.type='button';
-    view.addEventListener('click',()=>showResult(upcoming,false));details.append(view);
+  const featured=$('injEventsFeatured');featured.hidden=!next;
+  if(next){
+   $('injEventsFeaturedTime').textContent=next.country+' · '+dateFmt(next.date,{weekday:'short',day:'numeric',month:'short'})+' · '+localClock(next.date);
+   $('injEventsFeaturedTitle').textContent=translatedEventTitle(next.title);
+   $('injEventsFeaturedCountdown').textContent=countdown(Date.parse(next.date)-now());
+   const details=$('injEventsFeaturedDetails');details.replaceChildren();
+   details.append(trio(next));
+   const more=elt('button','inj-events-feature-open',tr('VEDI DETTAGLI','VIEW DETAILS')+' ↗');
+   more.type='button';more.addEventListener('click',()=>showResult(next,false));details.append(more);
   }
   if(!events.length){
-    host.append(elt('p','inj-events-empty',state.source?tr('Nessun evento ★★★ per il periodo e la regione selezionati.','No ★★★ events in this range and region.'):tr('Calendario non disponibile. Riprova tra poco.','Calendar unavailable. Retry later.')));
-    return;
+   host.append(elt('p','inj-events-empty',state.source?
+     tr('Nessun evento ad alto impatto per il periodo selezionato.','No high-impact events in this period.'):
+     tr('Calendario temporaneamente non disponibile.','Calendar temporarily unavailable.')));
+   return;
   }
   let lastDay='';
-  for(const e of events){
-    const day=dateFmt(e.date,{weekday:'long',day:'2-digit',month:'long'});
-    if(day!==lastDay){
-      const heading=elt('div','inj-events-day');
-      heading.append(elt('span',null,day),elt('span',null,tr('ORA LOCALE · 24H','LOCAL TIME · 24H')));
-      host.append(heading);lastDay=day;
-    }
-    const future=Date.parse(e.date)>now(),released=validActual(e.actual);
-    const button=elt('button','inj-events-item');
-    button.type='button';
-    if(upcoming&&upcoming.id===e.id)button.classList.add('is-next');
-    if(released)button.classList.add('is-released');
-    button.setAttribute('aria-label',e.title+', '+localClock(e.date)+', '+e.country);
-    const time=elt('div','inj-events-item-time');
-    time.append(elt('strong',null,localClock(e.date)),elt('small',null,e.country));
-    const main=elt('div','inj-events-item-main');
-    main.append(elt('strong',null,e.title));
-    const meta=elt('span','inj-events-item-meta');
-    if(released){
-      meta.textContent=tr('EFFETTIVO','ACTUAL')+'  '+e.actual+(validActual(e.forecast)?'   ·   '+tr('ATTESO','FORECAST')+'  '+e.forecast:'');
-    }else if(validActual(e.forecast)){
-      meta.textContent=tr('ATTESO','FORECAST')+'  '+e.forecast;
-    }else if(future){
-      meta.textContent=tr('DATO NON ANCORA PUBBLICATO','AWAITING RELEASE');
-    }else{
-      meta.textContent=tr('IN ATTESA DEL DATO','AWAITING ACTUAL');
-    }
-    main.append(meta);
-    const status=elt('span','inj-events-item-status');
-    if(released){status.classList.add('released');status.textContent=tr('PUBBLICATO','RELEASED')}
-    else if(future){status.classList.add('upcoming');status.textContent=countdown(Date.parse(e.date)-now())}
-    else{status.classList.add('pending');status.textContent=tr('IN ATTESA','PENDING')}
-    button.append(time,main,status);
-    button.addEventListener('click',()=>showResult(e,false));
-    host.append(button);
+  for(const event of events){
+   if(next&&event.id===next.id)continue;
+   const label=dateFmt(event.date,{weekday:'long',day:'2-digit',month:'long'});
+   if(label!==lastDay){
+    const h=elt('div','inj-events-day');
+    h.append(elt('span',null,label),elt('span',null,tr('ORA LOCALE','LOCAL TIME')));
+    host.append(h);lastDay=label;
+   }
+   const released=validActual(event.actual),future=Date.parse(event.date)>now();
+   const button=elt('button','inj-events-item');button.type='button';
+   if(released)button.classList.add('is-released');
+   button.setAttribute('aria-label',translatedEventTitle(event.title)+', '+localClock(event.date)+', '+event.country);
+   const time=elt('span','inj-events-item-time');
+   time.append(elt('strong',null,localClock(event.date)),elt('small',null,event.country));
+   const main=elt('span','inj-events-item-main'),heading=elt('span','inj-events-item-headline');
+   heading.append(elt('strong',null,translatedEventTitle(event.title)));
+   const status=elt('span','inj-events-item-status');
+   if(released){status.classList.add('released');status.textContent=tr('PUBBLICATO','RELEASED')}
+   else if(future){status.classList.add('upcoming');status.textContent=countdown(Date.parse(event.date)-now())}
+   else{status.classList.add('pending');status.textContent=tr('IN ATTESA','PENDING')}
+   heading.append(status);main.append(heading,trio(event));
+   button.append(time,main,elt('span','inj-events-item-chevron','›'));
+   button.addEventListener('click',()=>showResult(event,false));
+   host.append(button);
   }
+  if(events.length===1&&next)host.append(elt('p','inj-events-empty',tr('Nessun altro evento nel periodo selezionato.','No other events in this period.')));
  }
  function showResult(e,auto){
   if(!e)return;
   state.current=e;
-  $('injEventsResultTitle').textContent=e.title;
-  $('injEventsResultTime').textContent=e.country+' · '+dateFmt(e.date,{dateStyle:'medium',timeStyle:'short'});
+  $('injEventsResultTitle').textContent=translatedEventTitle(e.title);
+  $('injEventsResultTime').textContent=e.country+' · '+dateFmt(e.date,{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · '+localClock(e.date);
   $('injEventsResultPrevious').textContent=nice(e.previous);
   $('injEventsResultForecast').textContent=nice(e.forecast);
   $('injEventsResultActual').textContent=nice(e.actual);
@@ -194,7 +248,7 @@
  function openPanel(){
   const root=$('injMarketEventsOverlay');if(state.open)return;
   state.open=true;root.hidden=false;root.scrollTop=0;
-  $('injEventsDays').value=String(state.days);
+  updatePeriodUI();
   $('injEventsRegion').value=state.region;
   $('injEventsReminder').value=String(state.reminder);
   updateAlertButton();list();loadCalendar(true);
@@ -271,7 +325,7 @@
   state.processing=true;
   state.inFlight=(async()=>{
     try{
-      const response=await fetch('/api/market-events?days='+state.days,{cache:'no-store'});
+      const response=await fetch('/api/market-events?days=30',{cache:'no-store'});
       if(!response.ok)throw Error('Calendar HTTP '+response.status);
       const data=await response.json();
       if(!Array.isArray(data.events))throw Error('Invalid event feed');
@@ -298,24 +352,19 @@
   return state.inFlight;
  }
  function applyLanguage(){
-  const fields=[
-   ['injEventsSubtitle','Calendario macroeconomico · solo impatto ★★★','Macroeconomic calendar · high impact ★★★ only'],
-   ['injEventsDays','PERIODO / RANGE','PERIOD / RANGE'],
-  ];
   const sub=$('injEventsSubtitle');if(sub)sub.textContent=tr('Calendario macroeconomico · solo impatto ★★★','Macroeconomic calendar · only ★★★ events');
   const note=$('injEventsWarning');if(note&&!state.source)note.textContent=tr('Orari locali · I dati effettivi compaiono dopo la pubblicazione.','Local time · Actual values appear only when published.');
   const options={
-   injEventsDays:{1:['24H','24H'],3:['3 GIORNI','3 DAYS'],7:['7 GIORNI','7 DAYS'],14:['2 SETTIMANE','2 WEEKS'],30:['30 GIORNI','30 DAYS']},
    injEventsRegion:{ALL:['TUTTE / ALL','ALL REGIONS'],US:['USA','USA'],EU:['EUROPA','EUROPE'],ASIA:['ASIA','ASIA']}
   };
   for(const [id,opts] of Object.entries(options)){
    const select=$(id);for(const option of select.options){const item=opts[option.value];if(item)option.textContent=tr(item[0],item[1])}
   }
-  const labels=[['injEventsDays','PERIODO','PERIOD'],['injEventsRegion','REGIONE','REGION'],['injEventsReminder','AVVISO','REMINDER']];
+  const labels=[['injEventsRegion','REGIONE','REGION'],['injEventsReminder','AVVISO','REMINDER']];
   for(const [id,it,en] of labels){const lbl=document.querySelector('label[for="'+id+'"]');if(lbl)lbl.textContent=tr(it,en)}
   for(const el of document.querySelectorAll('#injMarketEventsOverlay [data-it][data-en]'))el.textContent=tr(el.dataset.it,el.dataset.en);
   const footer=$('injEventsSource');if(!state.source&&footer)footer.textContent=tr('Fonte in verifica','Checking data source');
-  updateAlertButton();renderNext();
+  updateAlertButton();renderNext();updatePeriodUI();if(state.open)list();
  }
 
  function openFromNotification(eventId){
@@ -337,14 +386,20 @@
  $('injEventsResultClose').addEventListener('click',hideResult);
  $('injEventsResultDone').addEventListener('click',hideResult);
  $('injEventsResultBackdrop').addEventListener('click',e=>{if(e.target===$('injEventsResultBackdrop'))hideResult()});
- $('injEventsDays').addEventListener('change',e=>{state.days=Number(e.target.value);save();loadCalendar(true)});
+ for(const btn of document.querySelectorAll('#injEventsPeriod [data-period]')){
+  btn.addEventListener('click',()=>{
+   if(!['today','tomorrow','dayAfter','thisWeek','nextWeek'].includes(btn.dataset.period))return;
+   state.period=btn.dataset.period;save();list();
+   btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});
+  });
+ }
  $('injEventsRegion').addEventListener('change',e=>{state.region=e.target.value;save();list()});
  $('injEventsReminder').addEventListener('change',e=>{state.reminder=Number(e.target.value);save()});
  $('injEventsAlerts').addEventListener('click',setAlerts);
  $('injEventsRefresh').addEventListener('click',()=>loadCalendar(true));
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.open){e.preventDefault();closePanel()}});
  new MutationObserver(()=>{applyLanguage();if(state.open)list()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
- $('injEventsDays').value=String(state.days);
+ updatePeriodUI();
  $('injEventsRegion').value=state.region;
  $('injEventsReminder').value=String(state.reminder);
  applyLanguage();
