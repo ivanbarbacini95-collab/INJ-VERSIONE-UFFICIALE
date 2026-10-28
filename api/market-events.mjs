@@ -10,7 +10,8 @@ export default async function handler(req,res){
   const region={USD:'US',EUR:'EU',GBP:'EU',CHF:'EU',JPY:'ASIA',CNY:'ASIA'};
   const txt=(x,max=140)=>String(x??'').replace(/[\x00-\x1f]/g,'').slice(0,max).trim();
   const value=x=>x==null||String(x).trim()===''?null:txt(x,48);
-  const clock=Date.now(),start=clock-6*3600000,end=clock+(days+1)*86400000;
+  // Include the beginning of the current week when source data still has it.
+  const clock=Date.now(),start=clock-8*86400000,end=clock+(days+1)*86400000;
   async function download(url){
     const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),7000);
     try{
