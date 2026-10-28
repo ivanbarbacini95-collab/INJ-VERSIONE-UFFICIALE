@@ -193,8 +193,10 @@
   if(!state.alerts||Notification.permission!=='granted')return;
   try{
     const reg=await navigator.serviceWorker?.ready;
-    if(reg&&reg.showNotification){await reg.showNotification(title,{body,tag:'inj-macro-'+id,icon:'/icons/icon-192.png'});return}
-    new Notification(title,{body,tag:'inj-macro-'+id});
+    const options={body,tag:'inj-macro-'+id,icon:'/icons/inj-node-minimal-192-v16.06.29.png',data:{source:'inj-market-events',eventId:String(id).replace(/-actual$/,'')}};
+    if(reg&&reg.showNotification){await reg.showNotification(title,options);return}
+    const notice=new Notification(title,options);
+    notice.onclick=()=>{window.focus();openPanel();const evt=state.events.find(x=>x.id===options.data.eventId);if(evt)showResult(evt,false)};
   }catch{}
  }
  function saveUpcoming(events){
@@ -252,7 +254,7 @@
       renderNext();
       if(state.open)list();
     }catch(error){
-      state.source='';state.lastCalendar=0;
+      state.source='';state.lastCalendar=0;state.events=[];
       setMessage(tr('Fonte calendario temporaneamente non disponibile. Nessun evento o dato viene inventato.','Calendar temporarily unavailable. No event or data is fabricated.'));
       if(state.open)list();
       renderNext();
@@ -283,6 +285,19 @@
   updateAlertButton();renderNext();
  }
 
+ function openFromNotification(eventId){
+  openPanel();
+  Promise.resolve(state.inFlight).then(()=>{
+    const evt=state.events.find(e=>e.id===eventId);
+    if(evt)showResult(evt,false);
+  });
+ }
+ window.addEventListener('message',event=>{
+  if(event.data?.type==='inj-market-events-open'&&typeof event.data.eventId==='string')openFromNotification(event.data.eventId);
+ });
+ const hash=location.hash.match(/^#inj-market-event=(.+)$/);
+ if(hash){try{openFromNotification(decodeURIComponent(hash[1]));history.replaceState(null,'',location.pathname+location.search)}catch{}}
+
  $('entryMarketEventsButton').addEventListener('click',openPanel);
  $('injMarketTickerEvents').addEventListener('click',openPanel);
  $('injEventsClose').addEventListener('click',closePanel);
@@ -303,7 +318,7 @@
  // Background page refreshes cannot create push; only foreground visits can.
  updateTicker();loadCalendar();
  setInterval(()=>{if(document.hidden)return;updateTicker()},45000);
- setInterval(()=>{if(document.hidden)return;loadCalendar(true)},180000);
+ setInterval(()=>{if(document.hidden)return;loadCalendar(true)},60000);
  setInterval(()=>{if(document.hidden)return;renderNext();if(state.open)list();maybeAnnounce(state.events)},45000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){updateTicker();loadCalendar(true)}});
 })();
