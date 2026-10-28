@@ -44,6 +44,20 @@ html[data-theme="ocean-x-solar"]{--inj-status-tone:#713745}
     background-repeat:no-repeat!important;
     background-attachment:scroll!important;
   }
+  /* The outer app shells sometimes start at the viewport edge with an
+     older opaque background. Let the single themed body canvas show through.
+     Real data cards, chart grids and overlays keep their own surfaces. */
+  html[data-theme][data-inj-page="index"] body > .app-shell,
+  html[data-theme]:is([data-inj-page="treasury"],[data-inj-page="live-rewards"],
+    [data-inj-page="live-charts"],[data-inj-page="order-book"],
+    [data-inj-page="command-center"],[data-inj-page="comparison"],
+    [data-inj-page="visualize-wealth"]) body :is(
+      .treasury-shell,.rewards-shell,.live-page,.book-page,
+      .cc-shell,.cap-shell,.wealth-shell),
+  html[data-inj-market][data-theme] body > .shell {
+    background-color:transparent!important;
+    background-image:none!important;
+  }
   /* Navigation chrome is transparent, not a second painted layer.
      Do not modify headers' padding, min-height, alignment or sticky rules. */
   html[data-theme] body :is(
