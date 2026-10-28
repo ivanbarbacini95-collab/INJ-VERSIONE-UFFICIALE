@@ -150,9 +150,12 @@
  }
  function parseNumeric(v){
   if(!validActual(v))return null;
-  const m=String(v).replace(/,/g,'').match(/[-+]?\d*\.?\d+/);
+  const input=String(v).trim().replace(/,/g,'');
+  if(/[<>]/.test(input))return null;
+  const m=input.match(/^[$€£]?\s*([-+]?\d*\.?\d+)\s*([KMBT%]?)$/i);
   if(!m)return null;
-  const n=Number(m[0]);return Number.isFinite(n)?n:null;
+  const factor={K:1e3,M:1e6,B:1e9,T:1e12,'%':1,'':1}[m[2].toUpperCase()];
+  const n=Number(m[1])*factor;return Number.isFinite(n)?n:null;
  }
  function hideResult(){
   $('injEventsResultBackdrop').hidden=true;state.current=null;
