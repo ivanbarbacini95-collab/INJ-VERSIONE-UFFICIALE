@@ -347,3 +347,149 @@ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events
  .inj-events-toolbar{gap:6px!important}
  .inj-events-field select{font-size:11px!important;padding-inline:6px!important}
 }
+
+/* Market Events v4 — no boxed stars; compact date scroller and readable data. */
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars{
+ position:absolute!important;z-index:2!important;right:26px!important;top:50%!important;
+ transform:translateY(-50%)!important;display:flex!important;align-items:center!important;
+ justify-content:center!important;gap:6px!important;width:auto!important;height:auto!important;
+ padding:0!important;margin:0!important;border:none!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;pointer-events:none!important;
+}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars>span{
+ display:inline-block!important;
+ color:var(--accent,#b9a1e5)!important;
+ font:800 24px/1 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ animation:inj-macro-stars 3.5s ease-in-out infinite;
+}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars>span:nth-child(2){animation-delay:.28s}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars>span:nth-child(3){animation-delay:.56s}
+@keyframes inj-macro-stars{
+ 0%,18%,85%,100%{opacity:.67;transform:translateY(0) scale(.96);filter:drop-shadow(0 0 2px color-mix(in srgb,var(--accent,#b9a1e5) 18%,transparent))}
+ 39%,50%{opacity:1;transform:translateY(-2px) scale(1.13);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--accent,#b9a1e5) 72%,transparent))}
+ 64%{opacity:.82;transform:translateY(0) scale(1)}
+}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-copy{max-width:calc(100% - 78px)!important}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-copy small{white-space:nowrap!important;text-overflow:ellipsis!important}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>#entryMarketEventsButton.entry-action{padding-right:114px!important}
+
+/* Dedicated horizontal navigation with a visible selected state. */
+.inj-events-period-heading{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ color:var(--muted-strong,var(--muted,#aabdc4));font:750 10px/1.3 var(--inj-node-terminal-font,ui-monospace,monospace);
+ letter-spacing:.07em;margin:1px 2px -7px;
+}
+.inj-events-period-heading span:last-child{font-size:9px;letter-spacing:0;font-weight:500;opacity:.8}
+.inj-events-period{
+ display:flex!important;align-items:stretch!important;flex-wrap:nowrap!important;gap:8px!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+ padding:3px 4px 10px!important;overflow-x:auto!important;overflow-y:hidden!important;
+ -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+ scrollbar-width:none;scroll-snap-type:x proximity;
+}
+.inj-events-period::-webkit-scrollbar{display:none}
+.inj-events-period button{
+ flex:0 0 auto!important;min-height:42px!important;white-space:nowrap!important;
+ padding:0 16px!important;border:1px solid var(--line,#344753)!important;
+ border-radius:12px!important;background:color-mix(in srgb,var(--surface,#182731) 88%,transparent)!important;
+ color:var(--muted-strong,var(--muted,#aabdc4))!important;
+ font:750 12px/1 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ cursor:pointer;scroll-snap-align:start;transition:border-color .2s,color .2s,background .2s;
+}
+.inj-events-period button[aria-pressed="true"]{
+ border-color:color-mix(in srgb,var(--accent,#8ce4c9) 69%,var(--line,#344753))!important;
+ background:color-mix(in srgb,var(--accent,#8ce4c9) 14%,var(--surface,#182731))!important;
+ color:var(--text,#f5f9fa)!important;box-shadow:inset 0 -2px 0 var(--accent,#8ce4c9)!important;
+}
+.inj-events-period button:focus-visible,.inj-events-feature-open:focus-visible{outline:2px solid var(--accent,#8ce4c9);outline-offset:2px}
+
+/* Leave time-zone, region, notification controls in their own orderly band. */
+.inj-events-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto auto!important;gap:9px!important}
+.inj-events-toolbar .inj-events-field{min-width:0!important}
+.inj-events-toolbar label{font:750 10px/1.2 var(--inj-node-terminal-font,ui-monospace,monospace)!important;letter-spacing:.06em}
+.inj-events-toolbar select{font:750 13px/1 var(--inj-node-terminal-font,ui-monospace,monospace)!important;min-width:0!important}
+.inj-events-overview{gap:10px 24px!important;margin:0!important}
+.inj-events-feature{gap:15px!important}
+.inj-events-feature-main h3{font-size:clamp(18px,3.5vw,24px)!important;line-height:1.32!important}
+.inj-events-feature-main small{font-size:12px!important}
+.inj-events-feature-details{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important}
+.inj-events-metrics{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:8px!important;width:100%!important;min-width:0!important;
+}
+.inj-events-metric{
+ display:flex!important;flex-direction:column!important;gap:5px!important;
+ min-width:0!important;padding:10px 11px!important;border-radius:10px!important;
+ border:1px solid color-mix(in srgb,var(--line,#344753) 75%,transparent)!important;
+ background:color-mix(in srgb,var(--accent,#8ce4c9) 3%,var(--surface,#182731))!important;
+}
+.inj-events-metric small{
+ color:var(--muted-strong,var(--muted,#a9bdc3))!important;
+ font:700 9px/1.2 var(--inj-node-terminal-font,ui-monospace,monospace)!important;letter-spacing:.04em!important;
+}
+.inj-events-metric strong{
+ color:var(--text,#f5f9fa)!important;
+ font:800 15px/1.25 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ font-variant-numeric:tabular-nums!important;overflow-wrap:anywhere!important;
+}
+.inj-events-metric.is-unavailable strong{opacity:.55}
+.inj-events-metric:last-child strong{color:var(--accent,#8ce4c9)!important}
+.inj-events-feature-open{align-self:flex-end!important;margin-left:auto!important;padding:6px 0!important;font-size:11px!important}
+.inj-events-list-heading{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;color:var(--text,#f5f9fa)!important;
+ font:750 12px/1.35 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ border-bottom:1px solid var(--line,#344753)!important;padding:0 3px 11px!important;margin:5px 0 0!important;
+}
+.inj-events-list-heading span:last-child{color:var(--muted-strong,var(--muted,#a9bdc3));font-size:10px}
+.inj-events-day{font-size:12px!important;padding:0 2px 10px!important;margin:18px 0 0!important}
+.inj-events-item{
+ display:grid!important;grid-template-columns:65px minmax(0,1fr) 12px!important;
+ align-items:start!important;gap:12px!important;
+ min-height:110px!important;padding:16px 7px 17px!important;background:transparent!important;
+}
+.inj-events-item-time{padding-top:2px!important}
+.inj-events-item-time strong{font-size:15px!important}
+.inj-events-item-time small{font-size:11px!important}
+.inj-events-item-main{gap:12px!important;width:100%!important;min-width:0!important}
+.inj-events-item-headline{display:flex!important;flex-direction:column!important;gap:7px!important;align-items:flex-start!important;min-width:0!important}
+.inj-events-item-headline>strong{
+ font:800 13px/1.4 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ color:var(--text,#f5f9fa)!important;overflow-wrap:anywhere!important;
+}
+.inj-events-item-status{display:inline-block!important;max-width:none!important;font-size:10px!important;text-align:left!important;white-space:normal!important}
+.inj-events-item-chevron{display:block!important;font-size:22px!important;line-height:1!important;padding-top:7px!important;color:var(--muted-strong,var(--muted,#a9bdc3))!important}
+.inj-events-row-metrics{gap:5px!important}
+.inj-events-row-metrics .inj-events-metric{padding:7px 6px!important;gap:5px!important;border-radius:7px!important}
+.inj-events-row-metrics .inj-events-metric small{font-size:8px!important;letter-spacing:0!important}
+.inj-events-row-metrics .inj-events-metric strong{font-size:12px!important}
+.inj-events-result-values>div{padding:12px 10px!important}
+.inj-events-result-values strong{font-size:clamp(15px,3.3vw,22px)!important}
+@media(max-width:700px){
+ .inj-events-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 42px!important;gap:8px!important}
+ .inj-events-toolbar .inj-events-field{grid-column:auto!important;grid-row:1!important}
+ .inj-events-toolbar .inj-events-alerts{grid-column:1/3!important;grid-row:2!important}
+ .inj-events-toolbar .inj-events-refresh{grid-column:3!important;grid-row:2!important}
+ .inj-events-overview{justify-content:space-between!important;gap:10px!important}
+ .inj-events-feature-main h3{font-size:18px!important}
+ .inj-events-item{grid-template-columns:54px minmax(0,1fr) 10px!important;gap:8px!important;padding:14px 3px 16px!important}
+ .inj-events-item-headline>strong{font-size:12.5px!important}
+ .inj-events-row-metrics .inj-events-metric strong{font-size:12px!important}
+ .inj-events-metric{padding:9px 7px!important}
+}
+@media(max-width:400px){
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars{right:17px!important;gap:4px!important}
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars>span{font-size:20px!important}
+ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>#entryMarketEventsButton.entry-action{padding-right:95px!important}
+}
+@media(max-width:365px){
+ .inj-events-period-heading span:last-child{display:none}
+ .inj-events-item{grid-template-columns:46px minmax(0,1fr) 10px!important;gap:6px!important}
+ .inj-events-row-metrics .inj-events-metric{padding:7px 4px!important}
+ .inj-events-row-metrics .inj-events-metric small{font-size:7px!important}
+ .inj-events-row-metrics .inj-events-metric strong{font-size:11px!important}
+ .inj-events-feature-main h3{font-size:16px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-stars>span{animation:none!important}
+}
