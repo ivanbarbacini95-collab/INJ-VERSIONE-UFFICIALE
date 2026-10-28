@@ -42,6 +42,9 @@
     ["Ricompense in tempo reale", "Live Rewards"],
     ["Apri Reward Ladder", "Open Reward Ladder"],
 
+    ['Privacy statistiche','Analytics privacy'], ['Gestisci consenso analisi','Manage analytics consent'], ['Gestisci consenso statistiche','Manage analytics consent'],
+    ['Privacy statistiche · Modifica consenso','Analytics privacy · Change consent'],
+    ['Cloud Sync','Cloud Sync'],
     ['Apri Mercato','Open Market'], ['Apri menu','Open menu'], ['Chiudi menu','Close menu'], ['Chiudi sezione e torna alla Home','Close section and return Home'], ['Lingua', 'Language'], ['Italiano', 'Italian'], ['Inglese', 'English'], ['Interfaccia', 'Interface'],
     ['PRIMO ACCESSO', 'FIRST ACCESS'], ['Collega il tuo wallet', 'Connect your wallet'],
     ['Incolla il tuo indirizzo pubblico Injective per iniziare. Non servono seed phrase, chiavi private o connessioni al wallet.', 'Paste your public Injective address to get started. No seed phrase, private keys or wallet connections are required.'],
