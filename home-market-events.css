@@ -497,7 +497,7 @@ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)
 /* 2026-10-28 · Seamless drag-to-inspect crypto tape.
  * JavaScript owns horizontal movement; CSS marquee must never race it. */
 html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only{
- overflow:hidden!important;
+ position:relative!important;overflow:hidden!important;
 }
 html[data-inj-page="index"] #entryGate .inj-market-ticker-quotes-only .inj-market-ticker-viewport{
  touch-action:pan-y!important;
