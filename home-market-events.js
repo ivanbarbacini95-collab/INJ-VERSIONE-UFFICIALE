@@ -96,6 +96,7 @@
    if(safeURL){const link=elt('a',null,state.source);link.href=safeURL;link.target='_blank';link.rel='noopener noreferrer';host.append(label,link);}
    else host.append(elt('span',null,tr('Fonte non disponibile','Source unavailable')));
  }
+ function localClock(d){return dateFmt(d,{hour:'2-digit',minute:'2-digit',hourCycle:'h23'})}
  function list(){
   const events=state.events.filter(e=>state.region==='ALL'||e.region===state.region).sort(byDate);
   const host=$('injEventsRows');host.replaceChildren();
@@ -103,6 +104,19 @@
   const upcoming=events.find(e=>Date.parse(e.date)>=now()-60000);
   $('injEventsNext').textContent=upcoming?countdown(Date.parse(upcoming.date)-now()):'—';
   $('injEventsDataStatus').textContent=state.source?tr('AGGIORNATO','UPDATED'):'OFFLINE';
+  const featured=$('injEventsFeatured');
+  featured.hidden=!upcoming;
+  if(upcoming){
+    const eventTime=dateFmt(upcoming.date,{weekday:'short',day:'numeric',month:'short'})+' · '+localClock(upcoming.date);
+    $('injEventsFeaturedTime').textContent=upcoming.country+'  /  '+eventTime;
+    $('injEventsFeaturedTitle').textContent=upcoming.title;
+    $('injEventsFeaturedCountdown').textContent=countdown(Date.parse(upcoming.date)-now());
+    const details=$('injEventsFeaturedDetails');details.replaceChildren();
+    if(validActual(upcoming.forecast))details.append(elt('span',null,tr('Atteso ','Forecast ')+upcoming.forecast));
+    if(validActual(upcoming.previous))details.append(elt('span',null,tr('Precedente ','Previous ')+upcoming.previous));
+    const view=elt('button','inj-events-feature-open',tr('VEDI DETTAGLI ↗','VIEW DETAILS ↗'));view.type='button';
+    view.addEventListener('click',()=>showResult(upcoming,false));details.append(view);
+  }
   if(!events.length){
     host.append(elt('p','inj-events-empty',state.source?tr('Nessun evento ★★★ per il periodo e la regione selezionati.','No ★★★ events in this range and region.'):tr('Calendario non disponibile. Riprova tra poco.','Calendar unavailable. Retry later.')));
     return;
@@ -111,20 +125,36 @@
   for(const e of events){
     const day=dateFmt(e.date,{weekday:'long',day:'2-digit',month:'long'});
     if(day!==lastDay){
-      const heading=elt('div','inj-events-day');heading.append(elt('span',null,day),elt('span',null,tr('ORA LOCALE','LOCAL TIME')));host.append(heading);lastDay=day;
+      const heading=elt('div','inj-events-day');
+      heading.append(elt('span',null,day),elt('span',null,tr('ORA LOCALE · 24H','LOCAL TIME · 24H')));
+      host.append(heading);lastDay=day;
     }
-    const button=elt('button','inj-events-item');button.type='button';
-    button.setAttribute('aria-label',e.title+' '+dateFmt(e.date,{hour:'2-digit',minute:'2-digit'}));
+    const future=Date.parse(e.date)>now(),released=validActual(e.actual);
+    const button=elt('button','inj-events-item');
+    button.type='button';
+    if(upcoming&&upcoming.id===e.id)button.classList.add('is-next');
+    if(released)button.classList.add('is-released');
+    button.setAttribute('aria-label',e.title+', '+localClock(e.date)+', '+e.country);
     const time=elt('div','inj-events-item-time');
-    time.append(elt('strong',null,dateFmt(e.date,{hour:'2-digit',minute:'2-digit'})),elt('small',null,e.country));
+    time.append(elt('strong',null,localClock(e.date)),elt('small',null,e.country));
     const main=elt('div','inj-events-item-main');
     main.append(elt('strong',null,e.title));
-    const detail=validActual(e.actual)?tr('Pubblicato: ','Actual: ')+e.actual:
-      e.forecast?tr('Atteso: ','Forecast: ')+e.forecast+' · '+countdown(Date.parse(e.date)-now()):
-      Date.parse(e.date)>now()?countdown(Date.parse(e.date)-now()):tr('Dato in attesa','Pending release');
-    main.append(elt('small',null,detail));
-    const stars=elt('span','inj-events-impact','★★★');
-    button.append(time,main,stars);
+    const meta=elt('span','inj-events-item-meta');
+    if(released){
+      meta.textContent=tr('EFFETTIVO','ACTUAL')+'  '+e.actual+(validActual(e.forecast)?'   ·   '+tr('ATTESO','FORECAST')+'  '+e.forecast:'');
+    }else if(validActual(e.forecast)){
+      meta.textContent=tr('ATTESO','FORECAST')+'  '+e.forecast;
+    }else if(future){
+      meta.textContent=tr('DATO NON ANCORA PUBBLICATO','AWAITING RELEASE');
+    }else{
+      meta.textContent=tr('IN ATTESA DEL DATO','AWAITING ACTUAL');
+    }
+    main.append(meta);
+    const status=elt('span','inj-events-item-status');
+    if(released){status.classList.add('released');status.textContent=tr('PUBBLICATO','RELEASED')}
+    else if(future){status.classList.add('upcoming');status.textContent=countdown(Date.parse(e.date)-now())}
+    else{status.classList.add('pending');status.textContent=tr('IN ATTESA','PENDING')}
+    button.append(time,main,status);
     button.addEventListener('click',()=>showResult(e,false));
     host.append(button);
   }
@@ -230,11 +260,10 @@
   const upcoming=state.events.find(e=>Date.parse(e.date)>now()-60000);
   const node=$('injMarketNextSummary');
   if(upcoming){
-    const summary=upcoming.country+' · '+upcoming.title+' · '+dateFmt(upcoming.date,{weekday:'short',hour:'2-digit',minute:'2-digit'});
-    node.textContent=summary;
+    node.textContent='★★★  '+upcoming.country+' · '+dateFmt(upcoming.date,{weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})+' · '+upcoming.title;
   }else node.textContent=state.source?
-    tr('Nessun evento ★★★ imminente · apri il calendario','No upcoming ★★★ event · open calendar'):
-    tr('Calendario macroeconomico ★★★','High-impact ★★★ calendar');
+    tr('Calendario ★★★ · nessun evento imminente','★★★ calendar · no upcoming events'):
+    tr('Calendario macro ★★★ · USA / Europa / Asia','★★★ macro calendar · US / Europe / Asia');
  }
  async function loadCalendar(force=false){
   if(state.processing){if(force)state.reloadQueued=true;return state.inFlight}
@@ -284,6 +313,7 @@
   }
   const labels=[['injEventsDays','PERIODO','PERIOD'],['injEventsRegion','REGIONE','REGION'],['injEventsReminder','AVVISO','REMINDER']];
   for(const [id,it,en] of labels){const lbl=document.querySelector('label[for="'+id+'"]');if(lbl)lbl.textContent=tr(it,en)}
+  for(const el of document.querySelectorAll('#injMarketEventsOverlay [data-it][data-en]'))el.textContent=tr(el.dataset.it,el.dataset.en);
   const footer=$('injEventsSource');if(!state.source&&footer)footer.textContent=tr('Fonte in verifica','Checking data source');
   updateAlertButton();renderNext();
  }
@@ -302,7 +332,7 @@
  if(hash){try{openFromNotification(decodeURIComponent(hash[1]));history.replaceState(null,'',location.pathname+location.search)}catch{}}
 
  $('entryMarketEventsButton').addEventListener('click',openPanel);
- $('injMarketTickerEvents').addEventListener('click',openPanel);
+ $('injMarketTickerEvents')?.addEventListener('click',openPanel);
  $('injEventsClose').addEventListener('click',closePanel);
  $('injEventsResultClose').addEventListener('click',hideResult);
  $('injEventsResultDone').addEventListener('click',hideResult);
