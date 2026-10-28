@@ -5,10 +5,12 @@
 <title>Admin Insights · INJ Node</title>
 <link rel="stylesheet" href="./leaflet-1.9.4.css?v=20261027mapfix1">
 <link rel="stylesheet" href="./admin-insights.css?v=20261027mapfix1">
+<link rel="stylesheet" href="./admin-insights-pro.css?v=20261027pro3">
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 <script defer src="./inj-node-insights-config.js?v=cloudflare1"></script>
 <script defer src="./admin-insights-auth.js?v=20261027cf1"></script>
 <script defer src="./admin-insights-dashboard.js?v=20261027mapfix1"></script>
+<script defer src="./admin-insights-pro.js?v=20261027pro3"></script>
 </head><body>
 <header class="admin-topnav">
 <a href="./index.html" class="admin-home" id="adminGoHome" aria-label="Torna alla Home INJ Node">← HOME</a>
@@ -52,6 +54,88 @@
     </section>
 
     <div class="admin-connect-hint" id="adminDataNotice" hidden>Le statistiche sono protette. Il database e il collegamento con Insights devono essere attivi per visualizzare dati reali.</div>
+
+    <section id="insightsPro" class="insights-pro" hidden aria-label="INJ Node Insights Pro">
+      <div class="pro-head">
+        <div><p class="pro-eyebrow">B CAPITAL GROUP / INTELLIGENCE PLATFORM · 2.0</p><h2>INSIGHTS <em>PRO</em></h2><p>Analisi avanzate e aggregate delle sessioni che hanno prestato consenso.</p></div>
+        <div class="pro-live"><span class="pro-signal"></span><span id="proUpdated">CARICAMENTO DATI</span></div>
+      </div>
+      <div class="pro-controls">
+        <label>PERIODO<select id="proDays"><option value="1">24 ORE</option><option value="7">7 GIORNI</option><option value="30" selected>30 GIORNI</option><option value="90">90 GIORNI</option><option value="0">TUTTO LO STORICO</option></select></label>
+        <label>PAESE<select id="proCountry"><option value="">TUTTI I PAESI</option></select></label>
+        <label>SEZIONE<select id="proSection"><option value="">TUTTE LE SEZIONI</option></select></label>
+        <button type="button" id="proReset">AZZERA FILTRI</button>
+        <button type="button" id="proRefresh" title="Aggiorna dati">↻ AGGIORNA</button>
+        <button type="button" id="proCsv">ESPORTA CSV</button>
+        <button type="button" id="proPrint">STAMPA / PDF</button>
+      </div>
+      <div class="pro-footnote" id="proScope">Dati aggregati con consenso; nessun identificatore personale o geolocalizzazione GPS.</div>
+      <nav class="pro-tabs" aria-label="Sezioni Insights" id="proTabs">
+        <button type="button" data-pro-tab="overview" class="active">OVERVIEW</button>
+        <button type="button" data-pro-tab="live">LIVE MONITOR</button>
+        <button type="button" data-pro-tab="audience">AUDIENCE</button>
+        <button type="button" data-pro-tab="behaviour">BEHAVIOUR</button>
+        <button type="button" data-pro-tab="system">SYSTEM HEALTH</button>
+        <button type="button" data-pro-tab="reports">REPORTS</button>
+      </nav>
+      <div class="pro-kpis">
+        <article><span>SESSIONI NEL PERIODO</span><strong id="proSessions">—</strong><small>Sessioni consenzienti filtrate</small></article>
+        <article><span>ATTIVI ORA</span><strong id="proOnline">—</strong><small>Ultimi 90 secondi</small></article>
+        <article><span>TEMPO MEDIO ATTIVO</span><strong id="proDuration">—</strong><small>Stima per sessione</small></article>
+        <article><span>SEZIONI RILEVATE</span><strong id="proSectionCount">—</strong><small>Sezioni con interazioni</small></article>
+        <article><span>INTERAZIONI</span><strong id="proInteractions">—</strong><small>Eventi di navigazione</small></article>
+        <article><span>VS PERIODO PRECEDENTE</span><strong id="proGrowth">—</strong><small>Variazione delle sessioni</small></article>
+      </div>
+      <div data-pro-page="overview" class="pro-page">
+        <div class="pro-grid">
+          <article class="pro-panel pro-span-2">
+            <header><div><span class="pro-kicker">01 / ACTIVITY</span><h3>TREND DELLE SESSIONI</h3></div><span id="proTrendType">GIORNALIERO</span></header>
+            <div class="pro-chart"><svg id="proTrend" viewBox="0 0 900 260" role="img" aria-label="Trend interattivo delle sessioni"></svg><div id="proTrendTooltip" class="pro-tooltip" aria-live="polite">Seleziona un punto del grafico per visualizzare il dettaglio.</div></div>
+          </article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">02 / EXECUTIVE INTELLIGENCE</span><h3>QUADRO GENERALE</h3></div></header><div id="proExecutive" class="pro-content"></div></article>
+        </div>
+        <div class="pro-grid pro-map-grid">
+          <article class="pro-panel pro-span-2"><header><div><span class="pro-kicker">03 / GEOGRAPHY</span><h3>GLOBAL ACTIVITY MAP</h3><p>Località approssimative; seleziona un punto per filtrare</p></div><button id="proMapReset" type="button" class="pro-tiny">VISTA GLOBALE</button></header><div id="proMap" class="pro-map" role="region" aria-label="Mappa interattiva degli accessi aggregati"></div><div class="pro-legend">Punti approssimativi, derivati dal paese/città indicati dalla rete. Non rappresentano posizioni GPS.</div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">04 / TOP REGIONS</span><h3>ZONE PIÙ ATTIVE</h3></div></header><div id="proAreas" class="pro-content pro-list"></div></article>
+        </div>
+      </div>
+      <div data-pro-page="live" class="pro-page" hidden>
+        <div class="pro-grid">
+          <article class="pro-panel pro-span-2"><header><div><span class="pro-kicker">05 / REAL-TIME</span><h3>ATTIVITÀ ADESSO</h3><p>Gruppi aggregati per area e dispositivo, senza identificare i visitatori</p></div><span class="pro-ongoing">● REFRESH 10S</span></header><div id="proLive" class="pro-content"></div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">06 / ONLINE DISTRIBUTION</span><h3>SESSIONI ATTIVE</h3></div></header><div id="proLiveDevices" class="pro-content"></div></article>
+        </div>
+      </div>
+      <div data-pro-page="audience" class="pro-page" hidden>
+        <div class="pro-grid">
+          <article class="pro-panel"><header><div><span class="pro-kicker">07 / AUDIENCE</span><h3>DEVICE CLASSES</h3></div></header><div id="proDevices" class="pro-content"></div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">08 / PLATFORMS</span><h3>SISTEMI OPERATIVI</h3></div></header><div id="proSystems" class="pro-content"></div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">09 / SOFTWARE</span><h3>BROWSER</h3></div></header><div id="proBrowsers" class="pro-content"></div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">10 / WALLET INTEREST</span><h3>WALLET OSSERVATI</h3></div></header><div id="proWallets" class="pro-content"></div></article>
+        </div>
+      </div>
+      <div data-pro-page="behaviour" class="pro-page" hidden>
+        <div class="pro-grid">
+          <article class="pro-panel pro-span-2"><header><div><span class="pro-kicker">11 / USER JOURNEY</span><h3>PERCORSI TRA SEZIONI</h3><p>Transizioni aggregate, calcolate senza identificare le persone</p></div></header><div id="proJourney" class="pro-content pro-journey"></div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">12 / HOURLY ENGAGEMENT</span><h3>GIORNI × ORARI (UTC)</h3></div></header><div id="proHeatmap" class="pro-content pro-heatmap"></div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">13 / FEATURE USAGE</span><h3>FUNZIONALITÀ UTILIZZATE</h3></div></header><div id="proFeatures" class="pro-content"></div></article>
+          <article class="pro-panel pro-span-2"><header><div><span class="pro-kicker">14 / INTEREST DEPTH</span><h3>SEZIONI E TEMPO ATTIVO</h3></div></header><div id="proSections" class="pro-content"></div></article>
+        </div>
+      </div>
+      <div data-pro-page="system" class="pro-page" hidden>
+        <div class="pro-grid">
+          <article class="pro-panel"><header><div><span class="pro-kicker">15 / API CONNECTIVITY</span><h3>BACKEND STATUS</h3></div></header><div id="proHealthStatus" class="pro-content"></div></article>
+          <article class="pro-panel"><header><div><span class="pro-kicker">16 / CLIENT DIAGNOSTICS</span><h3>CARICAMENTI ED ERRORI</h3></div></header><div id="proHealth" class="pro-content"></div><div id="proHealthBreakdown" class="pro-content"></div></article>
+          <article class="pro-panel pro-span-2"><header><div><span class="pro-kicker">17 / DATA QUALITY</span><h3>COPERTURA DELLE MISURAZIONI</h3></div></header><div class="pro-content"><p>I dati storici conservano la precedente struttura. Sistemi operativi, browser, funzionalità e diagnostica vengono conteggiati solo dai dispositivi che hanno accettato la telemetria aggiornata.</p><p>Gli errori sono conteggi per categoria, senza messaggi, stack, URL o identificatori personali. Lo stato attuale dell’API non costituisce una misura certificata dell’uptime.</p></div></article>
+        </div>
+      </div>
+      <div data-pro-page="reports" class="pro-page" hidden>
+        <div class="pro-grid">
+          <article class="pro-panel pro-span-3"><header><div><span class="pro-kicker">18 / MANAGEMENT REPORT</span><h3>REPORT ESECUTIVO AUTOMATICO</h3><p>Generato dai dati effettivamente disponibili per il periodo e i filtri selezionati</p></div></header><div id="proReport" class="pro-content pro-report"></div><div class="pro-report-actions"><button type="button" id="proReportCsv">SCARICA CSV</button><button type="button" id="proReportPrint">STAMPA / SALVA PDF</button></div></article>
+        </div>
+      </div>
+      <p class="pro-disclaimer">INSIGHTS PRO · Solo sessioni con consenso · Geografia approssimativa · Nessun ID di sessione, IP, GPS o chiave privata nei report</p>
+    </section>
+
     <section class="kpis" aria-label="Indicatori principali">
       <article class="metric live"><span>ONLINE ADESSO <b>● LIVE</b></span><strong id="kLive">—</strong><small>Sessioni attive · ultimi 90 secondi</small><div class="metric-underline"></div></article>
       <article class="metric"><span>ACCESSI OGGI</span><strong id="kToday">—</strong><small>Nuove sessioni consenzienti</small><div class="metric-underline"></div></article>
