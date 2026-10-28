@@ -58,7 +58,7 @@
  const tickerViewport=$('injMarketTicker').querySelector('.inj-market-ticker-viewport');
  const tickerTrack=$('injMarketTickerTrack');
  const tickerMotion={
-  offset:0,lap:0,lastTime:0,dragging:false,pointerId:null,lastX:0,
+  offset:0,lap:0,lastTime:0,dragging:false,pointerId:null,lastX:0,visible:true,pending:null,
   speed:30,group:null,observer:null,hadData:false
  };
  let lastTickerPayload=null;
@@ -81,7 +81,7 @@
   const elapsed=tickerMotion.lastTime?Math.min(50,Math.max(0,t-tickerMotion.lastTime)):0;
   tickerMotion.lastTime=t;
   if(!tickerMotion.lap&&tickerMotion.hadData)measureTicker();
-  if(tickerMotion.lap&&!document.hidden&&!tickerMotion.dragging&&!reducedTickerMotion){
+  if(tickerMotion.lap&&!document.hidden&&tickerMotion.visible&&!tickerMotion.dragging&&!reducedTickerMotion){
    tickerMotion.offset=modulo(tickerMotion.offset+tickerMotion.speed*elapsed/1000,tickerMotion.lap);
    paintTicker();
   }
@@ -91,6 +91,7 @@
   if(!tickerMotion.dragging||(e&&e.pointerId!==tickerMotion.pointerId))return;
   const id=tickerMotion.pointerId;
   tickerMotion.dragging=false;tickerMotion.pointerId=null;tickerMotion.lastTime=0;
+  if(tickerMotion.pending){const queued=tickerMotion.pending;tickerMotion.pending=null;renderTicker(queued)}
   if(id!==null&&tickerViewport.hasPointerCapture?.(id)){
    try{tickerViewport.releasePointerCapture(id)}catch(_){}
   }
@@ -124,6 +125,12 @@
  if('ResizeObserver' in window){
   tickerMotion.observer=new ResizeObserver(()=>{measureTicker();paintTicker()});
   tickerMotion.observer.observe(tickerViewport);
+ }
+ if('IntersectionObserver' in window){
+  new IntersectionObserver(records=>{
+   tickerMotion.visible=!!records[0]?.isIntersecting;
+   tickerMotion.lastTime=0;
+  },{threshold:0}).observe(tickerViewport);
  }
  requestAnimationFrame(tickerFrame);
  function usdCompact(x){
@@ -183,6 +190,7 @@
   }
  }
  function renderTicker(data){
+  if(tickerMotion.dragging){tickerMotion.pending=data;return}
   const entries=tickerItems(data);
   if(!entries.some(x=>x.kind==='coin')){
    if(!tickerMotion.hadData)tickerTrack.replaceChildren(elt('span','inj-market-ticker-loading',tr('Dati crypto non disponibili','Crypto quotes unavailable')));
