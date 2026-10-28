@@ -48,10 +48,14 @@ function showConsent(){
 function settings(){
  const panel=document.getElementById('headerMenuPanel');
  if(!panel||document.getElementById('injInsightsSettingsButton'))return;
+ const group=panel.querySelector('#menuPreferencesAccordion .menu-settings-grid')||panel;
  const btn=document.createElement('button');btn.id='injInsightsSettingsButton';btn.type='button';
- btn.textContent='Privacy statistiche · Modifica consenso';
- Object.assign(btn.style,{width:'100%',textAlign:'left',display:'block',padding:'12px 14px',margin:'12px 0',border:'1px solid #3a6263',borderRadius:'9px',background:'#15262c',color:'#dceae7',font:'12px ui-monospace,monospace',cursor:'pointer'});
- btn.addEventListener('click',showConsent);panel.append(btn)
+ btn.className='menu-action menu-setting menu-privacy-consent';
+ btn.setAttribute('aria-label','Gestisci consenso statistiche');
+ btn.innerHTML='<span aria-hidden="true" class="menu-action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"/><path d="M12 10v6M12 7h.01"/></svg></span><span class="menu-action-copy"><strong>Privacy statistiche</strong><small>Gestisci consenso analisi</small></span><svg aria-hidden="true" class="menu-action-chevron menu-action-forward" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg>';
+ btn.addEventListener('click',showConsent);
+ group.append(btn);
+ window.INJ_I18N?.translate?.(btn);
 }
 window.INJNodeInsights={openSettings:showConsent,consent:()=>consent};
 function init(){
