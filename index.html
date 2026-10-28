@@ -345,6 +345,8 @@
 <link rel="stylesheet" href="./inj-top-seamless.css?v=20261028seam1"/>
 <script defer src="./inj-top-seamless.js?v=20261028ios27"></script>
 <link rel="stylesheet" href="./home-compact-value-bars.css?v=20261028compactbars1"/>
+<link rel="stylesheet" href="./home-market-events.css?v=20261028event1"/>
+<script defer src="./home-market-events.js?v=20261028event1"></script>
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
@@ -615,6 +617,13 @@
   <h1><strong>INJ</strong><span>Node</span></h1>
   <p>Il tuo spazio Injective</p>
 </div>
+<div id="injMarketTicker" class="inj-market-ticker" aria-label="Mercato crypto live">
+  <div class="inj-market-ticker-label"><i aria-hidden="true"></i><span>MARKET</span></div>
+  <div class="inj-market-ticker-viewport" aria-live="off">
+    <div id="injMarketTickerTrack" class="inj-market-ticker-track"><span class="inj-market-ticker-loading">Caricamento dati crypto…</span></div>
+  </div>
+  <button id="injMarketTickerEvents" type="button" aria-label="Apri calendario degli eventi di mercato">★★★ <span aria-hidden="true">›</span></button>
+</div>
 <div class="entry-wallet-heading">
 <span>ACCOUNT SELEZIONATO</span>
 <small id="entryWalletHint">Seleziona un wallet</small>
@@ -763,6 +772,11 @@
 <span><strong class="inj-home-tile-title" data-it="Reward Ladder" data-en="Reward Ladder">Reward Ladder</strong><small class="inj-tile-description" data-it="Obiettivi dei reward" data-en="Reward milestones">Obiettivi dei reward</small></span>
 <svg aria-hidden="true" class="entry-action-arrow" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
 </a>
+<button class="entry-action entry-action-market-events" id="entryMarketEventsButton" type="button" aria-haspopup="dialog" aria-controls="injMarketEventsOverlay">
+  <span class="inj-events-tile-symbol" aria-hidden="true">★★★</span>
+  <span class="inj-events-tile-copy"><strong class="inj-home-tile-title" data-it="Market Events" data-en="Market Events">Market Events</strong><small id="injMarketNextSummary" class="inj-events-next-text" data-it="Calendario macroeconomico ad alto impatto" data-en="High-impact macroeconomic calendar">Calendario macroeconomico ad alto impatto</small></span>
+  <span class="inj-events-tile-right" aria-hidden="true"><span>USA · EU · ASIA</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m9 6 6 6-6 6"/></svg></span>
+</button>
 <a class="entry-action entry-action-injc" id="entryInjcEtfButton" href="./injc-etf.html?v=20261026" aria-label="Apri INJC ETF Terminal">
 <span aria-hidden="true" class="entry-action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h3m-3 5 2.5-2.5 2 1.6 3.5-4.1"/><circle cx="17" cy="17" r="1"/></svg></span>
 <span><strong class="inj-home-tile-title" data-it="INJC ETF" data-en="INJC ETF">INJC ETF</strong><small class="inj-tile-description" data-it="Monitoraggio ETF INJC" data-en="INJC ETF tracker">Monitoraggio ETF INJC</small></span>
@@ -1379,6 +1393,49 @@
 
 
 <!-- Market stays inside the main app; closing reveals the already-mounted Home. -->
+
+<section class="inj-events-overlay" id="injMarketEventsOverlay" role="dialog" aria-modal="true" aria-labelledby="injEventsTitle" hidden>
+  <div class="inj-events-shell">
+    <header class="inj-events-header">
+      <div><small>INJ NODE / GLOBAL INTELLIGENCE</small><h2 id="injEventsTitle">MARKET EVENTS</h2><p id="injEventsSubtitle">Calendario macroeconomico · solo impatto ★★★</p></div>
+      <button type="button" id="injEventsClose" class="inj-events-close" aria-label="Chiudi Market Events">×</button>
+    </header>
+    <div class="inj-events-toolbar">
+      <div class="inj-events-field">
+        <label for="injEventsDays">PERIODO / RANGE</label>
+        <select id="injEventsDays"><option value="1">24H</option><option value="3">3 GIORNI</option><option value="7" selected>7 GIORNI</option><option value="14">2 SETTIMANE</option><option value="30">30 GIORNI</option></select>
+      </div>
+      <div class="inj-events-field">
+        <label for="injEventsRegion">REGIONE / REGION</label>
+        <select id="injEventsRegion"><option value="ALL">TUTTE / ALL</option><option value="US">USA</option><option value="EU">EUROPA</option><option value="ASIA">ASIA</option></select>
+      </div>
+      <div class="inj-events-field">
+        <label for="injEventsReminder">AVVISO / REMINDER</label>
+        <select id="injEventsReminder"><option value="5">5 MIN</option><option value="10" selected>10 MIN</option><option value="15">15 MIN</option><option value="30">30 MIN</option></select>
+      </div>
+      <button id="injEventsAlerts" type="button" class="inj-events-alerts" aria-pressed="false">ATTIVA AVVISI</button>
+      <button id="injEventsRefresh" type="button" class="inj-events-refresh" aria-label="Aggiorna eventi">↻</button>
+    </div>
+    <div class="inj-events-overview">
+      <div><small>★★★ EVENTI</small><strong id="injEventsCount">—</strong></div>
+      <div><small>PROSSIMO EVENTO</small><strong id="injEventsNext">—</strong></div>
+      <div><small>STATO</small><strong id="injEventsDataStatus">IN ATTESA</strong></div>
+    </div>
+    <p class="inj-events-note" id="injEventsWarning" aria-live="polite">Gli orari sono mostrati nel tuo fuso locale; i dati effettivi compaiono solo dopo la pubblicazione.</p>
+    <div class="inj-events-body" id="injEventsRows" aria-live="polite"><p class="inj-events-empty">Caricamento del calendario macroeconomico…</p></div>
+    <footer class="inj-events-footer"><span id="injEventsSource">Fonte in verifica</span><span>★★★ HIGH IMPACT ONLY</span></footer>
+  </div>
+  <div id="injEventsResultBackdrop" class="inj-events-result-backdrop" hidden>
+    <article class="inj-events-result" role="dialog" aria-modal="true" aria-labelledby="injEventsResultTitle">
+      <div class="inj-events-result-head"><span>★★★ · DATA RELEASE</span><button type="button" id="injEventsResultClose" aria-label="Chiudi risultato">×</button></div>
+      <h3 id="injEventsResultTitle">Evento macroeconomico</h3><p id="injEventsResultTime">—</p>
+      <div class="inj-events-result-values"><div><small>PRECEDENTE</small><strong id="injEventsResultPrevious">—</strong></div><div><small>ATTESO</small><strong id="injEventsResultForecast">—</strong></div><div><small>EFFETTIVO</small><strong id="injEventsResultActual">—</strong></div></div>
+      <p id="injEventsResultReading"></p>
+      <button type="button" id="injEventsResultDone" class="inj-events-result-done">CHIUDI / CLOSE</button>
+    </article>
+  </div>
+</section>
+
 <div id="injMarketPortal" class="inj-market-portal" hidden aria-label="Mercato" role="dialog" aria-modal="true">
   <iframe id="injMarketFrame" title="Mercato" loading="eager" referrerpolicy="same-origin"></iframe>
 </div>
