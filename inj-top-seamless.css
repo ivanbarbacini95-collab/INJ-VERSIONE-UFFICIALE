@@ -1,19 +1,6 @@
-/* The native iOS status region is flat, while themes use gradients.
-   Use the theme's nearest matching upper-edge tint, NOT a generic dark band.
-   These tokens affect only native chrome metadata; no dark overlay is drawn. */
-html[data-theme="navy"]{--inj-status-tone:#14302d}
-html[data-theme="black"]{--inj-status-tone:#080809}
-html[data-theme="light"]{--inj-status-tone:#eaf5fc}
-html[data-theme="amber"]{--inj-status-tone:#192638}
-html[data-theme="ocean"]{--inj-status-tone:#1a3047}
-html[data-theme="chromatic"]{--inj-status-tone:#343052}
-html[data-theme="velvet"]{--inj-status-tone:#332951}
-html[data-theme="aqua"]{--inj-status-tone:#cce7ed}
-html[data-theme="ocean-x-electric"]{--inj-status-tone:#174b77}
-html[data-theme="ocean-x-ion"]{--inj-status-tone:#472d6a}
-html[data-theme="ocean-x-toxic"]{--inj-status-tone:#155947}
-html[data-theme="ocean-x-solar"]{--inj-status-tone:#713745}
-
+/* INJ VERSIONE UFFICIALE · Native iOS 27 top-area compatibility.
+   Do not force a separately colored status region. WebKit renders native
+   status chrome automatically in newly installed standalone PWAs. */
 /* INJ VERSIONE UFFICIALE · Seamless top canvas v1 (2026-10-28)
    Fix only the visual seam between iOS native chrome and app backgrounds.
    NO scroll, positioning, chart, input, touch or safe-area dimension changes. */
