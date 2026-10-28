@@ -68,12 +68,12 @@
   }
   function syncTheme() {
     const css = getComputedStyle(root);
-    // iOS installed PWAs can paint their native status region from theme-color.
-    // The Home's bright ambient background begins beneath it: use the same
-    // deliberate transition tone, not the previous near-black canvas.
-    const isHomePage = root.dataset.injPage === 'index';
-    const statusTone = isHomePage ? css.getPropertyValue('--inj-status-tone').trim() : '';
-    const color = statusTone || (css.getPropertyValue('--canvas') || css.getPropertyValue('--theme-canvas') || css.getPropertyValue('--bg')).trim();
+    // iOS 27 Home Screen apps select native status-bar appearance at install.
+    // Do not force a separate, outdated solid colour for the Home.
+    // Other platforms can still use the palette's page canvas metadata.
+    const color = css.getPropertyValue('--theme-canvas').trim() ||
+      css.getPropertyValue('--bg').trim() ||
+      css.getPropertyValue('--canvas').trim();
     if (color) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
   }
 
