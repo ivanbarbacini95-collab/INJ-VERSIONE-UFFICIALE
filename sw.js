@@ -1,7 +1,8 @@
-const CACHE_NAME = 'inj-node-v16.10.28-ios27-native-status-fix';
+const CACHE_NAME = 'inj-node-v16.10.28-bcapital-treasury-card1';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
   './home-premium-titles.css?v=20261027p1',
+  './home-treasury-brand-layout.css?v=20261028bcg1',
   './inj-top-seamless.css?v=20261028seam1',
   './inj-top-seamless.js?v=20261028ios27',
   './home-statusbar-continuity.css?v=20261028seam1',
