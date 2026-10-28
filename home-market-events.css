@@ -369,7 +369,7 @@ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events
  39%,50%{opacity:1;transform:translateY(-2px) scale(1.13);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--accent,#b9a1e5) 72%,transparent))}
  64%{opacity:.82;transform:translateY(0) scale(1)}
 }
-html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-copy{max-width:calc(100% - 78px)!important}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-copy{max-width:100%!important}
 html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-copy small{white-space:nowrap!important;text-overflow:ellipsis!important}
 html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>#entryMarketEventsButton.entry-action{padding-right:114px!important}
 
