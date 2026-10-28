@@ -1,8 +1,12 @@
-const CACHE_NAME = 'inj-node-v16.10.27-native-statusbar3';
+const CACHE_NAME = 'inj-node-v16.10.28-official-menu-pro1';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
   './home-premium-titles.css?v=20261027p1',
   './home-statusbar-continuity.css?v=20261027native3',
+  './menu-control-pro.css?v=20261028pro1',
+  './menu-control-pro.js?v=20261028pro1',
+  './inj-node-telemetry.js?v=20261028menupro1',
+  './i18n.js?v=20261028menupro1',
   './home-terminal-header-20261027.js?v=h2',
   './workspace-sections.js?v=20261027-live2',
   './navigation.js?v=20261027-sync1',
