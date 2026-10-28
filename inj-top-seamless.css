@@ -1,0 +1,91 @@
+/* INJ VERSIONE UFFICIALE · Seamless top canvas v1 (2026-10-28)
+   Fix only the visual seam between iOS native chrome and app backgrounds.
+   NO scroll, positioning, chart, input, touch or safe-area dimension changes. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  /* Shared theme pages: paint the real palette from the first pixel,
+     instead of a separate dark/opaque header slab. */
+  html[data-theme]:is(
+    [data-inj-page="index"],[data-inj-page="treasury"],[data-inj-page="live-rewards"],
+    [data-inj-page="live-charts"],[data-inj-page="order-book"],
+    [data-inj-page="command-center"],[data-inj-page="comparison"],
+    [data-inj-page="visualize-wealth"]), 
+  html[data-inj-market][data-theme] {
+    background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+    background-image:var(--page-gradient,none)!important;
+    background-position:center top!important;
+    background-repeat:no-repeat!important;
+    background-attachment:scroll!important;
+  }
+  html[data-theme]:is(
+    [data-inj-page="index"],[data-inj-page="treasury"],[data-inj-page="live-rewards"],
+    [data-inj-page="live-charts"],[data-inj-page="order-book"],
+    [data-inj-page="command-center"],[data-inj-page="comparison"],
+    [data-inj-page="visualize-wealth"]) body,
+  html[data-inj-market][data-theme] body {
+    background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+    background-image:var(--page-gradient,none)!important;
+    background-position:center top!important;
+    background-repeat:no-repeat!important;
+    background-attachment:scroll!important;
+  }
+  /* Navigation chrome is transparent, not a second painted layer.
+     Do not modify headers' padding, min-height, alignment or sticky rules. */
+  html[data-theme] body :is(
+    .app-shell > .topbar,.treasury-header,.rewards-header,
+    .terminal-header,.book-topbar,.cc-topbar,
+    .cap-header,.wealth-header,.shell > .header,
+    .performance-timeline-header,.converter-view-header,
+    .workspace-topbar,.ws-topbar,.rl-topbar,.etf-top
+  ) {
+    background-color:transparent!important;
+    background-image:none!important;
+    box-shadow:none!important;
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  /* Old pseudo overlays were painting a darker 50-120 px band on some
+     independently navigable screens. Keep real header children intact. */
+  html[data-theme] body :is(
+    .app-shell > .topbar,.treasury-header,.rewards-header,
+    .terminal-header,.book-topbar,.cc-topbar,
+    .cap-header,.wealth-header,.shell > .header,
+    .performance-timeline-header,.converter-view-header
+  )::before,
+  html[data-theme] body :is(
+    .app-shell > .topbar,.treasury-header,.rewards-header,
+    .terminal-header,.book-topbar,.cc-topbar,
+    .cap-header,.wealth-header,.shell > .header,
+    .performance-timeline-header,.converter-view-header
+  )::after {
+    content:none!important;
+    display:none!important;
+  }
+  /* Home overlays and embedded market view share the same canvas;
+     no extra gradient stopping at the status bar / header boundary. */
+  html[data-inj-page="index"] body #entryGate.entry-gate {
+    background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+    background-image:var(--page-gradient,none)!important;
+    background-position:center top!important;
+    background-repeat:no-repeat!important;
+    background-attachment:scroll!important;
+  }
+  html[data-inj-page="index"] body #injMarketPortal {
+    background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+  }
+  /* Standalone pages with their own bespoke themes should not acquire
+     a generic navy gradient or an opaque safe-area overlay. */
+  html[data-inj-page="workspace"],
+  html[data-inj-page="reward-ladder"],
+  html[data-inj-page="injc-etf"] {
+    background-color:var(--theme-canvas,var(--bg,var(--ws-bg,var(--rl-bg,var(--etf-bg,#07121b)))))!important;
+  }
+  html[data-inj-page="workspace"] body,
+  html[data-inj-page="reward-ladder"] body,
+  html[data-inj-page="injc-etf"] body {
+    background-attachment:scroll!important;
+  }
+  html[data-inj-page="admin-insights"] .admin-topnav {
+    background:transparent!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  }
+}
