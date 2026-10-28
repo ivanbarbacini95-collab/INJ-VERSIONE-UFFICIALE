@@ -26,20 +26,20 @@ html[data-inj-page="index"] body #entryGate
   /* Eight pixels of extra breathing room avoid overlapping the title and existing artwork. */
   html[data-inj-page="index"] body #entryGate
   .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
-  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton) {
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryMarketEventsButton) {
     height:116px!important;min-height:116px!important;
     padding-bottom:11px!important;
   }
   html[data-inj-page="index"] body #entryGate
   .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
-  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton)
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryMarketEventsButton)
   > span:not(.entry-action-icon):not(.inj-tile-scene) {
     align-items:center!important;
     gap:3px!important;
   }
   html[data-inj-page="index"] body #entryGate
   .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
-  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton) .inj-tile-description {
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryMarketEventsButton) .inj-tile-description {
     font-size:10.5px!important;
     line-height:1.2!important;
     text-align:center!important;
