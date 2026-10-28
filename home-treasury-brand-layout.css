@@ -1,0 +1,181 @@
+/* INJ VERSIONE UFFICIALE · Home / B Capital Group Treasury final tile
+   The only purpose of this file is to keep the full brand on the left and
+   the Treasury destination/details on the right, at every iPhone width.
+   Overrides older compact-launcher flex/line-clamp rules without touching
+   other Home tiles or the underlying Treasury destination. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury {
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  box-sizing:border-box!important;
+  grid-column:1 / -1!important;
+  grid-row:auto!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:82px!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:14px clamp(12px,3.5vw,22px)!important;
+  gap:7px!important;
+  text-decoration:none!important;
+  overflow:hidden!important;
+  text-align:left!important;
+}
+/* Old launcher illustrations/left icon reserve almost 100px and truncate the title.
+   The full-width destination instead uses a quiet right-hand arrow. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > :is(.entry-action-icon,.inj-tile-scene){
+  display:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) max-content!important;
+  grid-template-rows:auto!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  column-gap:clamp(5px,1.5vw,17px)!important;
+  flex:1 1 auto!important;
+  order:0!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  position:relative!important;
+  z-index:2!important;
+  overflow:visible!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury
+> .treasury-entry-copy > strong.inj-home-tile-title {
+  display:block!important;
+  grid-column:1!important;
+  grid-row:1!important;
+  justify-self:start!important;
+  align-self:center!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  -webkit-line-clamp:unset!important;
+  line-clamp:unset!important;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+  hyphens:none!important;
+  text-wrap:nowrap!important;
+  font-family:var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  font-size:clamp(11.4px,3.15vw,16px)!important;
+  font-weight:760!important;
+  line-height:1.22!important;
+  letter-spacing:.006em!important;
+  text-transform:uppercase!important;
+  text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy > .treasury-entry-details {
+  display:flex!important;
+  grid-column:2!important;
+  grid-row:1!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:center!important;
+  justify-self:end!important;
+  gap:3px!important;
+  width:max-content!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:right!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy > .treasury-entry-details > small {
+  display:block!important;
+  position:static!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+  line-height:1.25!important;
+  text-align:right!important;
+  text-decoration:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy > .treasury-entry-details > .treasury-entry-subtitle {
+  color:var(--text,#f2f6f5)!important;
+  font-family:var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  font-size:clamp(10px,2.65vw,12.5px)!important;
+  font-weight:760!important;
+  letter-spacing:.045em!important;
+  text-transform:uppercase!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy > .treasury-entry-details > .inj-tile-description {
+  color:var(--muted-strong,var(--muted,#aebfc6))!important;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:clamp(9.1px,2.35vw,11px)!important;
+  font-weight:450!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+  opacity:.91!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > svg.entry-action-arrow {
+  display:block!important;
+  position:static!important;
+  flex:0 0 15px!important;
+  order:1!important;
+  width:15px!important;
+  height:15px!important;
+  min-width:15px!important;
+  margin:0!important;
+  padding:0!important;
+  color:var(--accent,#8edccc)!important;
+  opacity:.8!important;
+  transform:none!important;
+}
+@media(max-width:375px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryTreasuryButton.entry-action-treasury {
+    min-height:78px!important;
+    padding:12px 11px!important;
+    gap:5px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy > strong.inj-home-tile-title {
+    font-size:clamp(10.5px,3.13vw,12px)!important;
+    letter-spacing:0!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryTreasuryButton.entry-action-treasury > svg.entry-action-arrow {
+    flex-basis:12px!important;
+    width:12px!important;height:12px!important;min-width:12px!important;
+  }
+}
