@@ -102,6 +102,7 @@ function drawChart(trend){const svg=$('trafficChart');svg.replaceChildren();cons
 function drawDevices(devices) {const labels={mobile:'MOBILE',tablet:'TABLET',desktop:'DESKTOP'};const colors={mobile:'#58e2bc',tablet:'#59b5db',desktop:'#b8a377'};const total=devices.reduce((a,v)=>a+Number(v.count||0),0);const sorted=['mobile','tablet','desktop'].map(k=>({device:k,count:Number(devices.find(d=>d.device===k)?.count||0)}));const track=$('deviceTrack'),list=$('deviceList');track.replaceChildren();list.replaceChildren();sorted.forEach(d=>{const pct=total?100*d.count/total:0;const piece=make('span');piece.style.width=`${pct}%`;piece.style.background=colors[d.device];piece.title=`${labels[d.device]} ${pct.toFixed(0)}%`;track.append(piece);const row=make('div','device-row');row.append(make('span',null,labels[d.device]),make('strong',null,`${fmt(d.count)} · ${pct.toFixed(0)}%`));list.append(row);});}
 function drawRecent(recent){const host=$('recentEvents');host.replaceChildren();if(!recent.length) {host.append(make('div','empty','Nessuna attività recente'));return;}recent.forEach(x=>{const row=make('div','event-row');row.append(make('strong',null,`${x.kind==='wallet'?'WALLET':'SEZIONE'} · ${x.label}`),make('span',null,safeDate(x.at)));host.append(row)});}
 async function update() {
+ if(document.body.classList.contains('insights-pro-ready'))return;
  if (inProgress) return; inProgress=true;
  try {
   const cfg=window.INJ_ADMIN_INSIGHTS_API;if(!cfg?.base||!cfg.headers().Authorization)throw new Error('Autenticazione Admin non disponibile');
