@@ -53,36 +53,172 @@
     actual:validActual(e.actual)?String(e.actual):null,forecast:validActual(e.forecast)?String(e.forecast):null,
     previous:validActual(e.previous)?String(e.previous):null,status:String(e.status||'scheduled')};
  }
- function renderTicker(data){
-  const track=$('injMarketTickerTrack');track.replaceChildren();
-  const entries=Array.isArray(data.tickers)?data.tickers.filter(x=>Number.isFinite(Number(x.price))&&Number(x.price)>0):[];
-  if(!entries.length){track.append(elt('span','inj-market-ticker-loading',tr('Dati crypto non disponibili','Crypto quotes unavailable')));return;}
-  const group=elt('span','inj-market-ticker-group');
-  group.style.display='inline-flex';group.style.alignItems='center';group.style.gap='30px';
-  for(const x of entries){
-    const item=elt('span','inj-market-ticker-item');
-    const code=elt('b',null,x.symbol+'/USDT');
-    const price=elt('span',null,'$'+fmtNum(Number(x.price),x.symbol==='BTC'||x.symbol==='ETH'?2:x.symbol==='SOL'?3:4));
-    const delta=Number(x.change24h);
-    const change=elt('em',Number.isFinite(delta)?delta>=0?'positive':'negative':'neutral',Number.isFinite(delta)?(delta>=0?'+':'')+fmtNum(delta,2)+'%':'—');
-    item.append(code,price,change);group.append(item);
+ // One frame-driven animation owns the translation. Never restart a CSS marquee
+ // when prices update: it would otherwise jump back to its first item.
+ const tickerViewport=$('injMarketTicker').querySelector('.inj-market-ticker-viewport');
+ const tickerTrack=$('injMarketTickerTrack');
+ const tickerMotion={
+  offset:0,lap:0,lastTime:0,dragging:false,pointerId:null,lastX:0,
+  speed:30,group:null,observer:null,hadData:false
+ };
+ let lastTickerPayload=null;
+ const reducedTickerMotion=!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+ function modulo(n,length){return length>0?((n%length)+length)%length:0}
+ function measureTicker(){
+  const group=tickerTrack.firstElementChild;
+  if(!group?.classList.contains('inj-market-ticker-group'))return;
+  const width=group.getBoundingClientRect().width;
+  const gap=parseFloat(getComputedStyle(tickerTrack).columnGap)||0;
+  const length=width+gap;
+  if(length<=0)return;
+  tickerMotion.lap=length;
+  tickerMotion.offset=modulo(tickerMotion.offset,length);
+ }
+ function paintTicker(){
+  tickerTrack.style.transform='translate3d('+(-tickerMotion.offset).toFixed(2)+'px,0,0)';
+ }
+ function tickerFrame(t){
+  const elapsed=tickerMotion.lastTime?Math.min(50,Math.max(0,t-tickerMotion.lastTime)):0;
+  tickerMotion.lastTime=t;
+  if(!tickerMotion.lap&&tickerMotion.hadData)measureTicker();
+  if(tickerMotion.lap&&!document.hidden&&!tickerMotion.dragging&&!reducedTickerMotion){
+   tickerMotion.offset=modulo(tickerMotion.offset+tickerMotion.speed*elapsed/1000,tickerMotion.lap);
+   paintTicker();
   }
-  const copy=group.cloneNode(true);copy.setAttribute('aria-hidden','true');
-  track.append(group,copy);
-  // CSS marquee moves exactly half of the identical doubled content.
-  track.style.animationDuration=Math.max(30,entries.length*11)+'s';
+  requestAnimationFrame(tickerFrame);
+ }
+ function dropTickerPointer(e){
+  if(!tickerMotion.dragging||(e&&e.pointerId!==tickerMotion.pointerId))return;
+  const id=tickerMotion.pointerId;
+  tickerMotion.dragging=false;tickerMotion.pointerId=null;tickerMotion.lastTime=0;
+  if(id!==null&&tickerViewport.hasPointerCapture?.(id)){
+   try{tickerViewport.releasePointerCapture(id)}catch(_){}
+  }
+ }
+ tickerViewport.addEventListener('pointerdown',event=>{
+  if(tickerMotion.dragging||(!event.isPrimary)||(event.pointerType==='mouse'&&event.button!==0))return;
+  if(!tickerMotion.lap)measureTicker();
+  tickerMotion.dragging=true;tickerMotion.pointerId=event.pointerId;
+  tickerMotion.lastX=event.clientX;tickerMotion.lastTime=0;
+  try{tickerViewport.setPointerCapture(event.pointerId)}catch(_){}
+ },{passive:true});
+ tickerViewport.addEventListener('pointermove',event=>{
+  if(!tickerMotion.dragging||event.pointerId!==tickerMotion.pointerId||!tickerMotion.lap)return;
+  const dx=event.clientX-tickerMotion.lastX;
+  tickerMotion.lastX=event.clientX;
+  tickerMotion.offset=modulo(tickerMotion.offset-dx,tickerMotion.lap);
+  paintTicker();
+ },{passive:true});
+ tickerViewport.addEventListener('pointerup',dropTickerPointer,{passive:true});
+ tickerViewport.addEventListener('pointercancel',dropTickerPointer,{passive:true});
+ tickerViewport.addEventListener('lostpointercapture',dropTickerPointer,{passive:true});
+ window.addEventListener('blur',()=>dropTickerPointer(),{passive:true});
+ tickerViewport.tabIndex=0;
+ tickerViewport.addEventListener('keydown',event=>{
+  if(event.key!=='ArrowRight'&&event.key!=='ArrowLeft')return;
+  if(!tickerMotion.lap)return;
+  event.preventDefault();
+  tickerMotion.offset=modulo(tickerMotion.offset+(event.key==='ArrowRight'?100:-100),tickerMotion.lap);
+  paintTicker();
+ });
+ if('ResizeObserver' in window){
+  tickerMotion.observer=new ResizeObserver(()=>{measureTicker();paintTicker()});
+  tickerMotion.observer.observe(tickerViewport);
+ }
+ requestAnimationFrame(tickerFrame);
+ function usdCompact(x){
+  const value=Number(x);
+  if(!Number.isFinite(value)||value<=0)return '—';
+  const scale=value>=1e12?1e12:value>=1e9?1e9:value>=1e6?1e6:1;
+  return '$'+fmtNum(value/scale,2)+(scale===1e12?'T':scale===1e9?'B':scale===1e6?'M':'');
+ }
+ function percent(x,hasSign=false){
+  if(x===null||x===undefined||!Number.isFinite(Number(x)))return '—';
+  const n=Number(x);return (hasSign&&n>0?'+':'')+fmtNum(n,2)+'%';
+ }
+ function tickerItems(data){
+  const ticks=Array.isArray(data.tickers)?data.tickers.filter(x=>x&&Number.isFinite(Number(x.price))&&Number(x.price)>0):[];
+  const bySymbol=new Map(ticks.map(x=>[x.symbol,x]));
+  const result=[];
+  const addSymbol=symbol=>{
+   if(bySymbol.has(symbol))result.push({kind:'coin',key:symbol,record:bySymbol.get(symbol)});
+  };
+  ['INJ','BTC','ETH','SOL'].forEach(addSymbol);
+  const g=data.global||{};
+  result.push({kind:'global',key:'CAP',label:tr('CAP. CRYPTO','CRYPTO CAP'),value:usdCompact(g.marketCapUsd)});
+  result.push({kind:'global',key:'BTCD',label:'BTC DOM',value:percent(g.btcDominance)});
+  result.push({kind:'global',key:'VOL',label:tr('VOL. 24H','24H VOL'),value:usdCompact(g.volume24hUsd)});
+  ['BNB','XRP','AVAX','DOT','LINK','ADA','DOGE'].forEach(addSymbol);
+  result.push({kind:'global',key:'ETHD',label:'ETH DOM',value:percent(g.ethDominance)});
+  result.push({kind:'global',key:'CAP24',label:tr('MERCATO 24H','MARKET 24H'),value:percent(g.marketCapChange24h,true),
+   trend:g.marketCapChange24h});
+  for(const tick of ticks)if(!result.some(item=>item.kind==='coin'&&item.key===tick.symbol))
+   result.push({kind:'coin',key:tick.symbol,record:tick});
+  return result;
+ }
+ function createTickerItem(item){
+  const node=elt('span','inj-market-ticker-item'+(item.kind==='global'?' inj-market-ticker-global':''));
+  node.dataset.ribbonKey=item.kind+':'+item.key;
+  const label=elt('b','inj-market-ticker-symbol');
+  const value=elt('span','inj-market-ticker-price');
+  node.append(label,value);
+  if(item.kind==='coin')node.append(elt('em','inj-market-ticker-change'));
+  return node;
+ }
+ function updateTickerItem(node,item,currency){
+  const label=node.querySelector('.inj-market-ticker-symbol');
+  const value=node.querySelector('.inj-market-ticker-price');
+  if(item.kind==='coin'){
+   const x=item.record,n=Number(x.price);
+   const digits=['BTC','ETH','SOL','BNB'].includes(x.symbol)?2:x.symbol==='DOGE'?5:4;
+   label.textContent=x.symbol+'/'+currency;
+   value.textContent='$'+fmtNum(n,digits);
+   const pct=node.querySelector('.inj-market-ticker-change');
+   pct.textContent=percent(x.change24h,true);
+   pct.className='inj-market-ticker-change '+(x.change24h===null||x.change24h===undefined?'neutral':Number(x.change24h)>=0?'positive':'negative');
+  }else{
+   label.textContent=item.label;
+   value.textContent=item.value;
+   value.className='inj-market-ticker-price'+(item.trend===null||item.trend===undefined?'':Number(item.trend)>=0?' positive':' negative');
+  }
+ }
+ function renderTicker(data){
+  const entries=tickerItems(data);
+  if(!entries.some(x=>x.kind==='coin')){
+   if(!tickerMotion.hadData)tickerTrack.replaceChildren(elt('span','inj-market-ticker-loading',tr('Dati crypto non disponibili','Crypto quotes unavailable')));
+   return;
+  }
+  lastTickerPayload=data;
+  const quote=data.currency==='USDT'?'USDT':'USD';
+  const fingerprint=entries.map(x=>x.kind+':'+x.key).join('|')+'|'+quote;
+  let first=tickerTrack.firstElementChild;
+  const rebuild=tickerTrack.dataset.keys!==fingerprint||!first?.classList.contains('inj-market-ticker-group');
+  if(rebuild){
+   const group=elt('span','inj-market-ticker-group');
+   for(const item of entries)group.append(createTickerItem(item));
+   const copy=group.cloneNode(true);copy.setAttribute('aria-hidden','true');
+   tickerTrack.replaceChildren(group,copy);
+   tickerTrack.dataset.keys=fingerprint;
+   first=group;
+   tickerMotion.hadData=true;
+   if(tickerMotion.observer){tickerMotion.observer.disconnect();tickerMotion.observer.observe(tickerViewport);tickerMotion.observer.observe(group)}
+  }
+  for(const group of tickerTrack.children)
+   Array.from(group.children).forEach((node,index)=>updateTickerItem(node,entries[index],quote));
+  measureTicker();paintTicker();
+  $('injMarketTicker').classList.remove('is-stale');
  }
  async function updateTicker(){
   if(document.hidden)return;
   try{
-    const r=await fetch('/api/crypto-ribbon',{cache:'no-store'});
-    if(!r.ok)throw Error('ticker unavailable');
-    const j=await r.json();renderTicker(j);state.lastMarket=now();
+   const response=await fetch('/api/crypto-ribbon',{cache:'no-store'});
+   if(!response.ok)throw Error('Ticker service unavailable');
+   const payload=await response.json();
+   renderTicker(payload);state.lastMarket=now();
   }catch{
-    // Never fabricate live values. Keep previously displayed quotes but mark stale.
-    const track=$('injMarketTickerTrack');
-    if(!state.lastMarket){track.replaceChildren(elt('span','inj-market-ticker-loading',tr('Quotazioni non disponibili','Prices unavailable')));}
-    else if(now()-state.lastMarket>180000){track.replaceChildren(elt('span','inj-market-ticker-loading',tr('Quotazioni non aggiornate','Quotes not refreshed')));}
+   // Never erase and restart an already running marquee during transient outages.
+   if(!tickerMotion.hadData)tickerTrack.replaceChildren(elt('span','inj-market-ticker-loading',tr('Quotazioni non disponibili','Prices unavailable')));
+   else if(now()-state.lastMarket>180000)$('injMarketTicker').classList.add('is-stale');
   }
  }
  function setMessage(msg){
@@ -398,7 +534,7 @@
  $('injEventsAlerts').addEventListener('click',setAlerts);
  $('injEventsRefresh').addEventListener('click',()=>loadCalendar(true));
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.open){e.preventDefault();closePanel()}});
- new MutationObserver(()=>{applyLanguage();if(state.open)list()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+ new MutationObserver(()=>{applyLanguage();if(lastTickerPayload)renderTicker(lastTickerPayload);if(state.open)list()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  updatePeriodUI();
  $('injEventsRegion').value=state.region;
  $('injEventsReminder').value=String(state.reminder);
