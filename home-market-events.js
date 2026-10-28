@@ -23,7 +23,7 @@
    seen:config.seen&&typeof config.seen==='object'?config.seen:{},
    notified:config.notified&&typeof config.notified==='object'?config.notified:{},
    results:config.results&&typeof config.results==='object'?config.results:{},
-   current:null,processing:false,lastMarket:0,lastCalendar:0,inFlight:null
+   current:null,processing:false,reloadQueued:false,lastMarket:0,lastCalendar:0,inFlight:null
  };
  const save=()=>{
   try{
@@ -232,7 +232,7 @@
     tr('Calendario macroeconomico ★★★','High-impact ★★★ calendar');
  }
  async function loadCalendar(force=false){
-  if(state.processing)return state.inFlight;
+  if(state.processing){if(force)state.reloadQueued=true;return state.inFlight}
   if(!force&&state.lastCalendar&&now()-state.lastCalendar<150000)return;
   state.processing=true;
   state.inFlight=(async()=>{
@@ -256,10 +256,33 @@
       setMessage(tr('Fonte calendario temporaneamente non disponibile. Nessun evento o dato viene inventato.','Calendar temporarily unavailable. No event or data is fabricated.'));
       if(state.open)list();
       renderNext();
-    }finally{state.processing=false;state.inFlight=null}
+    }finally{
+      state.processing=false;state.inFlight=null;
+      if(state.reloadQueued){state.reloadQueued=false;queueMicrotask(()=>loadCalendar(true))}
+    }
   })();
   return state.inFlight;
  }
+ function applyLanguage(){
+  const fields=[
+   ['injEventsSubtitle','Calendario macroeconomico · solo impatto ★★★','Macroeconomic calendar · high impact ★★★ only'],
+   ['injEventsDays','PERIODO / RANGE','PERIOD / RANGE'],
+  ];
+  const sub=$('injEventsSubtitle');if(sub)sub.textContent=tr('Calendario macroeconomico · solo impatto ★★★','Macroeconomic calendar · only ★★★ events');
+  const note=$('injEventsWarning');if(note&&!state.source)note.textContent=tr('Orari locali · I dati effettivi compaiono dopo la pubblicazione.','Local time · Actual values appear only when published.');
+  const options={
+   injEventsDays:{1:['24H','24H'],3:['3 GIORNI','3 DAYS'],7:['7 GIORNI','7 DAYS'],14:['2 SETTIMANE','2 WEEKS'],30:['30 GIORNI','30 DAYS']},
+   injEventsRegion:{ALL:['TUTTE / ALL','ALL REGIONS'],US:['USA','USA'],EU:['EUROPA','EUROPE'],ASIA:['ASIA','ASIA']}
+  };
+  for(const [id,opts] of Object.entries(options)){
+   const select=$(id);for(const option of select.options){const item=opts[option.value];if(item)option.textContent=tr(item[0],item[1])}
+  }
+  const labels=[['injEventsDays','PERIODO','PERIOD'],['injEventsRegion','REGIONE','REGION'],['injEventsReminder','AVVISO','REMINDER']];
+  for(const [id,it,en] of labels){const lbl=document.querySelector('label[for="'+id+'"]');if(lbl)lbl.textContent=tr(it,en)}
+  const footer=$('injEventsSource');if(!state.source&&footer)footer.textContent=tr('Fonte in verifica','Checking data source');
+  updateAlertButton();renderNext();
+ }
+
  $('entryMarketEventsButton').addEventListener('click',openPanel);
  $('injMarketTickerEvents').addEventListener('click',openPanel);
  $('injEventsClose').addEventListener('click',closePanel);
@@ -272,11 +295,11 @@
  $('injEventsAlerts').addEventListener('click',setAlerts);
  $('injEventsRefresh').addEventListener('click',()=>loadCalendar(true));
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.open){e.preventDefault();closePanel()}});
- new MutationObserver(()=>{if(state.open){updateAlertButton();list()}}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+ new MutationObserver(()=>{applyLanguage();if(state.open)list()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  $('injEventsDays').value=String(state.days);
  $('injEventsRegion').value=state.region;
  $('injEventsReminder').value=String(state.reminder);
- updateAlertButton();
+ applyLanguage();
  // Background page refreshes cannot create push; only foreground visits can.
  updateTicker();loadCalendar();
  setInterval(()=>{if(document.hidden)return;updateTicker()},45000);
