@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v16.10.28-macro-events-crypto-ribbon1';
+const CACHE_NAME = 'inj-node-v16.10.28-macro-events-live-2';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
   './home-premium-titles.css?v=20261027p1',
@@ -6,7 +6,7 @@ const APP_SHELL = [
   './home-overview-price-first.css?v=20261028compact2',
   './home-compact-value-bars.css?v=20261028compactbars1',
   './home-market-events.css?v=20261028event1',
-  './home-market-events.js?v=20261028event1',
+  './home-market-events.js?v=20261028event2',
   './inj-top-seamless.css?v=20261028seam1',
   './inj-top-seamless.js?v=20261028ios27',
   './home-statusbar-continuity.css?v=20261028seam1',
