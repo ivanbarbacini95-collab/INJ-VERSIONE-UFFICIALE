@@ -280,3 +280,26 @@ self.addEventListener('fetch', (event) => {
     }))
   );
 });
+
+/* Foreground-generated event alerts: tapping one reopens the actual/forecast
+   detail on Home. This does not enable background push subscriptions. */
+self.addEventListener('notificationclick', (event) => {
+  const note=event.notification;
+  const detail=note?.data;
+  if(detail?.source!=='inj-market-events')return;
+  note.close();
+  const id=String(detail.eventId||'').slice(0,170);
+  event.waitUntil((async()=>{
+    const opened=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    const home=opened.find(c=>{
+      try{const path=new URL(c.url).pathname;return path==='/'||path.endsWith('/index.html')||/\/install-icon-[^/]+\.html$/.test(path)}
+      catch{return false}
+    });
+    if(home){
+      await home.focus();
+      home.postMessage({type:'inj-market-events-open',eventId:id});
+    }else if(self.clients.openWindow){
+      await self.clients.openWindow('/#inj-market-event='+encodeURIComponent(id));
+    }
+  })());
+});
