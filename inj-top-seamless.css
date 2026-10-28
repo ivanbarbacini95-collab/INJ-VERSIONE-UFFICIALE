@@ -65,7 +65,7 @@ html[data-theme="ocean-x-solar"]{--inj-status-tone:#713745}
     .terminal-header,.book-topbar,.cc-topbar,
     .cap-header,.wealth-header,.shell > .header,
     .performance-timeline-header,.converter-view-header,
-    .workspace-topbar,.ws-topbar,.rl-topbar,.etf-top
+    .workspace-topbar,.ws-topbar,.ws-header,.rl-topbar,.ladder-header,.cs-header,.etf-top
   ) {
     background-color:transparent!important;
     background-image:none!important;
