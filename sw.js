@@ -1,9 +1,9 @@
-const CACHE_NAME = 'inj-node-v16.10.28-statusbar-seamless1';
+const CACHE_NAME = 'inj-node-v16.10.28-ios27-native-status-fix';
 const APP_SHELL = [
   './home-terminal-header-20261027.css?v=h2',
   './home-premium-titles.css?v=20261027p1',
   './inj-top-seamless.css?v=20261028seam1',
-  './inj-top-seamless.js?v=20261028seam1',
+  './inj-top-seamless.js?v=20261028ios27',
   './home-statusbar-continuity.css?v=20261028seam1',
   './menu-control-pro.css?v=20261028pro1',
   './menu-control-pro.js?v=20261028pro1',
@@ -95,7 +95,7 @@ const APP_SHELL = [
   './navigation.js?v=160114',
   './i18n.js?v=160124',
   './i18n.js?v=160114',
-  './viewport.js?v=20261027native3',
+  './viewport.js?v=20261028ios27',
   './treasury.css?v=16.00.37',
   './scroll-edges.css?v=160129',
   './scroll-edges.js?v=160143',
@@ -244,7 +244,7 @@ self.addEventListener('fetch', (event) => {
 
   // Analytics config must never be locked behind the PWA's cache-first policy:
   // publishing the Insights URL must take effect without reinstalling the app.
-  if (url.pathname.endsWith('/inj-node-insights-config.js') || url.pathname.endsWith('/inj-node-telemetry.js') || url.pathname.endsWith('/cloud-sync-config.js')) {
+  if (url.pathname.endsWith('/inj-node-insights-config.js') || url.pathname.endsWith('/inj-node-telemetry.js') || url.pathname.endsWith('/cloud-sync-config.js') || url.pathname.endsWith('/inj-top-seamless.js') || url.pathname.endsWith('/viewport.js')) {
     event.respondWith(fetch(request, {cache:'no-store'}).catch(() => caches.match(request)));
     return;
   }
