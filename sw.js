@@ -1,22 +1,84 @@
-const CACHE_NAME = 'inj-node-v16.10.28-macro-events-live-2';
+const CACHE_NAME = 'inj-node-v16.11.01-global-crypto-ticker-fullbleed-v15';
 const APP_SHELL = [
+  './market-refinement-20261029.css?v=crypto-fullbleed1',
+  './live-view-clock-below-title-20261101.css?v=1',
+  './home-theme-continuity-20261101.css?v=2',
+  './nav-premium-loop-20261101.css?v=11',
+  './nav-premium-loop-20261101.js?v=12',
+  './my-reward-immersive-20261101.css?v=4',
+  './my-reward-immersive-20261101.js?v=2',
+
+  './my-reward-20261101.css?v=1',
+  './my-reward-20261101.js?v=4',
+  './inj-ux-refinement-20261101.css?v=1',
+  './inj-ux-refinement-20261101.js?v=5',
+  './inj-local-access-lock-20261101.css?v=1',
+  './inj-local-access-lock-20261101.js?v=1',
+  './cloud-sync-qr-20261101.css?v=1',
+  './cloud-sync-qr-20261101.js?v=1',
+  './vendor/qrcode.min.js?v=1',
+  './market-embedded-compact-20261031.css?v=marketcompact3',
+  './world-market-ticker-center-20261101.css?v=20261101bold2',
+  './assets/fonts/inj-geist.woff2',
+  './market-crypto-scope-20261030.css?v=scope3',
+  './market-favorites-latched-20261030.css?v=latch4',
+  './market-crypto-one-day-20261030.css?v=dropdown6',
+  './market-crypto-one-day-20261030.js?v=instant7',
+  './market.js?v=20261030precision5',
+  './market-views.js?v=20261101tileflash1',
+  './market-heatmap-signals-20261101.css?v=vivid2',
+  './home-market-launcher-uniform-20261030.css?v=marketpolish2',
+  './navigation.js?v=20261030marketlabel1',
+  './market-entry-direct-20261030.css?v=direct6',
+  './market-entry-direct-20261030.js?v=frames2',
+  './market-portal.js?v=20261030favorites1',
+  './home-ticker-tight-20261030.css?v=ticker1',
+  './android-native-scroll-20261101.css?v=android-scroll1',
+  './android-section-scroll-20261101.css?v=android-section-scroll1',
+  './home-bottom-tabs-20261030.css?v=20261101-home-fixed5',
+  './home-card-reorder-20261030.css?v=order1',
+  './home-card-reorder-20261030.js?v=order4',
+  './home-bottom-tabs-20261030.js?v=20261101-home-fixed5',
+  './market-tab-navigation-20261031.css?v=marketrail11',
+  './market-tab-navigation-20261031.js?v=marketrail14',
+  './app.js?v=20261101androidpwa1',
+  './inj-font-switcher-20261029.css?v=geistbold8',
+  './inj-font-switcher-20261029.js?v=geistbold8',
+  './inj-fluid-screen-fit.css?v=20261028fullmonitor1',
+  './inj-monitor-readability.css?v=20261028readable3',
+  './home-desktop-native-scroll.css?v=20261028home-scroll1',
+  './home-more-section.css?v=20261028more3',
+  './home-tile-descriptions.css?v=20261028freedom2',
+  './financial-freedom.html?v=20261028freedom8',
+  './financial-freedom.js?v=20261028freedom8',
+  './financial-freedom.css?v=20261028freedom8',
+  './financial-freedom-overlay.js?v=20261028freedom8',
+  './financial-freedom-home.css?v=20261028freedom8',
+  './ambient-wallet-reward-glow.css?v=20261028ambient1',
+  './market-events-layout-pro.css?v=20261028risk1',
+  './home-focused-cards.css?v=20261028micro2',
+  './home-settings-scroll-lock.css?v=20261028menu-lock1',
+  './app.js?v=20261028freedom8',
+  './market-events-footer-seamless.css?v=20261028foot1',
+  './home-launcher-typography-final.css?v=20261028labels1',
+  './home-final-four-titles.css?v=20261028four1',
   './home-terminal-header-20261027.css?v=h2',
-  './home-premium-titles.css?v=20261027p1',
+  './home-premium-titles.css?v=20261028freedom2',
   './home-treasury-brand-layout.css?v=20261028bcg1',
   './home-overview-price-first.css?v=20261028compact2',
-  './home-compact-value-bars.css?v=20261028compactbars1',
-  './home-market-events.css?v=20261028event1',
-  './home-market-events.js?v=20261028event2',
-  './inj-top-seamless.css?v=20261028seam1',
+  './home-compact-value-bars.css?v=20261028compactbars2',
+  './home-market-events.css?v=20261028prefs1',
+  './home-market-events.js?v=20261028prefs1',
+  './inj-top-seamless.css?v=20261028fullbleed4',
   './inj-top-seamless.js?v=20261028ios27',
   './home-statusbar-continuity.css?v=20261028seam1',
   './menu-control-pro.css?v=20261028pro1',
   './menu-control-pro.js?v=20261028pro1',
   './inj-node-telemetry.js?v=20261028officialpro2',
-  './i18n.js?v=20261028menupro1',
+  './i18n.js?v=20261028allsections1',
   './home-terminal-header-20261027.js?v=h2',
   './workspace-sections.js?v=20261027-live2',
-  './navigation.js?v=20261027-sync1',
+  './navigation.js?v=20261028allsections1',
   './cloud-sync-agent.js?v=20261027sync1',
   './cloud-sync-config.js?v=20261027sync1',
   './cloud-sync.html?v=20261027sync2',
@@ -32,20 +94,20 @@ const APP_SHELL = [
   './market-portal.js?v=20261027-g1',
   './first-access-unified.css?v=20261027-official-fix1',
   './wallet-manager-reliable.css?v=20261027a',
-  './i18n.js?v=20261027titles1',
-  './app.js?v=20261027-wallet-fix1',
-  './performance-timeline-fit.css?v=20261026-fit1',
-  './home-premium-iconography.js?v=20261027luxb1',
-  './home-premium-iconography.css?v=20261027luxb1',
+  './i18n.js?v=20261028allsections1',
+  './app.js?v=20261028freedom8',
+  './performance-timeline-fit.css?v=20261028pnlaxis1',
+  './home-premium-iconography.js?v=20261030favorites1',
+  './home-premium-iconography.css?v=20261028freedom2',
   './home-micro-terminal.css?v=20261027h1',
   './home-micro-terminal.js?v=20261026a',
   './privacy-shield.css?v=20261026',
-  './injc-etf.html?v=20261026',
+  './injc-etf.html?v=20261101-etf-isolation1',
   './injc-home-tile.css?v=20261026b',
-  './home-launcher-grid.css?v=20261026-fullwidth',
+  './home-launcher-grid.css?v=20261028freedom2',
   './workspace-fullscreen-lock.css?v=16102413',
   './workspace.js?v=16102413',
-  './workspace-pro.js?v=16102413',
+  './workspace-pro.js?v=20261028screenfit1',
   './workspace-model.js?v=16102412',
   './workspace-favorites-controls.css?v=16102411',
   './workspace-sections.js?v=16102411',
@@ -53,6 +115,7 @@ const APP_SHELL = [
   './market.js?v=16102450',
   './market-portal.js?v=16102450',
   './supply-mono.css?v=20261024',
+  './home-font-unified.css?v=20261029homefont1',
   './workspace.html',
   './workspace-layout.css?v=160749',
   './workspace-premium.css?v=160747','./workspace-widgets.css?v=1610245',
@@ -67,7 +130,7 @@ const APP_SHELL = [
   './workspace-model.js?v=1610247',
   './workspace.js?v=1610249',
   './workspace-pro.js?v=160801',
-  './workspace-pro.css?v=1610249',
+  './workspace-pro.css?v=20261028screenfit1',
   './navigation.js?v=160743',
   './reward-ladder-home.css?v=160739',
   './reward-ladder.html',
@@ -80,7 +143,8 @@ const APP_SHELL = [
   './market-favorites.css?v=160735',
   './market-heatmap-arctic.css?v=160725',
   './market-heatmap-live.css?v=160726',
-  './market-heatmap-aggressive.css?v=160741',
+  './market-heatmap-aggressive.css?v=20261028gradient1',
+  './market-heatmap-density.css?v=20261028density1',
   './chart-haptics.js?v=160720',
   './chart-haptics.css?v=160720',
   './home-scroll-memory.js?v=160719',
@@ -152,22 +216,27 @@ const APP_SHELL = [
   './treasury-ownership.css?v=16102501',
   './treasury-ownership-theme.css?v=160702',
   './market.html',
+  './world-markets-heatmap.js?v=20261031quotefix2',
+  './market-data/global-markets.json',
+  './world-markets-heatmap.css?v=20261031quotefix2',
+  './market-intelligence-summary.js?v=20261029world1',
   './market-intelligence.css?v=160421',
   './market-intelligence-summary.js?v=160708',
   './market-intelligence-summary.css?v=160625',
   './inj-ownership.js?v=160625',
   './comparison.html',
   './comparison.css?v=160095',
-  './comparison-ab.css?v=160095',
-  './comparison.js?v=160095',
+  './comparison-ab.css?v=20261028logos1',
+  './comparison.js?v=20261028logos1',
   './market-portal.js?v=160719',
   './market-lang.js?v=160082',
   './market.css?v=160082',
   './market.js?v=160733',
   './market-pro.css?v=160108',
-  './market-pro.js?v=160720',
+  './market-pro.js?v=20261030instant7',
   './market-views.css?v=160716',
-  './market-views.js?v=160742',
+  './market-views.js?v=20261101tileflash1',
+  './market-heatmap-density.js?v=20261030instant7',
   './market-intelligence-summary.js?v=160724',
   './market-views.js?v=160716',
   './manifest.webmanifest?v=16.06.29',
@@ -198,12 +267,12 @@ const APP_SHELL = [
   './viewport.css?v=16.00.74',
   './top-clarity.css?v=16.00.88',
   './style.css?v=16.01.44',
-  './app.js?v=16.06.33',
+  './app.js?v=20261028freedom8',
   './i18n.js?v=160145',
   './scroll-guard.js?v=160525',
   './live-charts.html',
   './live-charts.css?v=16.00.39',
-  './live-charts.js?v=20261026tf1',
+  './live-charts.js?v=20261031priceinrail3',
   './live-charts-timeframe-rail.css?v=20261026tf1',
   './live-rewards.html',
   './live-rewards.css?v=16.05.02',
@@ -224,11 +293,58 @@ const APP_SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
-  );
+  // An unavailable optional resource must not block activation of the entire PWA.
+  event.waitUntil((async () => {
+    const cache=await caches.open(CACHE_NAME);
+    // Installing an Android PWA must not start hundreds of simultaneous
+    // legacy CSS/JS downloads before the worker can activate. Cache the
+    // actual boot path first; runtime requests populate the rest on demand.
+    const essential=new Set([
+  './market-refinement-20261029.css?v=crypto-fullbleed1',
+  './live-view-clock-below-title-20261101.css?v=1',
+  './home-theme-continuity-20261101.css?v=2',
+  './nav-premium-loop-20261101.css?v=11',
+  './nav-premium-loop-20261101.js?v=12',
+  './my-reward-immersive-20261101.css?v=4',
+  './my-reward-immersive-20261101.js?v=2',
+
+      './my-reward-20261101.css?v=1',
+      './my-reward-20261101.js?v=4',
+  './inj-ux-refinement-20261101.css?v=1',
+  './inj-ux-refinement-20261101.js?v=5',
+  './inj-local-access-lock-20261101.css?v=1',
+  './inj-local-access-lock-20261101.js?v=1',
+  './cloud-sync-qr-20261101.css?v=1',
+  './cloud-sync-qr-20261101.js?v=1',
+  './vendor/qrcode.min.js?v=1',
+      './','./index.html','./manifest.webmanifest?v=16.06.29',
+      './app.js?v=20261101androidpwa1',
+      './style.css?v=16.01.44','./viewport.css?v=16.00.74',
+      './viewport.js?v=20261028ios27',
+      './navigation.css?v=160090',
+      './navigation.js?v=20261030marketlabel1',
+      './android-native-scroll-20261101.css?v=android-scroll1',
+  './android-section-scroll-20261101.css?v=android-section-scroll1',
+  './home-bottom-tabs-20261030.css?v=20261101-home-fixed5',
+      './home-bottom-tabs-20261030.js?v=20261101-home-fixed5',
+      './market-tab-navigation-20261031.js?v=marketrail14',
+      './market-tab-navigation-20261031.css?v=marketrail11',
+      './install-icon-minimal.html','./install-icon-classic.html',
+      './install-icon-aurora.html','./install-icon-pulse.html'
+    ]);
+    const bootAssets=Array.from(essential);
+    let next=0;
+    async function worker(){
+      while(next<bootAssets.length){
+        const asset=bootAssets[next++];
+        try{await cache.add(asset)}catch{
+          // Other pages/assets stay available; network-first handles later recovery.
+        }
+      }
+    }
+    await Promise.all(Array.from({length:3},()=>worker()));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
@@ -246,6 +362,20 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
   // Never cache any server-authenticated response or admin credential action.
   if (url.pathname.startsWith('/api/')) {event.respondWith(fetch(request));return;}
+  // Always prefer the current Market Events assets after a Git deploy. Keep an
+  // offline copy, but never trap users on a stale pre-update CSS/JS pair.
+  if (url.pathname.endsWith('/market-refinement-20261029.css') || url.pathname.endsWith('/live-view-clock-below-title-20261101.css') || url.pathname.endsWith('/home-theme-continuity-20261101.css') || url.pathname.endsWith('/nav-premium-loop-20261101.js') || url.pathname.endsWith('/nav-premium-loop-20261101.css') || url.pathname.endsWith('/my-reward-immersive-20261101.js') || url.pathname.endsWith('/my-reward-immersive-20261101.css') || url.pathname.endsWith('/my-reward-20261101.js') || url.pathname.endsWith('/my-reward-20261101.css') || url.pathname.endsWith('/inj-ux-refinement-20261101.js') || url.pathname.endsWith('/inj-ux-refinement-20261101.css') || url.pathname.endsWith('/inj-local-access-lock-20261101.js') || url.pathname.endsWith('/inj-local-access-lock-20261101.css') || url.pathname.endsWith('/cloud-sync-qr-20261101.js') || url.pathname.endsWith('/cloud-sync-qr-20261101.css') || url.pathname.endsWith('/vendor/qrcode.min.js') || url.pathname.endsWith('/world-markets-heatmap.js') || url.pathname.endsWith('/world-markets-heatmap.css') || url.pathname.endsWith('/market-views.js') || url.pathname.endsWith('/market-heatmap-signals-20261101.css') || url.pathname.endsWith('/android-section-scroll-20261101.css') || url.pathname.endsWith('/android-native-scroll-20261101.css') || url.pathname.endsWith('/home-bottom-tabs-20261030.js') || url.pathname.endsWith('/home-bottom-tabs-20261030.css') || url.pathname.endsWith('/market-tab-navigation-20261031.js') || url.pathname.endsWith('/market-tab-navigation-20261031.css') || url.pathname.endsWith('/market-embedded-compact-20261031.css') || url.pathname.endsWith('/live-charts.js') || url.pathname.endsWith('/live-charts.css') || url.pathname.endsWith('/live-charts-timeframe-rail.css') || url.pathname.endsWith('/world-market-ticker-center-20261101.css') || url.pathname.endsWith('/inj-font-switcher-20261029.css') || url.pathname.endsWith('/inj-font-switcher-20261029.js') || url.pathname.endsWith('/i18n.js') || url.pathname.endsWith('/navigation.js') || url.pathname.endsWith('/inj-fluid-screen-fit.css') || url.pathname.endsWith('/inj-monitor-readability.css') || url.pathname.endsWith('/home-desktop-native-scroll.css') || url.pathname.endsWith('/home-more-section.css') || url.pathname.endsWith('/workspace-pro.js') || url.pathname.endsWith('/workspace-pro.css') || url.pathname.endsWith('/home-market-events.css') || url.pathname.endsWith('/home-market-events.js') || url.pathname.endsWith('/inj-top-seamless.css') || url.pathname.endsWith('/financial-freedom.html') || url.pathname.endsWith('/financial-freedom.css') || url.pathname.endsWith('/financial-freedom.js') || url.pathname.endsWith('/financial-freedom-home.css') || url.pathname.endsWith('/financial-freedom-overlay.js') || url.pathname.endsWith('/market-events-layout-pro.css') || url.pathname.endsWith('/home-focused-cards.css') || url.pathname.endsWith('/ambient-wallet-reward-glow.css') || url.pathname.endsWith('/world-markets-heatmap.js') || url.pathname.endsWith('/world-markets-heatmap.css') || url.pathname.endsWith('/market-data/global-markets.json')) {
+    event.respondWith(
+      fetch(request,{cache:'no-store'}).then(response=>{
+        if(response.ok){
+          const copy=response.clone();
+          event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.put(request,copy)));
+        }
+        return response;
+      }).catch(()=>caches.match(request))
+    );
+    return;
+  }
 
   // Analytics config must never be locked behind the PWA's cache-first policy:
   // publishing the Insights URL must take effect without reinstalling the app.
@@ -255,7 +385,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    const isolatedPath = ['cloud-sync.html', 'admin-insights.html', 'workspace.html', 'live-charts.html', 'live-rewards.html', 'command-center.html', 'order-book.html', 'treasury.html', 'market.html', 'comparison.html', 'visualize-wealth.html', 'reward-ladder.html', 'injc-etf.html', 'install-icon-minimal.html', 'install-icon-classic.html', 'install-icon-aurora.html', 'install-icon-pulse.html'].find((name) => url.pathname.endsWith('/' + name));
+    const isolatedPath = ['cloud-sync.html', 'admin-insights.html', 'workspace.html', 'live-charts.html', 'live-rewards.html', 'command-center.html', 'order-book.html', 'treasury.html', 'market.html', 'comparison.html', 'visualize-wealth.html', 'reward-ladder.html', 'injc-etf.html', 'financial-freedom.html', 'install-icon-minimal.html', 'install-icon-classic.html', 'install-icon-aurora.html', 'install-icon-pulse.html'].find((name) => url.pathname.endsWith('/' + name));
     event.respondWith(
       fetch(request, { cache: 'no-store' })
         .then((response) => {

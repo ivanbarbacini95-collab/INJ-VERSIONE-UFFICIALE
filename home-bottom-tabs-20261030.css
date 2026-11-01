@@ -1,0 +1,592 @@
+/* INJ Node · five-tab floating bottom navigation, based on the user's mockup.
+   Theme-aware. Does not edit chart mechanics, wallet data or other screens. */
+html[data-inj-page="index"] body > #injPrimaryBottomNav{
+ display:none!important;
+}
+html[data-inj-page="index"] body.entry-gate-open:not(
+ .boot-loading,.menu-overlay-open,.drawer-open,.inj-section-open,
+ .chart-overlay-open,.focus-display-open,.pulse-view-open,
+ .live-charts-open,.entry-live-launch,.inj-freedom-open
+):has(#entryGate.entry-gate.visible[aria-hidden="false"] .entry-gate-shell:not(.first-access)):not(:has(#injMarketEventsOverlay:not([hidden]),#injMarketPortal:not([hidden]),#injFreedomOverlay:not([hidden]),#converterView.open,#performanceTimelineView.open,dialog[open],.inj-content-frame))
+> #injPrimaryBottomNav{
+ display:grid!important;
+}
+#injPrimaryBottomNav{
+ position:fixed!important;
+ /* The dock stays above the scrolling Home; fullscreen sections are excluded
+    by the visibility selector, and native popover top-layer lifts it out of
+    transformed Safari stacking contexts when supported. */
+ z-index:2147483500!important;
+ left:50%!important;
+ right:auto!important;
+ top:auto!important;
+ bottom:max(10px,env(safe-area-inset-bottom,0px))!important;
+ transform:translateX(-50%)!important;
+ inset-block-start:auto!important;
+ inset-inline-end:auto!important;
+ box-sizing:border-box!important;
+ width:min(530px,calc(100% - 24px))!important;
+ height:72px!important;
+ grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ align-items:stretch!important;
+ gap:3px!important;
+ padding:6px!important;
+ margin:0!important;
+ border:1px solid color-mix(in srgb,var(--accent,#92dbc9) 20%,var(--line,#49605e))!important;
+ border-radius:23px!important;
+ background:color-mix(in srgb,var(--surface-strong,#0b1b1c) 94%,transparent)!important;
+ box-shadow:0 8px 32px rgba(0,0,0,.22),inset 0 1px 0 color-mix(in srgb,var(--text,#f1f9f5) 7%,transparent)!important;
+ -webkit-backdrop-filter:blur(14px)!important;
+ backdrop-filter:blur(14px)!important;
+ pointer-events:auto!important;
+ -webkit-tap-highlight-color:transparent;
+}
+#injPrimaryBottomNav .inj-bottom-tab{
+ display:flex!important;position:relative!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:4px!important;min-width:0!important;min-height:0!important;
+ padding:5px 1px!important;margin:0!important;
+ border:0!important;border-radius:17px!important;
+ background:transparent!important;box-shadow:none!important;
+ color:var(--muted,#a3b6b7)!important;
+ cursor:pointer!important;user-select:none!important;touch-action:manipulation!important;
+ transition:background-color .22s ease,color .22s ease,box-shadow .22s ease,transform .2s ease!important;
+}
+#injPrimaryBottomNav .inj-bottom-tab.is-active{
+ background:color-mix(in srgb,var(--accent,#7edac6) 13%,var(--surface,#112524))!important;
+ box-shadow:inset 0 0 16px color-mix(in srgb,var(--accent,#75e1cf) 5%,transparent)!important;
+ color:var(--accent,#90f1d7)!important;
+}
+#injPrimaryBottomNav .inj-bottom-tab:active{transform:scale(.96)!important}
+#injPrimaryBottomNav .inj-bottom-tab:focus-visible{outline:2px solid var(--accent,#8ceacb)!important;outline-offset:-2px}
+#injPrimaryBottomNav .inj-bottom-tab-icon{display:flex!important;align-items:center!important;justify-content:center!important;width:22px!important;height:22px!important}
+#injPrimaryBottomNav .inj-bottom-tab-icon svg{width:22px!important;height:22px!important;fill:none;stroke:currentColor;flex:none}
+#injPrimaryBottomNav .inj-bottom-tab-label{
+ display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-size:clamp(9.5px,2.75vw,11px)!important;font-weight:500!important;
+ line-height:1.15!important;letter-spacing:0!important;text-align:center!important;
+ white-space:nowrap!important;color:inherit!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+ padding-bottom:calc(122px + env(safe-area-inset-bottom,0px))!important;
+}
+/* Every tab shares the wallet selection rail, but the full wallet valuation,
+   live price card and microstats belong only to Home. */
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate :is(#entryOverview,#entryInsights,#entryDesktopMetrics,#injMarketTicker){
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-wallet-section{
+ margin-bottom:14px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #injTabHeading[hidden]{
+ display:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #injTabHeading{
+ display:flex!important;align-items:flex-end!important;justify-content:space-between!important;
+ width:100%!important;min-width:0!important;grid-column:1/-1!important;grid-row:auto!important;
+ align-self:stretch!important;justify-self:stretch!important;
+ box-sizing:border-box!important;margin:4px 0 15px!important;padding:3px 1px 12px!important;
+ border-bottom:1px solid color-mix(in srgb,var(--line,#566866) 72%,transparent)!important;
+ background:none!important;
+}
+#injTabHeading .inj-tab-eyebrow{
+ font-size:10px!important;letter-spacing:.13em!important;font-weight:500!important;
+ color:var(--accent,#99d8c8)!important;opacity:.8;
+}
+#injTabHeading h2{
+ margin:7px 0 3px!important;padding:0!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-weight:650!important;font-size:clamp(19px,4.7vw,25px)!important;
+ line-height:1.13!important;letter-spacing:.055em!important;color:var(--text,#f0f6f4)!important;
+}
+#injTabHeading p{
+ margin:0!important;padding:0!important;font-size:clamp(10px,2.9vw,12px)!important;
+ line-height:1.4!important;color:var(--muted-strong,var(--muted,#adc1c0))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ grid-auto-flow:row!important;gap:11px!important;width:100%!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryMacroCalendarButton.entry-action{
+ display:flex!important;position:relative!important;
+ flex-flow:row nowrap!important;align-items:center!important;justify-content:flex-start!important;
+ grid-column:1/-1!important;grid-row:auto!important;
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ height:76px!important;min-height:76px!important;max-height:76px!important;
+ padding:13px 16px!important;margin:0!important;gap:13px!important;
+ border-radius:19px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8ad3c6) 22%,var(--line,#52615f))!important;
+ background:color-mix(in srgb,var(--surface,#102221) 88%,transparent)!important;
+ box-shadow:0 2px 12px rgba(0,0,0,.06)!important;text-align:left!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton > .inj-tile-scene.inj-more-market-symbol{
+ display:flex!important;position:relative!important;inset:auto!important;
+ flex:0 0 40px!important;width:40px!important;min-width:40px!important;
+ max-width:40px!important;height:36px!important;max-height:36px!important;
+ margin:0!important;padding:0!important;transform:none!important;
+ opacity:.9!important;pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton > .inj-macro-calendar-copy{
+ display:flex!important;position:static!important;
+ flex:1 1 auto!important;flex-direction:column!important;
+ align-items:flex-start!important;justify-content:center!important;
+ width:auto!important;min-width:0!important;max-width:100%!important;
+ margin:0!important;padding:0!important;gap:5px!important;text-align:left!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton .inj-home-tile-title{
+ font-size:clamp(13px,3.5vw,16px)!important;text-align:left!important;
+ font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton .inj-tile-description{
+ font-size:clamp(10px,2.8vw,12px)!important;text-align:left!important;font-weight:400!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton .inj-home-tile-title::after{
+ content:none!important;
+}
+/* Category panels retain all original clickable cards, in a breathable grid. */
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:11px!important;grid-auto-flow:row!important;align-items:stretch!important;
+ height:auto!important;max-height:none!important;overflow:visible!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+ min-width:0!important;border-radius:18px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate#entryGate #injTabMarketEventsShortcut.entry-action{
+ display:flex;align-items:center;justify-content:flex-end;flex-flow:column nowrap;
+ position:relative;box-sizing:border-box;min-width:0;height:96px;min-height:96px;
+ gap:7px;padding:12px 8px;border:1px solid color-mix(in srgb,var(--accent) 23%,var(--line))!important;
+ border-radius:18px;background:color-mix(in srgb,var(--surface) 84%,transparent)!important;
+ color:var(--text);text-align:center;cursor:pointer;
+}
+#injTabMarketEventsShortcut .entry-action-icon{display:flex;align-items:center;justify-content:center;color:var(--accent)}
+#injTabMarketEventsShortcut .entry-action-icon svg{width:31px;height:31px;fill:none;stroke:currentColor}
+#injTabMarketEventsShortcut > span:nth-child(2){display:flex;flex-direction:column;align-items:center;gap:4px;max-width:100%;min-width:0}
+#injTabMarketEventsShortcut .inj-home-tile-title{font-size:12px!important;letter-spacing:.03em!important;line-height:1.1!important;font-weight:600!important}
+#injTabMarketEventsShortcut .inj-tile-description{font-size:10px!important;font-weight:400!important;line-height:1.2!important}
+#injTabMarketEventsShortcut .entry-action-arrow{display:none!important}
+html[data-inj-page="index"] body #entryGate#entryGate #entryNote{display:none!important}
+@media(min-width:800px){
+ #injPrimaryBottomNav{height:75px!important;bottom:19px!important;width:min(600px,calc(100% - 40px))!important}
+ html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate #entryTreasuryButton{grid-column:1/-1!important}
+}
+@media(max-width:365px){
+ #injPrimaryBottomNav{width:calc(100% - 16px)!important;height:68px!important;border-radius:19px!important;padding:5px!important}
+ #injPrimaryBottomNav .inj-bottom-tab{border-radius:14px!important}
+ #injPrimaryBottomNav .inj-bottom-tab-label{font-size:9px!important;letter-spacing:-.02em!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #injPrimaryBottomNav *,#injPrimaryBottomNav .inj-bottom-tab{transition:none!important;animation:none!important}
+}
+
+
+/* Dedicated category pages: only title and destination cards survive.
+   No wallet, chart, ticker, first-access shell, settings menu or Home body. */
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access)
+ > :not(.entry-actions):not(#injTabHeading):not(#injEtfTabPanel){display:none!important}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #injHomeBrandFooter{display:none!important}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:auto auto!important;grid-auto-rows:min-content!important;
+ align-content:start!important;justify-items:stretch!important;row-gap:0!important;
+ padding-top:max(24px,calc(env(safe-area-inset-top,0px) + 12px))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate #injTabHeading{
+ grid-column:1!important;grid-row:1!important;
+ align-self:start!important;margin:0 0 14px!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44{
+ grid-column:1!important;grid-row:2!important;
+ align-self:start!important;margin:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-flow:row!important;align-items:stretch!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton){
+ grid-column:auto!important;grid-row:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action{
+ grid-column:1/-1!important;grid-row:auto!important;
+ width:100%!important;min-height:76px!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryMacroCalendarButton.entry-action-macro-calendar{
+ display:flex!important;grid-column:auto!important;grid-row:auto!important;
+ flex-flow:column nowrap!important;align-items:center!important;justify-content:flex-end!important;
+ height:96px!important;min-height:96px!important;max-height:96px!important;
+ padding:8px!important;text-align:center!important;border-radius:17px!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate #entryMacroCalendarButton>.inj-tile-scene.inj-more-market-symbol{
+ display:block!important;position:absolute!important;
+ top:7px!important;left:50%!important;right:auto!important;bottom:auto!important;
+ width:min(68%,84px)!important;max-width:84px!important;height:35px!important;
+ transform:translateX(-50%)!important;pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate #entryMacroCalendarButton>.inj-macro-calendar-copy{
+ display:flex!important;position:relative!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ gap:3px!important;align-self:center!important;text-align:center!important;
+ min-width:0!important;width:100%!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate #entryMacroCalendarButton
+ :is(.inj-home-tile-title,.inj-tile-description){text-align:center!important;max-width:100%!important}
+html[data-inj-page="index"]{scroll-behavior:auto!important;overflow-anchor:none!important}
+html[data-inj-page="index"] body #entryGate{overflow-anchor:none!important}
+@media(min-width:800px){
+ html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+  padding-top:clamp(30px,3vw,54px)!important;
+ }
+}
+
+/* A closed manual popover never obstructs the interface. An open one is
+   positioned relative to the visual viewport instead of the scrolling Home. */
+#injPrimaryBottomNav:popover-open{
+ position:fixed!important;
+ inset:auto auto max(10px,env(safe-area-inset-bottom,0px)) 50%!important;
+ margin:0!important;
+ transform:translateX(-50%)!important;
+}
+@media(min-width:800px){
+ #injPrimaryBottomNav:popover-open{
+  bottom:19px!important;
+ }
+}
+
+
+/* HOME REVEAL / END CAP
+   The first Home screen has no bottom dock; it fades into the interface
+   as the user scrolls toward Treasury. All other tabs remain persistent. */
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #injHomeBrandFooter{display:none!important}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body.entry-gate-open #entryGate#entryGate.entry-gate.visible
+ > .entry-gate-shell:not(.first-access){
+ padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))!important;
+}
+/* True opacity/translate entrance. Unlike toggling display or popover
+   visibility, this animates without modifying the scrolling document. */
+html[data-inj-page="index"] body > #injPrimaryBottomNav{
+ opacity:1!important;
+ visibility:visible!important;
+ transition:opacity .46s cubic-bezier(.2,.7,.2,1),
+  transform .52s cubic-bezier(.2,.76,.24,1),
+  visibility .46s!important;
+ will-change:opacity,transform;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-home-nav-visible="true"])
+ body > #injPrimaryBottomNav{
+ opacity:0!important;
+ visibility:hidden!important;
+ transform:translate(-50%,16px)!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body > #injPrimaryBottomNav{
+ opacity:1!important;
+ visibility:visible!important;
+ transform:translate(-50%,0)!important;
+ pointer-events:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-home-nav-visible="true"])
+ body > #injPrimaryBottomNav:popover-open{
+ transform:translate(-50%,16px)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body > #injPrimaryBottomNav:popover-open{
+ transform:translate(-50%,0)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]{
+ overscroll-behavior-y:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body.entry-gate-open{
+ overscroll-behavior-y:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body > #injPrimaryBottomNav{
+  transition:none!important;
+  will-change:auto!important;
+ }
+}
+
+/* Screenshot follow-up: end the Home content cleanly at Treasury.
+   Do not expose the secondary branding/footer beneath the dock. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #injHomeBrandFooter,
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate > .inj-home-signature{
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access){
+ padding-bottom:calc(102px + env(safe-area-inset-bottom,0px))!important;
+}
+
+
+/* ETF is the actual INJC page embedded directly in its dedicated navigation
+   tab, not a second launcher. The bottom dock stays in the browser top layer. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>#injEtfTabPanel[hidden]{
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>:not(#injEtfTabPanel){
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access){
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:minmax(0,1fr)!important;
+ align-items:start!important;
+ align-content:start!important;
+ justify-items:stretch!important;
+ padding:0!important;
+ margin-inline:auto!important;
+ height:calc(100dvh - 96px - env(safe-area-inset-bottom,0px))!important;
+ min-height:320px!important;
+ max-height:none!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>#injEtfTabPanel:not([hidden]){
+ display:block!important;
+ position:relative!important;
+ grid-column:1/-1!important;
+ grid-row:1!important;
+ width:100%!important;
+ max-width:100%!important;
+ height:100%!important;
+ min-height:0!important;
+ padding:0!important;
+ margin:0!important;
+ overflow:hidden!important;
+ border:0!important;
+ border-radius:0!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+}
+html[data-inj-page="index"] body #injEtfTabPanel>.inj-etf-tab-frame{
+ display:block!important;
+ width:100%!important;height:100%!important;
+ border:0!important;outline:0!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+ overflow:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate.entry-gate.visible{
+ min-height:100dvh!important;
+}
+/* Keep the legacy INJC home tile absent from the new Altro grid.
+   The original element is retained hidden so its src URL and event handler
+   are still available without changing other navigation machinery. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44>#entryInjcEtfButton{display:none!important}
+/* Home scroll ends naturally after Treasury, with only a small viewport
+   clearance above the dock. No JavaScript scrollTop clamping or snapping. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate.entry-gate.visible>.entry-gate-shell:not(.first-access){
+ padding-bottom:calc(94px + env(safe-area-inset-bottom,0px))!important;
+ min-height:0!important;
+ height:auto!important;
+ grid-auto-rows:min-content!important;
+ align-content:start!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate.entry-gate.visible{
+ min-height:0!important;
+ height:auto!important;
+ max-height:none!important;
+}
+html[data-inj-page="index"] body #injHomeBrandFooter{display:none!important}
+
+
+/* INJC ETF direct tab — the iframe is mounted at body level instead of
+   inside Home's heavily constrained .entry-gate-shell. Earlier nested-grid
+   rules could clip the entire frame to zero height on iOS Safari. */
+html[data-inj-page="index"] body>#injEtfTabPanel[hidden]{
+ display:none!important;
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden]){
+ display:block!important;
+ position:fixed!important;
+ inset:0 0 calc(83px + env(safe-area-inset-bottom,0px)) 0!important;
+ z-index:2147483400!important;
+ width:100%!important;
+ height:auto!important;
+ min-height:0!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+ overflow:hidden!important;
+ visibility:visible!important;
+ opacity:1!important;
+ pointer-events:auto!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden])
+ >.inj-etf-tab-frame{
+ display:block!important;
+ position:relative!important;
+ width:100%!important;
+ height:100%!important;
+ min-height:0!important;
+ border:0!important;
+ opacity:1!important;
+ visibility:visible!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+ overflow:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate.entry-gate.visible{
+ pointer-events:none!important;
+}
+@media(min-width:800px){
+ html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden]){
+  inset-block-end:102px!important;
+ }
+}
+
+/* Desktop Home repair · 2026-11-01.
+   Keep the five primary destinations available from the first viewport.
+   Inner Market pages still use their separate top rail and suppress this dock. */
+@media (min-width:900px){
+ html[data-inj-page="index"][data-inj-home-tab="home"]
+ body.entry-gate-open:not(.boot-loading):not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open) > #injPrimaryBottomNav{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:translate(-50%,0)!important;
+  pointer-events:auto!important;
+ }
+}
+/* Distribute the three Home launchers over the desktop dashboard column
+   instead of leaving a short strip above a large empty block. */
+@media (min-width:1100px){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  align-content:stretch!important;
+  align-items:stretch!important;
+  align-self:start!important;
+  gap:clamp(10px,1vw,18px)!important;
+  min-width:0!important;
+  min-height:clamp(250px,33vh,410px)!important;
+  height:auto!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+  height:100%!important;
+  min-height:110px!important;
+  max-height:none!important;
+  box-sizing:border-box!important;
+  align-self:stretch!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >#entryTreasuryButton.entry-action{
+  grid-column:1/-1!important;
+  grid-row:2!important;
+ }
+}
+
+
+/* ETF viewport isolation · 2026-11-01
+   The ETF iframe used to end 83–102px above the bottom edge. On overscroll,
+   that exposed the still-mounted Home/Dashboard below. Keep the entire viewport
+   opaque; the ETF document itself remains the sole vertical scroll surface.
+   The floating dock retains its own browser top layer. */
+html[data-inj-page="index"][data-inj-home-tab="etf"]{
+ height:100%!important;
+ overflow:hidden!important;
+ overscroll-behavior-y:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body{
+ height:100dvh!important;
+ max-height:100dvh!important;
+ overflow:hidden!important;
+ overscroll-behavior-y:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#entryGate,
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>.app-shell{
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden]){
+ position:fixed!important;
+ inset:0!important;
+ inset-block-end:0!important;
+ bottom:0!important;
+ width:100%!important;
+ height:100dvh!important;
+ min-height:100dvh!important;
+ max-height:100dvh!important;
+ overflow:hidden!important;
+ contain:layout paint!important;
+ background:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden])>.inj-etf-tab-frame{
+ position:absolute!important;
+ inset:0!important;
+ width:100%!important;
+ height:100%!important;
+ max-height:100%!important;
+ display:block!important;
+ border:0!important;
+ overflow:auto!important;
+ -webkit-overflow-scrolling:touch!important;
+ touch-action:pan-y!important;
+ background:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+
+
+/* Always visible on the active Home screen (even without interaction).
+   Hidden screens and dedicated fullscreen overlays preserve existing guards. */
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body.entry-gate-open:not(.boot-loading) > #injPrimaryBottomNav#injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body.entry-gate-open:not(.boot-loading) > #injPrimaryBottomNav#injPrimaryBottomNav:popover-open{
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transform:translate(-50%,0)!important;
+}

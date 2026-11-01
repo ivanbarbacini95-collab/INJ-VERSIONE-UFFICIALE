@@ -1,8 +1,8 @@
-/* INJ VERSIONE UFFICIALE · Home compact lower panels · 28 Oct 2026
+/* INJ NODE · Home compact lower panels · 28 Oct 2026 (revision 2)
    Final, isolated sizing rules loaded last after the older Home P/L styles.
    No changes to live price, P/L computations, chart height or swipe gestures. */
 
-/* P/L TODAY — single-line 46px strip, label left and value right. */
+/* P/L TODAY — single-line 40px strip, label left and value right. */
 html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl {
   display:grid!important;
   grid-template-columns:minmax(0,1fr) minmax(0,max-content)!important;
@@ -12,11 +12,11 @@ html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-pric
   box-sizing:border-box!important;
   width:100%!important;
   min-width:0!important;
-  height:46px!important;
-  min-height:46px!important;
-  max-height:46px!important;
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
   margin:0!important;
-  padding:5px 12px!important;
+  padding:4px 11px!important;
   column-gap:8px!important;
   row-gap:0!important;
   overflow:hidden!important;
@@ -51,7 +51,7 @@ html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsig
   height:auto!important;
   margin:0!important;
   padding:0!important;
-  font-size:clamp(18px,4.85vw,22px)!important;
+  font-size:clamp(15px,3.85vw,18px)!important;
   font-weight:800!important;
   line-height:1.12!important;
   letter-spacing:-.025em!important;
@@ -67,7 +67,7 @@ html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsig
   line-height:inherit!important;
 }
 
-/* Staking / Reward / Updated — same three columns, 46px compact metric strip.
+/* Staking / Reward / Updated — same three columns, 40px compact metric strip.
    Applied to both main card and gesture slides (clones don't retain IDs). */
 html[data-inj-page="index"] body #entryGate#entryGate
 :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats {
@@ -78,10 +78,10 @@ html[data-inj-page="index"] body #entryGate#entryGate
   box-sizing:border-box!important;
   width:100%!important;
   min-width:0!important;
-  height:46px!important;
-  min-height:46px!important;
-  max-height:46px!important;
-  margin-top:10px!important;
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+  margin-top:8px!important;
   padding:0!important;
   border-radius:12px!important;
   overflow:hidden!important;
@@ -97,8 +97,8 @@ html[data-inj-page="index"] body #entryGate#entryGate
   height:100%!important;
   min-height:0!important;
   max-height:100%!important;
-  padding:4px 2px!important;
-  gap:2px!important;
+  padding:3px 2px!important;
+  gap:1px!important;
   text-align:center!important;
 }
 html[data-inj-page="index"] body #entryGate#entryGate
@@ -109,7 +109,7 @@ html[data-inj-page="index"] body #entryGate#entryGate
   min-width:0!important;
   margin:0!important;
   padding:0!important;
-  font-size:clamp(9px,2.55vw,10.5px)!important;
+  font-size:clamp(9px,2.45vw,10.2px)!important;
   line-height:1.15!important;
   letter-spacing:.065em!important;
   font-weight:700!important;
@@ -125,7 +125,7 @@ html[data-inj-page="index"] body #entryGate#entryGate
   max-width:100%!important;
   margin:0!important;
   padding:0!important;
-  font-size:clamp(9.7px,2.84vw,12.5px)!important;
+  font-size:clamp(10px,2.75vw,11.5px)!important;
   line-height:1.2!important;
   letter-spacing:0!important;
   font-weight:750!important;
@@ -136,10 +136,26 @@ html[data-inj-page="index"] body #entryGate#entryGate
 }
 @media(max-width:370px){
  html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl{
-   font-size:clamp(17px,4.6vw,19px)!important;
+   font-size:clamp(14.5px,3.95vw,16px)!important;
  }
  html[data-inj-page="index"] body #entryGate#entryGate
  :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > strong{
-   font-size:clamp(9px,2.72vw,10.3px)!important;
+   font-size:clamp(9.5px,2.7vw,10.2px)!important;
  }
+}
+
+/* Equal typography for Staking, Reward and Updated, including freshness.
+   Digit-roll wrappers inherit their host's font to avoid the oversized
+   "2s fa" variant. All wallet swipe copies use the same rule. */
+html[data-inj-page="index"] body #entryGate#entryGate
+:is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > :is(span,strong) {
+  font-family:var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  -webkit-text-size-adjust:100%!important;
+  text-size-adjust:100%!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+:is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > strong :is(span,b,small,em,.number-roll-host,.number-roll-text,.number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer) {
+  font-family:inherit!important;
+  font-size:inherit!important;
+  line-height:inherit!important;
 }

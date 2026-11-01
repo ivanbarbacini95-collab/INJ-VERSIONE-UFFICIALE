@@ -1,0 +1,55 @@
+/* INJ Node | Android scrolling for long standalone pages inside the PWA.
+   Reward Ladder and Potential Value load as same-origin fullscreen iframes.
+   They must have one, and only one, vertical scrolling surface. Legacy
+   viewport.css alternates between html/body overflow:hidden/auto and on
+   Chrome Android can leave both surfaces with no usable scroll range.
+
+   Other pages, chart handlers, modal states and desktop/iOS stay unchanged. */
+html[data-inj-platform="android"]:is([data-inj-page="reward-ladder"],[data-inj-page="visualize-wealth"]){
+  box-sizing:border-box!important;
+  position:static!important;
+  inset:auto!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:hidden!important;
+  overscroll-behavior-y:none!important;
+}
+
+html[data-inj-platform="android"]:is([data-inj-page="reward-ladder"],[data-inj-page="visualize-wealth"]) body{
+  box-sizing:border-box!important;
+  position:relative!important;
+  inset:auto!important;
+  display:block!important;
+  width:100%!important;
+  height:100dvh!important;
+  min-height:0!important;
+  max-height:100dvh!important;
+  margin:0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:auto!important;
+}
+
+html[data-inj-platform="android"][data-inj-page="reward-ladder"] .ladder-page,
+html[data-inj-platform="android"][data-inj-page="visualize-wealth"] .wealth-shell{
+  position:relative!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow:visible!important;
+  touch-action:auto!important;
+}
+
+/* Dynamic keyboard and address-bar resizing do not clamp long results.
+   Buttons and form controls keep their existing touch behavior. */
+@supports not (height:100dvh){
+  html[data-inj-platform="android"]:is([data-inj-page="reward-ladder"],[data-inj-page="visualize-wealth"]) body{
+    height:100vh!important;
+    max-height:100vh!important;
+  }
+}

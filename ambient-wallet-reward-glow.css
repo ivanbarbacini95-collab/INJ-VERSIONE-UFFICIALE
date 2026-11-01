@@ -1,0 +1,72 @@
+/* INJ Node · Ambient Selection Glow · 2026-10-28
+   Reuses the calm luminous language of the existing market highlights.
+   Pure CSS; no layout/scroll/gesture/reward computation changes.
+   Glow only on the SELECTED Home wallet and Dashboard accrued reward. */
+
+@keyframes injActiveAmbientHalo {
+  0%,100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb,var(--accent,#91d9ea) 20%,transparent),
+      0 0 10px color-mix(in srgb,var(--accent,#91d9ea) 12%,transparent),
+      0 0 21px color-mix(in srgb,var(--accent,#91d9ea) 5%,transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb,var(--accent,#91d9ea) 43%,transparent),
+      0 0 17px color-mix(in srgb,var(--accent,#91d9ea) 28%,transparent),
+      0 0 29px color-mix(in srgb,var(--accent,#91d9ea) 11%,transparent);
+  }
+}
+@keyframes injAccruedAmbientHalo {
+  0%,100% {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb,var(--accent,#91d9ea) 8%,transparent),
+      0 0 8px color-mix(in srgb,var(--accent,#91d9ea) 7%,transparent);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb,var(--accent,#91d9ea) 29%,transparent),
+      0 0 13px color-mix(in srgb,var(--accent,#91d9ea) 19%,transparent),
+      0 0 24px color-mix(in srgb,var(--accent,#91d9ea) 7%,transparent);
+  }
+}
+@keyframes injAccruedNumberBreathe {
+  0%,100% { text-shadow:0 0 0 transparent; }
+  50% { text-shadow:0 0 10px color-mix(in srgb,var(--accent,#91d9ea) 25%,transparent); }
+}
+
+/* HOME – only the wallet being observed. The native .selected class is
+   updated by the existing carousel selection system, so the halo follows
+   the actual selection without extra JavaScript or stale-wallet states. */
+html[data-inj-page="index"][data-theme] body #entryGate
+ #entryWallets > .entry-wallet-row.selected > .entry-wallet.selected {
+  animation:injActiveAmbientHalo 4.8s ease-in-out infinite!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate
+ #entryWallets > .entry-wallet-row.selected > .entry-wallet.selected > i {
+  background:var(--accent,#91d9ea)!important;
+  box-shadow:0 0 10px color-mix(in srgb,var(--accent,#91d9ea) 36%,transparent)!important;
+}
+/* DASHBOARD – Accrued Reward / Reward maturate; the amount remains live,
+   not transformed or flashed on each incoming price/reward update. */
+html[data-inj-page="index"][data-theme] body .app-shell #rewardsCard {
+  border-color:color-mix(in srgb,var(--accent,#91d9ea) 40%,var(--line,#334557))!important;
+  animation:injAccruedAmbientHalo 5.4s ease-in-out infinite!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell #rewardsCard #rewardsInj {
+  animation:injAccruedNumberBreathe 5.4s ease-in-out infinite!important;
+}
+/* Privacy mode is intentionally never illuminated as if a value were visible. */
+html[data-inj-page="index"][data-theme] body.privacy-mode .app-shell #rewardsCard #rewardsInj,
+html[data-inj-page="index"][data-theme] body #rewardsCard #rewardsInj.privacy-hidden {
+  animation:none!important;
+  text-shadow:none!important;
+}
+@media (prefers-reduced-motion:reduce) {
+  html[data-inj-page="index"][data-theme] body #entryGate
+  #entryWallets > .entry-wallet-row.selected > .entry-wallet.selected,
+  html[data-inj-page="index"][data-theme] body .app-shell #rewardsCard,
+  html[data-inj-page="index"][data-theme] body .app-shell #rewardsCard #rewardsInj {
+    animation:none!important;
+  }
+}

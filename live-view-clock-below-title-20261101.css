@@ -1,0 +1,73 @@
+/* INJ Node · Live View clock immediately beneath the center title.
+   Moves the existing live clock without altering its app.js updater, values
+   or focus controls. Mirrors the former title placement at each breakpoint. */
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-status-stack{
+ position:absolute!important;
+ z-index:6!important;
+ top:max(48px,calc(env(safe-area-inset-top,0px) + 40px))!important;
+ left:50%!important;
+ right:auto!important;
+ bottom:auto!important;
+ transform:translateX(-50%)!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:6px!important;
+ width:max-content!important;
+ max-width:calc(100% - 128px)!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog
+ .focus-display-status-stack > .focus-display-live{
+ position:relative!important;
+ inset:auto!important;
+ top:auto!important;
+ right:auto!important;
+ bottom:auto!important;
+ left:auto!important;
+ transform:none!important;
+ margin:0!important;
+ flex:0 0 auto!important;
+ white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog
+ .focus-display-status-stack > #focusDisplayClock.focus-display-clock{
+ position:relative!important;
+ inset:auto!important;
+ top:auto!important;
+ right:auto!important;
+ bottom:auto!important;
+ left:auto!important;
+ transform:none!important;
+ display:block!important;
+ width:auto!important;
+ margin:0!important;
+ padding:0!important;
+ color:var(--muted-strong,var(--muted,#b6bbcb))!important;
+ font-size:clamp(10px,2.6vw,12px)!important;
+ font-weight:650!important;
+ line-height:1.2!important;
+ letter-spacing:.04em!important;
+ font-variant-numeric:tabular-nums!important;
+ text-align:center!important;
+ white-space:nowrap!important;
+}
+/* Keep the position of the existing LIVE VIEW badge unchanged on phones. */
+@media (max-width:560px) and (orientation:portrait){
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-status-stack{
+  top:max(43px,calc(env(safe-area-inset-top,0px) + 35px))!important;
+  gap:5px!important;
+ }
+}
+/* Compact landscape: preserve the X on the right without clock overlap. */
+@media (orientation:landscape) and (max-height:720px){
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-status-stack{
+  top:max(10px,calc(env(safe-area-inset-top,0px) + 3px))!important;
+  gap:3px!important;
+ }
+ html[data-inj-page="index"] body #focusDisplayDialog
+  .focus-display-status-stack > #focusDisplayClock.focus-display-clock{
+  font-size:10px!important;
+ }
+}

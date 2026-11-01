@@ -19,6 +19,45 @@
  let usCapUpdated=0,usCapDownload=null,usCapPending=false,usCapFailure='',usCapSequence=0;
  const SOURCE_DEFAULT={id:'injective-protocol',name:'Injective',symbol:'INJ'};
  const TARGET_DEFAULT={id:'bitcoin',name:'Bitcoin',symbol:'BTC'};
+ // Trust only CoinGecko's coin image hosts. Images are matched by ID, not ticker.
+ function coinLogo(raw){
+  if(typeof raw!=='string')return '';
+  try{
+   const u=new URL(raw);
+   return u.protocol==='https:'&&['coin-images.coingecko.com','assets.coingecko.com'].includes(u.hostname)
+     &&u.pathname.startsWith('/coins/images/')?u.href:'';
+  }catch(_){return '';}
+ }
+ const brandMap=rows=>Object.fromEntries(rows.split(';').map(row=>row.split('=')));
+ // Curated company domains: unknown equities retain their ticker, never a guessed logo.
+ const STOCK_BRANDS=brandMap(
+  'AAPL=apple.com;MSFT=microsoft.com;NVDA=nvidia.com;GOOGL=google.com;GOOG=google.com;AMZN=amazon.com;META=meta.com;TSLA=tesla.com;BRK.B=berkshirehathaway.com;AVGO=broadcom.com;TSM=tsmc.com;LLY=lilly.com;WMT=walmart.com;JPM=jpmorganchase.com;V=visa.com;MA=mastercard.com;XOM=exxonmobil.com;JNJ=jnj.com;ORCL=oracle.com;NFLX=netflix.com;COST=costco.com;AMD=amd.com;PLTR=palantir.com;CRM=salesforce.com;UBER=uber.com;DIS=disney.com;KO=coca-colacompany.com;PEP=pepsico.com;NKE=nike.com;MCD=mcdonalds.com;BA=boeing.com;INTC=intel.com;PYPL=paypal.com;SHOP=shopify.com;COIN=coinbase.com;MSTR=strategy.com;HOOD=robinhood.com;SQ=block.xyz;ARM=arm.com;QCOM=qualcomm.com;TXN=ti.com;CAT=caterpillar.com;GE=geaerospace.com;IBM=ibm.com;SAP=sap.com;ASML=asml.com;MC=lvmh.com;OR=loreal.com;RMS=hermes.com;AIR=airbus.com;SHEL=shell.com;AZN=astrazeneca.com;HSBA=hsbc.com;BP=bp.com;RACE=ferrari.com;STLA=stellantis.com;ENI=eni.com;ENEL=enel.com;ISP=intesasanpaolo.com;UCG=unicreditgroup.eu;G=generali.com;PST=poste.it;MONC=monclergroup.com;TIT=gruppotim.it;PIRC=pirelli.com;TRN=terna.it;FINE=finecobank.com;STM=st.com;NOVN=novartis.com;NESN=nestle.com;ROG=roche.com;7203=toyota.com;6758=sony.com;9984=group.softbank;0700=tencent.com;9988=alibabagroup.com;BABA=alibabagroup.com;BIDU=baidu.com;NVO=novonordisk.com;PFE=pfizer.com;ABBV=abbvie.com;PG=pg.com;ABNB=airbnb.com;SPOT=spotify.com');
+ // Indices display an exchange/index provider brand, not a made-up index logo.
+ const INDEX_BRANDS=brandMap(
+  'SPX=spglobal.com;NDX=nasdaq.com;IXIC=nasdaq.com;DJI=spglobal.com;RUT=lseg.com;VIX=cboe.com;FTSEMIB=ftserussell.com;DAX=stoxx.com;CAC=euronext.com;FTSE=lseg.com;STOXX50E=stoxx.com;SXXP=stoxx.com;N225=nikkei.com;TOPIX=jpx.co.jp;HSI=hsi.com.hk;CSI300=csindex.com.cn;000001=sse.com.cn;NIFTY50=nseindia.com;SENSEX=bseindia.com;IBOV=b3.com.br;TSX=tsx.com;ASX200=asx.com;MSCIWORLD=msci.com;MSCIEMERGING=msci.com;MSCIACWI=msci.com;SMI=six-group.com');
+ const unavailableLogos=new Set();
+ function brandLogo(kind,symbol){
+  const table=kind==='index'?INDEX_BRANDS:STOCK_BRANDS;
+  const domain=Object.hasOwn(table,String(symbol||'').toUpperCase())?table[String(symbol||'').toUpperCase()]:'';
+  return domain?'https://www.google.com/s2/favicons?domain='+encodeURIComponent(domain)+'&sz=128':'';
+ }
+ function setSelectedLogo(id,url){
+  const img=$(id),frame=img?.parentElement;
+  if(!img||!frame||img.dataset.logo===url)return;
+  img.dataset.logo=url;img.hidden=true;frame.hidden=true;
+  img.onload=()=>{if(img.dataset.logo===url){img.hidden=false;frame.hidden=false;}};
+  img.onerror=()=>{if(img.dataset.logo===url){unavailableLogos.add(url);img.hidden=true;frame.hidden=true;}};
+  if(!url||unavailableLogos.has(url)){img.removeAttribute('src');return;}
+  img.src=url;
+ }
+ function addOptionLogo(btn,url){
+  if(!url||unavailableLogos.has(url))return;
+  const img=document.createElement('img');
+  img.className='cap-option-logo';img.width=24;img.height=24;img.alt='';
+  img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';
+  img.onerror=()=>{unavailableLogos.add(url);img.remove();};
+  img.src=url;btn.prepend(img);
+ }
  const state={
    source:{...SOURCE_DEFAULT},target:{...TARGET_DEFAULT},kind:'crypto',
    quotes:new Map(),lastRemote:0,busy:false,chosenWallet:null,walletSnapshotSignature:'',
@@ -87,7 +126,8 @@
  const assetSafe=asset=>({
   id:String(asset.id||'').replace(/[^a-z0-9-]/gi,'').slice(0,100),
   name:String(asset.name||'').slice(0,80),
-  symbol:String(asset.symbol||'').replace(/[^\w.]/g,'').slice(0,18).toUpperCase()
+  symbol:String(asset.symbol||'').replace(/[^\w.]/g,'').slice(0,18).toUpperCase(),
+  image:coinLogo(asset.large||asset.thumb||asset.image)
  });
  function parseUserNumber(raw){
   let s=String(raw||'').replace(/[^\d.,\-]/g,'');
@@ -125,7 +165,7 @@
  function normalizeMarket(row){
   const id=String(row?.id||'').toLowerCase(),cap=number(row?.market_cap),price=number(row?.current_price),supply=number(row?.circulating_supply);
   if(!id||!positive(cap)||!positive(price))return null;
-  return {id,cap,price,supply:positive(supply)?supply:NaN,updated:Date.now(),name:String(row?.name||id),symbol:String(row?.symbol||'').toUpperCase()};
+  return {id,cap,price,supply:positive(supply)?supply:NaN,updated:Date.now(),name:String(row?.name||id),symbol:String(row?.symbol||'').toUpperCase(),image:coinLogo(row?.image)};
  }
  function restoreQuotes(){
   try{
@@ -329,6 +369,9 @@
   const source=quote(state.source.id),ref=currentReference();
   set('capSourceSymbol',state.source.symbol);set('capSourceName',state.source.name);set('capSourceId',state.source.id);
   set('capTargetSymbol',state.target.symbol);set('capTargetName',state.target.name);set('capTargetId',state.target.id);
+  setSelectedLogo('capSourceLogo',quote(state.source.id)?.image||state.source.image||'');
+  setSelectedLogo('capTargetLogo',quote(state.target.id)?.image||state.target.image||'');
+  setSelectedLogo('capManualLogo',manualPicked?brandLogo(manualPicked.kind,manualPicked.symbol):'');
   set('capSourceCap',money(source?.cap));set('capSourcePrice',priceMoney(source?.price));
   set('capSourceSupply',positive(source?.supply)?fmt(source.supply,0)+' '+state.source.symbol:'—');
   set('capTargetCap',money(ref.cap));
@@ -372,6 +415,7 @@
    const symbol=document.createElement('span');symbol.textContent=item.symbol;
    const name=document.createElement('span');name.textContent=item.name;
    btn.append(symbol,name);
+   addOptionLogo(btn,item.image);
    btn.addEventListener('click',()=>{
     if(type==='source'){state.source=item;$('capSourceSearch').value=item.symbol+' · '+item.name;}
     else{state.target=item;$('capTargetSearch').value=item.symbol+' · '+item.name;}
@@ -570,6 +614,7 @@
      const ticker=document.createElement('span');ticker.textContent=entry[0];
      const label=document.createElement('span');label.textContent=entry[1]+' · '+entry[2];
      btn.append(ticker,label);
+     addOptionLogo(btn,brandLogo(state.kind,entry[0]));
      btn.addEventListener('click',()=>pickManual(entry));
      host.append(btn);
    });

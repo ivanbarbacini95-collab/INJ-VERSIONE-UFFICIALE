@@ -1,6 +1,9 @@
 (() => {
   'use strict';
-  const GOALS = [0.5, 1, 3, 5, 10, 15, 20, 30, 50];
+  const DEFAULT_GOALS = [0.5, 1, 3, 5, 10, 15, 20, 30, 50];
+  const GOALS_KEY = 'inj_node_reward_ladder_goals_v1';
+  const MAX_GOALS = 60;
+  let GOALS = DEFAULT_GOALS.slice();
   const WALLETS_KEY = 'inj_monitor_wallets_v1';
   const SUMMARIES_KEY = 'inj_monitor_summaries_v1';
   const SELECTED_KEY = 'inj_node_comparison_selected_wallet_v1';
@@ -31,6 +34,91 @@
     visible: !document.hidden
   };
   const stepEls = [];
+
+function goalDigits(value) {
+  return Number.isInteger(value) ? 0 : 2;
+}
+
+function goalLabel(value) {
+  return usd(value,goalDigits(value));
+}
+
+function normalizeGoals(values) {
+  if (!Array.isArray(values)) return DEFAULT_GOALS.slice();
+  const unique = new Set();
+  for (const value of values) {
+    const n = Number(value);
+    if (!Number.isFinite(n) || n < 0.01 || n > 1000000) continue;
+    if (Math.abs(n * 100 - Math.round(n * 100)) > 1e-6) continue;
+    unique.add(Math.round(n * 100) / 100);
+  }
+  return [...unique].sort((a,b)=>a-b).slice(0,MAX_GOALS);
+}
+
+function loadGoals() {
+  const saved = read(GOALS_KEY,null);
+  GOALS = saved === null ? DEFAULT_GOALS.slice() : normalizeGoals(saved);
+}
+
+function showGoalError(message) {
+  const node = $('ladderGoalError');
+  if (!node) return;
+  set(node,message);
+  node.hidden = !message;
+}
+
+function openGoalEditor(open) {
+  const editor = $('ladderGoalEditor');
+  const toggle = $('ladderAddGoal');
+  editor.hidden = !open;
+  toggle.setAttribute('aria-expanded',String(open));
+  toggle.classList.toggle('is-open',open);
+  if (open) {
+    showGoalError('');
+    $('ladderGoalInput').focus({preventScroll:true});
+  } else {
+    $('ladderGoalInput').value = '';
+    showGoalError('');
+  }
+}
+
+function updateGoals(values) {
+  const next = normalizeGoals(values);
+  try {
+    localStorage.setItem(GOALS_KEY,JSON.stringify(next));
+  } catch (_) {
+    showGoalError(t('Impossibile salvare gli obiettivi sul dispositivo.','Unable to save goals on this device.'));
+    return false;
+  }
+  GOALS = next;
+  buildCards();
+  applyLanguage();
+  render();
+  return true;
+}
+
+function addGoal(event) {
+  event.preventDefault();
+  const input = $('ladderGoalInput');
+  const raw = input.value.trim().replace(',','.');
+  const number = Number(raw);
+  if (!raw || !Number.isFinite(number) || number < 0.01 || number > 1000000 ||
+    Math.abs(number * 100 - Math.round(number * 100)) > 1e-6) {
+    showGoalError(t('Inserisci un importo valido da $0,01 a $1.000.000, con massimo 2 decimali.',
+      'Enter a valid amount from $0.01 to $1,000,000 with up to 2 decimals.'));
+    return;
+  }
+  const goal = Math.round(number * 100) / 100;
+  if (GOALS.includes(goal)) {
+    showGoalError(t('Questo obiettivo è già presente.','This goal already exists.'));
+    return;
+  }
+  if (GOALS.length >= MAX_GOALS) {
+    showGoalError(t('Hai raggiunto il limite di 60 obiettivi.','You have reached the limit of 60 goals.'));
+    return;
+  }
+  if (updateGoals([...GOALS,goal])) openGoalEditor(false);
+}
 
   function loadWallets() {
     const raw = read(WALLETS_KEY, []);
@@ -72,7 +160,21 @@
     set($('ladderAll'),'All Wallets');
     set($('ladderIntro'),t('Ogni dollaro maturato avvicina al traguardo successivo. Le barre seguono i reward disponibili, non il patrimonio investito.',
       'Each earned dollar gets you closer to the next milestone. Bars track unclaimed rewards, not invested holdings.'));
-    set($('ladderRoadmapEyebrow'),t('NOVE TRAGUARDI','NINE MILESTONES'));
+    set($('ladderRoadmapEyebrow'),String(GOALS.length)+' '+t(GOALS.length===1?'TRAGUARDO':'TRAGUARDI',GOALS.length===1?'MILESTONE':'MILESTONES'));
+    $('ladderAddGoal').setAttribute('aria-label',t('Aggiungi obiettivo','Add goal'));
+    $('ladderAddGoal').title=t('Aggiungi obiettivo','Add goal');
+    set($('ladderGoalLabel'),t('NUOVO OBIETTIVO IN USD','NEW GOAL IN USD'));
+    set($('ladderGoalSave'),t('Aggiungi','Add'));
+    $('ladderGoalCancel').setAttribute('aria-label',t('Annulla','Cancel'));
+    $('ladderGoalCancel').title=t('Annulla','Cancel');
+    const empty=$('ladderSteps').querySelector('.ladder-goal-empty');
+    if(empty)set(empty,t('Nessun obiettivo. Tocca + per aggiungere il primo target.','No goals yet. Tap + to add your first target.'));
+    stepEls.forEach(item=>{
+      const label=t('Rimuovi obiettivo','Remove goal')+' '+goalLabel(item.goal);
+      item.remove.setAttribute('aria-label',label);
+      item.remove.title=label;
+      set(item.money,goalLabel(item.goal));
+    });
     set($('ladderRoadmapTitle'),t('La tua progressione','Your progress'));
     set($('ladderRewardTitle'),t('REWARD DISPONIBILI','UNCLAIMED REWARDS'));
     set($('ladderPriceTitle'),'INJ / USD');
@@ -85,32 +187,44 @@
     stepEls.forEach((s,i)=>set(s.number,String(i+1).padStart(2,'0')));
   }
   function buildCards() {
-    const host = $('ladderSteps');
-    host.textContent = '';
-    GOALS.forEach((goal,i)=>{
-      const card = document.createElement('article');
-      card.className = 'ladder-step';
-      card.dataset.state = 'pending';
-      card.innerHTML =
-        '<div class="ladder-step-top"><div class="ladder-step-target"><span class="ladder-step-number"></span><strong class="ladder-step-money"></strong></div><span class="ladder-step-status"></span></div>' +
-        '<div class="ladder-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div class="ladder-fill"></div><span class="ladder-beacon" aria-hidden="true"></span></div>' +
-        '<div class="ladder-step-foot"><span class="ladder-step-progress"></span><span class="ladder-step-eta"></span></div>';
-      host.appendChild(card);
-      const item = {
-        card,
-        number: card.querySelector('.ladder-step-number'),
-        money: card.querySelector('.ladder-step-money'),
-        status: card.querySelector('.ladder-step-status'),
-        track: card.querySelector('.ladder-track'),
-        fill: card.querySelector('.ladder-fill'),
-        progress: card.querySelector('.ladder-step-progress'),
-        eta: card.querySelector('.ladder-step-eta')
-      };
-      set(item.number,String(i+1).padStart(2,'0'));
-      set(item.money,usd(goal,goal<1?2:0));
-      stepEls.push(item);
-    });
+  const host = $('ladderSteps');
+  host.textContent = '';
+  stepEls.length = 0;
+  if (!GOALS.length) {
+    const empty = document.createElement('p');
+    empty.className = 'ladder-goal-empty';
+    empty.textContent = t('Nessun obiettivo. Tocca + per aggiungere il primo target.',
+      'No goals yet. Tap + to add your first target.');
+    host.appendChild(empty);
+    return;
   }
+  GOALS.forEach((goal,i)=>{
+    const card = document.createElement('article');
+    card.className = 'ladder-step';
+    card.dataset.state = 'pending';
+    card.innerHTML =
+      '<div class="ladder-step-top"><div class="ladder-step-target"><span class="ladder-step-number"></span><strong class="ladder-step-money"></strong></div>' +
+      '<div class="ladder-step-tools"><span class="ladder-step-status"></span><button type="button" class="ladder-remove-goal" aria-label="Rimuovi obiettivo" title="Rimuovi obiettivo"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V5h6v2M8 10v9h8l1-9M10.5 12v5M13.5 12v5"/></svg></button></div></div>' +
+      '<div class="ladder-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div class="ladder-fill"></div><span class="ladder-beacon" aria-hidden="true"></span></div>' +
+      '<div class="ladder-step-foot"><span class="ladder-step-progress"></span><span class="ladder-step-eta"></span></div>';
+    host.appendChild(card);
+    const item = {
+      card, goal,
+      number: card.querySelector('.ladder-step-number'),
+      money: card.querySelector('.ladder-step-money'),
+      status: card.querySelector('.ladder-step-status'),
+      remove: card.querySelector('.ladder-remove-goal'),
+      track: card.querySelector('.ladder-track'),
+      fill: card.querySelector('.ladder-fill'),
+      progress: card.querySelector('.ladder-step-progress'),
+      eta: card.querySelector('.ladder-step-eta')
+    };
+    item.remove.dataset.goal = String(goal);
+    set(item.number,String(i+1).padStart(2,'0'));
+    set(item.money,goalLabel(goal));
+    stepEls.push(item);
+  });
+}
   function pickWallet() {
     const picker = $('ladderWalletPicker');
     picker.textContent = '';
@@ -324,7 +438,7 @@
     const current=d.ready?Math.max(0,d.rewardUsd):null;
     const active=GOALS.findIndex(goal=>current!==null && goal>current);
     const next=active<0?null:GOALS[active];
-    set($('ladderNextTarget'),current===null?'—':next!==null?t('PROSSIMO','NEXT')+' '+usd(next,next<1?2:0):t('TUTTI COMPLETATI','ALL COMPLETE'));
+    set($('ladderNextTarget'),!GOALS.length?t('NESSUN TARGET','NO TARGETS'):current===null?'—':next!==null?t('PROSSIMO','NEXT')+' '+goalLabel(next):t('TUTTI COMPLETATI','ALL COMPLETE'));
     GOALS.forEach((target,i)=>{
       const item=stepEls[i],previous=i?GOALS[i-1]:0;
       const r=current!==null?rung(current,previous,target):{state:'pending',percent:0};
@@ -334,7 +448,7 @@
       if(item.fill.style.width!==width)item.fill.style.width=width;
       if(item.track.style.getPropertyValue('--ladder-progress')!==width)item.track.style.setProperty('--ladder-progress',width);
       item.track.setAttribute('aria-valuenow',String(Math.round(p)));
-      item.track.setAttribute('aria-label',usd(target,target<1?2:0)+' '+Math.round(p)+'%');
+      item.track.setAttribute('aria-label',goalLabel(target)+' '+Math.round(p)+'%');
       set(item.status,r.state==='done'?t('COMPLETATO','COMPLETE'):r.state==='active'?t('IN CORSO','ACTIVE'):t('IN ATTESA','WAITING'));
       const inSegment=current===null?null:Math.min(target,Math.max(previous,current));
       set(item.progress,inSegment===null?'—':usd(inSegment-previous,3)+' / '+usd(target-previous,3));
@@ -359,6 +473,15 @@
       pickWallet();render();
     });
     $('ladderRefresh').addEventListener('click',()=>{void Promise.allSettled([syncNetwork(),refreshPrice()]);});
+    $('ladderAddGoal').addEventListener('click',()=>openGoalEditor($('ladderGoalEditor').hidden));
+    $('ladderGoalCancel').addEventListener('click',()=>openGoalEditor(false));
+    $('ladderGoalEditor').addEventListener('submit',addGoal);
+    $('ladderSteps').addEventListener('click',(event)=>{
+      const button=event.target.closest('.ladder-remove-goal');
+      if(!button || !$('ladderSteps').contains(button))return;
+      const goal=Number(button.dataset.goal);
+      if(Number.isFinite(goal) && GOALS.includes(goal))updateGoals(GOALS.filter(value=>value!==goal));
+    });
     document.addEventListener('visibilitychange',()=>{
       state.visible=!document.hidden;
       if(state.visible){void Promise.allSettled([syncNetwork(),refreshPrice()]);openPriceSocket();render();}
@@ -371,6 +494,7 @@
     window.addEventListener('pagehide',stopSocket);
     window.addEventListener('storage',(event)=>{
       if(event.key===LANGUAGE_KEY){applyLanguage();pickWallet();render();}
+      if(event.key===GOALS_KEY){loadGoals();buildCards();applyLanguage();render();}
       if(event.key===SELECTED_KEY && state.mode==='single'){
         const next=state.wallets.find(x=>x.address===event.newValue);
         if(next){state.selected=next.address;pickWallet();render();}
@@ -379,6 +503,7 @@
   }
   function initialize(){
     loadWallets();
+    loadGoals();
     buildCards();
     applyLanguage();
     pickWallet();

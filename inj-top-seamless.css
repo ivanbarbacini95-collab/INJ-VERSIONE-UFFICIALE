@@ -106,3 +106,105 @@
     -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
   }
 }
+
+/* INJ Node · Seamless top canvas v2 · 2026-10-28
+   Avoid three independent gradient layers with different paint heights.
+   Keep one root theme gradient and transparent page shells. Native status
+   chrome, safe-area geometry, scrolling and content layout stay untouched. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  html[data-theme][data-inj-page]:not([data-inj-page="workspace"]):not([data-inj-page="reward-ladder"]):not([data-inj-page="injc-etf"]),
+  html[data-inj-market][data-theme] {
+    background-color:var(--theme-canvas,var(--bg,var(--canvas,#07121b)))!important;
+    background-image:var(--page-gradient,none)!important;
+    background-repeat:no-repeat!important;
+    background-position:center top!important;
+    background-attachment:scroll!important;
+  }
+  html[data-theme][data-inj-page]:not([data-inj-page="workspace"]):not([data-inj-page="reward-ladder"]):not([data-inj-page="injc-etf"]) body,
+  html[data-inj-market][data-theme] body {
+    background-color:transparent!important;
+    background-image:none!important;
+  }
+  html[data-theme][data-inj-page="index"] body #entryGate.entry-gate,
+  html[data-theme][data-inj-page="index"] body #entryGate.entry-gate > .entry-gate-shell:not(.first-access) {
+    background-color:transparent!important;
+    background-image:none!important;
+  }
+}
+
+/* INJ NODE · Full-bleed native-theme canvas v4 · 2026-10-28
+   Replaces the former 152px dark mask. The theme's OWN gradient paints the
+   page from its first web pixel; never dim it with a synthetic status fade.
+   WebKit controls native PWA status chrome: CSS cannot paint that OS region.
+   Keep safe-area paddings, scrolling, themes and animation unchanged. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  /* One gradient surface at document root, full width and full height. */
+  html[data-theme][data-inj-page]:not([data-inj-page="workspace"]):not([data-inj-page="reward-ladder"]):not([data-inj-page="injc-etf"]),
+  html[data-inj-market][data-theme] {
+    background-color:var(--theme-canvas,var(--bg,var(--canvas,#07121b)))!important;
+    background-image:var(--page-gradient,none)!important;
+    background-repeat:no-repeat!important;
+    background-position:center top!important;
+    background-attachment:scroll!important;
+  }
+  html[data-theme][data-inj-page]:not([data-inj-page="workspace"]):not([data-inj-page="reward-ladder"]):not([data-inj-page="injc-etf"]) body,
+  html[data-inj-market][data-theme] body {
+    background-color:transparent!important;
+    background-image:none!important;
+  }
+  /* Home and its shell share the exact root canvas. This eliminates
+     the horizontal edge caused by independently scaled page gradients. */
+  html[data-theme][data-inj-page="index"] body #entryGate.entry-gate,
+  html[data-theme][data-inj-page="index"] body #entryGate.entry-gate > .entry-gate-shell:not(.first-access) {
+    background-color:transparent!important;
+    background-image:none!important;
+  }
+  /* A screen-sized overlay cannot see the root paint beneath itself.
+     Render the unmasked theme gradient within these genuine full screens. */
+  html[data-theme][data-inj-page="index"] body #injMarketEventsOverlay.inj-events-overlay,
+  html[data-theme][data-inj-page="index"] body :is(#performanceTimelineView.open,#converterView.open) {
+    background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+    background-image:var(--page-gradient,none)!important;
+    background-repeat:no-repeat!important;
+    background-position:center top!important;
+    background-attachment:scroll!important;
+  }
+}
+
+/* v5 · Never restart the selected theme underneath scrolled content.
+   One viewport-locked gradient is painted on the document root. Other
+   page/shell backgrounds stay transparent; fixed ambient animations remain.
+   Bespoke Workspace, Reward Ladder and ETF canvases are intentionally
+   excluded and retain their own designs. */
+html[data-theme][data-inj-page]:not([data-inj-page="workspace"]):not([data-inj-page="reward-ladder"]):not([data-inj-page="injc-etf"]),
+html[data-inj-market][data-theme]{
+ background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+ background-image:var(--page-gradient,none)!important;
+ background-position:center center!important;
+ background-size:100% 100%!important;
+ background-repeat:no-repeat!important;
+ background-attachment:fixed!important;
+}
+html[data-theme][data-inj-page]:not([data-inj-page="workspace"]):not([data-inj-page="reward-ladder"]):not([data-inj-page="injc-etf"]) body,
+html[data-inj-market][data-theme] body{
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+}
+html[data-theme][data-inj-page]:not([data-inj-page="workspace"]):not([data-inj-page="reward-ladder"]):not([data-inj-page="injc-etf"]) body
+:is(.app-shell,.treasury-shell,.rewards-shell,.live-page,.book-page,.cc-shell,.cap-shell,.wealth-shell),
+html[data-inj-market][data-theme] body > .shell{
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+}
+/* Header chrome is not a second, darker mask. Actual market cards retain
+   their surfaces, shadows, labels, data and click regions. */
+html[data-theme] body :is(
+ .app-shell > .topbar,.treasury-header,.rewards-header,
+ .terminal-header,.book-topbar,.cc-topbar,.cap-header,
+ .wealth-header,.shell > .header
+){
+ background-color:transparent!important;
+ background-image:none!important;
+}

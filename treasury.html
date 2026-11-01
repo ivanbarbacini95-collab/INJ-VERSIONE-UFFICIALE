@@ -20,8 +20,8 @@
 <script defer src="viewport.js?v=16.06.00"></script>
   <link rel="stylesheet" href="./top-clarity.css?v=16.00.88">
 <link rel="stylesheet" href="navigation.css?v=160074">
-<script defer src="navigation.js?v=20261027-g1"></script>
-<script defer src="i18n.js?v=160124"></script>
+<script defer src="navigation.js?v=20261029theme6"></script>
+<script defer src="./i18n.js?v=20261028allsections1"></script>
 
 <link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
 <link rel="stylesheet" href="./treasury-ownership.css?v=16102501">
@@ -57,8 +57,85 @@
 <script defer src="./inj-node-insights-config.js?v=1"></script>
 <script defer src="./inj-node-telemetry.js?v=1"></script>
 
-<link rel="stylesheet" href="./inj-top-seamless.css?v=20261028seam1"/>
+<link rel="stylesheet" href="./inj-top-seamless.css?v=20261029continuity5"/>
 <script defer src="./inj-top-seamless.js?v=20261028seam1"></script>
+<link rel="stylesheet" href="./inj-fluid-screen-fit.css?v=20261028fullmonitor1"/>
+<link rel="stylesheet" href="./inj-monitor-readability.css?v=20261028readable3"/>
+<link rel="stylesheet" href="./home-font-unified.css?v=20261029homefont1"/>
+<link rel="stylesheet" href="./inj-editorial-typography.css?v=20261029fontbalance3">
+<link rel="stylesheet" href="./info-card-density-20261029.css?v=20261029compact1"/>
+  <style id="treasury-hero-value-order-v1">
+    /* Treasury hero: currency is primary, INJ quantity is secondary.
+       Reuses the existing live values and desktop/mobile grid areas. */
+    .treasury-hero-copy .treasury-hero-worth {
+      grid-area:total;
+      align-self:end;
+      max-width:100%;
+      min-width:0;
+      margin-top:2px;
+      color:var(--text);
+      font-size:clamp(2.1rem,5.8vw,4.15rem)!important;
+      font-weight:400!important;
+      line-height:1.08;
+      letter-spacing:-.04em;
+      font-variant-numeric:tabular-nums;
+      overflow-wrap:anywhere;
+      opacity:1;
+      text-align:left;
+    }
+    .treasury-hero-copy .treasury-total-display {
+      grid-area:worth;
+      align-self:start;
+      justify-content:flex-start;
+      max-width:100%;
+      min-width:0;
+      margin-top:8px;
+    }
+    .treasury-hero-copy .treasury-total-major {
+      font-size:clamp(1.05rem,2vw,1.45rem)!important;
+      font-weight:400!important;
+      line-height:1.2!important;
+      letter-spacing:-.015em!important;
+      color:var(--muted-strong);
+    }
+    .treasury-hero-copy .treasury-total-decimals {
+      font-size:clamp(.98rem,1.9vw,1.33rem)!important;
+      font-weight:400!important;
+      line-height:1.2!important;
+      letter-spacing:-.015em!important;
+      color:var(--muted-strong);
+    }
+    .treasury-hero-copy .treasury-total-display > small {
+      font-size:.63rem;
+      font-weight:500!important;
+      letter-spacing:.12em;
+      color:var(--muted);
+      transform:none;
+    }
+    @media(max-width:760px) {
+      .treasury-hero-copy .treasury-hero-worth {
+        font-size:clamp(1.85rem,8.3vw,2.8rem)!important;
+        text-align:center;
+      }
+      .treasury-hero-copy .treasury-total-display {
+        justify-content:center;
+        margin-top:4px;
+      }
+    }
+    @media(max-width:430px) {
+      .treasury-hero-copy .treasury-hero-worth {
+        font-size:clamp(1.75rem,8.2vw,2.4rem)!important;
+      }
+    }
+  </style>
+<link rel="stylesheet" href="./inj-inter-light-20261029.css?v=interlight-global-1"/>
+<link rel="stylesheet" href="./inj-font-switcher-20261029.css?v=official-font7"/>
+<script src="./inj-font-switcher-20261029.js?v=official-font7"></script>
+<script>try{if(localStorage.getItem('inj_node_access_lock_v1'))document.documentElement.dataset.injLockPending='1';}catch(_){}</script>
+<link rel="stylesheet" href="./inj-local-access-lock-20261101.css?v=1">
+<link rel="stylesheet" href="./inj-ux-refinement-20261101.css?v=1">
+<script defer src="./inj-ux-refinement-20261101.js?v=1"></script>
+<script defer src="./inj-local-access-lock-20261101.js?v=1"></script>
 </head>
 <body>
   <div class="treasury-shell">
@@ -81,10 +158,10 @@
         <div class="treasury-hero-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="treasury-hero-copy">
           <span class="treasury-kicker">TOTAL MANAGED</span>
+          <div class="treasury-hero-worth" id="treasuryTotalWorth" aria-label="Controvalore del totale gestito">—</div>
           <div class="treasury-total-display" id="treasuryTotalDisplay" aria-label="Totale INJ gestiti">
             <strong class="treasury-total-major" id="treasuryTotalMajor">—</strong><strong class="treasury-total-decimals" id="treasuryTotalDecimals"></strong><small>INJ</small>
           </div>
-          <div class="treasury-hero-worth" id="treasuryTotalWorth">—</div>
           <div class="treasury-hero-pnl neutral" id="treasuryPnl24" aria-label="Profit loss Treasury ultime 24 ore">
             <span>P/L 24H</span>
             <strong id="treasuryPnl24Value">—</strong>
@@ -243,7 +320,7 @@
     <footer class="inj-long-page-signature inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
 </main>
   </div>
-  <script src="./treasury.js?v=16.10.25.01" defer></script>
+  <script src="./treasury.js?v=20261029-syncfix1" defer></script>
 
 
 </body>

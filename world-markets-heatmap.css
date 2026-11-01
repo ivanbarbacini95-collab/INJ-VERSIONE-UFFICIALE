@@ -1,0 +1,886 @@
+/* INJ Node / native World Markets 2026-10-29.
+ * Vertical mobile-first sections. No TradingView web components. */
+html[data-inj-market] #injWorldMarket[hidden]{display:none!important}
+html[data-inj-market] #injWorldMarket{display:block;min-width:0;width:100%;max-width:none;padding:0 0 max(40px,env(safe-area-inset-bottom));color:var(--text);font:inherit}
+html[data-inj-market][data-market-section="world"] body{overflow-y:auto!important;overflow-x:clip!important;height:auto!important;max-height:none!important;touch-action:pan-x pan-y!important}
+html[data-inj-market][data-market-section="world"] .shell,html[data-inj-market][data-market-section="world"] main{max-height:none!important;min-height:100dvh!important;overflow:visible!important;transform:none!important}
+html[data-inj-market][data-market-section="world"] .shell{width:100%!important;max-width:none!important}
+html[data-inj-market] .inj-wm-hero{padding:3px 0 13px;margin:0!important}
+html[data-inj-market] .inj-world-eyebrow{color:var(--accent);display:block;font-weight:800;font-size:10px;letter-spacing:.14em;margin:0 0 6px}
+html[data-inj-market] #injWorldHeading{font-size:clamp(26px,4vw,42px);line-height:1.08;letter-spacing:-.045em;margin:3px 0 7px}
+html[data-inj-market] #injWorldIntro{margin:0;color:var(--muted);font-size:clamp(12px,1.1vw,15px);line-height:1.65;max-width:780px}
+html[data-inj-market] .inj-world-section{min-width:0;width:100%;margin:13px 0 0;padding:clamp(13px,1.8vw,23px);border:1px solid color-mix(in srgb,var(--line) 80%,transparent);border-radius:17px;background:color-mix(in srgb,var(--panel,#0b1525) 35%,transparent);scroll-margin-top:18px}
+html[data-inj-market] .inj-wm-section-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px 20px;border-bottom:1px solid var(--line);padding:0 0 13px;margin:0 0 14px}
+html[data-inj-market] .inj-wm-section-head>div{min-width:0;flex:1}
+html[data-inj-market] .inj-wm-eyebrow{font-size:10px;font-weight:850;color:var(--accent);letter-spacing:.13em}
+html[data-inj-market] .inj-wm-section-head h3{font-size:clamp(18px,2.6vw,26px);line-height:1.2;font-weight:850;letter-spacing:-.025em;margin:4px 0}
+html[data-inj-market] .inj-wm-section-head p{font-size:11px;line-height:1.55;color:var(--muted);margin:5px 0 0}
+html[data-inj-market] .inj-wm-section-status{font-size:10px;line-height:1.5;color:var(--muted);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+html[data-inj-market] .inj-wm-explainer{font-size:11px;line-height:1.6;color:var(--muted);margin:4px 0 13px}
+html[data-inj-market] .inj-wm-quick-nav{margin:16px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+html[data-inj-market] .inj-wm-quick-nav button{min-width:0;min-height:43px;padding:9px 11px;cursor:pointer;text-align:center;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--accent) 5%,var(--panel));color:var(--text);font:inherit;font-size:11px;font-weight:800;line-height:1.32;touch-action:manipulation}
+html[data-inj-market] .inj-wm-quick-nav button:hover,html[data-inj-market] .inj-wm-quick-nav button:focus-visible{border-color:var(--accent);outline-offset:3px}
+html[data-inj-market] .inj-wm-grid{display:grid;width:100%;min-width:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+html[data-inj-market] .inj-wm-grid.sectors{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+html[data-inj-market] .inj-wm-grid.indices{grid-template-columns:repeat(4,minmax(0,1fr))}
+html[data-inj-market] .inj-wm-tile{position:relative;min-width:0;min-height:112px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:14px;border:1px solid color-mix(in srgb,var(--line) 87%,transparent);border-radius:13px;background:color-mix(in srgb,var(--panel,#0b1525) 90%,transparent);isolation:isolate;overflow:hidden}
+html[data-inj-market] .inj-wm-tile::before{position:absolute;z-index:-1;inset:0;content:"";opacity:.88;pointer-events:none}
+html[data-inj-market] .inj-wm-tile.up::before{background:linear-gradient(125deg,color-mix(in srgb,var(--positive,#31d99c) var(--inj-wm-strength,20%),transparent),color-mix(in srgb,var(--positive,#31d99c) 3%,transparent) 85%)}
+html[data-inj-market] .inj-wm-tile.down::before{background:linear-gradient(125deg,color-mix(in srgb,var(--negative,#fa6b84) var(--inj-wm-strength,20%),transparent),color-mix(in srgb,var(--negative,#fa6b84) 3%,transparent) 85%)}
+html[data-inj-market] .inj-wm-tile.up{border-color:color-mix(in srgb,var(--positive,#2bc48d) 40%,var(--line))}
+html[data-inj-market] .inj-wm-tile.down{border-color:color-mix(in srgb,var(--negative,#ef6f82) 40%,var(--line))}
+html[data-inj-market] .inj-wm-tile-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;min-width:0}
+html[data-inj-market] .inj-wm-name{display:block;font-size:clamp(11px,1.05vw,15px);font-weight:850;line-height:1.25;letter-spacing:0;overflow-wrap:break-word}
+html[data-inj-market] .inj-wm-symbol{flex-shrink:0;color:var(--muted);font-size:10px;white-space:nowrap}
+html[data-inj-market] .inj-wm-tile-values{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:7px 10px;font-variant-numeric:tabular-nums}
+html[data-inj-market] .inj-wm-price{font-size:clamp(11px,1.18vw,16px);font-weight:760;line-height:1.35;overflow-wrap:anywhere}
+html[data-inj-market] .inj-wm-change{font-size:clamp(12px,1.2vw,16px);font-weight:900;line-height:1.2}
+html[data-inj-market] .inj-wm-tile.up .inj-wm-change{color:var(--positive,#31d99c)}
+html[data-inj-market] .inj-wm-tile.down .inj-wm-change{color:var(--negative,#fa6b84)}
+html[data-inj-market] .inj-wm-tile.neutral .inj-wm-change{color:var(--muted)}
+html[data-inj-market] .inj-wm-sector-card{min-height:124px;padding:16px}
+html[data-inj-market] .inj-wm-proxy{display:block;color:var(--muted);font-size:9px;letter-spacing:.025em;line-height:1.4}
+html[data-inj-market] .inj-wm-regions{display:grid;gap:17px;margin-top:19px}
+html[data-inj-market] .inj-wm-region{min-width:0}
+html[data-inj-market] .inj-wm-region-title{font-size:12px;font-weight:850;letter-spacing:.075em;margin:0 0 9px;text-transform:uppercase}
+html[data-inj-market] .inj-wm-stocks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:23px 18px}
+html[data-inj-market] .inj-wm-stock-sector{min-width:0}
+html[data-inj-market] .inj-wm-stock-heading{font-size:13px;font-weight:850;line-height:1.3;padding:0 0 9px;margin:0 0 9px;border-bottom:1px solid var(--line)}
+html[data-inj-market] .inj-wm-stock-sector .inj-wm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+html[data-inj-market] .inj-world-mapframe{position:relative;min-height:210px;width:100%;aspect-ratio:960/460;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:13px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 70%),color-mix(in srgb,var(--panel,#0a1625) 65%,transparent)}
+html[data-inj-market] #injWorldMapSvg{display:block;width:100%;height:100%;position:absolute;inset:0}
+html[data-inj-market] .inj-wm-land{fill:color-mix(in srgb,var(--accent) 12%,var(--panel));stroke:color-mix(in srgb,var(--accent) 28%,var(--line));stroke-width:1.2;stroke-linejoin:round}
+html[data-inj-market] .inj-wm-land path.up{fill:color-mix(in srgb,var(--positive,#31d99c) 33%,var(--panel));stroke:color-mix(in srgb,var(--positive,#31d99c) 64%,var(--line))}
+html[data-inj-market] .inj-wm-land path.down{fill:color-mix(in srgb,var(--negative,#fa6b84) 33%,var(--panel));stroke:color-mix(in srgb,var(--negative,#fa6b84) 64%,var(--line))}
+html[data-inj-market] .inj-world-map-pins{position:absolute;inset:0}
+html[data-inj-market] .inj-wm-pin{position:absolute;transform:translate(-50%,-50%);width:clamp(13px,2vw,20px);height:clamp(13px,2vw,20px);border-radius:100%;border:2px solid var(--bg);background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent),0 0 13px color-mix(in srgb,var(--accent) 18%,transparent);cursor:pointer;touch-action:manipulation;z-index:1}
+html[data-inj-market] .inj-wm-pin.up{background:var(--positive,#31d99c)}
+html[data-inj-market] .inj-wm-pin.down{background:var(--negative,#fa6b84)}
+html[data-inj-market] .inj-wm-pin:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+html[data-inj-market] .inj-wm-map-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px 15px;border-bottom:1px solid var(--line);padding:11px 0 14px;font-size:11px}
+html[data-inj-market] #injWorldMapCaption{color:var(--muted);font-size:10px}
+html[data-inj-market] #injWorldMapSpotlight{font-variant-numeric:tabular-nums;font-weight:850;font-size:12px}
+html[data-inj-market] .inj-wm-foot{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;justify-content:space-between;padding:20px 2px 25px;color:var(--muted);font-size:10px}
+html[data-inj-market] #injWorldDisclosure{width:100%;font-size:10px;line-height:1.6}
+html[data-inj-market] .inj-world-section.is-loading .inj-wm-section-status::before{content:"● ";color:var(--accent)}
+@media(max-width:1000px){
+ html[data-inj-market] .inj-wm-grid,html[data-inj-market] .inj-wm-grid.indices{grid-template-columns:repeat(3,minmax(0,1fr))}
+ html[data-inj-market] .inj-wm-stock-sector .inj-wm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:690px){
+ html[data-inj-market][data-market-section="world"] .shell{padding-left:clamp(8px,3vw,13px)!important;padding-right:clamp(8px,3vw,13px)!important}
+ html[data-inj-market] .inj-world-section{padding:12px 10px;margin-top:13px;border-radius:13px}
+ html[data-inj-market] .inj-wm-section-head{align-items:flex-start;gap:8px;margin-bottom:12px;padding-bottom:10px}
+ html[data-inj-market] .inj-wm-section-head h3{font-size:19px}
+ html[data-inj-market] .inj-wm-section-status{width:100%;font-size:10px}
+ html[data-inj-market] .inj-wm-quick-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ html[data-inj-market] .inj-wm-quick-nav button{font-size:11px;min-height:46px}
+ html[data-inj-market] .inj-wm-grid,html[data-inj-market] .inj-wm-grid.sectors,html[data-inj-market] .inj-wm-grid.indices{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ html[data-inj-market] .inj-wm-stocks{grid-template-columns:1fr;gap:20px}
+ html[data-inj-market] .inj-wm-tile{min-height:108px;padding:12px 10px;gap:11px;border-radius:12px}
+ html[data-inj-market] .inj-wm-sector-card{min-height:132px}
+ html[data-inj-market] .inj-wm-name{font-size:12px;line-height:1.35}
+ html[data-inj-market] .inj-wm-symbol{font-size:9px}
+ html[data-inj-market] .inj-wm-price{font-size:12px}
+ html[data-inj-market] .inj-wm-change{font-size:13px}
+ html[data-inj-market] .inj-wm-tile-values{display:grid;gap:6px;align-items:start;justify-content:start}
+ html[data-inj-market] .inj-world-mapframe{min-height:210px;aspect-ratio:1.65}
+ html[data-inj-market] .inj-wm-pin{width:16px;height:16px}
+ html[data-inj-market] .inj-wm-region-title{font-size:11px}
+ html[data-inj-market] .inj-wm-stock-sector .inj-wm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ html[data-inj-market] .inj-wm-stock-heading{font-size:13px}
+}
+@media(max-width:340px){
+ html[data-inj-market] .inj-wm-grid,html[data-inj-market] .inj-wm-grid.sectors,html[data-inj-market] .inj-wm-grid.indices{grid-template-columns:1fr}
+ html[data-inj-market] .inj-wm-tile-values{display:flex}
+}
+@media(prefers-reduced-motion:reduce){html[data-inj-market] .inj-wm-tile,html[data-inj-market] .inj-wm-pin{animation:none!important;transition:none!important}}
+/* Keep only the Market top-level tabs horizontally scrollable.
+   All *financial sectors* are now full-width sections below, not hidden tabs. */
+@media(max-width:760px){
+ html[data-inj-market] #injIntelRoot{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:4px;padding-bottom:10px}
+ html[data-inj-market] #injIntelRoot::-webkit-scrollbar{display:none}
+ html[data-inj-market] #injIntelRoot>[data-inj-intel-view]{flex:0 0 auto!important;white-space:nowrap;padding-inline:11px!important}
+}
+
+/* Explicit quote-feed status: accessible tap target without changing card geometry. */
+html[data-inj-market] .inj-wm-retry{
+ font:inherit;font-weight:800;font-size:11px;line-height:1.3;
+ color:var(--accent);background:transparent;border:1px solid var(--line);
+ border-radius:8px;padding:6px 10px;min-height:30px;cursor:pointer;
+ touch-action:manipulation;white-space:nowrap;
+}
+html[data-inj-market] .inj-wm-retry:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* 2026-10-29 · Global Markets: single, drag-scrollable category rail below the map.
+   Only the seven jump shortcuts change: all financial sections remain full-height. */
+html[data-inj-market] #injWorldMarket #injWorldQuickNav.inj-wm-quick-nav{
+  display:flex!important;
+  grid-template-columns:none!important;
+  flex-flow:row nowrap!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  padding:3px 5px 9px!important;
+  margin:11px 0 13px!important;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;
+  scroll-padding-inline:5px;
+  touch-action:auto!important;
+  cursor:grab;
+}
+html[data-inj-market] #injWorldMarket #injWorldQuickNav::-webkit-scrollbar{
+  display:none;
+}
+html[data-inj-market] #injWorldMarket #injWorldQuickNav > button[data-world-jump]{
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:max-content!important;
+  min-height:39px!important;
+  max-width:none!important;
+  padding:9px 14px!important;
+  white-space:nowrap!important;
+  font-weight:500!important;
+  font-size:11px!important;
+  line-height:1.15!important;
+  scroll-snap-align:start;
+  touch-action:manipulation;
+}
+html[data-inj-market] #injWorldMarket #injWorldQuickNav.is-dragging{
+  cursor:grabbing!important;
+  scroll-snap-type:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+@media(max-width:690px){
+ html[data-inj-market] #injWorldMarket #injWorldQuickNav.inj-wm-quick-nav{
+   gap:7px!important;
+   padding-inline:2px!important;
+ }
+ html[data-inj-market] #injWorldMarket #injWorldQuickNav > button[data-world-jump]{
+   min-height:42px!important;
+   padding-inline:12px!important;
+ }
+}
+
+/* Market session indicators: official NYSE/Nasdaq wall-clock schedule,
+   not an inference from a cached ticker price. Compact on phones. */
+html[data-inj-page="market"] .inj-wm-hero .inj-wm-live-session-line{
+ display:flex;
+ flex-direction:row;
+ flex-wrap:wrap;
+ align-items:center;
+ gap:7px 11px;
+ width:100%;
+ min-width:0;
+ padding-top:10px;
+ margin-top:3px;
+ border-top:1px solid color-mix(in srgb,var(--accent,#c8d3cf) 15%,transparent);
+ background:transparent;
+}
+html[data-inj-page="market"] .inj-wm-us-session-badge,
+html[data-inj-page="market"] .inj-wm-session-chip{
+ display:inline-flex;
+ align-items:center;
+ gap:6px;
+ width:max-content;
+ max-width:100%;
+ padding:4px 0;
+ border:0;
+ border-radius:0;
+ background:transparent;
+ box-shadow:none;
+ font-family:var(--inj-minimal-font,system-ui,-apple-system,sans-serif);
+ font-size:clamp(10px,2.65vw,11.5px);
+ font-weight:450;
+ letter-spacing:.045em;
+ line-height:1.3;
+ text-transform:uppercase;
+ white-space:nowrap;
+ color:var(--muted-strong,var(--muted,#bac9c9));
+}
+html[data-inj-page="market"] .inj-wm-us-session-badge::before,
+html[data-inj-page="market"] .inj-wm-session-chip::before{
+ content:"";
+ display:inline-block;
+ flex:0 0 5px;
+ width:5px;
+ height:5px;
+ border-radius:50%;
+ background:currentColor;
+ opacity:.85;
+}
+html[data-inj-page="market"] :is(.inj-wm-us-session-badge,.inj-wm-session-chip)[data-session="open"]{
+ color:var(--up,#53dcaa);
+}
+html[data-inj-page="market"] :is(.inj-wm-us-session-badge,.inj-wm-session-chip)[data-session="pre"],
+html[data-inj-page="market"] :is(.inj-wm-us-session-badge,.inj-wm-session-chip)[data-session="after"]{
+ color:var(--accent,#b8c5be);
+}
+html[data-inj-page="market"] .inj-wm-us-quote-age{
+ display:block;
+ flex:1 1 200px;
+ min-width:0;
+ font-family:var(--inj-minimal-font,system-ui,-apple-system,sans-serif);
+ font-size:clamp(10px,2.45vw,11px);
+ font-weight:400;
+ line-height:1.35;
+ letter-spacing:0;
+ color:var(--muted-strong,var(--muted,#a5b2b7));
+ text-align:left;
+ overflow-wrap:anywhere;
+}
+html[data-inj-page="market"] .inj-wm-us-quote-age[data-stale="true"]{
+ opacity:.77;
+}
+html[data-inj-page="market"] .inj-wm-region > .inj-wm-session-chip{
+ margin:0 0 8px;
+ padding:0;
+ font-size:10px;
+}
+@media(max-width:560px){
+ html[data-inj-page="market"] .inj-wm-hero .inj-wm-live-session-line{
+  gap:4px 9px;
+  padding-top:8px;
+ }
+ html[data-inj-page="market"] .inj-wm-us-quote-age{
+  flex:1 1 100%;
+  font-size:10px;
+ }
+}
+
+
+/* WORLD MARKET · focused full-screen financial mosaics · 2026-10-31
+   Each category is an independent view; the 8 destinations stay within
+   thumb reach across the bottom of the Market iframe. */
+html[data-inj-market][data-market-section="world"] body #injWorldMarket{
+  padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important;
+  min-width:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-world-section[hidden]{
+  display:none!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-world-section:not([hidden]){
+  display:block!important;
+  width:100%!important;
+  margin:5px 0 0!important;
+  padding:clamp(7px,1vw,12px)!important;
+  border-radius:12px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav.inj-wm-quick-nav{
+  position:fixed!important;
+  inset:auto 0 0 0!important;
+  width:100vw!important;max-width:none!important;
+  display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;
+  gap:5px!important;
+  margin:0!important;
+  padding:8px max(9px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(9px,env(safe-area-inset-left,0px))!important;
+  overflow-x:hidden!important;overflow-y:hidden!important;
+  height:auto!important;
+  border:0!important;border-top:1px solid color-mix(in srgb,var(--line) 75%,transparent)!important;
+  border-radius:0!important;
+  background:color-mix(in srgb,var(--panel,#0b1525) 97%,var(--bg,#07111f))!important;
+  box-shadow:0 -5px 24px rgba(0,0,0,.15)!important;
+  z-index:950!important;
+  touch-action:manipulation!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav > button[data-world-jump]{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;min-width:0!important;max-width:none!important;
+  min-height:37px!important;height:auto!important;
+  margin:0!important;padding:7px 3px!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;
+  text-align:center!important;
+  font-family:inherit!important;font-weight:560!important;
+  font-size:clamp(10px,1vw,12px)!important;line-height:1.2!important;
+  border:1px solid transparent!important;border-radius:9px!important;
+  background:transparent!important;color:var(--muted,var(--text))!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav > button.is-active{
+  color:var(--text,#fff)!important;
+  font-weight:670!important;
+  border-color:color-mix(in srgb,var(--accent) 35%,var(--line))!important;
+  background:color-mix(in srgb,var(--accent) 13%,var(--panel))!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav > button:focus-visible{
+  outline:2px solid var(--accent)!important;outline-offset:-2px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid,
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.sectors,
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.indices{
+  display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,165px),1fr))!important;
+  gap:clamp(5px,.7vw,9px)!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-stock-sector .inj-wm-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-stocks{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,265px),1fr))!important;
+  gap:12px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile{
+  min-height:88px!important;
+  padding:10px!important;
+  gap:5px!important;
+  border-radius:10px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-sector-card{
+  min-height:92px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head{
+  margin-bottom:9px!important;padding-bottom:8px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head h3{
+  font-size:clamp(16px,2vw,21px)!important;line-height:1.16!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-name{
+  font-size:clamp(11px,.9vw,13px)!important;line-height:1.25!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-price,
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-change{
+  font-size:clamp(11px,1.05vw,14px)!important;
+  overflow-wrap:anywhere!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-regions{
+  gap:9px!important;margin-top:9px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-world-mapframe{
+  min-height:170px!important;
+  aspect-ratio:2.25!important;
+}
+html[data-inj-market][data-inj-market-embedded="true"][data-market-section="world"] body #injWorldMarket .inj-wm-hero{
+  margin:0!important;padding:4px 2px 9px!important;
+}
+html[data-inj-market][data-inj-market-embedded="true"][data-market-section="world"] body #injWorldMarket .inj-wm-hero > .inj-world-eyebrow,
+html[data-inj-market][data-inj-market-embedded="true"][data-market-section="world"] body #injWorldMarket .inj-wm-hero > h2,
+html[data-inj-market][data-inj-market-embedded="true"][data-market-section="world"] body #injWorldMarket .inj-wm-hero > p{
+  display:none!important;
+}
+/* Make the constantly moving financial overview use the complete iframe
+   viewport width instead of inheriting the inner page's side gutters. */
+html[data-inj-market][data-market-section="world"] body #marketTicker.market-ticker{
+ /* Center the viewport-width ribbon relative to the Market page. */
+ display:block!important;box-sizing:border-box!important;
+ width:100vw!important;max-width:100vw!important;
+ margin-left:calc(50% - 50vw)!important;margin-right:0!important;
+ left:auto!important;right:auto!important;transform:none!important;
+ border-left:0!important;border-right:0!important;border-radius:0!important;
+}
+@media(max-width:900px){
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav.inj-wm-quick-nav{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:4px!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav > button[data-world-jump]{
+  min-height:37px!important;padding:5px 2px!important;font-size:10.5px!important;
+ }
+}
+@media(max-width:690px){
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid,
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.sectors,
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.indices{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile{
+  min-height:90px!important;padding:9px 8px!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-world-mapframe{
+  min-height:165px!important;aspect-ratio:1.85!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-status{
+  font-size:9px!important;
+ }
+}
+
+
+/* GLOBAL MARKET · minimal dense mosaics + exchange sessions · 31 Oct 2026 */
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile{
+ display:grid!important;grid-template-rows:auto 1fr!important;
+ align-content:space-between!important;justify-content:stretch!important;
+ min-height:72px!important;gap:8px!important;padding:9px 10px!important;
+ border-radius:10px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-sector-card{
+ min-height:72px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile-head{
+ display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;
+ min-width:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-symbol{
+ display:block!important;min-width:0!important;max-width:100%!important;
+ color:var(--text,#f2f8ff)!important;
+ font-size:clamp(11.5px,1.25vw,14px)!important;
+ font-weight:700!important;letter-spacing:.012em!important;line-height:1.24!important;
+ white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile-values{
+ display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+ justify-content:space-between!important;align-items:flex-end!important;
+ gap:5px 6px!important;min-width:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-price{
+ font-size:clamp(10px,1.05vw,13px)!important;font-weight:540!important;
+ overflow-wrap:anywhere!important;line-height:1.3!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-change{
+ font-size:clamp(11px,1.2vw,14px)!important;font-weight:690!important;
+ line-height:1.25!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile :is(.inj-wm-name,.inj-wm-tile-meta,.inj-wm-proxy){
+ display:none!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-subgroup-title,.inj-wm-explainer){
+ display:none!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+ align-items:center!important;gap:5px 8px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head>.inj-wm-section-status{
+ grid-column:1/-1!important;max-width:100%!important;
+ color:var(--muted)!important;font-size:9px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state{
+ display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;
+ gap:3px 9px;min-width:0;max-width:100%;
+ line-height:1.25;font-variant-numeric:tabular-nums;
+ white-space:normal;text-align:right;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state .inj-wm-session-main{
+ display:inline-flex;align-items:center;gap:7px;
+ font-size:clamp(9px,2.4vw,11px);font-weight:660;
+ letter-spacing:.018em;white-space:nowrap;color:var(--muted);
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state .inj-wm-session-main::before{
+ content:"";width:7px;height:7px;flex:none;border-radius:50%;
+ background:currentColor;box-shadow:0 0 0 3px color-mix(in srgb,currentColor 12%,transparent);
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state[data-session="open"] .inj-wm-session-main{
+ color:var(--positive,#36d59d);
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state[data-session="closed"] .inj-wm-session-main{
+ color:var(--muted-strong,#9aa6b7);
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state[data-session="mixed"] .inj-wm-session-main{
+ color:var(--accent,#82b5e6);
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state .inj-wm-session-next{
+ display:inline-flex;font-size:clamp(8px,2.1vw,10px);font-weight:450;
+ white-space:nowrap;color:var(--muted,#a3aebc);
+}
+/* The existing world map keeps its geometry, but gains a continuous
+   dawn/day/twilight/night veil as in an aircraft moving map. */
+html[data-inj-market] body #injWorldMarket .inj-world-mapframe{
+ /* Consistent illuminated Earth across every INJ Node theme, including light. */
+ isolation:isolate!important;
+ background:
+  radial-gradient(ellipse at var(--inj-wm-sun-x,55%) var(--inj-wm-sun-y,35%),rgba(105,181,255,.40) 0%,rgba(60,128,200,.17) 38%,transparent 77%),
+  linear-gradient(120deg,#204567 0%,#1a395b 54%,#142b4e 100%)!important;
+ color-scheme:dark;
+}
+html[data-inj-market] body #injWorldMarket #injWorldMapSvg .inj-wm-land path{
+ fill:#345777!important;
+ stroke:rgba(135,187,227,.67)!important;
+ stroke-width:1.1!important;opacity:.84!important;
+}
+html[data-inj-market] body #injWorldMarket #injWorldSolarShade.inj-wm-solar-shade{
+ opacity:1!important;visibility:visible!important;display:block!important;
+ mix-blend-mode:normal!important;filter:none!important;
+}
+html[data-inj-market] #injWorldMarket #injWorldMapSvg{
+ z-index:0!important;
+}
+html[data-inj-market] #injWorldMarket #injWorldSolarShade.inj-wm-solar-shade{
+ display:block;position:absolute;inset:0;
+ width:100%;height:100%;z-index:2;
+ pointer-events:none;opacity:1;
+ image-rendering:auto;
+}
+html[data-inj-market] #injWorldMarket #injWorldMapPins{
+ z-index:4!important;pointer-events:none!important;
+}
+html[data-inj-market] #injWorldMarket #injWorldMapPins .inj-wm-pin{
+ pointer-events:auto!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-pin[data-market-open="false"]{
+ background:#7d8694!important;
+ border-color:color-mix(in srgb,#a1aab7 55%,var(--bg,#081221))!important;
+ box-shadow:0 0 0 3px rgba(132,144,156,.17)!important;
+ animation:none!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-pin[data-market-open="true"].up{
+ background:var(--positive,#38e4a0)!important;
+ box-shadow:0 0 0 3px rgba(53,225,156,.24),0 0 10px rgba(53,225,156,.4)!important;
+ animation:injWmPinPositive 2.2s ease-in-out infinite!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-pin[data-market-open="true"].down{
+ background:var(--negative,#fb738d)!important;
+ box-shadow:0 0 0 3px rgba(251,104,134,.24),0 0 10px rgba(251,104,134,.4)!important;
+ animation:injWmPinNegative 2.2s ease-in-out infinite!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-pin[data-market-open="true"].neutral{
+ background:#a0abb7!important;
+ animation:none!important;
+}
+@keyframes injWmPinPositive{
+ 0%,100%{filter:brightness(.87);box-shadow:0 0 0 2px rgba(53,225,156,.18),0 0 5px rgba(53,225,156,.25)}
+ 50%{filter:brightness(1.2);box-shadow:0 0 0 6px rgba(53,225,156,.12),0 0 15px rgba(53,225,156,.54)}
+}
+@keyframes injWmPinNegative{
+ 0%,100%{filter:brightness(.87);box-shadow:0 0 0 2px rgba(251,104,134,.18),0 0 5px rgba(251,104,134,.25)}
+ 50%{filter:brightness(1.2);box-shadow:0 0 0 6px rgba(251,104,134,.12),0 0 15px rgba(251,104,134,.54)}
+}
+@media(max-width:690px){
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile{
+  min-height:70px!important;padding:8px!important;gap:5px!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head{
+  grid-template-columns:minmax(0,1fr)!important;gap:6px!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-exchange-state{
+  grid-column:1!important;justify-content:flex-start!important;text-align:left!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head>.inj-wm-section-status{
+  grid-column:1!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-market] #injWorldMarket .inj-wm-pin[data-market-open="true"].up,
+ html[data-inj-market] #injWorldMarket .inj-wm-pin[data-market-open="true"].down{
+  animation:none!important;filter:none!important;
+ }
+}
+
+
+/* Place exchange badge beside the category heading, with provider
+   freshness in its own unobtrusive row beneath. */
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head>div:first-child{
+ grid-column:1!important;grid-row:1!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head>.inj-wm-exchange-state{
+ grid-column:2!important;grid-row:1!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head>.inj-wm-section-status{
+ grid-column:1/-1!important;grid-row:2!important;
+}
+@media(max-width:690px){
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head>.inj-wm-exchange-state{
+  grid-column:1!important;grid-row:2!important;
+ }
+ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-section-head>.inj-wm-section-status{
+  grid-column:1!important;grid-row:3!important;
+ }
+}
+
+
+/* INJ NODE / Global Market · approved essential quote tile · 2026-10-31
+   Consistent across Indices, Sectors, Stocks, ETF, Forex, Commodities, Bonds
+   and Crypto; keeps the existing map, quote data and session badges intact. */
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid,
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.sectors,
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.indices{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,142px),1fr))!important;
+  gap:6px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-stock-sector .inj-wm-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile,
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-sector-card{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:62px!important;
+  gap:4px!important;
+  padding:8px 10px!important;
+  border-radius:9px!important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  letter-spacing:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile-head{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  flex-wrap:nowrap!important;
+  gap:7px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-symbol{
+  display:block!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font:700 12px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  letter-spacing:.005em!important;
+  color:var(--text,#edf2f9)!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-change{
+  display:inline-block!important;
+  flex:0 0 auto!important;
+  white-space:nowrap!important;
+  margin:0!important;
+  padding:0!important;
+  font:650 11.5px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  letter-spacing:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile-values{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  gap:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-price{
+  display:block!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  font:600 13px/1.24 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  letter-spacing:0!important;
+  color:var(--text,#edf2f9)!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:690px){
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid,
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.sectors,
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-grid.indices{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile,
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-sector-card{
+    min-height:62px!important;
+    padding:8px 9px!important;
+    gap:4px!important;
+  }
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile-head{
+    gap:6px!important;
+  }
+}
+
+
+/* Global Market: one-line, thumb-scroll category dock; original 8 pages stay. */
+html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav.inj-wm-quick-nav{
+ display:flex!important;
+ flex-flow:row nowrap!important;
+ grid-template-columns:none!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:5px!important;
+ box-sizing:border-box!important;
+ width:100vw!important;
+ min-width:0!important;max-width:100vw!important;
+ height:auto!important;min-height:49px!important;
+ margin:0!important;
+ padding:6px max(10px,env(safe-area-inset-right,0px)) calc(7px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))!important;
+ overflow-x:auto!important;
+ overflow-y:hidden!important;
+ overscroll-behavior-x:contain!important;
+ scroll-behavior:smooth!important;
+ scroll-snap-type:x proximity!important;
+ -webkit-overflow-scrolling:touch!important;
+ scrollbar-width:none!important;
+ touch-action:pan-x!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav.inj-wm-quick-nav::-webkit-scrollbar{
+ display:none!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket #injWorldQuickNav.inj-wm-quick-nav >button[data-world-jump]{
+ box-sizing:border-box!important;
+ display:inline-flex!important;flex:0 0 auto!important;
+ width:auto!important;min-width:64px!important;max-width:none!important;
+ min-height:33px!important;
+ padding:6px 12px!important;
+ border-radius:9px!important;
+ white-space:nowrap!important;overflow-wrap:normal!important;
+ font-size:11px!important;
+ scroll-snap-align:center!important;
+}
+/* Preserve an equirectangular projection and a stable map box from the very
+   first rendered frame; never squash the map when fetching geometry. */
+html[data-inj-market] body #injWorldMarket .inj-world-mapframe{
+ width:100%!important;
+ height:auto!important;
+ aspect-ratio:960 / 460!important;
+ min-height:0!important;
+ contain:layout paint!important;
+ overflow:hidden!important;
+}
+html[data-inj-market] body #injWorldMarket #injWorldMapSvg{
+ width:100%!important;height:100%!important;
+ inset:0!important;object-fit:fill!important;
+ opacity:0!important;
+ transition:opacity .32s ease!important;
+}
+html[data-inj-market] body #injWorldMarket .inj-world-mapframe.is-world-ready #injWorldMapSvg{
+ opacity:1!important;
+}
+/* The old two-column caption / highlighted-quote strip beneath the map is
+   removed. A selected market appears inside the map without moving content. */
+html[data-inj-market] body #injWorldMarket .inj-wm-map-meta{
+ display:none!important;
+}
+html[data-inj-market] body #injWorldMarket #injWorldMapSpotlight[hidden]{
+ display:none!important;
+}
+html[data-inj-market] body #injWorldMarket #injWorldMapSpotlight:not([hidden]){
+ position:absolute!important;inset:auto auto 9px 9px!important;
+ z-index:6!important;
+ display:block!important;
+ box-sizing:border-box!important;
+ width:max-content!important;max-width:calc(100% - 18px)!important;
+ margin:0!important;padding:6px 9px!important;
+ background:rgba(5,15,30,.87)!important;
+ color:#f1f6fc!important;
+ border:1px solid rgba(168,196,229,.3)!important;
+ border-radius:8px!important;
+ font:550 10px/1.25 Inter,system-ui,-apple-system,sans-serif!important;
+ font-variant-numeric:tabular-nums!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+ pointer-events:none!important;
+}
+@media(max-width:690px){
+ html[data-inj-market] body #injWorldMarket .inj-world-mapframe{
+  aspect-ratio:960 / 460!important;
+  min-height:0!important;
+ }
+}
+
+/* Global Market · softer solar veil + uniform 3-up mobile tickers · 2026-10-31 */
+/* A consistent, readable card rhythm independent of the selected theme.
+   At phone widths fit three equal cards per row, not two oversized ones. */
+html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-wm-stock-sector .inj-wm-grid){
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:6px!important;
+  grid-auto-flow:row!important;
+  align-items:stretch!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-stocks{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))!important;
+  gap:12px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-tile,.inj-wm-sector-card){
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:66px!important;
+  height:100%!important;
+  padding:8px 8px!important;
+  gap:5px!important;
+  justify-content:center!important;
+  border-radius:9px!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile-head{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-symbol{
+  flex:0 1 auto!important;
+  min-width:0!important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  font-size:clamp(10px,.95vw,12px)!important;
+  font-weight:800!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-change{
+  flex:0 0 auto!important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  font-size:clamp(9.5px,.92vw,11.5px)!important;
+  font-weight:750!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-price{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  font-size:clamp(11px,1.03vw,13px)!important;
+  font-weight:750!important;
+  line-height:1.2!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+}
+@media(min-width:1450px){
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-wm-stock-sector .inj-wm-grid){
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:1050px){
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-wm-stock-sector .inj-wm-grid){
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:690px){
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-wm-stock-sector .inj-wm-grid){
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-tile,.inj-wm-sector-card){
+    min-height:65px!important;
+    padding:7px 6px!important;
+    gap:5px!important;
+  }
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-symbol{
+    font-size:clamp(9.7px,2.7vw,11.5px)!important;
+  }
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-change{
+    font-size:clamp(9px,2.42vw,10.7px)!important;
+  }
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile .inj-wm-price{
+    font-size:clamp(10.5px,2.9vw,12px)!important;
+  }
+}
+@media(max-width:350px){
+  /* Below this width a third card would truncate prices and percentages. */
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-wm-stock-sector .inj-wm-grid){
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+/* Stock subsectors have their own narrower grid: preserve legible thirds. */
+html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-stock-sector .inj-wm-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+@media(max-width:350px){
+  html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-stock-sector .inj-wm-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}

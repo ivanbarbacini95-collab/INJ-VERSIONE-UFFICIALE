@@ -350,3 +350,173 @@ window.addEventListener('storage',e=>{if(e.key==='inj_node_workspace_v1'){select
 window.addEventListener('pagehide',()=>{selected.clear();guides();});
 buttons();renderMonitor();updateStatus(true);
 })();
+
+
+/* INJ Workspace | Screen Fit Guide v1
+   Editor-only viewport boundary and real union-area coverage; never writes
+   card positions or changes fullscreen's sealed geometry. */
+(() => {
+ 'use strict';
+ const A=window.INJWorkspaceProAPI;
+ const hooks=window.INJWorkspaceProHooks;
+ const grid=document.getElementById('wsGrid');
+ const toolbar=document.querySelector('.ws-toolbar');
+ const main=grid?.closest('main');
+ if(!A||!hooks||!grid||!toolbar||!main)return;
+ const it=(a,b)=>document.documentElement.lang==='en'?b:a;
+ const KEY='inj_workspace_screen_fit_guide_v1';
+ let enabled=true;
+ try{enabled=localStorage.getItem(KEY)!=='0'}catch(_){}
+ let height=0,frameWidth=0,scheduled=0,dragging=false;
+ const toggle=document.createElement('button');
+ toggle.type='button';toggle.id='wsScreenFit';
+ toggle.setAttribute('aria-pressed',String(enabled));
+ toggle.setAttribute('aria-controls','wsScreenBoundary');
+ toggle.className='ws-screen-fit-button';
+ const stats=document.createElement('span');
+ stats.className='ws-screen-fit-stats';stats.id='wsScreenFitStats';
+ stats.setAttribute('role','status');stats.setAttribute('aria-live','off');
+ const frame=document.createElement('div');
+ frame.id='wsScreenBoundary';frame.className='ws-screen-boundary';
+ frame.setAttribute('aria-hidden','true');frame.hidden=true;
+ const top=document.createElement('span');top.className='ws-screen-top';
+ const bottom=document.createElement('span');bottom.className='ws-screen-bottom';
+ frame.append(top,bottom);
+ const snap=document.getElementById('wsSnap');
+ toolbar.insertBefore(toggle,snap||null);
+ toolbar.insertBefore(stats,snap||null);
+ main.append(frame);
+
+ // Browser viewport is used rather than the physical device resolution,
+ // since PWA/browser chrome and rotation affect the actual available pixels.
+ const viewport=()=>{
+   const vv=window.visualViewport;
+   const vw=Math.max(1,Math.round(vv?.width||window.innerWidth||document.documentElement.clientWidth));
+   const vh=Math.max(1,Math.round(vv?.height||window.innerHeight||document.documentElement.clientHeight));
+   return{width:vw,height:vh};
+ };
+ function safeInsets(){
+   // Fullscreen workspace main uses max(6px, safe-area-inset); CSS computes
+   // the same inset here without hard-coded iPhone notch assumptions.
+   if(!safeInsets.node){
+     const probe=document.createElement('div');
+     probe.style.cssText='position:absolute;visibility:hidden;pointer-events:none;top:0;left:0;height:0;width:0;padding-top:max(6px,env(safe-area-inset-top,0px));padding-bottom:max(6px,env(safe-area-inset-bottom,0px))';
+     main.append(probe);safeInsets.node=probe;
+   }
+   const styles=getComputedStyle(safeInsets.node);
+   return{top:parseFloat(styles.paddingTop)||6,bottom:parseFloat(styles.paddingBottom)||6};
+ }
+ // A sweep-line computes covered pixels without double-counting overlapped
+ // cards, including layouts with fractional x/y/w/h and clipped edges.
+ function unionArea(rects){
+   if(!rects.length)return 0;
+   const cuts=[...new Set(rects.flatMap(r=>[r.x0,r.x1]))].sort((a,b)=>a-b);
+   let area=0;
+   for(let k=0;k<cuts.length-1;k++){
+     const a=cuts[k],b=cuts[k+1];if(b<=a)continue;
+     const ranges=rects.filter(r=>r.x0<b&&r.x1>a).map(r=>[r.y0,r.y1]).sort((p,q)=>p[0]-q[0]);
+     let y0=-1,y1=-1,occupied=0;
+     for(const [lo,hi] of ranges){
+       if(y0<0){y0=lo;y1=hi;}
+       else if(lo<=y1){y1=Math.max(y1,hi);}
+       else{occupied+=y1-y0;y0=lo;y1=hi;}
+     }
+     if(y0>=0)occupied+=y1-y0;
+     area+=(b-a)*occupied;
+   }
+   return area;
+ }
+ function coverage(w,h){
+   const unit=(w+8)/A.cols(),cards=A.active().items;
+   const rects=[];let furthest=0;
+   for(const item of cards){
+     const r=item.layouts?.[A.mode()];if(!r)continue;
+     const x=Number(r.x)*unit,y=Number(r.y)*56;
+     const rw=Math.max(0,Number(r.w)*unit-8),rh=Math.max(0,Number(r.h)*56-8);
+     if(![x,y,rw,rh].every(Number.isFinite))continue;
+     furthest=Math.max(furthest,y+rh);
+     const x0=Math.max(0,x),y0=Math.max(0,y),x1=Math.min(w,x+rw),y1=Math.min(h,y+rh);
+     if(x1>x0&&y1>y0)rects.push({x0,x1,y0,y1});
+   }
+   return{percent:Math.max(0,Math.min(100,Math.round(unionArea(rects)/(w*h)*100))),
+     furthest,overflow:Math.max(0,furthest-h),remaining:Math.max(0,h-furthest)};
+ }
+ function activeGuide(){
+   // Never draw guides over full-screen data, view-only mobile cards, dialogs,
+   // or while the empty-start onboarding prompts users to add their first card.
+   return enabled&&!document.body.classList.contains('ws-immersive')&&
+     A.canEdit()&&A.active().items.length>0;
+ }
+ function update(){
+   scheduled=0;
+   toggle.textContent=it('⌗ Schermo','⌗ Screen');
+   toggle.setAttribute('aria-pressed',String(enabled));
+   toggle.title=it('Mostra o nascondi il limite dello schermo intero',
+     'Show or hide the fullscreen boundary');
+   if(!activeGuide()){
+     frame.hidden=true;stats.hidden=true;
+     grid.style.removeProperty('min-height');
+     grid.classList.remove('ws-screen-guided');
+     return;
+   }
+   const visible=viewport();
+   const insets=safeInsets();
+   const targetHeight=Math.max(1,Math.round(visible.height-insets.top-insets.bottom));
+   const width=Math.max(1,grid.clientWidth);
+   height=targetHeight;frameWidth=width;
+   // Adds editing room only; the actual saved rects and fullscreen are untouched.
+   grid.style.minHeight=targetHeight+'px';
+   grid.classList.add('ws-screen-guided');
+   const mainBox=main.getBoundingClientRect(),gridBox=grid.getBoundingClientRect();
+   frame.style.left=(gridBox.left-mainBox.left)+'px';
+   frame.style.top=(gridBox.top-mainBox.top)+'px';
+   frame.style.width=width+'px';frame.style.height=height+'px';
+   frame.hidden=false;
+   const measure=coverage(width,height);
+   frame.classList.toggle('ws-screen-overflow',measure.overflow>4);
+   frame.classList.toggle('ws-screen-near-edge',measure.overflow<=4&&measure.remaining<18);
+   const remainingText=measure.overflow>4?
+     it('OLTRE '+Math.round(measure.overflow)+' PX','OVER BY '+Math.round(measure.overflow)+' PX'):
+     measure.remaining<18?it('SCHERMO COPERTO','SCREEN EDGE REACHED'):
+     it('RESTANO '+Math.round(measure.remaining)+' PX',''+Math.round(measure.remaining)+' PX TO EDGE');
+   stats.textContent=visible.width+' × '+visible.height+' · '+measure.percent+'% · '+remainingText;
+   stats.title=it('Copertura geometrica delle card nel viewport. I vuoti e le sovrapposizioni sono conteggiati una volta sola.',
+     'Geometric screen coverage. Gaps and overlaps are counted only once.');
+   stats.hidden=false;
+   top.textContent=it('AREA SCHERMO · '+visible.width+' × '+visible.height,
+     'SCREEN AREA · '+visible.width+' × '+visible.height);
+   bottom.textContent=it('LIMITE SCHERMO','SCREEN EDGE');
+ }
+ function schedule(){
+   if(scheduled)return;
+   scheduled=requestAnimationFrame(update);
+ }
+ toggle.addEventListener('click',()=>{
+   enabled=!enabled;
+   try{localStorage.setItem(KEY,enabled?'1':'0')}catch(_){}
+   schedule();
+ });
+ // Layout/selection hooks already enforce permissions, snapping and history.
+ // They remain the owners of all geometry and saved settings.
+ for(const name of ['afterLayout','dragStart','dragMove','dragEnd','immersiveChange','editModeChange']){
+   const prior=hooks[name];
+   if(typeof prior!=='function')continue;
+   hooks[name]=function(...args){
+     const result=prior.apply(this,args);
+     if(name==='dragStart')dragging=true;
+     if(name==='dragEnd'||name==='immersiveChange')dragging=false;
+     schedule();
+     return result;
+   };
+ }
+ window.addEventListener('resize',schedule,{passive:true});
+ window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+ window.addEventListener('orientationchange',schedule,{passive:true});
+ window.addEventListener('pageshow',schedule);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
+ // Grid width can change through preset views or iPad split screen.
+ const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(schedule):null;
+ observer?.observe(grid);
+ window.addEventListener('pagehide',()=>observer?.disconnect(),{once:true});
+ schedule();
+})();

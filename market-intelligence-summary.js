@@ -20,7 +20,7 @@ const cap=v=>!Number.isFinite(v)?'—':v>=1e12?'$'+(v/1e12).toFixed(2)+'T':v>=1e
 const percent=(n,d=2)=>Number.isFinite(n)?formatted(n,d)+'%':'—';
 const time=t=>new Date(t).toLocaleTimeString(en()?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit'});
 const text=(id,v)=>{const el=$(id);if(el&&el.textContent!==v)el.textContent=v};
-let view=['intel','global','heatmap','favorites'].includes(read('inj_node_intel_view_v1'))?read('inj_node_intel_view_v1'):'intel';
+let view=['intel','world','global','heatmap','favorites'].includes(read('inj_node_intel_view_v1'))?read('inj_node_intel_view_v1'):'intel';
 let coin=null,global=null,marketAt=0,marketFetched=0,marketBusy=false;
 let staked=NaN,stakingAt=0,stakingFetched=0,stakingBusy=false;
 let nativeSupply=NaN,supplyAt=0;
@@ -40,11 +40,13 @@ try{
 }catch(_){}
 function labels(){
  text('injIntelTabIntel','INJ Intelligence');
+  text('injIntelTabWorld','Global Markets');
  text('injIntelTabGlobal','Global Crypto');
  text('injIntelTabHeatmap','Heatmap');
   text('injFavoriteTabLabel',tr('Preferiti','Favorites'));
-  text('injIntelHeaderSuffix',view==='intel'?'INJ':view==='heatmap'?'HEATMAP':view==='favorites'?tr('PREFERITI','FAVORITES'):'TOP 200');
+  text('injIntelHeaderSuffix',view==='intel'?'INJ':view==='world'?'WORLD':view==='heatmap'?'HEATMAP':view==='favorites'?tr('PREFERITI','FAVORITES'):'TOP 200');
   window.INJ_MARKET_VIEWS?.languageChange?.();
+  window.INJ_WORLD_MARKETS?.languageChange?.();
  text('injIntelHeaderSubtitle',tr('Il centro di analisi di Injective','Injective market intelligence terminal'));
  text('injIntelPriceLabel',tr('PREZZO INJ','INJ PRICE'));
  text('injIntelMCLabel','MARKET CAP');
@@ -54,16 +56,18 @@ function labels(){
  render();
 }
 function viewSwitch(next){
- view=['intel','global','heatmap','favorites'].includes(next)?next:'intel';
+ view=['intel','world','global','heatmap','favorites'].includes(next)?next:'intel';
  try{localStorage.setItem('inj_node_intel_view_v1',view)}catch(_){}
  $('injIntelligenceMain').hidden=view!=='intel';
- $('injGlobalMarket').hidden=view==='intel';
+ $('injGlobalMarket').hidden=view==='intel'||view==='world';
+ $('injWorldMarket').hidden=view!=='world';
  document.documentElement.dataset.marketSection=view;
- text('injIntelHeaderSuffix',view==='intel'?'INJ':view==='heatmap'?'HEATMAP':view==='favorites'?tr('PREFERITI','FAVORITES'):'TOP 200');
+ text('injIntelHeaderSuffix',view==='intel'?'INJ':view==='world'?'WORLD':view==='heatmap'?'HEATMAP':view==='favorites'?tr('PREFERITI','FAVORITES'):'TOP 200');
  for(const button of document.querySelectorAll('[data-inj-intel-view]')){
   button.setAttribute('aria-pressed',String(button.dataset.injIntelView===view));
  }
  window.INJ_MARKET_VIEWS?.setView?.(view==='favorites'?'favorites':view==='heatmap'?'heatmap':'list');
+ window.INJ_WORLD_MARKETS?.activate?.(view==='world');
 }
 window.INJ_MARKET_NAVIGATE=viewSwitch;
 function render(){

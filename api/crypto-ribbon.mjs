@@ -54,19 +54,56 @@ export default async function handler(req,res){
   }
  }
  async function globals(){
-  try{
-   const payload=await grab('https://api.coingecko.com/api/v3/global',4300);
-   const d=payload?.data;
-   if(!d) return null;
-   const global={
-    marketCapUsd:validPrice(d.total_market_cap?.usd),
-    volume24hUsd:validPrice(d.total_volume?.usd),
-    btcDominance:validChange(d.market_cap_percentage?.btc),
-    ethDominance:validChange(d.market_cap_percentage?.eth),
-    marketCapChange24h:validChange(d.market_cap_change_percentage_24h_usd)
-   };
-   return Object.values(global).some(v=>v!==null)?global:null;
-  }catch{return null}
+  // Independent aggregate providers; CoinGecko's public global endpoint is
+  // rate-limited and must not be the only source for market cap and dominance.
+  const feeds=[
+   {
+    name:'CoinPaprika',
+    url:'https://api.coinpaprika.com/v1/global',
+    decode:d=>({
+     marketCapUsd:validPrice(d.market_cap_usd),
+     volume24hUsd:validPrice(d.volume_24h_usd),
+     btcDominance:validChange(d.bitcoin_dominance_percentage),
+     ethDominance:null,
+     marketCapChange24h:validChange(d.market_cap_change_24h)
+    })
+   },
+   {
+    name:'CoinLore',
+    url:'https://api.coinlore.net/api/global/',
+    decode:r=>{
+     const d=Array.isArray(r)?r[0]:r;
+     return {marketCapUsd:validPrice(d?.total_mcap),
+      volume24hUsd:validPrice(d?.total_volume),
+      btcDominance:validChange(d?.btc_d),
+      ethDominance:validChange(d?.eth_d),
+      marketCapChange24h:validChange(d?.mcap_change)}
+    }
+   },
+   {
+    name:'CoinGecko',
+    url:'https://api.coingecko.com/api/v3/global',
+    decode:r=>{
+     const d=r?.data;
+     return {marketCapUsd:validPrice(d?.total_market_cap?.usd),
+      volume24hUsd:validPrice(d?.total_volume?.usd),
+      btcDominance:validChange(d?.market_cap_percentage?.btc),
+      ethDominance:validChange(d?.market_cap_percentage?.eth),
+      marketCapChange24h:validChange(d?.market_cap_change_percentage_24h_usd)}
+    }
+   }
+  ];
+  let combined={},sources=[];
+  for(const feed of feeds){
+   try{
+    const parsed=feed.decode(await grab(feed.url,4500));
+    const useful=Object.entries(parsed).filter(([key,value])=>value!==null&&combined[key]===undefined);
+    for(const [key,value] of useful)combined[key]=value;
+    if(useful.length)sources.push(feed.name);
+    if(['marketCapUsd','volume24hUsd','btcDominance','ethDominance','marketCapChange24h'].every(key=>combined[key]!==undefined))break;
+   }catch{}
+  }
+  return Object.keys(combined).length?{values:combined,source:sources.join(' + ')}:null;
  }
  const [quoted,world]=await Promise.allSettled([prices(),globals()]);
  if(quoted.status!=='fulfilled'){
@@ -75,6 +112,6 @@ export default async function handler(req,res){
  }
  res.status(200).json({
   asOf:new Date().toISOString(),source:quoted.value.source,currency:quoted.value.currency,
-  tickers:quoted.value.tickers,global:world.status==='fulfilled'?world.value:null
+  tickers:quoted.value.tickers,global:world.status==='fulfilled'?world.value?.values||null:null,globalSource:world.status==='fulfilled'?world.value?.source||null:null
  });
 }

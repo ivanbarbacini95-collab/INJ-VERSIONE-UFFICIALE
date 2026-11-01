@@ -694,3 +694,376 @@ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)
 @media(prefers-reduced-motion:reduce){
  html[data-inj-page="index"] body #entryGate #entryMarketEventsButton > .inj-events-tile-stars{animation:none!important}
 }
+
+/* INJNODE · hard mobile layout repair, independent of onboarding shell state. */
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44 > #entryMarketEventsButton.entry-action,
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action {
+  order:13!important;
+  grid-column:1/-1!important;
+  grid-row:auto!important;
+  display:flex!important;
+  position:relative!important;
+  flex-flow:row nowrap!important;
+  justify-content:flex-start!important;
+  align-items:center!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:80px!important;
+  min-height:80px!important;
+  max-height:80px!important;
+  margin:0!important;
+  padding:13px 108px 13px 20px!important;
+  overflow:hidden!important;
+  border-radius:17px!important;
+  box-sizing:border-box!important;
+  text-align:left!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action > .inj-events-tile-copy{
+  display:flex!important;
+  flex-flow:column nowrap!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  align-self:stretch!important;
+  flex:1 1 0%!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  gap:6px!important;
+  overflow:hidden!important;
+  text-align:left!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action > .inj-events-tile-copy > strong{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action > .inj-events-tile-copy > small{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  font:500 11px/1.3 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action > .inj-events-tile-stars{
+  display:block!important;
+  position:absolute!important;
+  top:50%!important;
+  right:19px!important;
+  left:auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  white-space:nowrap!important;
+  font-size:21px!important;
+  letter-spacing:3px!important;
+  transform:translateY(-50%)!important;
+  pointer-events:none!important;
+ }
+}
+@media(max-width:370px){
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action{padding-right:88px!important;padding-left:14px!important}
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action > .inj-events-tile-stars{right:11px!important;font-size:18px!important}
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton.entry-action > .inj-events-tile-copy > strong{font-size:16px!important}
+}
+
+/* INJNODE v2: own an entire launcher grid cell.
+   The wrapper is NOT an .entry-action, so mobile 2-column tile overrides cannot
+   force Market Events back into the left half of the grid. */
+html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44 > .inj-market-events-slot{
+ grid-column:1/-1!important;grid-row:auto!important;
+ order:13!important;display:block!important;position:relative!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:auto!important;min-height:0!important;margin:0!important;padding:0!important;
+ align-self:stretch!important;justify-self:stretch!important;box-sizing:border-box!important;
+}
+html[data-inj-page="index"] body #entryGate .inj-market-events-slot > #entryMarketEventsButton.entry-action{
+ display:flex!important;position:relative!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ max-width:100%!important;height:81px!important;min-height:81px!important;
+ max-height:none!important;
+ margin:0!important;padding:12px 115px 12px 20px!important;
+ border-radius:17px!important;overflow:hidden!important;
+ text-align:left!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8de6cd) 40%,var(--line,#3c575b))!important;
+ background:linear-gradient(110deg,color-mix(in srgb,var(--accent,#82dabd) 8%,var(--surface,#102421)),var(--surface-strong,#0e1d25))!important;
+}
+html[data-inj-page="index"] body #entryGate .inj-market-events-slot > #entryMarketEventsButton > .inj-events-tile-copy{
+ display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;justify-content:center!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ flex:1 1 0%!important;gap:6px!important;
+ overflow:hidden!important;position:relative!important;
+ text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate .inj-market-events-slot > #entryMarketEventsButton > .inj-events-tile-copy > strong{
+ display:block!important;width:100%!important;min-width:0!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+ font-size:clamp(16px,4.3vw,20px)!important;font-weight:800!important;
+ text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate .inj-market-events-slot > #entryMarketEventsButton > .inj-events-tile-copy > small{
+ display:block!important;min-width:0!important;width:100%!important;
+ max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;font-size:11px!important;text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate .inj-market-events-slot > #entryMarketEventsButton > .inj-events-tile-stars{
+ display:block!important;position:absolute!important;top:50%!important;right:25px!important;
+ left:auto!important;bottom:auto!important;z-index:4!important;
+ width:max-content!important;max-width:none!important;height:auto!important;
+ margin:0!important;padding:0!important;border:none!important;
+ background:transparent!important;box-shadow:none!important;
+ white-space:nowrap!important;writing-mode:horizontal-tb!important;
+ font-size:23px!important;letter-spacing:4px!important;
+ transform:translateY(-50%)!important;
+ pointer-events:none!important;
+}
+@media(max-width:420px){
+ html[data-inj-page="index"] body #entryGate .inj-market-events-slot > #entryMarketEventsButton.entry-action{
+  padding-right:100px!important;padding-left:17px!important
+ }
+ html[data-inj-page="index"] body #entryGate .inj-market-events-slot > #entryMarketEventsButton > .inj-events-tile-stars{
+  right:16px!important;font-size:20px!important;letter-spacing:3px!important
+ }
+}
+
+/* INJNODE / ECONOMIC CALENDAR / EVENT SEPARATORS v3 */
+.inj-events-body > .inj-events-item{
+ position:relative!important;
+ border-bottom:0!important;
+}
+
+/* Draw only between consecutive events, not underneath the last event or
+   between a date header and the first entry of that day. */
+.inj-events-body > .inj-events-item + .inj-events-item::before{
+ content:"";
+ position:absolute;
+ left:9px;
+ right:9px;
+ top:0;
+ height:1px;
+ display:block;
+ pointer-events:none;
+ z-index:1;
+ background:linear-gradient(
+  90deg,
+  transparent 0%,
+  color-mix(in srgb,var(--accent,#85dfc6) 18%,transparent) 11%,
+  color-mix(in srgb,var(--accent,#85dfc6) 42%,transparent) 50%,
+  color-mix(in srgb,var(--accent,#85dfc6) 18%,transparent) 89%,
+  transparent 100%
+ );
+ box-shadow:0 0 7px color-mix(in srgb,var(--accent,#85dfc6) 13%,transparent);
+}
+@media(max-width:700px){
+ .inj-events-body > .inj-events-item + .inj-events-item::before{
+  left:3px;
+  right:3px;
+ }
+}
+
+/* 2026-10-28 | Home Market Events: fixed date, continuously readable event title. */
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-copy > #injMarketNextSummary{
+ display:flex!important;align-items:center!important;gap:9px!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ overflow:hidden!important;text-overflow:clip!important;white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-date{
+ display:inline-block!important;flex:0 0 auto!important;
+ color:var(--accent,#8ce7cb)!important;font-weight:700!important;
+ font-variant-numeric:tabular-nums!important;white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-scroll{
+ display:block!important;flex:1 1 auto!important;min-width:0!important;
+ overflow:hidden!important;text-overflow:clip!important;white-space:nowrap!important;
+ -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 93%,transparent 100%);
+ mask-image:linear-gradient(90deg,#000 0%,#000 93%,transparent 100%);
+}
+html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-track{
+ display:inline-flex!important;align-items:center!important;gap:32px!important;
+ width:max-content!important;max-width:none!important;white-space:nowrap!important;
+ will-change:transform;
+}
+html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-title{
+ display:inline-block!important;flex:none!important;max-width:none!important;
+ overflow:visible!important;text-overflow:clip!important;white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-track.is-running{
+ animation:inj-home-event-title-scroll var(--inj-events-duration,17s) linear 1.2s infinite!important;
+}
+@keyframes inj-home-event-title-scroll{
+ from{transform:translate3d(0,0,0)}
+ to{transform:translate3d(calc(-1 * var(--inj-events-travel,100px)),0,0)}
+}
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton:hover .inj-events-next-track,
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton:focus-visible .inj-events-next-track,
+html[data-inj-page="index"] body #entryGate #entryMarketEventsButton:active .inj-events-next-track{
+ animation-play-state:paused!important;
+}
+@media(max-width:370px){
+ html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-date{font-size:9px!important}
+ html[data-inj-page="index"] body #entryGate #entryMarketEventsButton .inj-events-tile-copy > #injMarketNextSummary{gap:6px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-track{animation:none!important;will-change:auto!important}
+ html[data-inj-page="index"] body #entryGate #injMarketNextSummary .inj-events-next-scroll{
+  overflow-x:auto!important;touch-action:pan-x!important;-webkit-mask-image:none!important;mask-image:none!important;-webkit-overflow-scrolling:touch;
+ }
+}
+
+/* 2026-10-28 · published macro data is visible on the calendar row. */
+#injMarketEventsOverlay .inj-events-published-values{
+ display:flex!important;align-items:baseline!important;flex-wrap:wrap!important;
+ gap:5px 10px!important;max-width:100%!important;padding:3px 0 2px!important;
+ color:var(--text,#f3f8f8)!important;
+ font:650 11px/1.4 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+}
+#injMarketEventsOverlay .inj-events-published-label{
+ color:var(--accent,#91dec7)!important;font-size:9px!important;
+ letter-spacing:.085em!important;font-weight:800!important;
+}
+#injMarketEventsOverlay .inj-events-published-actual{
+ color:var(--accent,#a5ffdb)!important;font-size:clamp(13px,3.2vw,17px)!important;
+ font-weight:800!important;overflow-wrap:anywhere!important;
+}
+#injMarketEventsOverlay .inj-events-published-forecast{
+ color:var(--muted-strong,var(--muted,#b3c5cc))!important;
+ font-size:10px!important;
+}
+#injMarketEventsOverlay .inj-events-item-status.no-numeric{
+ color:var(--muted-strong,var(--muted,#a2bac3))!important;
+}
+#injMarketEventsOverlay .inj-events-item.inj-events-new-actual{
+ animation:injActualReleaseGlow 1.8s ease-out 1!important;
+}
+@keyframes injActualReleaseGlow{
+ 0%{box-shadow:inset 0 0 0 1px var(--accent,#9ee9ca),0 0 24px color-mix(in srgb,var(--accent,#9ee9ca) 30%,transparent)}
+ 100%{box-shadow:inset 0 0 0 0 transparent,0 0 0 transparent}
+}
+@media(prefers-reduced-motion:reduce){
+ #injMarketEventsOverlay .inj-events-item.inj-events-new-actual{animation:none!important}
+}
+
+/* 2026-10-28 · Market Events compact preferences.
+   The calendar opens with Events / Next in / Synced visible, not the filters. */
+#injMarketEventsOverlay .inj-events-preferences{
+ display:block!important;min-width:0!important;margin:0!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8ee0c6) 20%,var(--line,#344753))!important;
+ border-radius:12px!important;
+ background:color-mix(in srgb,var(--surface,#13242e) 48%,transparent)!important;
+ overflow:visible!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-toggle{
+ list-style:none!important;cursor:pointer!important;user-select:none;
+ display:flex!important;align-items:center!important;gap:10px!important;
+ min-height:48px!important;padding:9px 13px!important;margin:0!important;
+ color:var(--text,#eef5f8)!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-toggle::-webkit-details-marker{display:none!important}
+#injMarketEventsOverlay .inj-events-preferences-toggle::marker{content:""}
+#injMarketEventsOverlay .inj-events-preferences-toggle:focus-visible{
+ outline:2px solid var(--accent,#8ce8cc)!important;outline-offset:2px!important;
+ border-radius:10px!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-trigger-icon{
+ display:grid!important;place-items:center!important;flex:0 0 31px!important;
+ width:31px!important;height:31px!important;border-radius:9px!important;
+ background:color-mix(in srgb,var(--accent,#8ce8cc) 10%,transparent)!important;
+ color:var(--accent,#8ce8cc)!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-trigger-icon svg{
+ width:18px!important;height:18px!important;display:block!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-trigger-copy{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ gap:3px!important;flex:1 1 auto!important;min-width:0!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-trigger-copy strong{
+ font:750 11px/1.2 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ letter-spacing:.10em!important;text-transform:uppercase!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-trigger-copy small{
+ font:500 10px/1.3 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ color:var(--muted-strong,var(--muted,#aabdc4))!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-chevron{
+ flex:0 0 auto!important;font-size:21px!important;line-height:1!important;
+ color:var(--accent,#8ce8cc)!important;transition:transform .22s ease!important;
+}
+#injMarketEventsOverlay .inj-events-preferences[open] .inj-events-preferences-chevron{
+ transform:rotate(180deg)!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-panel{
+ display:grid!important;gap:12px!important;padding:12px 13px 14px!important;
+ border-top:1px solid var(--line,#344753)!important;min-width:0!important;
+}
+#injMarketEventsOverlay .inj-events-preferences:not([open]) > .inj-events-preferences-panel{
+ display:none!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-panel .inj-events-period-heading{
+ margin:0!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-done{
+ width:100%!important;min-height:42px!important;padding:10px 14px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8ce8cc) 48%,var(--line,#344753))!important;
+ border-radius:9px!important;
+ background:color-mix(in srgb,var(--accent,#8ce8cc) 13%,var(--surface,#152631))!important;
+ color:var(--text,#eff6f8)!important;
+ font:750 11px/1.2 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ letter-spacing:.055em!important;cursor:pointer!important;
+}
+#injMarketEventsOverlay .inj-events-preferences-done:focus-visible{
+ outline:2px solid var(--accent,#8ce8cc)!important;outline-offset:2px!important;
+}
+@media(max-width:430px){
+ #injMarketEventsOverlay .inj-events-preferences-toggle{padding:9px 10px!important}
+ #injMarketEventsOverlay .inj-events-preferences-panel{padding:12px 9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #injMarketEventsOverlay .inj-events-preferences-chevron{transition:none!important}
+}
+
+/* 2026-10-29: bring the quote ribbon and every following Home section closer to the title.
+   Only reduce vertical margins; keep the draggable ribbon, safe-area and layout intact. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) .entry-wallet-section > .home-safe-heading.inj-terminal-hero-arranged {
+  margin-bottom:4px!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) .entry-wallet-section > #injMarketTicker.inj-market-ticker {
+  margin-top:2px!important;
+  margin-bottom:10px!important;
+}
+
+/* 2026-10-29 · Borderless Home market ticker: keep the live scrolling text,
+   drag/swipe and the compact position beneath the INJ Node title. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) .entry-wallet-section > #injMarketTicker.inj-market-ticker {
+  border:none!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  outline:none!important;
+  padding:0!important;
+}

@@ -128,6 +128,93 @@ window.INJ_GET_SELECTED_WALLET_SNAPSHOT = function () {
   };
 };
 
+/* Financial Freedom reads the same live Home source without extra requests.
+   Expose read-only public wallet summaries; never approximate a missing APR. */
+window.INJ_FINANCIAL_FREEDOM_SOURCE = function () {
+  const metric=(row,key)=>row && row[key]!==null && row[key]!==undefined &&
+    Number.isFinite(Number(row[key]))?Number(row[key]):null;
+  return {
+    selectedAddress:state.entrySelectedAddress || state.address,
+    price:Number(state.price)>0?Number(state.price):null,
+    priceAt:state.lastMarketUpdate || 0,
+    eurRate:Number(state.eurRate)>0?Number(state.eurRate):null,
+    fxVerified:(()=>{try{return Number(localStorage.getItem('inj_monitor_eur_rate'))>0;}catch(_){return false;}})(),
+    currency:state.currency === 'EUR'?'EUR':'USD',
+    theme:document.documentElement.dataset.theme || 'navy',
+    language:window.INJ_I18N?.getLanguage?.() === 'en'?'en':(document.documentElement.lang==='en'?'en':'it'),
+    privacy:document.body.classList.contains('privacy-on'),
+    wallets:state.wallets.map(wallet=>{
+      const row=state.walletSummaries[wallet.address] || null;
+      return {
+        address:wallet.address,
+        label:wallet.label,
+        total:metric(row,'total'),
+        staked:metric(row,'staked'),
+        rewards:metric(row,'rewards'),
+        // Prefer a verified wallet APR; if its summary was refreshed before
+        // validator metadata, reuse the live APR of this active wallet only.
+        apr:(()=>{
+          const saved=metric(row,'personalApr');
+          if(saved>0)return saved;
+          const active=wallet.address===state.address?Number(state.personalApr):NaN;
+          return Number.isFinite(active)&&active>0?active:saved;
+        })(),
+        updated:metric(row,'updated') || 0
+      };
+    })
+  };
+};
+
+/* Financial Freedom: load missing net validator APR only on demand.
+   Supports All Wallet without treating gross network APR as spendable yield.
+   Cached wallet balances and all other screens are unaffected. */
+let freedomAprSyncing=false;
+let freedomAprLastAttempt=0;
+window.INJ_FINANCIAL_FREEDOM_ENRICH_APR = async function () {
+  if(freedomAprSyncing||Date.now()-freedomAprLastAttempt<60_000)return;
+  const pending=state.wallets
+    .filter(wallet=>{
+      const row=state.walletSummaries[wallet.address];
+      return number(row?.staked)>0 &&
+        (row?.personalApr===undefined||row?.personalApr===null||
+          !Number.isFinite(Number(row.personalApr)));
+    }).map(wallet=>wallet.address);
+  if(!pending.length)return;
+  freedomAprSyncing=true;
+  freedomAprLastAttempt=Date.now();
+  try{
+    if(!(state.networkApr>0)){
+      try{await ensureNetworkApr(false);}catch(_){}
+    }
+    if(!(state.networkApr>0))return;
+    let cursor=0;
+    const worker=async()=>{
+      while(cursor<pending.length){
+        const address=pending[cursor++];
+        try{
+          const raw=await lcd('/cosmos/staking/v1beta1/delegations/'+address);
+          const delegated=delegationRows(raw);
+          if(!delegated.length)continue;
+          const validators=await Promise.all(delegated.map(loadValidator));
+          // Unknown commission is not a 0%-fee validator.
+          if(validators.some(v=>!number(v.updated)))continue;
+          const amount=validators.reduce((sum,v)=>sum+number(v.amount),0);
+          const annual=validators.reduce((sum,v)=>
+            sum+number(v.amount)*(validatorNetApr(v)/100),0);
+          if(!(amount>0))continue;
+          const apr=annual/amount*100;
+          if(!Number.isFinite(apr)||apr<0||apr>200)continue;
+          const current=state.walletSummaries[address];
+          if(!current)continue;
+          state.walletSummaries[address]={...current,personalApr:apr,validators,networkApr:state.networkApr};
+          try{saveWalletSummaries();}catch(_){}
+        }catch(_){}
+      }
+    };
+    await Promise.all(Array.from({length:Math.min(2,pending.length)},()=>worker()));
+  }finally{freedomAprSyncing=false;}
+};
+
 function setEntryOnboardingStatus(message, mode = '') {
   const status = $('entryWalletStatus');
   if (!status) return;
@@ -1702,13 +1789,50 @@ function paintEntryPnlEmaLayer(track, scroll, allNodes, ema7, ema21, maxAbs, max
   layer.innerHTML = `${fastPath ? `<path class="entry-pnl-ema-path ema-fast" d="${fastPath}"></path>` : ''}${slowPath ? `<path class="entry-pnl-ema-path ema-slow" d="${slowPath}"></path>` : ''}${markers.join('')}`;
 }
 
+// Right-side P/L axis mirrors the signed range and coordinates of candles and EMA.
+function entryPnlTimelineAxisLabel(value, unit) {
+  const abs = Math.abs(Number.isFinite(value) ? value : 0);
+  const locale = document.documentElement.lang === 'en' ? 'en-US' : 'it-IT';
+  const format = (n, digits) => new Intl.NumberFormat(locale, {maximumFractionDigits:digits}).format(n);
+  const sign = value > 0 ? '+' : value < 0 ? '−' : '';
+  if (unit === 'pct') return sign + format(abs, abs >= 10 ? 1 : 2) + '%';
+  const scaled = abs >= 1e9 ? [1e9,'B'] : abs >= 1e6 ? [1e6,'M'] : abs >= 1e3 ? [1e3,'k'] : null;
+  return sign + '$' + (scaled ? format(abs / scaled[0],1) + scaled[1] : format(abs, abs < 1 ? 3 : abs < 10 ? 2 : abs < 100 ? 1 : 0));
+}
+function paintEntryPnlTimelineValueAxis(maxAbs, maxVisual, stageHeight) {
+  const axis = $('entryPnlValueAxis');
+  if (!axis) return;
+  const unit = entryPnlTimelineMetricMode(),range=Math.max(1e-9,maxAbs);
+  const center=stageHeight/2,factors=[1,.5,0,-.5,-1];
+  while(axis.children.length<factors.length){
+    const tick=document.createElement('span');
+    tick.className='entry-pnl-axis-tick';
+    axis.appendChild(tick);
+  }
+  for(let index=0;index<factors.length;index+=1){
+    const factor=factors[index],tick=axis.children[index];
+    tick.classList.toggle('is-zero',factor===0);
+    tick.style.top=Math.max(12,Math.min(stageHeight-12,center-factor*maxVisual)).toFixed(2)+'px';
+    const label=entryPnlTimelineAxisLabel(range*factor,unit);
+    if(tick.textContent!==label)tick.textContent=label;
+  }
+  axis.hidden=false;
+  const english=document.documentElement.lang==='en';
+  axis.setAttribute('aria-label',(english?'P/L scale from ':'Scala P/L da ')+
+    entryPnlTimelineAxisLabel(-range,unit)+(english?' to ':' a ')+entryPnlTimelineAxisLabel(range,unit));
+}
+
 function paintEntryPnlTimelineScale() {
   const scroll = $('entryPnlTimelineScroll');
   const track = $('entryPnlTimelineTrack');
   if (!scroll || !track) return;
   const candles = entryPnlTimelineVisibleCandles();
   const allNodes = [...track.querySelectorAll('.entry-pnl-day')];
-  if (!candles.length || !allNodes.length) return;
+  if (!candles.length || !allNodes.length) {
+    const axis = $('entryPnlValueAxis');
+    if (axis) axis.hidden = true;
+    return;
+  }
 
   const allValues = allNodes.map(entryPnlTimelineMetricValue);
   const ema7 = entryPnlTimelineEma(allValues, 7);
@@ -1735,6 +1859,7 @@ function paintEntryPnlTimelineScale() {
     node.classList.toggle('micro', ratio < 0.025);
   });
 
+  paintEntryPnlTimelineValueAxis(maxAbs,maxVisual,stageHeight);
   paintEntryPnlEmaLayer(track, scroll, allNodes, ema7, ema21, maxAbs, maxVisual, stageHeight);
   syncEntryPnlTimelineControls();
   updateEntryPnlTimelineTodayHero();
@@ -1795,7 +1920,10 @@ function bindEntryPnlTimelineInteraction() {
   };
   $('entryPnlLayoutFit')?.addEventListener('click', () => setLayout('fit'));
   $('entryPnlLayoutScroll')?.addEventListener('click', () => setLayout('scroll'));
-  window.addEventListener('injnode:languagechange', syncEntryPnlTimelineControls);
+  window.addEventListener('injnode:languagechange', () => {
+    syncEntryPnlTimelineControls();
+    scheduleEntryPnlTimelineScale();
+  });
   const inspectAtPointer = (event) => {
     const rect = scroll.getBoundingClientRect();
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) { clearEntryPnlDayInspection(); return; }
@@ -1993,11 +2121,10 @@ function entrySparkPath(points) {
   const span = Math.max(1e-9, max - min);
   const width = 320;
   const height = 150;
-  // Reserve a visibly larger safe band above and below the real curve.
-  // This works together with price-domain padding, so even a sudden pump/dump
-  // remains comfortably inside the plot instead of touching the card edges.
-  const top = 24;
-  const bottom = 126;
+  // Home price chart: use the full vertical drawing area. Price-domain
+  // padding still keeps the peaks/troughs legible; the P/L stays below the plot.
+  const top = 10;
+  const bottom = 143;
   const timeSpan = Math.max(1, dayEnd - dayStart);
 
   const coords = rows.map((row) => {
@@ -2610,6 +2737,15 @@ function enterPerformanceTimelineFromGate() {
   }
 }
 
+/* Market's user-operated navigation rail can directly launch these existing
+   destinations. Home tile launchers retain their original anti-ghost-touch
+   gesture guard; no synthetic click/pointer events are required. */
+window.INJ_MARKET_OPEN_NATIVE = function(kind) {
+  if (kind === 'charts') return enterLiveChartsFromGate();
+  if (kind === 'book') return enterOrderBookFromGate();
+  if (kind === 'performance') return enterPerformanceTimelineFromGate();
+};
+
 function closePerformanceTimelineToHome() {
   const view = $('performanceTimelineView');
   if (!view || view.hidden) return;
@@ -3090,20 +3226,36 @@ function ensureSavedWallet(address, requestedLabel = '') {
   return wallet;
 }
 
+/* iPhone/PWA: keep Home's scroll coordinate frozen while Settings owns touch.
+   A fixed body needs an explicit negative offset; restoring on dismissal
+   avoids jumping back to the top or losing the Home scroll-memory position. */
+let injSettingsFrozenScrollY = null;
 function setHeaderMenuOpen(open) {
   const host = $('headerMenu');
   if (!host) return;
-  // Always enter the Control Center at its header, even after a long scroll.
-  // Reset before revealing the panel to avoid a visible scroll jump.
-  if (open) {
+  const wasOpen = host.classList.contains('open');
+  if (open && !wasOpen) {
     const panel = $('headerMenuPanel');
     if (panel) panel.scrollTop = 0;
+    const touchLayout = window.matchMedia('(max-width: 900px), (hover: none) and (pointer: coarse)').matches;
+    if (touchLayout) {
+      injSettingsFrozenScrollY = Math.max(0, window.scrollY || document.documentElement.scrollTop || 0);
+      document.body.style.setProperty('--inj-settings-frozen-top', (-injSettingsFrozenScrollY) + 'px');
+    }
   }
   host.classList.toggle('open', open);
   document.body.classList.toggle('menu-overlay-open', open);
   $('entryMenuButton')?.setAttribute('aria-expanded', open ? 'true' : 'false');
   $('entryMenuButton')?.setAttribute('aria-label', open ? 'Chiudi menu' : 'Apri menu');
-  if (!open) setThemePickerOpen(false);
+  if (!open) {
+    setThemePickerOpen(false);
+    if (injSettingsFrozenScrollY !== null) {
+      const restoreY = injSettingsFrozenScrollY;
+      injSettingsFrozenScrollY = null;
+      document.body.style.removeProperty('--inj-settings-frozen-top');
+      window.scrollTo({ top:restoreY, left:0, behavior:'instant' });
+    }
+  }
 }
 
 function openWalletAddressEditor(address) {
@@ -6773,7 +6925,7 @@ function renderPortfolio() {
   $('walletState').textContent = activeWallet ? `${activeWallet.label} · ${shortAddress(state.address)}` : state.address ? shortAddress(state.address) : 'Wallet non caricato';
   setValue('netWorthUsd', state.address ? money(netWorth, 2) : '—', state.address ? netWorth : NaN, { roll: true });
   setValue('netWorthInj', formatInj(totalInj, 4), totalInj);
-  setValue('availableInj', formatInj(state.available, 5), state.available);
+  setValue('availableInj', formatInj(state.available, 5).replace(/ INJ$/, ''), state.available);
   setValue('availableUsd', money(state.available * state.price), state.available * state.price);
   const nativeUsdcRow = $('nativeUsdcRow');
   if (nativeUsdcRow) {
@@ -6782,11 +6934,11 @@ function renderPortfolio() {
     nativeUsdcRow.setAttribute('aria-hidden', hasNativeUsdc ? 'false' : 'true');
     if (hasNativeUsdc) setValue('nativeUsdcBalance', formatUsdc(state.nativeUsdc), state.nativeUsdc, { flash: false });
   }
-  setValue('ownedTotalInj', formatInj(totalInj), totalInj);
+  setValue('ownedTotalInj', formatInj(totalInj).replace(/ INJ$/, ''), totalInj);
   setValue('ownedTotalUsd', money(totalInj * state.price), totalInj * state.price);
   const ownedVsStaked = Math.max(0, totalInj - state.staked);
   setValue('ownedVsStakedInj', formatInj(ownedVsStaked), ownedVsStaked);
-  setValue('stakedInj', formatInj(state.staked), state.staked);
+  setValue('stakedInj', formatInj(state.staked).replace(/ INJ$/, ''), state.staked);
   setValue('stakedUsd', money(state.staked * state.price), state.staked * state.price);
   setAccruedRewardValue(formatInj(state.rewards, 5), state.rewards);
   setValue('rewardsUsd', money(state.rewards * state.price), state.rewards * state.price, { flash: false });
@@ -7994,6 +8146,22 @@ async function installPwa() {
     toast('INJ Node è già installata');
     return;
   }
+  // Android installs can use one of four icon-specific manifests. The
+  // primary Home manifest is Minimal; route other selections to their own
+  // installation entry before triggering Chrome's native prompt.
+  if (/Android/i.test(navigator.userAgent||'')) {
+    const path = location.pathname || '';
+    const onIconRoute = /\/install-icon-(minimal|classic|aurora|pulse)\.html$/.test(path);
+    let chosen = 'minimal';
+    try {
+      const stored = localStorage.getItem('inj_node_app_icon_v1');
+      if (['minimal','classic','aurora','pulse'].includes(stored)) chosen = stored;
+    } catch (_) {}
+    if (!onIconRoute && chosen !== 'minimal') {
+      location.assign('./install-icon-' + chosen + '.html');
+      return;
+    }
+  }
   const promptEvent = state.deferredInstallPrompt;
   if (promptEvent) {
     promptEvent.prompt();
@@ -8021,24 +8189,37 @@ function updateInstallUi() {
 
 function registerPwa() {
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=16.01.37',{updateViaCache:'none'}).then(registration=>registration.update()).catch(() => {}), { once: true });
+    // Android standalone must repair a stale worker without waiting for every
+    // chart/font/image request to complete the window load event.
+    const refreshWorker = () => {
+      navigator.serviceWorker.register('./sw.js?v=20261101androidpwa1',{updateViaCache:'none'})
+        .then(registration => registration.update())
+        .catch(() => {});
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', refreshWorker, { once: true });
+    } else {
+      refreshWorker();
+    }
+    // A resumed Android PWA can live for days without another navigation.
+    // Update its worker when it returns to foreground; no forced reload/data loss.
+    window.addEventListener('pageshow', () => {
+      if (/Android/i.test(navigator.userAgent || '') && document.visibilityState === 'visible')
+        navigator.serviceWorker.getRegistration()
+          .then(registration => registration?.update())
+          .catch(() => {});
+    }, { passive: true });
   }
   updateInstallUi();
 }
 
 function applyTheme(theme, notify = false) {
   const themes = {
-    navy: { label: 'Aurora', color: '#03070b' },
-    black: { label: 'Obsidian', color: '#030303' },
+    navy: { label: 'Aurora', color: '#07121b' },
+    black: { label: 'Nero', color: '#000000' },
     light: { label: 'Chiaro', color: '#eef5ff' },
-    amber: { label: 'Midnight Ember', color: '#070b11' },
-    ocean: { label: 'Ocean Aurora', color: '#07131f' },
-    chromatic: { label: 'Chromatic Mist', color: '#111323' },
+    amber: { label: 'Midnight Ember', color: '#05080d' },
     velvet: { label: 'Velvet Nebula', color: '#0a1024' },
-    aqua: { label: 'Aqua Mirage', color: '#d7e9ef' },
-    'ocean-x-electric': { label: 'Electric Ocean', color: '#06132d' },
-    'ocean-x-ion': { label: 'Ion Storm', color: '#130c2c' },
-    'ocean-x-toxic': { label: 'Toxic Abyss', color: '#061c1d' },
     'ocean-x-solar': { label: 'Solar Surge', color: '#1b122c' }
   };
   const selected = themes[theme] ? theme : 'navy';
@@ -8053,9 +8234,7 @@ function applyTheme(theme, notify = false) {
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
-  // Reopen the selected category while keeping the catalog compact.
-  const selectedGroup = document.querySelector('#themePicker [data-theme-choice="' + selected + '"]')?.closest('.theme-category');
-  if (selectedGroup) document.querySelectorAll('#themePicker .theme-category').forEach((group) => { group.open = group === selectedGroup; });
+  // All six approved palettes live directly inside the single Theme list.
   if (isChartOpen()) requestAnimationFrame(renderNativeChart);
   if (notify) toast(`Tema ${themes[selected].label}`);
 }

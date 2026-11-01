@@ -1,0 +1,399 @@
+/* INJ NODE · Market Events editorial layout v1 · 28 Oct 2026
+   Visual hierarchy only: the live feed, period filters, alerts, result sheets,
+   translation and calendar countdown logic remain unchanged.
+   Theme-aware tokens support all 12 palettes (including Black and Aqua). */
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-shell {
+  gap:16px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-header {
+  padding-bottom:17px!important;
+  border-color:color-mix(in srgb,var(--line,#394353) 80%,transparent)!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-header h2{
+  font-size:clamp(24px,5vw,32px)!important;
+  line-height:1.12!important;
+  letter-spacing:-.035em!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-header p{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:clamp(11px,2.9vw,13px)!important;
+  letter-spacing:.005em!important;
+  line-height:1.45!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-period-heading{
+  font-size:10px!important;
+  letter-spacing:.075em!important;
+  margin-top:3px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-toolbar label{
+  font-size:10px!important;
+  font-weight:730!important;
+  line-height:1.3!important;
+}
+/* The three live summary signals now have clear labels and numeric baselines. */
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview{
+  display:grid!important;
+  grid-template-columns:minmax(0,.67fr) minmax(0,1.25fr) minmax(0,1fr)!important;
+  align-items:stretch!important;
+  justify-content:stretch!important;
+  gap:7px!important;
+  margin:1px 0 0!important;
+  padding:0 0 14px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview > span{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  gap:6px!important;
+  min-width:0!important;
+  padding:9px 10px!important;
+  margin:0!important;
+  border-radius:10px!important;
+  border:1px solid color-mix(in srgb,var(--line,#46536a) 72%,transparent)!important;
+  background:color-mix(in srgb,var(--surface,#1c2438) 38%,transparent)!important;
+  box-sizing:border-box!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview small{
+  font-size:9px!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+  letter-spacing:.04em!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview strong{
+  font-size:clamp(11px,2.85vw,14px)!important;
+  font-weight:780!important;
+  line-height:1.25!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview > .inj-events-feed-state{
+  flex-direction:row!important;
+  gap:6px!important;
+  justify-content:center!important;
+  align-items:center!important;
+  margin-left:0!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feed-state strong{
+  font-size:clamp(9px,2.45vw,11px)!important;
+  line-height:1.25!important;
+}
+/* Featured: heading first, metadata smaller, actionable detail at the bottom. */
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature{
+  gap:13px!important;
+  padding:17px 17px 16px!important;
+  border-radius:16px!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.055)!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-top > span:first-child{
+  font-size:10px!important;
+  letter-spacing:.075em!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-countdown{
+  font-size:11px!important;
+  font-variant-numeric:tabular-nums!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-main{
+  align-items:flex-start!important;
+  gap:7px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-main small{
+  font-size:11px!important;
+  letter-spacing:.01em!important;
+  line-height:1.4!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-main h3{
+  font:750 clamp(17px,4.05vw,21px)/1.33 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  letter-spacing:-.018em!important;
+  margin:9px 0 0!important;
+  overflow-wrap:break-word!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-impact{
+  font-size:11px!important;
+  white-space:nowrap!important;
+  letter-spacing:1px!important;
+  padding-top:2px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-details{
+  justify-content:flex-end!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-open{
+  font-size:11px!important;
+  padding:10px 12px!important;
+}
+/* Readable commentary and a strong breakpoint before the timeline. */
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-note{
+  color:var(--muted-strong,var(--muted,#a9b8c6))!important;
+  font:400 11px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  letter-spacing:0!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-list-heading{
+  border-bottom:1px solid color-mix(in srgb,var(--line,#46536a) 95%,transparent)!important;
+  padding:7px 2px 13px!important;
+  margin-top:2px!important;
+  font-size:clamp(12px,2.9vw,14px)!important;
+  line-height:1.2!important;
+  letter-spacing:.025em!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-list-heading span:last-child{
+  font-size:10px!important;
+}
+/* Timeline: each event gets its own restrained and clearly delimited surface. */
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+  min-width:0!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > .inj-events-day{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:13px 2px 7px!important;
+  margin:5px 0 0!important;
+  border:0!important;
+  font-size:12px!important;
+  font-weight:780!important;
+  text-transform:capitalize!important;
+  letter-spacing:.012em!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > .inj-events-day > span:last-child{
+  font-size:9px!important;
+  font-weight:650!important;
+  letter-spacing:.045em!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item{
+  display:grid!important;
+  grid-template-columns:72px minmax(0,1fr) 14px!important;
+  gap:13px!important;
+  align-items:center!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:106px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:15px 13px 15px 12px!important;
+  border-radius:13px!important;
+  border:1px solid color-mix(in srgb,var(--line,#435065) 93%,transparent)!important;
+  border-left:3px solid color-mix(in srgb,var(--accent,#97d6e0) 68%,var(--line,#435065))!important;
+  background:color-mix(in srgb,var(--surface,#192437) 36%,transparent)!important;
+  box-shadow:0 3px 14px rgba(0,0,0,.035)!important;
+  color:var(--text,#eef4f9)!important;
+  transition:border-color .18s ease,background-color .18s ease!important;
+  cursor:pointer!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item + button.inj-events-item::before{
+  content:none!important;
+  display:none!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item:hover,
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item:focus-visible{
+  background:color-mix(in srgb,var(--accent,#95dfe5) 9%,var(--surface,#172334))!important;
+  border-color:color-mix(in srgb,var(--accent,#95dfe5) 49%,var(--line,#435065))!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item.is-released{
+  border-left-color:var(--accent,#95dfe5)!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-time{
+  align-self:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  min-width:0!important;
+  padding:0!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-time > strong{
+  font:790 18px/1.1 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  letter-spacing:-.025em!important;
+  color:var(--text,#f4f8fc)!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-time > small{
+  display:inline-flex!important;
+  align-self:flex-start!important;
+  min-width:0!important;
+  padding:3px 6px!important;
+  margin:0!important;
+  border:1px solid color-mix(in srgb,var(--line,#455368) 75%,transparent)!important;
+  border-radius:5px!important;
+  color:var(--muted-strong,var(--muted,#b4bfce))!important;
+  background:color-mix(in srgb,var(--surface-strong,#222f44) 45%,transparent)!important;
+  font:700 10px/1.1 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-main{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  min-width:0!important;
+  width:100%!important;
+  gap:0!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-headline{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  min-width:0!important;
+  gap:9px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-headline > strong{
+  font:700 clamp(13px,3.35vw,16px)/1.42 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  letter-spacing:-.009em!important;
+  color:var(--text,#f3f6f9)!important;
+  text-align:left!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-status{
+  display:inline-flex!important;
+  align-self:flex-start!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:2px 0!important;
+  font:650 10px/1.25 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  font-variant-numeric:tabular-nums!important;
+  letter-spacing:.015em!important;
+  color:var(--muted-strong,var(--muted,#c0cbd6))!important;
+  white-space:normal!important;
+  text-align:left!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-status.upcoming{
+  color:var(--accent,var(--text,#f3f6fa))!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-status.released{
+  color:var(--up,var(--accent,#91d8c3))!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-chevron{
+  display:grid!important;
+  place-items:center!important;
+  align-self:center!important;
+  min-width:12px!important;
+  font-size:22px!important;
+  padding:0!important;
+  opacity:.8!important;
+}
+@media(max-width:600px){
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview > span{
+   padding:9px 7px!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview strong{
+   font-size:clamp(10px,2.9vw,12px)!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item{
+   grid-template-columns:58px minmax(0,1fr) 11px!important;
+   gap:10px!important;
+   min-height:102px!important;
+   padding:13px 9px 13px 10px!important;
+   border-radius:12px!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-time > strong{
+   font-size:16px!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-headline > strong{
+   font-size:clamp(13px,3.6vw,15px)!important;
+   line-height:1.4!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-status{
+   font-size:10px!important;
+ }
+}
+@media(max-width:365px){
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item{
+   grid-template-columns:53px minmax(0,1fr) 10px!important;
+   gap:8px!important;
+   padding:12px 8px!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-time > strong{font-size:15px!important}
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview > span{padding-inline:5px!important}
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-overview > .inj-events-feed-state strong{font-size:9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item{
+  transition:none!important;
+ }
+}
+
+/* INJ Node · macro risk-on/off contextual micro-readings (2026-10-28).
+   These lines are conditional scenarios, not live sentiment or guarantees.
+   Use unobtrusive type and leave original event geometry responsive. */
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-risk-hint {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:3px!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  margin:9px 0 0!important;
+  padding:7px 0 0!important;
+  border:0!important;
+  border-top:1px solid color-mix(in srgb,var(--line,#405066) 54%,transparent)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  white-space:normal!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-risk-hint > small{
+  display:block!important;
+  color:var(--accent,var(--muted-strong,#b5bfd0))!important;
+  font:700 8px/1.12 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  letter-spacing:.115em!important;
+  text-transform:uppercase!important;
+  opacity:.76!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-risk-hint > .inj-events-risk-copy{
+  display:block!important;
+  color:var(--muted-strong,var(--muted,#bac4cf))!important;
+  font:500 clamp(10px,2.6vw,11.5px)/1.42 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-risk-hint.tone-on > small{
+  color:var(--up,#68cfaa)!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-risk-hint.tone-off > small{
+  color:var(--down,#fa8798)!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-main > div{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-main .inj-events-risk-hint{
+  margin-top:11px!important;
+  padding-top:9px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-main .inj-events-risk-copy{
+  font-size:clamp(11px,2.8vw,12.5px)!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-item-main .inj-events-risk-hint{
+  margin-top:8px!important;
+  padding-top:6px!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item{
+  min-height:118px!important;
+}
+@media(max-width:600px){
+  html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-body > button.inj-events-item{
+    min-height:114px!important;
+  }
+  html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-risk-hint > .inj-events-risk-copy{
+    font-size:10px!important;
+    line-height:1.4!important;
+  }
+  html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-feature-main .inj-events-risk-copy{
+    font-size:11px!important;
+  }
+}

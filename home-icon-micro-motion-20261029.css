@@ -1,0 +1,45 @@
+/* INJ Node · understated Home icon motion.
+   A tiny asynchronous drift and opacity breath on every launcher icon.
+   Individual SVG path animations (market/rewards/freedom) are preserved
+   because this only animates the outermost SVG, not its children. */
+@keyframes inj-home-icon-breathe {
+  0%,100% {translate:0 0;opacity:.92}
+  48%,58% {translate:0 -1.4px;opacity:1}
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > :is(.entry-action-icon,.inj-tile-scene,.treasury-menu-icon) svg {
+  animation:inj-home-icon-breathe 6.4s ease-in-out infinite;
+  animation-delay:var(--inj-icon-delay,-.9s);
+  transform-origin:center;
+  transform-box:fill-box;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n+1) {--inj-icon-delay:-.7s}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n+2) {--inj-icon-delay:-2.1s}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n+3) {--inj-icon-delay:-3.65s}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n) {--inj-icon-delay:-5.1s}
+@media(hover:hover) and (pointer:fine){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:hover > :is(.entry-action-icon,.inj-tile-scene,.treasury-menu-icon) svg {
+    opacity:1;
+    filter:drop-shadow(0 0 2px color-mix(in srgb,var(--accent,#b9c6be) 33%,transparent));
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action > :is(.entry-action-icon,.inj-tile-scene,.treasury-menu-icon) svg {
+    animation:none!important;
+    translate:none!important;
+    opacity:1!important;
+  }
+}

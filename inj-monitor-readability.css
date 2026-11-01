@@ -1,0 +1,560 @@
+/* INJ NODE — monitor readable layout v1 (2026-10-28)
+   Pixel-sized microtypography was not growing with previous fluid widths.
+   Responsive font tokens scale at browser viewport width; no page zoom or
+   transforms. Device/tablet layouts below 1200px stay as configured. */
+@media (min-width:1200px){
+ :root{
+  --inj-monitor-micro:clamp(12px,.68vw,18px);
+  --inj-monitor-label:clamp(13px,.76vw,19px);
+  --inj-monitor-body:clamp(14px,.83vw,21px);
+  --inj-monitor-card:clamp(15px,1.0vw,24px);
+  --inj-monitor-heading:clamp(22px,1.5vw,40px);
+  --inj-monitor-gutter:clamp(14px,1.18vw,50px);
+  --inj-monitor-gap:clamp(10px,.85vw,28px);
+ }
+ /* HOME — do not enlarge the entire page, which cuts charts and control
+    hit areas. Increase content size and give the data room to breathe. */
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access){
+  column-gap:clamp(12px,1.2vw,36px)!important;
+  row-gap:clamp(10px,.85vw,26px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(0,auto)!important;
+  align-content:start!important;
+  gap:var(--inj-monitor-gap)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(.entry-action,.inj-market-events-slot){
+  min-width:0!important;
+  max-width:100%!important;
+  width:100%!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  grid-row:auto!important;
+  align-self:stretch!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >.entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryFreedomButton){
+  grid-column:auto!important;
+  height:clamp(82px,5.3vw,120px)!important;
+  min-height:82px!important;
+  max-height:none!important;
+  border-radius:clamp(12px,.9vw,20px)!important;
+  padding:clamp(10px,.9vw,21px) clamp(100px,7vw,165px) clamp(10px,.9vw,21px) clamp(14px,1vw,27px)!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryTreasuryButton,#entryWorkspaceButton,#entryInjcEtfButton,#entryFreedomButton),
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >.inj-market-events-slot{
+  grid-column:1/-1!important;
+  min-height:clamp(86px,5.2vw,115px)!important;
+  height:auto!important;
+  order:unset;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >.inj-market-events-slot #entryMarketEventsButton{
+  box-sizing:border-box!important;
+  width:100%!important;max-width:100%!important;
+  height:100%!important;min-height:clamp(86px,5.2vw,115px)!important;
+  border-radius:clamp(12px,.9vw,20px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >.entry-action :is(strong.inj-home-tile-title,.treasury-entry-subtitle),
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >.inj-market-events-slot strong.inj-home-tile-title{
+  font-family:var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  font-size:var(--inj-monitor-card)!important;
+  line-height:1.25!important;
+  font-weight:740!important;
+  letter-spacing:.035em!important;
+  overflow-wrap:anywhere!important;
+  white-space:normal!important;
+  text-overflow:clip!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ :is(.inj-tile-description,.inj-events-next-text){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.4!important;
+  white-space:normal!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ .inj-market-events-slot .inj-events-tile-copy{
+  min-width:0!important;flex:1 1 auto!important;
+  padding:0!important;
+ }
+ /* Wallet overview and mini rails are the largest source of illegible
+    microtype in the first screenshot. Preserve three actual columns. */
+ html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats{
+  height:auto!important;max-height:none!important;
+  min-height:clamp(52px,3.1vw,78px)!important;
+  padding:8px 0 3px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div{
+  height:auto!important;min-height:clamp(43px,2.4vw,60px)!important;
+  gap:5px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > span{
+  font-size:var(--inj-monitor-micro)!important;
+  line-height:1.25!important;
+  overflow:visible!important;
+  white-space:normal!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > strong{
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.25!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryInsights .entry-price-pnl{
+  height:auto!important;max-height:none!important;
+  min-height:clamp(45px,2.65vw,70px)!important;
+  padding:7px 3px 0!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryInsights .entry-price-pnl > div > span{
+  font-size:var(--inj-monitor-label)!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryInsights #entryInsightPnl{
+  font-size:clamp(16px,1.15vw,27px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-main
+ > :is(.entry-market-mini,.entry-overview-worth) > span{
+  font-size:var(--inj-monitor-label)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-main
+ > .entry-market-mini > :is(#entryMarketPrice,strong){
+  font-size:clamp(43px,3.6vw,94px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-main
+ > .entry-overview-worth > :is(#entryWalletWorth,strong){
+  font-size:clamp(25px,2.0vw,48px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .inj-market-ticker :is(.inj-market-ticker-item b,.inj-market-ticker-label){
+  font-size:var(--inj-monitor-micro)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .inj-market-ticker .inj-market-ticker-item em{
+  font-size:var(--inj-monitor-micro)!important;
+ }
+ /* MARKET EVENTS — the fixed 1180px shell caused a narrow island of tiny
+    information on ultrawide displays. Keep chronological day headings full-width. */
+ html[data-inj-page="index"] body #injMarketEventsOverlay.inj-events-overlay{
+  padding:calc(env(safe-area-inset-top,0px) + clamp(13px,1vw,25px))
+   var(--inj-monitor-gutter)
+   calc(env(safe-area-inset-bottom,0px) + 25px)!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-shell{
+  width:100%!important;max-width:none!important;
+  min-width:0!important;
+  margin-inline:auto!important;
+  gap:clamp(13px,1vw,28px)!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-header h2{
+  font-size:var(--inj-monitor-heading)!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ :is(.inj-events-header p,.inj-events-note,.inj-events-feature-details,
+ .inj-events-item-main small,.inj-events-risk-copy,.inj-events-footer){
+  font-size:var(--inj-monitor-body)!important;
+  line-height:1.5!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ :is(.inj-events-overview small,.inj-events-period-heading,
+ .inj-events-header small,.inj-events-item-time small,
+ .inj-events-feature-main small,.inj-events-published-label,
+ .inj-events-preferences-trigger-copy small){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.35!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ :is(.inj-events-overview strong,.inj-events-item-status,
+ .inj-events-day,.inj-events-preferences-trigger-copy strong,
+ .inj-events-list-heading,.inj-events-feature-countdown,
+ .inj-events-feature-top,.inj-events-item-time strong){
+  font-size:var(--inj-monitor-card)!important;
+  line-height:1.3!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ :is(.inj-events-feature-main h3,.inj-events-item-headline > strong,
+ .inj-events-item-main > strong){
+  font-size:clamp(17px,1.15vw,28px)!important;
+  line-height:1.35!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ .inj-events-overview > span{padding:clamp(12px,.9vw,22px)!important}
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ .inj-events-body{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-content:start!important;
+  align-items:stretch!important;
+  gap:var(--inj-monitor-gap)!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ .inj-events-body > :is(.inj-events-day,.inj-events-empty){
+  grid-column:1/-1!important;
+ }
+ html[data-inj-page="index"] body #injMarketEventsOverlay
+ .inj-events-body > button.inj-events-item{
+  min-width:0!important;width:100%!important;
+  min-height:clamp(113px,7vw,188px)!important;
+  height:100%!important;
+  padding:clamp(13px,1vw,24px)!important;
+  grid-template-columns:clamp(75px,5vw,120px) minmax(0,1fr) 16px!important;
+  gap:var(--inj-monitor-gap)!important;
+ }
+ /* Day headers are shared across both grid columns. No rearrangement of
+    event data, translations, dates or risk scenarios. */
+ /* FINANCIAL FREEDOM — readable at the actual monitor scale while preserving
+    the spending cubes and the protected management/delete mechanism. */
+ html[data-inj-page="financial-freedom"] body{
+  font-size:var(--inj-monitor-body)!important;
+  line-height:1.45!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-page{
+  gap:var(--inj-monitor-gap)!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ :is(.freedom-heading h1,.freedom-hero h2){
+  font-size:var(--inj-monitor-heading)!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ :is(.freedom-section-heading h2,.freedom-status-title,
+ .freedom-spending-summary-copy strong){
+  font-size:var(--inj-monitor-card)!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ :is(.freedom-heading p,.freedom-hero p,.freedom-hero-foot,
+ .freedom-section p,.freedom-figures article>span,
+ .freedom-spending-summary-copy>span,
+ .freedom-lifestyle-result,.freedom-lifestyle-cadence){
+  font-size:var(--inj-monitor-body)!important;
+  line-height:1.45!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ :is(.freedom-heading>small,.freedom-heading small,
+ .freedom-section-heading small,.freedom-hero-top small,
+ .freedom-figures article small,.freedom-target-grid small,
+ .freedom-price-rail>span,.freedom-select-wrap>span,
+ .freedom-tier small,.freedom-tier strong,.freedom-pill,
+ .freedom-spending-summary-copy small,
+ .freedom-lifestyle-name small,
+ .freedom-spending-form label>span){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.35!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ :is(.freedom-figures article strong,.freedom-target-grid strong){
+  font-size:clamp(20px,1.45vw,37px)!important;
+  overflow-wrap:anywhere!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ :is(.freedom-hero,.freedom-section,.freedom-figures article){
+  padding:clamp(18px,1.2vw,30px)!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle.freedom-lifestyle{
+  gap:var(--inj-monitor-gap)!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle>.freedom-lifestyle-item{
+  padding:clamp(15px,1vw,26px)!important;
+  min-height:clamp(180px,10vw,245px)!important;
+  grid-template-rows:clamp(26px,2vw,42px) minmax(40px,auto) auto auto 5px!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle>.freedom-lifestyle-item
+ .freedom-lifestyle-name strong{
+  font-size:var(--inj-monitor-card)!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle>.freedom-lifestyle-item
+ .freedom-lifestyle-name small{
+  font-size:var(--inj-monitor-label)!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle>.freedom-lifestyle-item
+ :is(.freedom-lifestyle-result,.freedom-lifestyle-cadence){
+  font-size:var(--inj-monitor-label)!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ .freedom-spending-form :is(input,select){
+  font-size:clamp(16px,.85vw,22px)!important;
+  min-height:clamp(44px,2.5vw,60px)!important;
+ }
+ /* Other sections: choose main statistical labels and values, never stretch
+    whole canvases/charts or every icon in their internal scale controls. */
+ html[data-inj-page="treasury"] body
+ :is(.treasury-metric-label,.treasury-panel>header small,
+ .treasury-section-heading small,.treasury-hero-copy small,
+ .treasury-chart-summary small){
+  font-size:var(--inj-monitor-label)!important;
+ }
+ html[data-inj-page="treasury"] body
+ :is(.treasury-metric>strong,.treasury-panel>header strong){
+  font-size:var(--inj-monitor-card)!important;
+ }
+ html[data-inj-page="live-rewards"] body
+ :is(.rewards-kicker,.rewards-intro p,.reward-flow-total,
+ .rewards-total-rate,.rewards-total-apr){
+  font-size:var(--inj-monitor-body)!important;
+ }
+ html[data-inj-page="comparison"] body
+ :is(.cap-label,.cap-intro p,.cap-result small,.cap-panel label){
+  font-size:var(--inj-monitor-body)!important;
+ }
+ html[data-inj-page="reward-ladder"] body
+ :is(.ladder-intro p,.ladder-step small,.ladder-pick-info){
+  font-size:var(--inj-monitor-body)!important;
+ }
+ html[data-inj-market] body
+ :is(.inj-mi-stat span,.inj-mi-snapshot article span,
+ .overview article small,.market-asset-section .heading span,
+ .mp-meta small){
+  font-size:var(--inj-monitor-label)!important;
+ }
+ html[data-inj-market] body
+ :is(.inj-mi-snapshot article strong,.overview article strong,
+ .market-asset-section .heading h2){
+  font-size:var(--inj-monitor-card)!important;
+ }
+}
+@media (min-width:1200px) and (max-width:1599px){
+ /* Keep half-width Home controls readable at laptop sizes. */
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  grid-template-columns:1fr!important;
+ }
+}
+/* On ultrawide, more room in the statistics panel prevents the left half
+   becoming a sea of empty pixels. Keep both large charts proportionate. */
+@media (min-width:2000px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access){
+  grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle.freedom-lifestyle{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
+@media (max-width:1199px){
+ /* Preserve existing mobile and iPad controls and iOS focus behavior. */
+}
+
+
+/* Financial Freedom · spend the monitor space on actual usable information,
+   not the empty lower half of a two-column plan panel. */
+@media (min-width:1200px){
+ html[data-inj-page="financial-freedom"] body .freedom-lower-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:var(--inj-monitor-gap)!important;
+  align-items:start!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-lower-grid
+ > .freedom-section{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle.freedom-lifestyle{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-plan{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-areas:"heading heading" "settings targets" "stress stress" "legal legal"!important;
+  gap:var(--inj-monitor-gap)!important;
+  align-items:start!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-plan
+ > .freedom-section-heading{
+  grid-area:heading!important;
+  margin:0!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-plan
+ > .freedom-settings{
+  grid-area:settings!important;
+  margin:0!important;
+  min-width:0!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-plan
+ > .freedom-target-grid{
+  grid-area:targets!important;
+  margin:0!important;
+  min-width:0!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-plan
+ > .freedom-stress{
+  grid-area:stress!important;
+  margin:0!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-plan
+ > p{
+  grid-area:legal!important;
+  margin:0!important;
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.5!important;
+ }
+ html[data-inj-page="financial-freedom"] body .freedom-plan
+ .freedom-target-grid strong{
+  font-size:clamp(17px,1.18vw,30px)!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+ }
+ html[data-inj-page="financial-freedom"] body
+ :is(.freedom-settings label>span,.freedom-settings label>small,
+ .freedom-stress span,.freedom-stress small,
+ .freedom-wealth>p,#freedomLifestyleFoot){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.4!important;
+ }
+ /* Bigger real-world data, still capped to avoid clipping in narrow cards. */
+ html[data-inj-page="index"] body #entryGate .entry-home-top
+ .entry-brand :is(strong,span){
+  font-size:clamp(19px,1.3vw,32px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ :is(.entry-system-pill,.entry-note,.entry-wallet-label){
+  font-size:var(--inj-monitor-label)!important;
+ }
+}
+@media (min-width:2200px){
+ html[data-inj-page="financial-freedom"] body .freedom-options
+ #freedomLifestyle.freedom-lifestyle{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+}
+
+
+/* Live terminals and modular workspace: scale within their actual card area
+   (cqw on Workspace) so a tiny widget doesn't inherit a huge monitor font. */
+@media (min-width:1400px){
+ html[data-inj-page="live-charts"] body
+ :is(.timeframe b,.market-strip strong,.scale-marker strong){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.25!important;
+ }
+ html[data-inj-page="live-charts"] body
+ :is(.market-strip span,.timeframe span,.book-pill){
+  font-size:var(--inj-monitor-micro)!important;
+ }
+ html[data-inj-page="live-charts"] body .book-row{
+  font-size:var(--inj-monitor-label)!important;
+  min-height:clamp(24px,1.5vw,39px)!important;
+ }
+ html[data-inj-page="order-book"] body
+ :is(.columns,.book-meta,.book-footer){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.25!important;
+ }
+ html[data-inj-page="order-book"] body .row{
+  font-size:var(--inj-monitor-body)!important;
+  line-height:1.35!important;
+  min-height:clamp(25px,1.55vw,42px)!important;
+ }
+ html[data-inj-page="command-center"] body
+ :is(.cc-now-item>span,.cc-panel-title span,.cc-panel-title small,
+ .cc-chart-feed,.cc-statusbar,.cc-eyebrow){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.3!important;
+ }
+ html[data-inj-page="command-center"] body
+ :is(.cc-panel-title strong,.cc-chart-status b,.cc-now-item>strong){
+  font-size:var(--inj-monitor-card)!important;
+ }
+ html[data-inj-page="injc-etf"] body
+ :is(.metric label,.metric span,.hero-meta span,.status-pill){
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.3!important;
+ }
+ html[data-inj-page="injc-etf"] body .metric strong{
+  font-size:clamp(24px,1.55vw,40px)!important;
+  line-height:1.2!important;
+ }
+ /* Workspace: the actual size of an individual card, not the desktop width,
+    determines how much its labels and values may grow. */
+ html[data-inj-page="workspace"] body .ws-card-heading strong{
+  font-size:clamp(12px,2.25cqw,19px)!important;
+  line-height:1.25!important;
+ }
+ html[data-inj-page="workspace"] body .ws-card-heading small{
+  font-size:clamp(10px,1.8cqw,15px)!important;
+  line-height:1.25!important;
+ }
+ html[data-inj-page="workspace"] body
+ .ws-card :is(.ws-section-label,.ws-sub,.ws-data-status,.ws-section-note){
+  font-size:clamp(11px,1.7cqw,17px)!important;
+  line-height:1.38!important;
+ }
+ html[data-inj-page="workspace"] body .ws-card .ws-section-value{
+  font-size:clamp(13px,3.2cqw,31px)!important;
+  line-height:1.22!important;
+ }
+ html[data-inj-page="workspace"] body .ws-card .ws-value{
+  font-size:clamp(18px,8cqw,62px)!important;
+  line-height:1.12!important;
+ }
+}
+
+
+/* Home footer rails and mini chart labels are part of the data, not decoration.
+   Make them readable at the same desktop scale as the launcher cards. */
+@media(min-width:1200px){
+ html[data-inj-page="index"] body #entryGate
+ :is(.entry-insights-head span,.entry-insights-head small,
+ .entry-insights-live,.entry-price-timebar span,
+ .entry-overview-head span,.entry-overview-live){
+  font-size:var(--inj-monitor-micro)!important;
+  line-height:1.3!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-desktop-metric>span,
+ html[data-inj-page="index"] body #entryGate
+ .entry-desktop-metric>small{
+  font-size:var(--inj-monitor-label)!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-desktop-metric>strong{
+  font-size:clamp(17px,1.2vw,30px)!important;
+  line-height:1.25!important;
+  overflow-wrap:anywhere!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-spark-tooltip :is(strong,small){
+  font-size:var(--inj-monitor-body)!important;
+ }
+}

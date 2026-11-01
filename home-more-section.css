@@ -1,0 +1,418 @@
+/* INJ Node · Home / ALTRO-MORE disclosure · 2026-10-28
+   Market Events, INJC ETF, INJ Workspace and Financial Freedom retain IDs
+   and click handlers. Native details is keyboard/touch accessible.
+   B Capital Group remains outside (Treasury last). */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>details#injHomeMore{
+ display:block!important;
+ order:13!important;
+ grid-column:1/-1!important;
+ grid-row:auto!important;
+ justify-self:stretch!important;
+ align-self:stretch!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+ min-height:0!important;
+ height:auto!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+ background:transparent!important;
+ overflow:visible!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+> #entryWorkspaceButton.entry-action{
+ order:14!important;
+ grid-column:1/-1!important;
+ grid-row:auto!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action{
+ order:15!important;
+ grid-column:1/-1!important;
+ grid-row:auto!important;
+}
+html[data-inj-page="index"] body #entryGate #injHomeMore
+>.inj-home-more-toggle{
+ display:flex!important;
+ box-sizing:border-box!important;
+ position:relative!important;
+ align-items:center!important;
+ justify-content:center!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+ height:40px!important;
+ min-height:40px!important;
+ max-height:40px!important;
+ padding:8px 12px!important;
+ margin:0!important;
+ border:1px solid color-mix(in srgb,var(--accent) 19%,var(--line))!important;
+ border-radius:10px!important;
+ background:color-mix(in srgb,var(--accent) 3%,var(--surface,#0c2020))!important;
+ box-shadow:none!important;
+ color:var(--text,#ecf6f4)!important;
+ text-align:center!important;
+ list-style:none!important;
+ cursor:pointer!important;
+ user-select:none!important;
+ -webkit-user-select:none!important;
+ touch-action:manipulation!important;
+ transition:border-color .18s ease,background .18s ease!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-toggle::-webkit-details-marker{display:none!important}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-toggle::marker{content:""!important}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-toggle:focus-visible{
+ outline:2px solid var(--accent,#7fe3d0)!important;
+ outline-offset:3px!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-toggle>.inj-home-more-label{
+ display:block!important;
+ font-family:var(--inj-node-terminal-font,ui-monospace,SFMono-Regular,Menlo,monospace)!important;
+ font-size:12px!important;
+ line-height:1.2!important;
+ font-weight:750!important;
+ letter-spacing:.105em!important;
+ text-transform:uppercase!important;
+ color:var(--muted-strong,var(--text,#ecf6f4))!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore[open]>.inj-home-more-toggle{
+ border-color:color-mix(in srgb,var(--accent) 42%,var(--line))!important;
+ background:color-mix(in srgb,var(--accent) 7%,var(--surface,#0c2020))!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore[open]>.inj-home-more-toggle>.inj-home-more-label{
+ color:var(--accent,#88e1cd)!important;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-toggle:hover{
+  border-color:color-mix(in srgb,var(--accent) 42%,var(--line))!important;
+ }
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-auto-rows:auto!important;
+ align-items:stretch!important;
+ gap:clamp(9px,1vw,16px)!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:0!important;
+ margin:0!important;
+ padding:clamp(9px,1vw,15px) 0 0!important;
+ overflow:visible!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore:not([open])>.inj-home-more-content{
+ display:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>.inj-market-events-slot{
+ display:block!important;
+ position:relative!important;
+ box-sizing:border-box!important;
+ grid-column:1/-1!important;
+ grid-row:auto!important;
+ order:0!important;
+ min-width:0!important;
+ width:100%!important;
+ max-width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ height:auto!important;
+ align-self:stretch!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>.inj-market-events-slot
+>#entryMarketEventsButton.entry-action{
+ display:flex!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ height:81px!important;
+ min-height:81px!important;
+ margin:0!important;
+ border-radius:16px!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content
+>:is(#entryInjcEtfButton,#entryFreedomButton).entry-action{
+ box-sizing:border-box!important;
+ display:flex!important;
+ position:relative!important;
+ flex-direction:row!important;
+ flex-wrap:nowrap!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ align-self:stretch!important;
+ order:0!important;
+ grid-column:1/-1!important;
+ grid-row:auto!important;
+ gap:12px!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ min-height:81px!important;
+ height:auto!important;
+ margin:0!important;
+ padding:12px 20px!important;
+ overflow:hidden!important;
+ text-align:left!important;
+ border-radius:16px!important;
+ border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+ background:linear-gradient(115deg,
+ color-mix(in srgb,var(--accent) 4%,var(--surface)),
+ color-mix(in srgb,var(--surface-strong) 90%,var(--theme-canvas)))!important;
+ color:var(--text)!important;
+ text-decoration:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryInjcEtfButton{
+ --tile-accent:color-mix(in srgb,var(--accent,#87e9db) 71%,#e3c489);
+ padding:12px clamp(108px,15vw,135px) 12px 20px!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryInjcEtfButton
+>:is(.entry-action-icon,.entry-action-arrow){
+ display:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryInjcEtfButton
+>.inj-tile-scene{
+ pointer-events:none!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryFreedomButton{
+ min-height:88px!important;
+ padding:11px 18px!important;
+ gap:13px!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryFreedomButton
+>.freedom-entry-emblem.entry-action-icon{
+ flex:0 0 58px!important;
+ width:58px!important;
+ height:58px!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryFreedomButton
+>.freedom-entry-copy{
+ min-width:0!important;
+ flex:1 1 auto!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryFreedomButton
+>.entry-action-arrow{
+ flex:0 0 18px!important;
+ margin-left:auto!important;
+}
+@media(min-width:2100px){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>.inj-market-events-slot{
+  grid-column:auto!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryInjcEtfButton{
+  grid-column:auto!important;
+ }
+}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-toggle{
+  height:38px!important;min-height:38px!important;max-height:38px!important;
+  padding:7px 12px!important;
+  border-radius:9px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-toggle>.inj-home-more-label{
+  font-size:11px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryInjcEtfButton{
+  min-height:78px!important;
+  padding:12px 115px 12px 19px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryFreedomButton{
+  min-height:80px!important;
+  padding:11px 12px!important;
+  gap:11px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryFreedomButton
+ >.freedom-entry-emblem.entry-action-icon{
+  flex:0 0 52px!important;
+  width:52px!important;
+  height:52px!important;
+ }
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-toggle{padding:7px 12px!important}
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryInjcEtfButton{
+  padding-left:14px!important;padding-right:101px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-toggle{transition:none!important}
+}
+
+
+/* Fourth card: INJ Workspace, fully operational inside disclosure.
+   The original Workspace CSS was scoped to direct launcher children, so its
+   horizontal appearance must also be restored at this new nesting level. */
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryWorkspaceButton.entry-action{
+ --tile-accent:color-mix(in srgb,var(--accent,#76e7dc) 78%,#7ad7ff);
+ box-sizing:border-box!important;
+ display:flex!important;
+ position:relative!important;
+ flex-direction:row!important;
+ flex-wrap:nowrap!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ align-self:stretch!important;
+ isolation:isolate!important;
+ order:0!important;
+ grid-row:auto!important;
+ grid-column:1/-1!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+ min-height:81px!important;
+ height:auto!important;
+ margin:0!important;
+ padding:12px clamp(103px,15vw,129px) 12px 20px!important;
+ gap:0!important;
+ border-radius:16px!important;
+ border:1px solid color-mix(in srgb,var(--tile-accent) 25%,var(--line))!important;
+ background:linear-gradient(118deg,
+  color-mix(in srgb,var(--tile-accent) 6%,var(--surface)),
+  color-mix(in srgb,var(--tile-accent) 2%,var(--surface-strong)))!important;
+ color:var(--text)!important;
+ text-decoration:none!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+>:is(.entry-action-icon,.entry-action-arrow){display:none!important}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+>span:not(.entry-action-icon):not(.inj-tile-scene){
+ box-sizing:border-box!important;
+ display:flex!important;
+ position:relative!important;
+ z-index:2!important;
+ flex:1 1 auto!important;
+ flex-direction:column!important;
+ justify-content:center!important;
+ align-items:flex-start!important;
+ min-width:0!important;
+ max-width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ text-align:left!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+.inj-home-tile-title{
+ font-family:var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ display:block!important;
+ min-width:0!important;
+ width:100%!important;
+ color:var(--text)!important;
+ font-size:clamp(14px,1.15vw,22px)!important;
+ font-weight:800!important;
+ line-height:1.2!important;
+ text-align:left!important;
+ overflow-wrap:anywhere!important;
+ white-space:normal!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+.inj-tile-description{
+ font-size:clamp(11px,.8vw,15px)!important;
+ line-height:1.35!important;
+ color:var(--muted-strong,var(--muted))!important;
+ white-space:normal!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+>.inj-tile-scene{
+ box-sizing:border-box!important;
+ display:block!important;
+ position:absolute!important;
+ z-index:1!important;
+ top:50%!important;
+ right:17px!important;
+ bottom:auto!important;
+ left:auto!important;
+ width:94px!important;
+ max-width:94px!important;
+ height:54px!important;
+ padding:0!important;
+ margin:0!important;
+ opacity:.78!important;
+ pointer-events:none!important;
+ transform:translateY(-50%)!important;
+}
+html[data-inj-page="index"] body #entryGate
+#injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+>.inj-tile-scene svg{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:1.7!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+@media(min-width:2100px){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryWorkspaceButton{
+  grid-column:auto!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryFreedomButton{
+  grid-column:auto!important;
+ }
+}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryWorkspaceButton{
+  min-height:78px!important;
+  padding:12px 115px 12px 19px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+ .inj-home-tile-title{font-size:15px!important}
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryWorkspaceButton{
+  padding-left:14px!important;
+  padding-right:101px!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ #injHomeMore>.inj-home-more-content>#entryWorkspaceButton
+ >.inj-tile-scene{width:79px!important;right:13px!important}
+}

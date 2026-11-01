@@ -1,0 +1,33 @@
+/* INJ NODE · Control Center scroll isolation · 2026-10-28
+   Freeze the Home at its exact scroll offset while the Settings drawer is
+   open, instead of letting iOS scroll the page behind the fixed backdrop.
+   Only the drawer's own native overflow-y remains scrollable.
+   The offset is saved/restored by setHeaderMenuOpen in app.js. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  html[data-inj-page="index"]:has(body.menu-overlay-open) {
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+  html[data-inj-page="index"] body.menu-overlay-open {
+    position:fixed!important;
+    top:var(--inj-settings-frozen-top,0px)!important;
+    left:0!important;
+    right:0!important;
+    bottom:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+  html[data-inj-page="index"] body.menu-overlay-open #headerMenuPanel {
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y!important;
+  }
+  html[data-inj-page="index"] body.menu-overlay-open #headerMenuBackdrop {
+    touch-action:none!important;
+  }
+}

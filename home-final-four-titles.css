@@ -1,0 +1,62 @@
+/* INJ Node · last four Home titles match the compact cards above.
+   Typography only, preserving title position, tile dimensions, icons,
+   Market Events running preview, labels and IT/EN content. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> :is(#entryInjcEtfButton.entry-action-injc,#entryWorkspaceButton.entry-action-workspace,#entryTreasuryButton.entry-action-treasury)
+> span:not(.entry-action-icon):not(.inj-tile-scene) > strong.inj-home-tile-title,
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) .inj-market-events-slot
+> #entryMarketEventsButton.entry-action-market-events > .inj-events-tile-copy > strong.inj-home-tile-title {
+ font-family:var(--inj-node-terminal-font,"IBM Plex Mono",ui-monospace,monospace)!important;
+ font-size:clamp(12px,1.08vw,14px)!important;
+ font-weight:600!important;font-style:normal!important;
+ line-height:1.26!important;letter-spacing:.075em!important;
+ text-transform:uppercase!important;
+ text-wrap:balance!important;overflow-wrap:normal!important;word-break:normal!important;
+ -webkit-font-smoothing:antialiased;
+}
+/* Treasury contains two main titles left/right; match both typographically. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy
+> .treasury-entry-details > .treasury-entry-subtitle {
+ font-family:var(--inj-node-terminal-font,"IBM Plex Mono",ui-monospace,monospace)!important;
+ font-size:clamp(12px,1.08vw,14px)!important;
+ font-weight:600!important;font-style:normal!important;
+ line-height:1.26!important;letter-spacing:.075em!important;
+ text-transform:uppercase!important;
+ -webkit-font-smoothing:antialiased;
+}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryInjcEtfButton.entry-action-injc,#entryWorkspaceButton.entry-action-workspace,#entryTreasuryButton.entry-action-treasury)
+ > span:not(.entry-action-icon):not(.inj-tile-scene) > strong.inj-home-tile-title,
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) .inj-market-events-slot
+ > #entryMarketEventsButton.entry-action-market-events > .inj-events-tile-copy > strong.inj-home-tile-title,
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy
+ > .treasury-entry-details > .treasury-entry-subtitle{
+  font-size:clamp(11.3px,3.03vw,12.7px)!important;
+  line-height:1.25!important;font-weight:600!important;
+  letter-spacing:.055em!important;
+ }
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryInjcEtfButton.entry-action-injc,#entryWorkspaceButton.entry-action-workspace,#entryTreasuryButton.entry-action-treasury)
+ > span:not(.entry-action-icon):not(.inj-tile-scene) > strong.inj-home-tile-title,
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) .inj-market-events-slot
+ > #entryMarketEventsButton.entry-action-market-events > .inj-events-tile-copy > strong.inj-home-tile-title,
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy
+ > .treasury-entry-details > .treasury-entry-subtitle{
+  font-size:11px!important;letter-spacing:.025em!important;
+ }
+}

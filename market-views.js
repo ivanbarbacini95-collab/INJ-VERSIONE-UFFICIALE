@@ -35,11 +35,13 @@
  let favorites=readFavorites();
  const persistFavorites=()=>{try{localStorage.setItem(favoritesKey,JSON.stringify([...favorites.values()]))}catch(_){}};
  let section='global',mode='list',range=rangeChoices.includes(read())?read():'24h',
-     favoriteLayout=readLocalFavoriteMode(),favoritesEditing=false,pendingRemovalId=null,lastRemoved=null,undoTimer=null;
+     favoriteLayout=readLocalFavoriteMode(),lastRemoved=null,undoTimer=null;
  function readLocalFavoriteMode(){
   try{return localStorage.getItem(favoriteModeKey)==='heatmap'?'heatmap':'list'}catch(_){return 'list'}
  }
  let listTiles=new Map(),mapTiles=new Map(),pending=new Set(),renderQueued=false,timer=null;
+ let heatmapHasRendered=false;
+ let openSwipeId=null;
  const all=()=>api()?.getCoins?.()||[];
  // Applies exclusively to the Heatmap. Global Crypto preserves the full Top 200.
  // Match identifiers/names as well as tickers; do not filter native BTC, ETH, SOL or INJ.
@@ -62,13 +64,15 @@
   const id=String(coin.id||'').trim(),name=String(coin.name||'').trim(),symbol=String(coin.symbol||'').trim();
   const price=num(coin.current_price);
   if(!id||!name||!symbol||!Number.isFinite(price)||price<=0)return false;
-  const cap=num(coin.market_cap),volume=num(coin.total_volume),daily=change(coin,'24h');
-  return (Number.isFinite(cap)&&cap>0)||(Number.isFinite(volume)&&volume>0)||Number.isFinite(daily);
+  // Market cap, volume, day performance and mini-chart are optional fields.
+  // A verified positive quote is sufficient to keep the asset in both views.
+  return true;
  }
- // A Heatmap tile has no meaningful red/green fill without the chosen period.
- // Do not show black "—" tiles for missing or invalid timeframe samples.
+ // Heatmap cards should never disappear merely because the provider
+ // omitted one optional 1H/24H/7D/30D percentage. Keep the verified quote
+ // visible with a neutral tile and a clear "—" performance instead.
  function hasHeatmapData(coin){
-  return hasMarketQuote(coin)&&Number.isFinite(change(coin,range));
+  return hasMarketQuote(coin);
  }
  function filtered(){
   const count=Number($('scope')?.value)||200;
@@ -98,6 +102,7 @@
   });
  }
  function spark(coin){
+  if(window.INJ_DAY_CHART&&document.getElementById('injCryptoChartTimeframe'))return window.INJ_DAY_CHART.render(coin);
   const source=coin.sparkline_in_7d?.price;
   if(!Array.isArray(source)||source.length<2)return '—';
   const data=source.map(num).filter(Number.isFinite);
@@ -112,13 +117,20 @@
   const v=change(coin,k);return '<span class="mp-percent mp-'+k+' '+tone(v)+'">'+escape(percent(v))+'</span>';
  }
  const favoriteIcon='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.5 2.9 5.88 6.49.94-4.7 4.58 1.11 6.47L12 17.32l-5.8 3.05 1.1-6.47-4.7-4.58 6.5-.94Z"/></svg>';
+ const removeFromFavoritesIcon='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 5.5 18.5 18.5M18.5 5.5 5.5 18.5"/></svg>';
+ // Star to save in Global Crypto, X to remove inside Favorites.
+ const favoriteGlyph=()=>section==='favorites'&&mode==='list'?removeFromFavoritesIcon:favoriteIcon;
  function favoriteLabel(coin,saved){
   const symbol=String(coin.symbol||'').toUpperCase(),name=String(coin.name||coin.id);
-  return (saved?tr('Rimuovi dai preferiti: ','Remove from favorites: '):tr('Aggiungi ai preferiti: ','Add to favorites: '))+name+' ('+symbol+')';
+  const action=section==='favorites'
+   ?tr('Rimuovi dai preferiti: ','Remove from favorites: ')
+   :saved?tr('Già nei preferiti: ','Already a favorite: ')
+   :tr('Aggiungi ai preferiti: ','Add to favorites: ');
+  return action+name+' ('+symbol+')';
  }
  function favoriteButtonHtml(coin){
   const saved=favorites.has(coin.id);
-  return '<button type="button" class="market-favorite-toggle'+(saved?' is-saved':'')+'" data-favorite-id="'+escape(coin.id)+'" data-favorite-name="'+escape(coin.name)+'" data-favorite-symbol="'+escape(coin.symbol)+'" aria-pressed="'+saved+'" aria-label="'+escape(favoriteLabel(coin,saved))+'" title="'+escape(favoriteLabel(coin,saved))+'">'+favoriteIcon+'</button>';
+  return '<button type="button" class="market-favorite-toggle'+(saved?' is-saved':'')+'" data-favorite-id="'+escape(coin.id)+'" data-favorite-name="'+escape(coin.name)+'" data-favorite-symbol="'+escape(coin.symbol)+'" aria-pressed="'+saved+'" aria-label="'+escape(favoriteLabel(coin,saved))+'" title="'+escape(favoriteLabel(coin,saved))+'">'+favoriteGlyph(saved)+'</button>';
  }
  function makeFavoriteButton(coin){
   const fragment=document.createElement('template');
@@ -130,6 +142,8 @@
   const coin=all().find(c=>c.id===id)||{id,name:button.dataset.favoriteName,symbol:button.dataset.favoriteSymbol};
   const saved=favorites.has(id),label=favoriteLabel(coin,saved);
   button.classList.toggle('is-saved',saved);
+  const glyph=favoriteGlyph();
+  if(button.innerHTML!==glyph)button.innerHTML=glyph;
   button.setAttribute('aria-pressed',String(saved));
   button.setAttribute('aria-label',label);
   button.title=label;
@@ -137,15 +151,6 @@
  function updateFavoritesUI(){
   const size=favorites.size,count=$('injFavoriteTabCount');
   if(count){count.textContent=String(size);count.hidden=size===0;}
-  if(section!=='favorites'||favoriteLayout!=='list'||size===0)favoritesEditing=false;
-  const manage=$('marketFavoritesManage');
-  if(manage){
-   manage.hidden=section!=='favorites'||favoriteLayout!=='list'||size===0;
-   manage.textContent=favoritesEditing?tr('Fine','Done'):tr('Gestisci','Manage');
-   manage.setAttribute('aria-pressed',String(favoritesEditing));
-  }
-  favControls.classList.toggle('is-editing',favoritesEditing);
-  list.classList.toggle('favorites-readonly',section==='favorites'&&!favoritesEditing);
   const undoButton=$('marketFavoritesUndoButton');
   if(undoButton)undoButton.textContent=tr('Annulla','Undo');
   const confirmTitle=$('marketFavoriteConfirmTitle');
@@ -156,8 +161,8 @@
   if(removeButton)removeButton.textContent=tr('Rimuovi','Remove');
   $('marketFavoritesHeading').textContent=tr('I tuoi preferiti','Your favorites');
   $('marketFavoritesStatus').textContent=size
-   ?size+' '+tr(size===1?'crypto salvata':'crypto salvate',size===1?'saved crypto':'saved cryptos')+' · '+tr('su questo dispositivo','on this device')
-   :tr('Tocca la stella accanto a una crypto in Global Crypto','Tap a star beside any coin in Global Crypto');
+   ?size+' '+tr(size===1?'crypto salvata':'crypto salvate',size===1?'saved crypto':'saved cryptos')+' · '+tr('scorri a sinistra per rimuovere','swipe left to remove')
+   :tr('Scorri una crypto a sinistra per salvarla nei preferiti','Swipe a coin left to save it as a favorite');
   $('marketFavoritesList').textContent=tr('Lista','List');
   $('marketFavoritesMap').textContent='Heatmap';
   favModes.setAttribute('aria-label',tr('Visualizzazione preferiti','Favorites view'));
@@ -173,20 +178,25 @@
       +' · '+tr('salvataggio conservato','still saved');
   }
  }
- function toggleFavorite(id,name,symbol){
-  if(favorites.has(id))favorites.delete(id);
-  else favorites.set(id,{id,name:String(name||id).slice(0,90),symbol:String(symbol||'').slice(0,18)});
+ function addFavorite(id,name,symbol){
+  if(favorites.has(id))return;
+  favorites.set(id,{id,name:String(name||id).slice(0,90),symbol:String(symbol||'').slice(0,18)});
   persistFavorites();
   updateFavoritesUI();
-  if(section==='favorites')requestRender();
-  else document.querySelectorAll('[data-favorite-id]').forEach(updateFavoriteButton);
+  document.querySelectorAll('[data-favorite-id]').forEach(updateFavoriteButton);
+  window.dispatchEvent(new Event('injnode:crypto-favorites-changed'));
  }
- function setFavoritesEditing(enabled){
-  favoritesEditing=Boolean(enabled)&&section==='favorites'&&favoriteLayout==='list'&&favorites.size>0;
+ function removeFavorite(id){
+  const item=favorites.get(id);if(!item)return;
+  const index=[...favorites.keys()].indexOf(id);
+  closeOpenSwipe();
+  favorites.delete(id);
+  persistFavorites();
   updateFavoritesUI();
   requestRender();
+  showFavoriteUndo(item,index);
+  window.dispatchEvent(new Event('injnode:crypto-favorites-changed'));
  }
- const confirmation=$('marketFavoriteConfirm');
  function hideFavoriteUndo(){
   if(undoTimer){clearTimeout(undoTimer);undoTimer=null;}
   lastRemoved=null;
@@ -212,65 +222,52 @@
   persistFavorites();
   updateFavoritesUI();
   requestRender();
+  window.dispatchEvent(new Event('injnode:crypto-favorites-changed'));
  }
- function finishFavoriteRemoval(){
-  const id=pendingRemovalId;
-  pendingRemovalId=null;
-  if(confirmation?.open)confirmation.close();
-  if(!id||!favorites.has(id))return;
-  const item=favorites.get(id),index=[...favorites.keys()].indexOf(id);
-  favorites.delete(id);
-  persistFavorites();
-  updateFavoritesUI();
-  requestRender();
-  showFavoriteUndo(item,index);
- }
- function requestFavoriteRemoval(id){
-  if(section!=='favorites'||favoriteLayout!=='list'||!favoritesEditing||!favorites.has(id))return;
-  const item=favorites.get(id);
-  pendingRemovalId=id;
-  const description=tr('Vuoi rimuovere ','Do you want to remove ')+item.name+' ('+String(item.symbol).toUpperCase()+')'+tr(' dalla lista dei preferiti?',' from your favorites list?');
-  const target=$('marketFavoriteConfirmText');
-  if(target)target.textContent=description;
-  if(confirmation?.showModal){
-   if(!confirmation.open)confirmation.showModal();
-  }else if(window.confirm(description)){
-   finishFavoriteRemoval();
-  }else pendingRemovalId=null;
- }
- function favoriteRemoveHtml(coin){
-  if(!favoritesEditing)return '';
-  const label=tr('Rimuovi dai preferiti: ','Remove from favorites: ')+coin.name+' ('+String(coin.symbol||'').toUpperCase()+')';
-  return '<button type="button" class="market-favorite-remove" data-favorite-id="'+escape(coin.id)+'" aria-label="'+escape(label)+'" title="'+escape(label)+'"><span aria-hidden="true">−</span></button>';
- }
- function rowHtml(coin){
-  const chart=spark(coin);
+ function rowHtml(coin,index=0){
+  // Render cached preview immediately for the first screen. Remaining 190+
+  // rows get a tiny placeholder and hydrate only when they enter the viewport.
+  const visibleSoon=index<9;
+  const chart=visibleSoon?spark(coin):(window.INJ_DAY_CHART?.placeholderChart?.()||spark(coin));
+  const periodPercent=visibleSoon
+   ?(window.INJ_DAY_CHART?.percentHtml?.(coin)||pctHtml(coin,'24h'))
+   :(window.INJ_DAY_CHART?.placeholderPercent?.()||pctHtml(coin,'24h'));
   const rank=finite(coin.market_cap_rank)?'#'+num(coin.market_cap_rank):'—';
   const symbol=String(coin.symbol||'').toUpperCase();
-  return '<div class="market-favorite-row'+(section==='favorites'&&!favoritesEditing?' is-readonly':'')+'"><button type="button" class="mp-row" data-coin="'+escape(coin.id)+'" data-previous-price="'+escape(coin.current_price)+'" aria-label="'+escape(coin.name+' '+symbol)+'">'+
+  return '<div class="market-favorite-row '+(section==='favorites'?'is-favorites':'is-global')+'"><button type="button" class="mp-row" data-coin="'+escape(coin.id)+'" data-previous-price="'+escape(coin.current_price)+'" aria-label="'+escape(coin.name+' '+symbol)+'">'+
   '<span class="mp-identity"><span class="mp-rank">'+rank+'</span>'+(String(coin.image||'').trim()?'<img loading="lazy" referrerpolicy="no-referrer" src="'+escape(coin.image)+'" alt="">':'')+'<span class="mp-name"><strong>'+escape(coin.name)+'</strong><small>'+escape(symbol)+'</small></span></span>'+
   '<span class="mp-price"><strong class="mp-price-value">'+escape(money(coin.current_price))+'</strong><small class="mp-mobile-label">'+escape(money(coin.market_cap,true))+' Cap</small></span>'+
   '<span class="mp-change mp-hour">'+pctHtml(coin,'1h')+'</span>'+
-  '<span class="mp-change mp-day">'+pctHtml(coin,'24h')+'</span>'+
+  '<span class="mp-change mp-day">'+periodPercent+'</span>'+
   '<span class="mp-change mp-week">'+pctHtml(coin,'7d')+'</span>'+
   '<span class="mp-change mp-month">'+pctHtml(coin,'30d')+'</span>'+
   '<span class="mp-stat mp-cap">'+escape(money(coin.market_cap,true))+'</span>'+
   '<span class="mp-stat mp-volume">'+escape(money(coin.total_volume,true))+'</span>'+
-  '<span class="mp-chart">'+(chart==='—'?'':chart)+'</span></button>'+(section==='global'?favoriteButtonHtml(coin):favoriteRemoveHtml(coin))+'</div>';
+  '<span class="mp-chart">'+(chart==='—'?'':chart)+'</span></button>'+favoriteButtonHtml(coin)+'</div>';
  }
  function renderList(items){
   const coins=sorted(items),template=document.createElement('template'),next=new Map();
-  template.innerHTML=coins.length?coins.map(rowHtml).join(''):'<div class="mp-empty">'+
+  template.innerHTML=coins.length?coins.map((coin,index)=>rowHtml(coin,index)).join(''):'<div class="mp-empty">'+
    (section==='favorites'&&favorites.size===0
-    ?tr('Nessuna crypto salvata. Tocca una stella in Global Crypto.','No saved cryptos yet. Tap a star in Global Crypto.')
+    ?tr('Nessuna crypto salvata. Scorri a sinistra una crypto in Global Crypto e tocca la stella.','No saved cryptos yet. Swipe a coin left in Global Crypto and tap the star.')
     :all().length?tr('Nessun risultato o prezzo attualmente disponibile','No matching results or currently available quotes')
     :tr('Caricamento criptovalute…','Loading cryptocurrencies…'))+'</div>';
   rows.replaceChildren(template.content);
   rows.querySelectorAll('.mp-row[data-coin]').forEach(el=>next.set(el.dataset.coin,el));
   listTiles=next;
+  window.INJ_DAY_CHART?.onRowsRendered?.();
+  // Rebuilds from live market refresh must not dismiss an open favorite tray.
+  if(openSwipeId&&swipeEnabled()){
+   const active=next.get(openSwipeId);
+   if(active){
+    active.closest('.market-favorite-row')?.classList.add('inj-swipe-open');
+    active.style.setProperty('--inj-swipe-x','-116px');
+    active.setAttribute('aria-expanded','true');
+   }else openSwipeId=null;
+  }
   $('mpMetaCount').textContent=tr('Crypto visualizzate: ','Displayed assets: ')+coins.length;
  }
- function tile(coin){
+ function tile(coin,index=99){
   const v=change(coin,range),node=document.createElement('button');
   const symbol=String(coin.symbol||'').toUpperCase();
   node.type='button';node.className='heatmap-tile';node.dataset.coin=coin.id;
@@ -281,7 +278,11 @@
   if(/^https:\/\//i.test(imageUrl)){
    const icon=document.createElement('img');
    icon.className='hm-icon';icon.src=imageUrl;icon.alt='';
-   icon.loading='lazy';icon.decoding='async';icon.referrerPolicy='no-referrer';
+   // The first visible Heatmap row should have its logos available at first
+   // paint; offscreen logos remain lazy to avoid unnecessary network work.
+   icon.loading=index<12?'eager':'lazy';
+   icon.decoding='async';icon.referrerPolicy='no-referrer';
+   if(index<8)icon.setAttribute('fetchpriority','high');
    identity.append(icon);
   }
   const labels=document.createElement('span');labels.className='hm-labels';
@@ -297,6 +298,8 @@
   const value=document.createElement('span');value.className='hm-change';
   const price=document.createElement('small');price.className='hm-price';
   node.append(price,value);
+  const icon=node.querySelector('img.hm-icon');
+  node.classList.toggle('heatmap-no-logo',!icon||!icon.complete||icon.naturalWidth===0);
   recolor(node,coin,v);
   return node;
  }
@@ -305,9 +308,14 @@
   node.classList.toggle('is-up',delta>0);
   node.classList.toggle('is-down',delta<0);
   node.classList.toggle('is-flat',!Number.isFinite(delta)||delta===0);
-  const strength=Number.isFinite(delta)?Math.min(58,22+Math.log1p(Math.abs(delta))*13):0;
-  node.style.setProperty('--heat-fill',strength.toFixed(0)+'%');
-  node.style.setProperty('--heat-rim',(Math.min(78,Math.max(30,strength+13))).toFixed(0)+'%');
+  // Saturation is derived from the selected timeframe's real performance.
+  const strength=Number.isFinite(delta)&&delta!==0
+   ?Math.min(68,12+Math.log1p(Math.abs(delta))*14.5):0;
+  node.style.setProperty('--heat-fill',strength.toFixed(1)+'%');
+  node.style.setProperty('--heat-wash',(strength*.61).toFixed(1)+'%');
+  node.style.setProperty('--heat-rim',(Math.min(84,Math.max(26,strength+12))).toFixed(1)+'%');
+  node.dataset.heatRange=range;
+  node.dataset.heatPerformance=Number.isFinite(delta)?String(delta):'';
   const label=percent(delta),price=money(coin.current_price);
   const p=node.querySelector('.hm-change'),priceNode=node.querySelector('.hm-price');
   if(p&&p.textContent!==label)p.textContent=label;
@@ -324,9 +332,27 @@
   const sameOrder=coins.length>0&&grid.children.length===coins.length
    &&coins.every((coin,i)=>grid.children[i]?.dataset.coin===coin.id);
   if(coins.length){
-   for(const coin of coins){
-    const el=mapTiles.get(coin.id)||tile(coin);
+   for(let i=0;i<coins.length;i++){
+    const coin=coins[i];
+    const el=mapTiles.get(coin.id)||tile(coin,i);
+    // Compare only already-visible tiles on the same timeframe. Opening the
+    // Heatmap, changing timeframe/currency or rearranging ranks is not a tick.
+    const existing=mapTiles.has(coin.id)&&heatmapHasRendered&&el.isConnected
+      &&el.dataset.heatRange===range;
+    const oldPrice=Number(el.dataset.previousPrice);
+    const newPrice=num(coin.current_price);
+    const oldPerformance=Number(el.dataset.heatPerformance);
+    const newPerformance=change(coin,range);
+    const changedPrice=existing&&Number.isFinite(oldPrice)&&oldPrice>0
+      &&Number.isFinite(newPrice)&&newPrice>0&&oldPrice!==newPrice
+      &&el.dataset.displayPrice!==money(newPrice);
+    const changedPerformance=existing&&el.dataset.heatPerformance!==''
+      &&Number.isFinite(oldPerformance)&&Number.isFinite(newPerformance)
+      &&oldPerformance!==newPerformance
+      &&el.querySelector('.hm-change')?.textContent!==percent(newPerformance);
     recolor(el,coin);
+    if(changedPrice||changedPerformance)
+      priceFlash(el,newPrice>oldPrice?'up':'down',true);
     el.dataset.previousPrice=String(coin.current_price);
     const symbol=el.querySelector('.hm-symbol'),name=el.querySelector('.hm-name'),rank=el.querySelector('.hm-rank');
     const newSymbol=String(coin.symbol||'').toUpperCase(),newName=String(coin.name||'');
@@ -349,14 +375,15 @@
    }
   }else{
    const message=section==='favorites'&&favorites.size===0
-    ?tr('Nessuna crypto salvata. Tocca una stella in Global Crypto.','No saved cryptos yet. Tap a star in Global Crypto.')
-    :all().length?tr('Nessuna crypto con dati disponibili per questo periodo','No cryptos with available data for this period')
+    ?tr('Nessuna crypto salvata. Scorri a sinistra una crypto in Global Crypto e tocca la stella.','No saved cryptos yet. Swipe a coin left in Global Crypto and tap the star.')
+    :all().length?tr('Nessuna crypto corrispondente ai filtri','No cryptos match these filters')
     :tr('Caricamento dati di mercato…','Loading market data…');
    let empty=grid.querySelector('.heatmap-empty');
    if(!empty){empty=document.createElement('div');empty.className='heatmap-empty';grid.replaceChildren(empty);}
    if(empty.textContent!==message)empty.textContent=message;
   }
   mapTiles=next;
+  heatmapHasRendered=coins.length>0;
   $('heatmapCount').textContent=tr('Crypto visualizzate: ','Displayed assets: ')+coins.length;
  }
  function render(){
@@ -372,14 +399,18 @@
   requestAnimationFrame(()=>{renderQueued=false;render()});
  }
  function setView(next){
-  section=next==='favorites'?'favorites':next==='heatmap'?'heatmap':'global';
+  const nextSection=next==='favorites'?'favorites':next==='heatmap'?'heatmap':'global';
+  const nextMode=nextSection==='favorites'?favoriteLayout:nextSection==='heatmap'?'heatmap':'list';
+  if(openSwipeId&&(nextSection!==section||nextMode!==mode))closeOpenSwipe();
+  if(nextSection!==section||nextMode!==mode)heatmapHasRendered=false;
+  section=nextSection;
   if(section==='favorites'){
    const intel=$('injIntelligenceMain');
    if(intel)intel.hidden=true;
    global.hidden=false;
    document.documentElement.dataset.marketSection='favorites';
   }
-  mode=section==='favorites'?favoriteLayout:section==='heatmap'?'heatmap':'list';
+  mode=nextMode;
   if(timer){clearTimeout(timer);timer=null}
   pending.clear();
   document.documentElement.dataset.marketMode=mode;
@@ -438,7 +469,8 @@
    // direction of an unrelated instantaneous market tick.
    if(element.classList.contains('is-up'))direction='up';
    else if(element.classList.contains('is-down'))direction='down';
-   else return;
+   // If the selected period is neutral, show only the actual tick direction.
+   else if(direction!=='up'&&direction!=='down')return;
    // Avoid rearming an ongoing or just-ended pulse when the feed is busy.
    const now=performance.now(),last=Number(element.dataset.lastHeatPulse||0);
    if(last&&now-last<1850)return;
@@ -464,19 +496,25 @@
     const current=byId.get(id),element=active.get(id);
     if(!element||!current)continue;
     if(mode==='heatmap'){
-     // Light the fixed edge ONLY for a true underlying price change.
-     // Percent/date updates or repeated quotes must not fire the bar.
+     // Flash only this tile when its displayed quote or timeframe performance
+     // actually changes. Repeated identical quotes must remain static.
      const previous=Number(element.dataset.previousPrice);
      const currentPrice=num(current.current_price);
      // A quote change must also alter the displayed price: tiny rounding
-     // differences should never produce a seemingly random flashing bar.
+     // differences should never make an unchanged tile flash.
      const previousText=element.dataset.displayPrice||'';
      const nextText=money(currentPrice);
-     const changed=Number.isFinite(previous)&&previous>0
+     const priceChanged=Number.isFinite(previous)&&previous>0
        &&Number.isFinite(currentPrice)&&currentPrice>0
        &&currentPrice!==previous&&previousText!==nextText;
+     const previousPerformance=element.querySelector('.hm-change')?.textContent;
+     const currentPerformance=percent(change(current,range));
+     const performanceChanged=previousPerformance!==currentPerformance;
      recolor(element,current);
-     if(changed)priceFlash(element,currentPrice>previous?'up':'down',true);
+     // One live signal per changed tile; unchanged quotes and timeframe
+     // switches never cause the grid to flash.
+     if(priceChanged||performanceChanged)
+      priceFlash(element,currentPrice>previous?'up':'down',true);
      element.dataset.previousPrice=String(current.current_price);
      continue;
     }
@@ -487,7 +525,11 @@
      if(prior>0)priceFlash(price,current.current_price>prior?'up':'down');
     }
     element.dataset.previousPrice=String(current.current_price);
-    for(const k of ['1h','24h','7d','30d']){
+    window.INJ_DAY_CHART?.tick?.(current,element.querySelector('.mp-chart'));
+    window.INJ_DAY_CHART?.paintPercent?.(current,element);
+    // The selected list percentage is owned by INJ_DAY_CHART; do not
+    // overwrite it with 24h during websocket ticks.
+    for(const k of ['1h','7d','30d']){
      const span=element.querySelector('.mp-'+k);
      if(!span)continue;
      const value=change(current,k);
@@ -499,7 +541,8 @@
   },1500);
  }
  function languageChange(){
-  $('injFavoriteTabLabel').textContent=tr('Preferiti','Favorites');
+  const favoriteTabLabel=$('injFavoriteTabLabel');
+  if(favoriteTabLabel)favoriteTabLabel.textContent=tr('Preferiti','Favorites');
   $('marketProSort').setAttribute('aria-label',tr('Ordina Crypto','Sort cryptos'));
   $('heatmapCount').textContent=tr('Crypto visualizzate: ','Displayed assets: ')+mapTiles.size;
   $('heatmapNote').textContent=tr('Verde: rialzo · Rosso: ribasso','Green: up · Red: down');
@@ -517,13 +560,9 @@
   const b=e.target.closest('[data-favorite-mode]');
   if(b)setFavoriteLayout(b.dataset.favoriteMode);
  });
- $('marketFavoritesManage')?.addEventListener('click',()=>setFavoritesEditing(!favoritesEditing));
  $('marketFavoritesUndoButton')?.addEventListener('click',undoFavoriteRemoval);
- $('marketFavoriteConfirmCancel')?.addEventListener('click',()=>confirmation?.close());
- $('marketFavoriteConfirmRemove')?.addEventListener('click',finishFavoriteRemoval);
- confirmation?.addEventListener('close',()=>{pendingRemovalId=null;});
  window.addEventListener('storage',e=>{
-  if(e.key===favoritesKey){favorites=readFavorites();updateFavoritesUI();requestRender();}
+  if(e.key===favoritesKey){favorites=readFavorites();updateFavoritesUI();requestRender();window.dispatchEvent(new Event('injnode:crypto-favorites-changed'));}
   if(e.key===favoriteModeKey){favoriteLayout=readLocalFavoriteMode();if(section==='favorites')setView('favorites');}
  });
  // Remove broken/empty coin icons instead of exposing black image placeholders.
@@ -532,22 +571,112 @@
   if(image?.tagName==='IMG'&&image.closest('.mp-identity'))image.remove();
  },true);
  function onAssetClick(e){
-  const remove=e.target.closest('.market-favorite-remove');
-  if(remove){
-   e.preventDefault();
-   requestFavoriteRemoval(remove.dataset.favoriteId);
-   return;
-  }
   const favorite=e.target.closest('.market-favorite-toggle');
   if(favorite){
    e.preventDefault();
-   toggleFavorite(favorite.dataset.favoriteId,favorite.dataset.favoriteName,favorite.dataset.favoriteSymbol);
+   const id=favorite.dataset.favoriteId;
+   if(section==='favorites'){removeFavorite(id);return}
+   if(section!=='global')return;
+   if(favorites.has(id)){
+    // A saved Global star cannot remove; the X exists only in Favorites.
+    if(openSwipeId===id)closeOpenSwipe();
+    return;
+   }
+   if(openSwipeId===id)favorite.classList.add('inj-swipe-ack');
+   addFavorite(id,favorite.dataset.favoriteName,favorite.dataset.favoriteSymbol);
+   if(openSwipeId===id){
+    setTimeout(()=>{
+     favorite.classList.remove('inj-swipe-ack');
+     updateFavoriteButton(favorite);
+     if(openSwipeId===id)closeOpenSwipe();
+    },290);
+   }
    return;
   }
   const asset=e.target.closest('[data-coin]');
+  if(asset&&openSwipeId===asset.dataset.coin){
+   e.preventDefault();closeOpenSwipe();return;
+  }
   if(asset)api()?.open?.(asset.dataset.coin);
  }
  rows.addEventListener('click',onAssetClick);
+
+ // Slide-to-reveal stays latched until star selection or explicit dismissal.
+ const REVEAL=-116,OPEN_THRESHOLD=-66,RIGHT_DISMISS=58;
+ let touchSwipe=null,swipeClickId='',swipeClickUntil=0;
+ const swipeEnabled=()=>mode==='list'&&(section==='global'||section==='favorites');
+ function closeOpenSwipe(){
+  if(!openSwipeId)return;
+  const row=listTiles.get(openSwipeId);
+  row?.style.removeProperty('--inj-swipe-x');
+  row?.setAttribute('aria-expanded','false');
+  row?.closest('.market-favorite-row')?.classList.remove('inj-swipe-open','inj-swiping');
+  openSwipeId=null;
+ }
+ function keepOpen(id){
+  if(openSwipeId&&openSwipeId!==id)closeOpenSwipe();
+  const row=listTiles.get(id),wrap=row?.closest('.market-favorite-row');
+  if(!row||!wrap)return;
+  openSwipeId=id;
+  wrap.classList.remove('inj-swiping');
+  wrap.classList.add('inj-swipe-open');
+  row.style.setProperty('--inj-swipe-x',REVEAL+'px');
+  row.setAttribute('aria-expanded','true');
+ }
+ function settleSwipe(cancelled=false){
+  const s=touchSwipe;if(!s)return;touchSwipe=null;
+  const {row,wrap,id}=s;
+  wrap.classList.remove('inj-swiping');
+  if(s.axis==='x'){
+   swipeClickId=id;swipeClickUntil=Date.now()+620;
+   const stays=cancelled?s.wasOpen:(s.wasOpen?s.dx<RIGHT_DISMISS:s.dx<=OPEN_THRESHOLD);
+   if(stays)keepOpen(id);
+   else if(openSwipeId===id)closeOpenSwipe();
+   else row.style.removeProperty('--inj-swipe-x');
+  }else if(s.wasOpen)keepOpen(id);
+  else row.style.removeProperty('--inj-swipe-x');
+ }
+ rows.addEventListener('pointerdown',e=>{
+  if(!swipeEnabled()||touchSwipe||!e.isPrimary||e.pointerType==='mouse'||e.button!==0)return;
+  const row=e.target.closest('.mp-row[data-coin]'),wrap=row?.closest('.market-favorite-row');
+  if(!wrap||!rows.contains(wrap))return;
+  if(openSwipeId&&openSwipeId!==row.dataset.coin)closeOpenSwipe();
+  touchSwipe={row,wrap,id:row.dataset.coin,pid:e.pointerId,x:e.clientX,y:e.clientY,
+    axis:null,dx:0,wasOpen:openSwipeId===row.dataset.coin};
+ },{passive:true});
+ window.addEventListener('pointermove',e=>{
+  const s=touchSwipe;
+  if(!s||s.pid!==e.pointerId)return;
+  if(!s.row.isConnected||!swipeEnabled()){settleSwipe(true);return}
+  const dx=e.clientX-s.x,dy=e.clientY-s.y;
+  if(!s.axis&&Math.max(Math.abs(dx),Math.abs(dy))>9)
+   s.axis=Math.abs(dx)>Math.abs(dy)*1.25?'x':'y';
+  if(s.axis!=='x')return;
+  if(e.cancelable)e.preventDefault();
+  s.dx=dx;
+  s.wrap.classList.add('inj-swiping');
+  s.row.style.setProperty('--inj-swipe-x',Math.max(REVEAL,Math.min(0,(s.wasOpen?REVEAL:0)+dx))+'px');
+ },{capture:true,passive:false});
+ window.addEventListener('pointerup',e=>{
+  if(touchSwipe?.pid===e.pointerId)settleSwipe();
+ },{capture:true,passive:true});
+ window.addEventListener('pointercancel',()=>settleSwipe(true),{capture:true,passive:true});
+ window.addEventListener('blur',()=>settleSwipe(true));
+ // Ignore synthetic click on the draggable row only (star/X remain clickable).
+ rows.addEventListener('click',e=>{
+  if(Date.now()>=swipeClickUntil)return;
+  const row=e.target.closest('.mp-row[data-coin]');
+  if(row?.dataset.coin===swipeClickId){
+   e.preventDefault();e.stopImmediatePropagation();swipeClickUntil=0;
+  }
+ },true);
+ rows.addEventListener('keydown',e=>{
+  const row=e.target.closest('.mp-row[data-coin]');
+  if(e.key==='Escape'&&openSwipeId){e.preventDefault();closeOpenSwipe();return}
+  if(!row||!swipeEnabled())return;
+  if(e.key==='ArrowLeft'){e.preventDefault();keepOpen(row.dataset.coin)}
+  else if(e.key==='ArrowRight'&&openSwipeId===row.dataset.coin){e.preventDefault();closeOpenSwipe()}
+ });
  // A missing provider logo simply disappears; no broken-image rectangle on the card.
  grid.addEventListener('error',event=>{
   const image=event.target;
@@ -556,12 +685,12 @@
  grid.addEventListener('click',onAssetClick);
  // Remove pulse classes at animation end. A stationary quote has no active signal.
  grid.addEventListener('animationend',event=>{
-  if(event.animationName!=='injAggressiveEdgePulse')return;
+  if(event.animationName!=='injHeatmapTileFlash')return;
   const tile=event.target;
   if(tile?.classList?.contains('heatmap-tile'))
    tile.classList.remove('market-flash-up','market-flash-down');
  });
- window.INJ_MARKET_VIEWS={render:requestRender,tick,setView,languageChange,favoriteCount:()=>favorites.size};
+ window.INJ_MARKET_VIEWS={render:requestRender,tick,setView,setFavoriteLayout,languageChange,favoriteCount:()=>favorites.size};
  setRange(range);
  setView('list');
 })();

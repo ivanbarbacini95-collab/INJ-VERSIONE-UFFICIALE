@@ -1,0 +1,73 @@
+/* INJ Node · Market Events · seamless source and impact footer, 2026-10-28.
+ * The Home's generic <footer> styling previously painted a tall dark slab
+ * behind the economic calendar attribution. Keep this compact, unboxed, and
+ * visually continuous with the current theme on Safari/PWA and desktop. */
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-shell > .inj-events-footer {
+  box-sizing:border-box!important;
+  position:relative!important;
+  inset:auto!important;
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:7px 14px!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  flex:0 0 auto!important;
+  margin:12px 0 0!important;
+  padding:12px 3px max(10px,env(safe-area-inset-bottom,0px))!important;
+  border:0!important;
+  border-top:1px solid color-mix(in srgb,var(--line,#344753) 68%,transparent)!important;
+  border-radius:0!important;
+  outline:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  text-align:left!important;
+  overflow:visible!important;
+  color:var(--muted-strong,var(--muted,#a3b7ba))!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-shell > .inj-events-footer::before,
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-shell > .inj-events-footer::after {
+  content:none!important;
+  display:none!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-footer > span {
+  position:static!important;
+  display:inline-block!important;
+  width:auto!important;
+  max-width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  font:600 10px/1.45 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  color:inherit!important;
+  white-space:normal!important;
+}
+html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-footer a {
+  color:var(--accent,#86e4bf)!important;
+  text-decoration:underline!important;
+  background:transparent!important;
+}
+@media(max-width:600px) {
+ html[data-inj-page="index"] body #injMarketEventsOverlay .inj-events-shell > .inj-events-footer {
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  padding-bottom:max(10px,env(safe-area-inset-bottom,0px))!important;
+ }
+}

@@ -1,0 +1,54 @@
+/* INJ Node · seamless theme canvas for Home, Dashboard and overlays.
+   Source of the dark-band bug: a separately painted gradient on html, body,
+   entryGate and entry shell. Make one fixed, non-tiling root canvas; content
+   scrolls OVER it, so colored ambient gradients never restart or end.
+   No changes to viewport size, safe area, navigation or touch gestures. */
+html[data-theme][data-inj-page="index"]{
+ background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+ background-image:var(--page-gradient,none)!important;
+ background-position:center center!important;
+ background-size:100% 100%!important;
+ background-repeat:no-repeat!important;
+ background-attachment:fixed!important;
+ color-scheme:normal;
+}
+html[data-theme="light"][data-inj-page="index"]{color-scheme:light}
+html[data-theme]:not([data-theme="light"])[data-inj-page="index"]{color-scheme:dark}
+/* Root retains the color for Safari/PWA chrome. All overlapping scroll
+   surfaces remain transparent, including the original header and safe-area. */
+html[data-theme][data-inj-page="index"] body,
+html[data-theme][data-inj-page="index"] body.entry-gate-open,
+html[data-theme][data-inj-page="index"] body > #entryGate.entry-gate,
+html[data-theme][data-inj-page="index"] body > #entryGate.entry-gate.visible,
+html[data-theme][data-inj-page="index"] body > #entryGate.entry-gate > .entry-gate-shell,
+html[data-theme][data-inj-page="index"] body > .app-shell{
+ background-color:transparent!important;
+ background-image:none!important;
+ background:none!important;
+ background-attachment:scroll!important;
+ background-size:auto!important;
+}
+/* Decorative theme atmospheres already use position:fixed. Keep them
+   visible and do not override their animation, color or transform. */
+html[data-theme][data-inj-page="index"] #entryGate :is(.ocean-x-atmosphere,.velvet-nebula-atmosphere){
+ pointer-events:none!important;
+}
+/* Header-only opaque masks from older nav skins: never paint a second
+   dark slab at the status bar. Menu/popup/picker surfaces stay unaffected. */
+html[data-theme][data-inj-page="index"] body
+:is(.entry-home-top,.home-safe-heading,.app-shell > .topbar){
+ background-color:transparent!important;
+ background-image:none!important;
+ box-shadow:none!important;
+}
+/* Other full-screen panels are separate scrollports and get a stable
+   viewport-locked canvas, not a short image anchored to document top. */
+html[data-theme][data-inj-page="index"] body
+:is(#performanceTimelineView.open,#converterView.open,#injMarketEventsOverlay:not([hidden])){
+ background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+ background-image:var(--page-gradient,none)!important;
+ background-repeat:no-repeat!important;
+ background-position:center center!important;
+ background-size:cover!important;
+ background-attachment:fixed!important;
+}

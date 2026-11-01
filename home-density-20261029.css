@@ -1,0 +1,92 @@
+/* 2026-10-29 · Compact Home launcher.
+   Only reduces spacing/geometry; keeps all entry IDs, 2-column arrangement,
+   labels, animated icons, accessibility and full-width destinations. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  gap:8px!important;
+}
+@media(max-width:799px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+    column-gap:8px!important;
+    row-gap:8px!important;
+  }
+  /* Existing compact two-column destinations, retaining 2-line headings. */
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryMarketEventsButton):not(#entryFreedomButton) {
+    height:92px!important;
+    min-height:92px!important;
+    max-height:92px!important;
+    padding:7px 7px 9px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryMarketEventsButton):not(#entryFreedomButton)
+  > span.inj-tile-scene {
+    top:6px!important;
+    height:34px!important;
+    max-height:34px!important;
+    max-width:96px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryMarketEventsButton):not(#entryFreedomButton)
+  > span.inj-tile-scene.inj-luxury-icon{
+    top:6px!important;
+    height:34px!important;
+    max-height:34px!important;
+    width:min(70%,96px)!important;
+  }
+  /* Wide cards stay full width and can still show their subtitles. */
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryTreasuryButton.entry-action{
+    min-height:72px!important;
+    height:auto!important;
+    padding-block:9px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryWorkspaceButton.entry-action{
+    height:70px!important;
+    min-height:70px!important;
+    padding-block:9px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #injHomeMore > .inj-home-more-toggle{
+    min-height:34px!important;
+    height:34px!important;
+    max-height:34px!important;
+    padding-block:6px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #injHomeMore > .inj-home-more-content{
+    row-gap:8px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #injHomeMore > .inj-home-more-content
+  > :is(#entryInjcEtfButton,#entryFreedomButton,#entryWorkspaceButton).entry-action,
+  html[data-inj-page="index"] body #entryGate #injHomeMore > .inj-home-more-content
+  > .inj-market-events-slot > #entryMarketEventsButton.entry-action{
+    min-height:74px!important;
+    height:74px!important;
+    padding-block:9px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #injHomeMore > .inj-home-more-content
+  > #entryFreedomButton > .freedom-entry-emblem.entry-action-icon{
+    width:46px!important;
+    height:46px!important;
+    flex-basis:46px!important;
+  }
+}
+@media(min-width:800px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > .entry-action {
+    min-height:68px!important;
+    height:68px!important;
+    padding-block:8px!important;
+  }
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action > span.inj-tile-scene {
+    height:48px!important;
+  }
+}

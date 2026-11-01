@@ -1866,7 +1866,7 @@ function render() {
   const fixed=Math.max(0,total).toFixed(2),[wholeRaw,decimals='00']=fixed.split('.');
   setLiveValue('treasuryTotalMajor',Number(wholeRaw).toLocaleString('en-US'),total,true);
   setLiveValue('treasuryTotalDecimals',`.${decimals}`,total,true);
-  setLiveValue('treasuryTotalWorth',state.price>0?money(worth,2):'Prezzo in sincronizzazione',state.price>0?worth:NaN,true);
+  setLiveValue('treasuryTotalWorth',state.price>0?money(worth,2):'—',state.price>0?worth:NaN,true);
   setLiveValue('treasuryNetWorthCurrent',state.price>0?money(worth,2):'—',state.price>0?worth:NaN,true);
   const pnl24 = state.price>0 && state.open24>0 ? total * (state.price-state.open24) : NaN;
   const pnl24Pct = state.price>0 && state.open24>0 ? ((state.price/state.open24)-1)*100 : NaN;

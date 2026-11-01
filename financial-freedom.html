@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="it" data-theme="navy" data-inj-page="financial-freedom">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07121b">
+<title>Financial Freedom | INJ Node</title>
+<script>
+try {
+ const t=localStorage.getItem('inj_monitor_theme');
+ document.documentElement.dataset.theme=t==='dynamic'?'ocean':(t||'navy');
+ document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
+} catch (_) {}
+</script>
+<link rel="stylesheet" href="./ocean-aurora.css?v=160109">
+<link rel="stylesheet" href="./chromatic-mist.css?v=160110">
+<link rel="stylesheet" href="./velvet-nebula.css?v=160112">
+<link rel="stylesheet" href="./aqua-mirage.css?v=160113">
+<link rel="stylesheet" href="./ocean-x-series.css?v=160114">
+<link rel="stylesheet" href="./theme-harmony.css?v=160114">
+<link rel="stylesheet" href="./supply-mono.css?v=20261024">
+<link rel="stylesheet" href="./financial-freedom.css?v=20261028freedom8">
+<script defer src="./financial-freedom.js?v=20261028freedom8"></script>
+<link rel="stylesheet" href="./inj-fluid-screen-fit.css?v=20261028fullmonitor1"/>
+<link rel="stylesheet" href="./inj-monitor-readability.css?v=20261028readable3"/>
+<link rel="stylesheet" href="./home-font-unified.css?v=20261029homefont1"/>
+<link rel="stylesheet" href="./inj-editorial-typography.css?v=20261029fontbalance3">
+<link rel="stylesheet" href="./inj-inter-light-20261029.css?v=interlight-global-1"/>
+<link rel="stylesheet" href="./inj-font-switcher-20261029.css?v=official-font7"/>
+<script src="./inj-font-switcher-20261029.js?v=official-font7"></script>
+<script>try{if(localStorage.getItem('inj_node_access_lock_v1'))document.documentElement.dataset.injLockPending='1';}catch(_){}</script>
+<link rel="stylesheet" href="./inj-local-access-lock-20261101.css?v=1">
+<link rel="stylesheet" href="./inj-ux-refinement-20261101.css?v=1">
+<script defer src="./inj-ux-refinement-20261101.js?v=1"></script>
+<script defer src="./inj-local-access-lock-20261101.js?v=1"></script>
+</head>
+<body>
+<main class="freedom-page" id="freedomPage">
+  <header class="freedom-header">
+    <button id="freedomClose" type="button" class="freedom-close" aria-label="Close Financial Freedom">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m4 11 8-7 8 7M6.5 10v9h11v-9M10 19v-5h4v5"></path></svg>
+    </button>
+    <div class="freedom-heading"><small>INJ NODE / WEALTH INTELLIGENCE</small><h1>FINANCIAL FREEDOM</h1><p id="freedomIntro">Il patrimonio misura il gradino. Le reward misurano la copertura delle spese.</p></div>
+    <span class="freedom-live" id="freedomFeed"><i></i>LIVE</span>
+  </header>
+  <div class="freedom-toolbar">
+    <label class="freedom-select-wrap" for="freedomWallet"><span id="freedomWalletLabel">WALLET SELEZIONATO</span><select id="freedomWallet"><option value="">—</option></select></label>
+    <div class="freedom-price-rail"><span id="freedomPriceLabel">INJ LIVE PRICE</span><strong id="freedomPrice" class="private">—</strong><small id="freedomUpdated">—</small></div>
+  </div>
+  <div class="freedom-overview">
+    <section class="freedom-hero" aria-labelledby="freedomStatusTitle">
+      <div class="freedom-hero-top">
+        <div class="freedom-hero-message">
+          <small id="freedomStatusLabel">STATO FINANZIARIO</small>
+          <h2 id="freedomStatusTitle">IN ATTESA DEI DATI</h2>
+          <p id="freedomStatusExplain">Attendo i dati del wallet.</p>
+        </div>
+        <div class="freedom-meter" id="freedomMeter" style="--freedom-progress:0%">
+          <div><strong id="freedomCoverage" class="private">—</strong><small id="freedomCoverageLabel">SPESE COPERTE</small></div>
+        </div>
+      </div>
+      <div class="freedom-bar" aria-hidden="true"><span id="freedomBarFill"></span></div>
+      <div class="freedom-hero-foot">
+        <div class="freedom-hero-foot-stat"><small id="freedomNetLabel">REWARD UTILIZZABILI / MESE</small><strong id="freedomCoverageFoot" class="private">—</strong></div>
+        <div class="freedom-hero-foot-stat"><small id="freedomGoalLabel">SPESE / MESE</small><strong id="freedomGoal" class="private">—</strong></div>
+      </div>
+    </section>
+    <section class="freedom-figures" aria-label="Financial metrics">
+      <article class="freedom-figure-worth"><small id="freedomWorthLabel">PATRIMONIO INJ</small><strong id="freedomWorth" class="private">—</strong><span id="freedomInj" class="private">—</span></article>
+      <article class="freedom-figure-daily"><small id="freedomDayLabel">REWARD / GIORNO</small><strong id="freedomDay" class="private">—</strong><span id="freedomDayInj" class="private">—</span></article>
+      <article class="freedom-figure-monthly"><small id="freedomMonthLabel">REWARD / MESE</small><strong id="freedomMonth" class="private">—</strong><span id="freedomRewardInfo">APR: —</span></article>
+    </section>
+  </div>
+  <section class="freedom-section freedom-wealth">
+    <div class="freedom-section-heading"><div><small id="freedomWealthEyebrow">SCALA PATRIMONIALE</small><h2 id="freedomWealthTitle">IL TUO GRADINO PATRIMONIALE</h2></div><span id="freedomTier" class="freedom-pill">—</span></div>
+    <div class="freedom-tier-track" id="freedomTierTrack" aria-label="Wealth ladder"></div>
+    <p id="freedomTierFoot">I livelli sono fasce indicative sul valore del wallet, non classificazioni finanziarie ufficiali.</p>
+  </section>
+  <div class="freedom-lower-grid">
+  <section class="freedom-section freedom-options" id="freedomOptions">
+    <div class="freedom-section-heading"><div><small id="freedomSpendEyebrow">SPESE QUOTIDIANE</small><h2 id="freedomSpendTitle">COSA COPRONO LE REWARD</h2></div><div class="freedom-spending-header-actions"><span id="freedomSpendHint">STIME</span><button id="freedomSpendingManage" type="button" aria-pressed="false">GESTISCI</button></div></div>
+    <div class="freedom-spending-summary" id="freedomSpendingSummary">
+      <div class="freedom-spending-summary-copy">
+        <small id="freedomSpendingSummaryLabel">TOTALE DELLA LISTA / MESE</small>
+        <strong id="freedomSpendingTotal" class="private">—</strong>
+        <span id="freedomSpendingSummaryCoverage" class="private">—</span>
+      </div>
+      <button id="freedomUseSpendingGoal" class="freedom-spending-use-goal" type="button">USA COME OBIETTIVO</button>
+    </div>
+    <div id="freedomLifestyle" class="freedom-lifestyle"></div>
+    <details class="freedom-spending-editor" id="freedomSpendingEditor">
+      <summary id="freedomSpendingEditorToggle"><span class="freedom-spending-plus" aria-hidden="true">+</span><span id="freedomSpendingEditorLabel">AGGIUNGI UNA SPESA</span><span aria-hidden="true" class="freedom-spending-chevron">⌄</span></summary>
+      <form class="freedom-spending-form" id="freedomSpendingForm" novalidate>
+        <label class="freedom-spending-form-wide"><span id="freedomSpendingSearchLabel">CERCA NEL CATALOGO</span><input id="freedomSpendingSearch" type="search" maxlength="60" autocomplete="off" placeholder="Cerca tra le spese..."></label>
+        <label class="freedom-spending-form-wide"><span id="freedomSpendingPresetLabel">SCEGLI UN ESEMPIO</span><select id="freedomSpendingPreset"><option value="">Seleziona una voce...</option></select></label>
+        <label class="freedom-spending-form-wide"><span id="freedomSpendingNameLabel">COSA VUOI COPRIRE?</span><input id="freedomSpendingName" maxlength="56" type="text" autocomplete="off" placeholder="Es. bollette, palestra, viaggio"></label>
+        <label><span id="freedomSpendingPriceLabel">IMPORTO (€)</span><input id="freedomSpendingPrice" type="number" min="0.01" step="any" inputmode="decimal" placeholder="0,00"></label>
+        <label><span id="freedomSpendingPeriodLabel">FREQUENZA</span><select id="freedomSpendingPeriod"><option value="daily">Giorno</option><option value="weekly">Settimana</option><option value="monthly">Mese</option></select></label>
+        <button id="freedomSpendingSubmit" type="submit">AGGIUNGI ALLA LISTA</button>
+        <small id="freedomSpendingError" role="status" aria-live="polite"></small>
+      </form>
+    </details>
+    <p id="freedomLifestyleFoot">Ogni spesa è confrontata con le reward stimate. Le spese della lista si sommano.</p>
+  </section>
+  <section class="freedom-section freedom-plan">
+    <div class="freedom-section-heading"><div><small id="freedomPlanEyebrow">OBIETTIVO DI LIBERTÀ</small><h2 id="freedomPlanTitle">IMPOSTA IL TUO OBIETTIVO</h2></div></div>
+    <div class="freedom-settings">
+      <label><span id="freedomBudgetLabel">SPESE MENSILI DA COPRIRE (€)</span><input id="freedomBudget" type="number" min="1" step="any" inputmode="decimal" value="1500" aria-describedby="freedomBudgetLabel"></label>
+      <label><span id="freedomBufferLabel">MARGINE DI PRUDENZA (%)</span><input id="freedomBuffer" type="number" min="0" max="90" step="5" inputmode="numeric" value="30"><small id="freedomBufferHint">Quota reward non spendibile</small></label>
+    </div>
+    <div class="freedom-target-grid">
+      <div><small id="freedomTargetLabel">INJ IN STAKING NECESSARI</small><strong id="freedomTargetInj" class="private">—</strong></div>
+      <div><small id="freedomMissingLabel">INJ ANCORA NECESSARI</small><strong id="freedomMissingInj" class="private">—</strong></div>
+    </div>
+    <div class="freedom-stress"><div><span id="freedomStressLabel">SCENARIO PRUDENTE</span><small id="freedomStressInfo">INJ −50% · APR −30%</small></div><strong id="freedomStressCoverage" class="private">—</strong></div>
+    <p id="freedomDisclaimer">Il rendimento è una proiezione, non uno stipendio garantito. Il margine non rappresenta il calcolo delle imposte. La libertà finanziaria reale dipende anche da liquidità, diversificazione, rischi e costi.</p>
+  </section>
+  </div>
+  <footer>INJ NODE <span>BY B CAPITAL GROUP</span></footer>
+</main>
+</body>
+</html>

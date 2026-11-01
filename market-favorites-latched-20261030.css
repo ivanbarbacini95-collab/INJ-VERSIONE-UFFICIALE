@@ -1,0 +1,224 @@
+/* Market's persistent swipe tray: star action and manual close. */
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row.inj-swipe-open>.mp-row{
+ transform:translate3d(var(--inj-swipe-x,-116px),0,0)!important;
+ -webkit-transform:translate3d(var(--inj-swipe-x,-116px),0,0)!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle{
+ right:60px!important;
+ transition:opacity .18s ease,visibility .18s ease,color .18s ease,background-color .18s ease!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row:is(.inj-swipe-open,.inj-swiping)>.market-favorite-toggle{
+ opacity:1!important;visibility:visible!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row.inj-swipe-open>.market-favorite-toggle{pointer-events:auto!important}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle.is-saved{
+ color:#ffd54a!important;
+ border-color:rgba(255,208,59,.57)!important;
+ background:rgba(255,194,21,.18)!important;
+ box-shadow:0 0 15px rgba(255,200,30,.18)!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle.is-saved svg{
+ fill:rgba(255,211,66,.72)!important;stroke:#ffd54a!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle.inj-swipe-ack{
+ box-shadow:0 0 0 3px rgba(255,211,66,.15),0 0 23px rgba(255,211,66,.26)!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.inj-favorite-swipe-close{
+ display:grid!important;place-items:center!important;
+ position:absolute!important;z-index:1!important;
+ top:50%!important;right:11px!important;
+ transform:translateY(-50%)!important;
+ width:42px!important;height:45px!important;margin:0!important;padding:9px!important;
+ border:1px solid color-mix(in srgb,var(--line,#657779) 72%,transparent)!important;
+ border-radius:12px!important;
+ background:color-mix(in srgb,var(--panel,#14262a) 92%,transparent)!important;
+ color:var(--muted,#a1b1b6)!important;
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ cursor:pointer!important;touch-action:manipulation!important;
+ transition:opacity .18s ease,visibility .18s ease!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.inj-favorite-swipe-close svg{
+ width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row:is(.inj-swipe-open,.inj-swiping)>.inj-favorite-swipe-close{
+ opacity:1!important;visibility:visible!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row.inj-swipe-open>.inj-favorite-swipe-close{pointer-events:auto!important}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>:is(.inj-favorite-swipe-close,.market-favorite-toggle):focus-visible{
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ outline:2px solid var(--accent,#a4ebda)!important;outline-offset:1px!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.inj-favorite-swipe-close{transition:none!important}
+}
+
+
+/* The swipe tray exposes ONE contextual action only:
+   unsaved => star; saved => X. Slide right or tap the row to close without a change. */
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.inj-favorite-swipe-close{
+ display:none!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle{
+ right:15px!important;left:auto!important;
+ width:49px!important;height:49px!important;
+ border-radius:14px!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle.is-saved{
+ color:#fb7381!important;
+ border-color:rgba(246,105,123,.33)!important;
+ background:rgba(239,92,112,.12)!important;
+ box-shadow:none!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle.is-saved svg{
+ fill:none!important;stroke:#ff7e8c!important;
+ stroke-width:2!important;stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle.inj-swipe-ack{
+ color:#ffe170!important;
+ border-color:rgba(255,211,74,.6)!important;
+ background:rgba(255,210,55,.22)!important;
+ box-shadow:0 0 0 3px rgba(255,207,55,.13),0 0 23px rgba(255,207,55,.28)!important;
+}
+html[data-inj-market-entry="crypto"] #marketProRows .market-favorite-row>.market-favorite-toggle.inj-swipe-ack svg{
+ fill:rgba(255,221,88,.82)!important;stroke:#ffdf72!important;
+}
+
+
+/* Swipe fix · 2026-10-30
+   The crypto-row layout has a more specific hidden-state rule. Match its
+   #injGlobalMarket specificity so the action survives pointerup and stays
+   available while the revealed row is latched, including after live rerenders. */
+html[data-inj-market-entry="crypto"] #injGlobalMarket #marketProRows
+ .market-favorite-row:is(.inj-swiping,.inj-swipe-open)>.market-favorite-toggle{
+ display:grid!important;
+ opacity:1!important;
+ visibility:visible!important;
+ z-index:3!important;
+}
+html[data-inj-market-entry="crypto"] #injGlobalMarket #marketProRows
+ .market-favorite-row.inj-swipe-open>.market-favorite-toggle{
+ pointer-events:auto!important;
+}
+html[data-inj-market-entry="crypto"] #injGlobalMarket #marketProRows
+ .market-favorite-row.inj-swiping:not(.inj-swipe-open)>.market-favorite-toggle{
+ pointer-events:none!important;
+}
+html[data-inj-market-entry="crypto"] #injGlobalMarket #marketProRows
+ .market-favorite-row.inj-swipe-open>.mp-row{
+ transform:translate3d(var(--inj-swipe-x,-116px),0,0)!important;
+ -webkit-transform:translate3d(var(--inj-swipe-x,-116px),0,0)!important;
+}
+
+/* v4: frameless edge-to-edge list. Reuse the same swipe tray in Favorites. */
+html[data-inj-market] #injGlobalMarket #hybridPro,
+html[data-inj-market] #injGlobalMarket #marketProRows{
+ background:transparent!important;
+ background-image:none!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows>.market-favorite-row{
+ display:block!important;
+ position:relative!important;
+ isolation:isolate;
+ width:100%!important;
+ min-width:0!important;
+ padding:0!important;
+ margin:0!important;
+ grid-template-columns:none!important;
+ background:transparent!important;
+ border:0!important;
+ border-bottom:1px solid color-mix(in srgb,var(--line,#344854) 14%,transparent)!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ overflow:hidden!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row>.mp-row,
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row>.mp-row:hover,
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row>.mp-row:active{
+ display:grid!important;
+ position:relative!important;
+ z-index:2!important;
+ width:100%!important;
+ min-width:0!important;
+ margin:0!important;
+ background:transparent!important;
+ background-image:none!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ filter:none!important;
+ transform:translate3d(var(--inj-swipe-x,0px),0,0)!important;
+ -webkit-transform:translate3d(var(--inj-swipe-x,0px),0,0)!important;
+ transition:transform .29s cubic-bezier(.18,.83,.24,1)!important;
+ touch-action:pan-y!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row.inj-swiping>.mp-row{transition:none!important}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row>.market-favorite-toggle{
+ display:grid!important;
+ position:absolute!important;
+ z-index:1!important;
+ top:50%!important;
+ right:15px!important;
+ left:auto!important;
+ width:49px!important;
+ height:49px!important;
+ margin:0!important;
+ transform:translateY(-50%)!important;
+ opacity:0!important;
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row:is(.inj-swiping,.inj-swipe-open)>.market-favorite-toggle{
+ opacity:1!important;
+ visibility:visible!important;
+ z-index:3!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row.inj-swipe-open>.market-favorite-toggle{
+ pointer-events:auto!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row.inj-swiping:not(.inj-swipe-open)>.market-favorite-toggle{
+ pointer-events:none!important;
+}
+/* Global Crypto: a saved favorite is always a gold star, never an X. */
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row.is-global>.market-favorite-toggle.is-saved{
+ color:#ffd54a!important;
+ background:rgba(255,194,21,.18)!important;
+ border-color:rgba(255,208,59,.57)!important;
+ box-shadow:0 0 15px rgba(255,200,30,.18)!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row.is-global>.market-favorite-toggle.is-saved svg{
+ fill:rgba(255,211,66,.72)!important;
+ stroke:#ffd54a!important;
+}
+/* Favorites: slide left to reveal the single red remove X. */
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row.is-favorites>.market-favorite-toggle{
+ color:#ff7e8c!important;
+ background:rgba(239,92,112,.12)!important;
+ border-color:rgba(246,105,123,.33)!important;
+ box-shadow:none!important;
+}
+html[data-inj-market] #injGlobalMarket #marketProRows
+ .market-favorite-row.is-favorites>.market-favorite-toggle svg{
+ fill:none!important;
+ stroke:#ff7e8c!important;
+ stroke-width:2!important;
+ stroke-linecap:round!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-market] #injGlobalMarket #marketProRows
+  .market-favorite-row>.mp-row{transition:none!important}
+}

@@ -1,0 +1,83 @@
+name: INJ Node Global Markets - refreshed quotes
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/10 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/global-markets.yml'
+      - 'scripts/update-global-markets.mjs'
+      - 'api/global-markets.js'
+      - 'world-markets-heatmap.js'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: injnode-global-market-snapshot
+  cancel-in-progress: false
+
+jobs:
+  market-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout INJNODE
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch actual market quotes
+        run: node scripts/update-global-markets.mjs
+      - name: Publish static JSON for GitHub Pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Keep the generated snapshot while moving to the latest main tip.
+          # Other INJNODE edits can arrive while market quotes are fetched.
+          snapshot="$(mktemp)"
+          remote_snapshot="$(mktemp)"
+          trap 'rm -f "$snapshot" "$remote_snapshot"' EXIT
+          cp market-data/global-markets.json "$snapshot"
+          for attempt in 1 2 3 4 5 6 7 8; do
+            git fetch --quiet origin main
+
+            # Never publish older market data over a newer published snapshot.
+            if git show origin/main:market-data/global-markets.json > "$remote_snapshot" 2>/dev/null; then
+              if node -e '
+                const fs = require("node:fs");
+                const candidate = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+                const current = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+                const incoming = Date.parse(candidate.generatedAt);
+                const published = Date.parse(current.generatedAt);
+                process.exit(Number.isFinite(incoming) && Number.isFinite(published) && published >= incoming ? 0 : 1);
+              ' "$snapshot" "$remote_snapshot"; then
+                echo "A newer market snapshot is already on main; skipping older update."
+                exit 0
+              fi
+            fi
+
+            # Only re-apply the generated JSON, preserving all unrelated
+            # commits pushed by the user or other jobs.
+            git reset --hard origin/main
+            cp "$snapshot" market-data/global-markets.json
+            git add market-data/global-markets.json
+            if git diff --cached --quiet; then
+              echo "No data changes"
+              exit 0
+            fi
+            git commit -m "data: refresh INJ Node Global Markets"
+            if git push origin HEAD:main; then
+              echo "Market snapshot published successfully."
+              exit 0
+            fi
+            echo "Main changed during publish; retry $attempt/8 with latest main."
+            sleep "$attempt"
+          done
+          echo "::error::Unable to publish the market snapshot after 8 conflict retries."
+          exit 1

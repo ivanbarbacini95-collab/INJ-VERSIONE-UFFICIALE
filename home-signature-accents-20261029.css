@@ -1,0 +1,148 @@
+/* INJ Node · Home signature accents & precision micro-motion · 29 Oct 2026
+   Decorative only: preserve Home navigation, copy, wallet state, sizes and themes.
+   Each destination has a soft individual hue and a different icon detail motion. */
+.entry-actions.entry-flat-v44 > .entry-action {
+  --home-card-tone:#a2bdc3;
+  --home-motion-speed:8s;
+}
+html[data-inj-page="index"] #entryDashboardButton       {--home-card-tone:#81b8af;--home-motion-speed:8.4s}
+html[data-inj-page="index"] #entryLiveButton            {--home-card-tone:#83b7cd;--home-motion-speed:6.7s}
+html[data-inj-page="index"] #entryLiveChartsButton      {--home-card-tone:#9daddb;--home-motion-speed:7.6s}
+html[data-inj-page="index"] #entryOrderBookButton       {--home-card-tone:#9dbbd0;--home-motion-speed:6.9s}
+html[data-inj-page="index"] #entryPerformanceButton     {--home-card-tone:#b6a1d1;--home-motion-speed:8.1s}
+html[data-inj-page="index"] #entryConverterButton       {--home-card-tone:#b6bea0;--home-motion-speed:9.2s}
+html[data-inj-page="index"] #entryMarketButton          {--home-card-tone:#83beae;--home-motion-speed:7.2s}
+html[data-inj-page="index"] #entryLiveRewardsButton     {--home-card-tone:#b2c58d;--home-motion-speed:7.9s}
+html[data-inj-page="index"] #entryCommandCenterButton   {--home-card-tone:#9aa9d0;--home-motion-speed:6.8s}
+html[data-inj-page="index"] #entryComparisonButton      {--home-card-tone:#c5a8ba;--home-motion-speed:8.7s}
+html[data-inj-page="index"] #entryVisualizeWealthButton {--home-card-tone:#c7b18e;--home-motion-speed:9s}
+html[data-inj-page="index"] #entryRewardLadderButton    {--home-card-tone:#a4bd95;--home-motion-speed:7.5s}
+html[data-inj-page="index"] #entryMarketEventsButton    {--home-card-tone:#c7ae99;--home-motion-speed:7.4s}
+html[data-inj-page="index"] #entryMacroCalendarButton  {--home-card-tone:#c7ae99;--home-motion-speed:7.4s}
+html[data-inj-page="index"] #entryInjcEtfButton         {--home-card-tone:#b3aacb;--home-motion-speed:8.3s}
+html[data-inj-page="index"] #entryWorkspaceButton       {--home-card-tone:#9fbec2;--home-motion-speed:7.8s}
+html[data-inj-page="index"] #entryFreedomButton         {--home-card-tone:#c2ac9b;--home-motion-speed:9.5s}
+html[data-inj-page="index"] #entryTreasuryButton        {--home-card-tone:#c6b08f;--home-motion-speed:10s}
+
+/* A whisper of color in the card material rather than solid colored panels.
+   Mix with the selected theme's surface so dark/light palettes remain intact. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton) {
+  background:linear-gradient(145deg,
+    color-mix(in srgb,var(--surface,#17242b) 92%,var(--home-card-tone) 8%) 0%,
+    color-mix(in srgb,var(--surface,#17242b) 96%,var(--home-card-tone) 4%) 100%)!important;
+  border-color:color-mix(in srgb,var(--line,#52616a) 73%,var(--home-card-tone) 27%)!important;
+}
+@media (hover:hover) and (pointer:fine){
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):hover {
+    background:linear-gradient(145deg,
+      color-mix(in srgb,var(--surface,#17242b) 87%,var(--home-card-tone) 13%),
+      color-mix(in srgb,var(--surface,#17242b) 94%,var(--home-card-tone) 6%))!important;
+    border-color:color-mix(in srgb,var(--line,#52616a) 57%,var(--home-card-tone) 43%)!important;
+  }
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):active {
+  background:color-mix(in srgb,var(--surface,#17242b) 86%,var(--home-card-tone) 14%)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:focus-visible {
+  outline-color:var(--home-card-tone)!important;
+}
+
+/* Restrict accent to decorative icon artwork, never data values or labels. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > :is(.inj-tile-scene.inj-luxury-icon,.inj-more-market-symbol,
+                       .freedom-entry-emblem,.entry-action-icon) {
+  color:color-mix(in srgb,var(--home-card-tone) 61%,var(--text,#e6eff1) 39%)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > .inj-luxury-icon .pi-motion {
+  transform-box:fill-box;
+  transform-origin:center;
+  will-change:auto;
+}
+
+/* Distinct micro-motion per icon: calm, staggered, no flashing or giant rotation. */
+@keyframes inj-home-detail-pulse {
+  0%,100%{opacity:.42} 48%,60%{opacity:1}
+}
+@keyframes inj-home-detail-rise {
+  0%,100%{translate:0 1px;opacity:.66} 50%{translate:0 -1.7px;opacity:1}
+}
+@keyframes inj-home-detail-slide {
+  0%,100%{translate:-1.4px 0;opacity:.65} 50%{translate:1.6px 0;opacity:1}
+}
+@keyframes inj-home-detail-turn {
+  0%,100%{rotate:-5deg;opacity:.68} 50%{rotate:5deg;opacity:1}
+}
+@keyframes inj-home-detail-bloom {
+  0%,100%{scale:.96;opacity:.62} 50%{scale:1.05;opacity:1}
+}
+@keyframes inj-home-detail-trace {
+  0%,100%{stroke-dashoffset:0;opacity:.68}
+  50%{stroke-dashoffset:-10;opacity:1}
+}
+@keyframes inj-home-detail-tick {
+  0%,68%,100%{opacity:.44} 12%,28%{opacity:1}
+}
+@keyframes inj-home-detail-candle {
+  0%,100%{scale:1 .94;opacity:.75} 50%{scale:1 1.05;opacity:1}
+}
+@keyframes inj-home-detail-orbit {
+  0%,100%{stroke-dashoffset:0;opacity:.56} 50%{stroke-dashoffset:14;opacity:.94}
+}
+/* Replace the old uniform 8-second highlight only on icon detail paths. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44 > .entry-action .inj-luxury-icon .pi-motion {
+  animation:inj-home-detail-pulse var(--home-motion-speed,8s) ease-in-out infinite!important;
+  animation-delay:var(--inj-icon-delay,-1s)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryLiveButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryLiveRewardsButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryRewardLadderButton .pi-motion{
+  animation-name:inj-home-detail-rise!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryOrderBookButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryComparisonButton .pi-motion{
+  animation-name:inj-home-detail-slide!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryConverterButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryInjcEtfButton .pi-motion{
+  animation-name:inj-home-detail-turn!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryWorkspaceButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryVisualizeWealthButton .pi-motion{
+  animation-name:inj-home-detail-bloom!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryLiveChartsButton .pi-motion{
+  animation-name:inj-home-detail-candle!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryPerformanceButton .pi-motion{
+  stroke-dasharray:8 3;
+  animation-name:inj-home-detail-trace!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryCommandCenterButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryDashboardButton .pi-motion{
+  animation-name:inj-home-detail-tick!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryTreasuryButton .pi-motion{
+  stroke-dasharray:10 7;
+  animation-name:inj-home-detail-orbit!important;
+}
+/* Special Home destinations keep their own SVG animation systems intact:
+   Market Events' symbol, Financial Freedom's emblem, B Capital's orbit. */
+@media (prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-actions.entry-flat-v44 > .entry-action .inj-luxury-icon .pi-motion {
+    animation:none!important;translate:none!important;scale:1!important;
+    rotate:0deg!important;opacity:1!important;
+  }
+}

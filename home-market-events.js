@@ -23,7 +23,7 @@
    seen:config.seen&&typeof config.seen==='object'?config.seen:{},
    notified:config.notified&&typeof config.notified==='object'?config.notified:{},
    results:config.results&&typeof config.results==='object'?config.results:{},
-   current:null,processing:false,reloadQueued:false,lastMarket:0,lastCalendar:0,inFlight:null
+   current:null,processing:false,reloadQueued:false,lastMarket:0,lastCalendar:0,inFlight:null,recentReleases:{}
  };
  const save=()=>{
   try{
@@ -35,7 +35,7 @@
   }catch{}
  };
  const elt=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=String(txt);return e};
- const validActual=v=>v!==null&&v!==undefined&&String(v).trim()!=='';
+ const validActual=v=>v!==null&&v!==undefined&&String(v).trim()!==''&&!/^(null|undefined|n\/?a|none|pending|[-—])$/i.test(String(v).trim());
  const nice=v=>validActual(v)?String(v):'—';
  const todayUTC=()=>new Date().toISOString().slice(0,10);
  function countdown(ms){
@@ -150,17 +150,22 @@
   const addSymbol=symbol=>{
    if(bySymbol.has(symbol))result.push({kind:'coin',key:symbol,record:bySymbol.get(symbol)});
   };
-  ['INJ','BTC','ETH','SOL'].forEach(addSymbol);
   const g=data.global||{};
-  result.push({kind:'global',key:'CAP',label:tr('CAP. CRYPTO','CRYPTO CAP'),value:usdCompact(g.marketCapUsd)});
-  result.push({kind:'global',key:'BTCD',label:'BTC DOM',value:percent(g.btcDominance)});
-  result.push({kind:'global',key:'VOL',label:tr('VOL. 24H','24H VOL'),value:usdCompact(g.volume24hUsd)});
+  const positive=value=>value!==null&&value!==undefined&&Number.isFinite(Number(value))&&Number(value)>0;
+  const numeric=value=>value!==null&&value!==undefined&&Number.isFinite(Number(value));
+  const addGlobal=(key,label,value,display,trend)=>{
+   if(numeric(value))result.push({kind:'global',key,label,value:display,trend});
+  };
+  ['INJ','BTC','ETH','SOL'].forEach(addSymbol);
+  if(positive(g.marketCapUsd))addGlobal('CAP',tr('CAP. CRYPTO','CRYPTO CAP'),g.marketCapUsd,usdCompact(g.marketCapUsd));
+  addGlobal('BTCD','BTC DOM',g.btcDominance,percent(g.btcDominance));
+  if(positive(g.volume24hUsd))addGlobal('VOL',tr('VOL. 24H','24H VOL'),g.volume24hUsd,usdCompact(g.volume24hUsd));
   ['BNB','XRP','AVAX','DOT','LINK','ADA','DOGE'].forEach(addSymbol);
-  result.push({kind:'global',key:'ETHD',label:'ETH DOM',value:percent(g.ethDominance)});
-  result.push({kind:'global',key:'CAP24',label:tr('MERCATO 24H','MARKET 24H'),value:percent(g.marketCapChange24h,true),
-   trend:g.marketCapChange24h});
+  addGlobal('ETHD','ETH DOM',g.ethDominance,percent(g.ethDominance));
+  addGlobal('CAP24',tr('MERCATO 24H','MARKET 24H'),g.marketCapChange24h,
+    percent(g.marketCapChange24h,true),g.marketCapChange24h);
   for(const tick of ticks)if(!result.some(item=>item.kind==='coin'&&item.key===tick.symbol))
-   result.push({kind:'coin',key:tick.symbol,record:tick});
+    result.push({kind:'coin',key:tick.symbol,record:tick});
   return result;
  }
  function createTickerItem(item){
@@ -216,18 +221,126 @@
   measureTicker();paintTicker();
   $('injMarketTicker').classList.remove('is-stale');
  }
- async function updateTicker(){
-  if(document.hidden)return;
+ // Secondary sources keep the ribbon useful if the Vercel API route is absent.
+ const tickerPairs=[
+  ['INJ','INJUSDT','injective-protocol'],['BTC','BTCUSDT','bitcoin'],
+  ['ETH','ETHUSDT','ethereum'],['SOL','SOLUSDT','solana'],
+  ['BNB','BNBUSDT','binancecoin'],['XRP','XRPUSDT','ripple'],
+  ['AVAX','AVAXUSDT','avalanche-2'],['DOT','DOTUSDT','polkadot'],
+  ['LINK','LINKUSDT','chainlink'],['ADA','ADAUSDT','cardano'],
+  ['DOGE','DOGEUSDT','dogecoin']
+ ];
+ async function tickerGet(url){
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),6500);
   try{
-   const response=await fetch('/api/crypto-ribbon',{cache:'no-store'});
-   if(!response.ok)throw Error('Ticker service unavailable');
-   const payload=await response.json();
+   const result=await fetch(url,{signal:controller.signal,cache:'no-store'});
+   if(!result.ok)throw Error('HTTP '+result.status);
+   return await result.json();
+  }finally{clearTimeout(timeout)}
+ }
+ function parseMarketFigure(value){
+  if(value===null||value===undefined||value==='')return null;
+  const number=Number(String(value).replace(/[^0-9.-]/g,''));
+  return Number.isFinite(number)?number:null;
+ }
+ function liveHomeTicker(){
+  // This is a last-resort real value already shown in the active INJ dashboard.
+  const text=$('entryMarketPrice')?.textContent||'';
+  const value=parseMarketFigure(text);
+  if(value===null||value<=0)return null;
+  const changeText=$('entryMarketChange')?.textContent||'';
+  const changeMatch=changeText.match(/[-+]?\d+(?:[.,]\d+)?\s*%/);
+  const change=changeMatch?parseMarketFigure(changeMatch[0].replace(',','.')):null;
+  return {source:'INJ Node Home',currency:'USDT',tickers:[{symbol:'INJ',price:value,change24h:change}],global:null};
+ }
+ async function alternateTicker(){
+  try{
+   const symbols=JSON.stringify(tickerPairs.map(p=>p[1]));
+   const rows=await tickerGet('https://data-api.binance.vision/api/v3/ticker/24hr?symbols='+encodeURIComponent(symbols));
+   if(!Array.isArray(rows))throw Error('Unexpected Binance response');
+   const byPair=new Map(rows.map(row=>[row.symbol,row]));
+   const tickers=tickerPairs.map(([symbol,pair])=>{
+    const row=byPair.get(pair),price=parseMarketFigure(row?.lastPrice);
+    return {symbol,price,change24h:parseMarketFigure(row?.priceChangePercent)};
+   }).filter(t=>t.price!==null&&t.price>0);
+   if(tickers.length<4)throw Error('Insufficient Binance quotes');
+   return {source:'Binance direct',currency:'USDT',tickers,global:null};
+  }catch{}
+  try{
+   const ids=tickerPairs.map(p=>p[2]).join(',');
+   const rows=await tickerGet('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids='+encodeURIComponent(ids)+'&price_change_percentage=24h');
+   if(!Array.isArray(rows))throw Error('Unexpected CoinGecko response');
+   const byId=new Map(rows.map(row=>[row.id,row]));
+   const tickers=tickerPairs.map(([symbol,,id])=>{
+    const row=byId.get(id),price=parseMarketFigure(row?.current_price);
+    return {symbol,price,change24h:parseMarketFigure(row?.price_change_percentage_24h)};
+   }).filter(t=>t.price!==null&&t.price>0);
+   if(!tickers.length)throw Error('No CoinGecko quotes');
+   return {source:'CoinGecko direct',currency:'USD',tickers,global:null};
+  }catch{}
+  return liveHomeTicker();
+ }
+ // Market-wide metrics are separate from exchange quotes and can be rate-limited.
+ // Refresh them independently instead of showing frozen dashes in the strip.
+ let cachedGlobal=null,lastGlobalFetch=0,lastGoodGlobalAt=0;
+ const validGlobal=x=>x!==null&&x!==undefined&&Number.isFinite(Number(x));
+ const fromPaprika=p=>({
+  marketCapUsd:parseMarketFigure(p?.market_cap_usd),
+  volume24hUsd:parseMarketFigure(p?.volume_24h_usd),
+  btcDominance:parseMarketFigure(p?.bitcoin_dominance_percentage),
+  ethDominance:null,
+  marketCapChange24h:parseMarketFigure(p?.market_cap_change_24h)
+ });
+ const fromLore=data=>{
+  const p=Array.isArray(data)?data[0]:data;
+  return {
+   marketCapUsd:parseMarketFigure(p?.total_mcap),
+   volume24hUsd:parseMarketFigure(p?.total_volume),
+   btcDominance:parseMarketFigure(p?.btc_d),
+   ethDominance:parseMarketFigure(p?.eth_d),
+   marketCapChange24h:parseMarketFigure(p?.mcap_change)
+  };
+ };
+ async function augmentGlobals(payload){
+  const existing=payload.global&&typeof payload.global==='object'?payload.global:{};
+  const complete=['marketCapUsd','volume24hUsd','btcDominance','ethDominance','marketCapChange24h']
+   .every(key=>validGlobal(existing[key]));
+  if(complete){cachedGlobal=existing;lastGlobalFetch=now();lastGoodGlobalAt=now();return {...payload,global:existing}}
+  const isFresh=lastGlobalFetch&&now()-lastGlobalFetch<120000;
+  let additional=isFresh&&cachedGlobal?cachedGlobal:{};
+  if(!isFresh){
+   lastGlobalFetch=now();
+   try{additional=fromPaprika(await tickerGet('https://api.coinpaprika.com/v1/global'))}
+   catch{
+    try{additional=fromLore(await tickerGet('https://api.coinlore.net/api/global/'))}
+    catch{additional=cachedGlobal||{}}
+   }
+   if(Object.values(additional).some(validGlobal)){cachedGlobal={...cachedGlobal,...additional};lastGoodGlobalAt=now()}
+  }
+  const combined=lastGoodGlobalAt&&now()-lastGoodGlobalAt<600000?{...additional}:{};
+  for(const [key,val] of Object.entries(existing))if(validGlobal(val))combined[key]=val;
+  return {...payload,global:combined};
+ }
+ let tickerUpdating=false;
+ async function updateTicker(){
+  if(document.hidden||tickerUpdating)return;
+  tickerUpdating=true;
+  try{
+   let payload=null;
+   try{
+    const response=await tickerGet('/api/crypto-ribbon');
+    if(!Array.isArray(response.tickers)||!response.tickers.some(t=>Number(t?.price)>0))throw Error('Invalid ribbon feed');
+    payload=response;
+   }catch{payload=await alternateTicker()}
+   if(!payload)throw Error('No live quote source');
+   payload=await augmentGlobals(payload);
    renderTicker(payload);state.lastMarket=now();
   }catch{
-   // Never erase and restart an already running marquee during transient outages.
-   if(!tickerMotion.hadData)tickerTrack.replaceChildren(elt('span','inj-market-ticker-loading',tr('Quotazioni non disponibili','Prices unavailable')));
-   else if(now()-state.lastMarket>180000)$('injMarketTicker').classList.add('is-stale');
-  }
+   if(!tickerMotion.hadData){
+    tickerTrack.replaceChildren(elt('span','inj-market-ticker-loading',tr('Feed crypto temporaneamente non disponibile','Crypto feed temporarily unavailable')));
+   }else if(now()-state.lastMarket>180000)$('injMarketTicker').classList.add('is-stale');
+  }finally{tickerUpdating=false}
  }
  function setMessage(msg){
   $('injEventsWarning').textContent=msg;
@@ -235,7 +348,8 @@
  function displaySource(){
    const host=$('injEventsSource');host.replaceChildren();
    const label=elt('span',null,tr('Fonte: ','Source: '));
-   const safeURL=state.source==='ShowMyTrades'?'https://showmytrades.com/tools/economic-calendar':
+   const safeURL=state.source.startsWith('Trading Economics')?'https://tradingeconomics.com/calendar':
+     state.source.startsWith('ShowMyTrades')?'https://showmytrades.com/tools/economic-calendar':
     state.source.startsWith('Forex Factory')?'https://www.forexfactory.com/calendar':null;
    if(safeURL){const link=elt('a',null,state.source);link.href=safeURL;link.target='_blank';link.rel='noopener noreferrer';host.append(label,link);}
    else host.append(elt('span',null,tr('Fonte non disponibile','Source unavailable')));
@@ -294,17 +408,66 @@
   ];
   return names.find(([pattern])=>pattern.test(t))?.[1]||t;
  }
+
+ /* Risk-on/off = conditional macro scenarios, not observed market direction. */
+ function macroRiskProfile(event){
+  const title=String(event?.title||'').toLowerCase();
+  if(/press conference|policy statement|fomc statement|monetary policy statement|meeting minutes|fed minutes|central bank statement|chair.*speech|governor.*speech/.test(title))
+   return {kind:'words',hint:tr('Fed/banca centrale più restrittiva → Risk-off · accomodante → Risk-on',
+    'More hawkish central bank → Risk-off · more dovish → Risk-on')};
+  if(/interest rate decision|rate decision|policy rate|deposit facility rate|refinancing rate|cash rate target|overnight rate/.test(title))
+   return {kind:'numeric'};
+  if(/average hourly earnings|wage growth|consumer price|producer price|inflation|price index|\bcpi\b|\bppi\b|\bpce\b/.test(title))
+   return {kind:'numeric'};
+  if(/non.farm payroll|employment change|payroll employment|unemployment|jobless|gross domestic product|\bgdp\b|industrial production|retail sales|\bpmi\b|consumer confidence|purchasing managers/.test(title))
+   return {kind:'words',hint:tr('Dato forte: crescita ma tassi più alti · debole: rischio rallentamento. Lettura mista',
+    'Strong data: growth but higher rates · weak: slowdown risk. Mixed reaction')};
+  return {kind:'words',hint:tr('Risk-on/off dipende da sorpresa, tassi e contesto',
+    'Risk-on/off depends on surprise, rates and context')};
+ }
+ function marketRiskHint(event){
+  const profile=macroRiskProfile(event);
+  if(profile.kind!=='numeric')return {tone:'neutral',text:profile.hint};
+  const actual=parseNumeric(event.actual),forecast=parseNumeric(event.forecast);
+  if(actual!==null&&forecast!==null){
+   const delta=actual-forecast;
+   if(Math.abs(delta)<=Math.max(1e-8,Math.abs(forecast)*1e-9))
+    return {tone:'neutral',text:tr('In linea con le attese · reazione incerta','In line with forecast · reaction uncertain')};
+   const higher=delta>0;
+   return {tone:higher?'off':'on',text:tr(
+    higher?'Sopra attese → possibile Risk-off':'Sotto attese → possibile Risk-on',
+    higher?'Above forecast → possible Risk-off':'Below forecast → possible Risk-on')};
+  }
+  return {tone:'neutral',text:tr('↑ Attese → possibile Risk-off · ↓ → Risk-on',
+     '↑ Forecast → possible Risk-off · ↓ → Risk-on')};
+ }
+ function appendMacroHint(container,event){
+  const hint=marketRiskHint(event);
+  const line=elt('span','inj-events-risk-hint tone-'+hint.tone);
+  line.append(elt('small',null,tr('SCENARIO','SCENARIO')),elt('span','inj-events-risk-copy',hint.text));
+  container.append(line);
+ }
+ function noNumericOutcome(e){
+  return /press conference|speech|testimony|statement|meeting minutes|minutes of|economic projections|press briefing|report release|chair .*speaks|president .*speaks/i.test(String(e.title||''));
+ }
+ function calendarRefreshUrgent(){
+  const t=now();
+  return state.events.some(e=>!validActual(e.actual)&&!noNumericOutcome(e)&&Date.parse(e.date)>=t-45*60000&&Date.parse(e.date)<=t+10*60000);
+ }
  function list(){
   const events=visibleEvents(), host=$('injEventsRows');
   host.replaceChildren();updatePeriodUI();
   $('injEventsCount').textContent=String(events.length);
-  const next=events.find(e=>Date.parse(e.date)>=now()-60000);
+  const next=events.find(e=>Date.parse(e.date)>=now()-60000&&!validActual(e.actual));
   $('injEventsNext').textContent=next?countdown(Date.parse(next.date)-now()):'—';
-  $('injEventsDataStatus').textContent=state.source?tr('AGGIORNATO','UPDATED'):'OFFLINE';
+  $('injEventsDataStatus').textContent=!state.source?'OFFLINE':now()-state.lastCalendar>180000?tr('DATI DATATI','STALE DATA'):tr('SINCRONIZZATO','SYNCED');
   const featured=$('injEventsFeatured');featured.hidden=!next;
   if(next){
    $('injEventsFeaturedTime').textContent=next.country+' · '+dateFmt(next.date,{weekday:'short',day:'numeric',month:'short'})+' · '+localClock(next.date);
    $('injEventsFeaturedTitle').textContent=translatedEventTitle(next.title);
+   const featureCopy=$('injEventsFeaturedTitle')?.parentElement;
+   featureCopy?.querySelector('.inj-events-risk-hint')?.remove();
+   if(featureCopy)appendMacroHint(featureCopy,next);
    $('injEventsFeaturedCountdown').textContent=countdown(Date.parse(next.date)-now());
    const details=$('injEventsFeaturedDetails');details.replaceChildren();
    // Numerical metrics stay in the detail sheet, not the calendar preview.
@@ -329,6 +492,7 @@
    const released=validActual(event.actual),future=Date.parse(event.date)>now();
    const button=elt('button','inj-events-item');button.type='button';
    if(released)button.classList.add('is-released');
+   if(state.recentReleases[event.id]&&now()-state.recentReleases[event.id]<20000)button.classList.add('inj-events-new-actual');
    button.setAttribute('aria-label',translatedEventTitle(event.title)+', '+localClock(event.date)+', '+event.country);
    const time=elt('span','inj-events-item-time');
    time.append(elt('strong',null,localClock(event.date)),elt('small',null,event.country));
@@ -337,15 +501,30 @@
    const status=elt('span','inj-events-item-status');
    if(released){status.classList.add('released');status.textContent=tr('PUBBLICATO','RELEASED')}
    else if(future){status.classList.add('upcoming');status.textContent=countdown(Date.parse(event.date)-now())}
-   else{status.classList.add('pending');status.textContent=tr('IN ATTESA','PENDING')}
+   else if(noNumericOutcome(event)){
+    status.classList.add('no-numeric');status.textContent=tr('EVENTO AVVIATO','EVENT STARTED');
+   }else{
+    status.classList.add('pending');
+    status.textContent=Date.parse(event.date)<now()-30*60000?
+     tr('DATO NON DISPONIBILE','RESULT UNAVAILABLE'):
+     tr('IN AGGIORNAMENTO','AWAITING RESULT');
+   }
    heading.append(status);main.append(heading);
+   if(released){
+    const metric=elt('span','inj-events-published-values');
+    metric.append(elt('span','inj-events-published-label',tr('EFFETTIVO','ACTUAL')),
+     elt('strong','inj-events-published-actual',nice(event.actual)));
+    if(validActual(event.forecast))metric.append(elt('span','inj-events-published-forecast',tr('Atteso: ','Forecast: ')+nice(event.forecast)));
+    main.append(metric);
+   }
+   appendMacroHint(main,event);
    button.append(time,main,elt('span','inj-events-item-chevron','›'));
    button.addEventListener('click',()=>showResult(event,false));
    host.append(button);
   }
   if(events.length===1&&next)host.append(elt('p','inj-events-empty',tr('Nessun altro evento nel periodo selezionato.','No other events in this period.')));
  }
- function showResult(e,auto){
+ function showResult(e,auto,refreshOnly=false){
   if(!e)return;
   state.current=e;
   $('injEventsResultTitle').textContent=translatedEventTitle(e.title);
@@ -355,13 +534,16 @@
   $('injEventsResultActual').textContent=nice(e.actual);
   const actual=parseNumeric(e.actual),forecast=parseNumeric(e.forecast);
   $('injEventsResultReading').textContent=!validActual(e.actual)?
-    tr('Dato effettivo non ancora pubblicato. I valori attesi non sono risultati confermati.','Actual result not yet released. Forecasts are not confirmed outcomes.'):
+    noNumericOutcome(e)&&Date.parse(e.date)<now()?
+     tr('Evento avviato: discorso, comunicato o conferenza senza risultato numerico obbligatorio.','Event started: speech, statement or press conference with no required numeric actual.'):
+     tr('Dato effettivo non disponibile dalla fonte. Le previsioni non sono risultati confermati.','Actual not yet available from source. Forecasts are not confirmed outcomes.'):
     actual!==null&&forecast!==null?
       (actual>forecast?tr('Sopra le attese','Above forecast'):actual<forecast?tr('Sotto le attese','Below forecast'):tr('In linea con le attese','In line with forecast'))+
       tr(' · La differenza non indica automaticamente un effetto positivo o negativo su INJ.',' · Surprise direction alone does not predict the price of INJ.'):
       tr('Dato pubblicato. Nessun consenso numerico disponibile per il confronto.','Data released. Numeric consensus unavailable.');
+  $('injEventsResultReading').textContent+=' · '+tr('Scenario indicativo, non previsione: ','Illustrative scenario, not a forecast: ')+marketRiskHint(e).text+'.';
   $('injEventsResultBackdrop').hidden=false;
-  $('injEventsResultClose').focus({preventScroll:true});
+  if(!refreshOnly)$('injEventsResultClose').focus({preventScroll:true});
   if(auto){state.results[e.id]=now();save()}
  }
  function parseNumeric(v){
@@ -380,6 +562,7 @@
  function openPanel(){
   const root=$('injMarketEventsOverlay');if(state.open)return;
   state.open=true;root.hidden=false;root.scrollTop=0;
+  const preferences=$('injEventsPreferences');if(preferences)preferences.open=false;
   updatePeriodUI();
   $('injEventsRegion').value=state.region;
   $('injEventsReminder').value=String(state.reminder);
@@ -389,7 +572,7 @@
  function closePanel(){
   if(!$('injEventsResultBackdrop').hidden){hideResult();return}
   state.open=false;$('injMarketEventsOverlay').hidden=true;
-  $('entryMarketEventsButton').focus({preventScroll:true});
+  $('entryMacroCalendarButton').focus({preventScroll:true});
  }
  function updateAlertButton(){
   const btn=$('injEventsAlerts');btn.setAttribute('aria-pressed',String(state.alerts));
@@ -442,44 +625,166 @@
   }
   save();
  }
+ // Keep the date/time anchored while only the long event name moves.
+ let nextTitleObserver = null;
  function renderNext(){
   const upcoming=state.events.find(e=>Date.parse(e.date)>now()-60000);
   const node=$('injMarketNextSummary');
-  if(upcoming){
-    node.textContent='★★★  '+upcoming.country+' · '+dateFmt(upcoming.date,{weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})+' · '+upcoming.title;
-  }else node.textContent=state.source?
+  if(!node)return;
+  if(!upcoming){
+   nextTitleObserver?.disconnect();
+   nextTitleObserver=null;
+   delete node.dataset.marketSignature;
+   node.removeAttribute('title');
+   node.removeAttribute('aria-label');
+   const empty=state.source?
     tr('Calendario ★★★ · nessun evento imminente','★★★ calendar · no upcoming events'):
     tr('Calendario macro ★★★ · USA / Europa / Asia','★★★ macro calendar · US / Europe / Asia');
+   if(node.textContent!==empty)node.textContent=empty;
+   return;
+  }
+  const date=dateFmt(upcoming.date,{weekday:'short',day:'numeric',month:'short'});
+  const clock=localClock(upcoming.date);
+  const stamp=date+' · '+clock;
+  const title=translatedEventTitle(upcoming.title);
+  const signature=stamp+'|'+upcoming.country+'|'+title;
+  if(node.dataset.marketSignature===signature)return;
+  nextTitleObserver?.disconnect();
+  nextTitleObserver=null;
+  node.dataset.marketSignature=signature;
+  node.title=stamp+' · '+upcoming.country+' · '+title;
+  node.setAttribute('aria-label',node.title);
+  const dateNode=elt('span','inj-events-next-date',stamp);
+  const scroll=elt('span','inj-events-next-scroll');
+  const track=elt('span','inj-events-next-track');
+  const original=elt('span','inj-events-next-title',title);
+  track.append(original);
+  scroll.append(track);
+  node.replaceChildren(dateNode,scroll);
+  const measure=()=>{
+   if(!scroll.isConnected)return;
+   track.classList.remove('is-running');
+   track.querySelector('.inj-events-next-duplicate')?.remove();
+   const width=Math.ceil(original.getBoundingClientRect().width);
+   const available=scroll.clientWidth;
+   if(!width||!available||width<=available+3)return;
+   const duplicate=elt('span','inj-events-next-title inj-events-next-duplicate',title);
+   duplicate.setAttribute('aria-hidden','true');
+   track.append(duplicate);
+   track.style.setProperty('--inj-events-travel',(width+32)+'px');
+   track.style.setProperty('--inj-events-duration',Math.max(13,Math.min(36,(width+32)/22)).toFixed(1)+'s');
+   track.classList.add('is-running');
+  };
+  if(typeof ResizeObserver==='function'){
+   nextTitleObserver=new ResizeObserver(measure);
+   nextTitleObserver.observe(scroll);
+  }
+  requestAnimationFrame(measure);
+ }
+ // Direct public calendar fallback when the hosting provider does not serve /api.
+ // ShowMyTrades documents browser CORS and 1-30 day ranges.
+ function normaliseCalendarRows(rows,provider){
+  const currencySet=new Set(['USD','EUR','GBP','CHF','JPY','CNY']);
+  const normalised=[];
+  for(const e of rows){
+   const country=String(e.country||e.currency||'').toUpperCase();
+   const impact=String(e.importance||e.impact||'').toLowerCase();
+   if(!currencySet.has(country)||!['3','high'].includes(impact))continue;
+   let sourceDate=e.date||e.time||null;
+   if(!sourceDate&&e.ts!==null&&e.ts!==undefined&&Number.isFinite(Number(e.ts))&&Number(e.ts)>0){
+    sourceDate=new Date(Number(e.ts)*1000).toISOString();
+   }
+   const timestamp=Date.parse(sourceDate||'');
+   if(!Number.isFinite(timestamp)||!String(e.title||'').trim())continue;
+   const record=validateEvent({
+    id:e.id||country+'-'+e.title+'-'+sourceDate,
+    country,title:e.title,importance:3,date:new Date(timestamp).toISOString(),
+    forecast:e.forecast,actual:e.actual,previous:e.previous,status:e.status||'scheduled'
+   });
+   if(record)normalised.push(record);
+  }
+  return normalised.sort(byDate);
+ }
+ async function directCalendar(){
+  try{
+   const url='https://showmytrades.com/api/public/calendar/v1?currency=USD,EUR,GBP,CHF,JPY,CNY&impact=high&days=30';
+   const data=await tickerGet(url);
+   if(!Array.isArray(data.events)||!data.events.length)throw Error('No public economic calendar');
+   const sourceEvents=normaliseCalendarRows(data.events,'ShowMyTrades');
+   if(!sourceEvents.length)throw Error('No high-impact records in public feed');
+   return {events:sourceEvents,
+    source:'ShowMyTrades',coverage:tr('Fonte diretta · aggiornamento periodico','Direct source · periodic updates'),
+    sourceUrl:'https://showmytrades.com/tools/economic-calendar'};
+  }catch{}
+  // Public week exports; coverage may be partial on two-week or month filters.
+  const files=['thisweek','nextweek'];
+  const result=await Promise.allSettled(files.map(async week=>{
+   const data=await tickerGet('https://nfs.faireconomy.media/ff_calendar_'+week+'.json');
+   if(!Array.isArray(data))throw Error('Invalid weekly feed');
+   return data;
+  }));
+  const available=result.filter(r=>r.status==='fulfilled').flatMap(r=>r.value);
+  if(!available.length)throw Error('Economic calendar sources unavailable');
+  return {events:normaliseCalendarRows(available,'Forex Factory'),
+   source:'Forex Factory (weekly export)',
+   coverage:tr('Copertura delle sole settimane disponibili','Available weeks only'),
+   sourceUrl:'https://www.forexfactory.com/calendar'};
  }
  async function loadCalendar(force=false){
   if(state.processing){if(force)state.reloadQueued=true;return state.inFlight}
   if(!force&&state.lastCalendar&&now()-state.lastCalendar<150000)return;
   state.processing=true;
   state.inFlight=(async()=>{
+   try{
+    let data=null;
     try{
-      const response=await fetch('/api/market-events?days=30',{cache:'no-store'});
-      if(!response.ok)throw Error('Calendar HTTP '+response.status);
-      const data=await response.json();
-      if(!Array.isArray(data.events))throw Error('Invalid event feed');
-      const events=data.events.map(validateEvent).filter(Boolean).sort(byDate);
-      state.events=events;
-      state.source=String(data.source||'');state.coverage=String(data.coverage||'');state.sourceURL=String(data.sourceUrl||'');
-      state.lastCalendar=now();
-      displaySource();
-      maybeAnnounce(events);
-      saveUpcoming(events);
-      setMessage(tr('Solo eventi ★★★ · fuso orario del dispositivo · avvisi con app aperta. ','★★★ events only · your local time · alerts while app open. ')+state.coverage);
-      renderNext();
-      if(state.open)list();
-    }catch(error){
-      state.source='';state.lastCalendar=0;state.events=[];
-      setMessage(tr('Fonte calendario temporaneamente non disponibile. Nessun evento o dato viene inventato.','Calendar temporarily unavailable. No event or data is fabricated.'));
-      if(state.open)list();
-      renderNext();
-    }finally{
-      state.processing=false;state.inFlight=null;
-      if(state.reloadQueued){state.reloadQueued=false;queueMicrotask(()=>loadCalendar(true))}
+     const response=await fetch('/api/market-events?days=30',{cache:'no-store'});
+     if(!response.ok)throw Error('Calendar HTTP '+response.status);
+     const json=await response.json();
+     if(!Array.isArray(json.events))throw Error('Invalid calendar feed');
+     const events=json.events.map(validateEvent).filter(Boolean).sort(byDate);
+     if(events.length) data={...json,events};
+    }catch{}
+    if(!data)data=await directCalendar();
+    if(!Array.isArray(data.events))throw Error('No calendar records');
+    const previous=new Map(state.events.map(e=>[e.id,e]));
+    const unique=new Map(data.events.map(event=>{
+     const prev=previous.get(event.id);
+     // A stale reply must not undo a previously observed release.
+     if(prev)for(const key of ['actual','forecast','previous'])
+      if(!validActual(event[key])&&validActual(prev[key]))event[key]=prev[key];
+     return [event.id,event];
+    }));
+    const events=[...unique.values()].sort(byDate);
+    for(const e of events){
+     const old=previous.get(e.id);
+     if(old&&!validActual(old.actual)&&validActual(e.actual))state.recentReleases[e.id]=now();
     }
+    state.events=events;
+    state.source=String(data.source||'');
+    state.coverage=String(data.coverage||'');
+    state.sourceURL=String(data.sourceUrl||'');
+    state.lastCalendar=now();
+    displaySource();
+    maybeAnnounce(events);
+    saveUpcoming(events);
+    setMessage(tr('Solo eventi ★★★ · aggiornamento automatico · avvisi ad app aperta. ','★★★ events only · automatic refresh · alerts while app is open. ')+state.coverage);
+    renderNext();
+    if(state.open)list();
+    if(state.current&&!$('injEventsResultBackdrop').hidden){
+     const updated=events.find(e=>e.id===state.current.id);
+     if(updated)showResult(updated,false,true);
+    }
+   }catch(error){
+    // Do not discard verified data because one feed temporarily times out.
+    if(!state.lastCalendar){state.source='';state.events=[]}
+    setMessage(tr('Calendario temporaneamente non raggiungibile. Gli eventi non vengono inventati.','Calendar feed temporarily unreachable. No events are fabricated.'));
+    if(state.open)list();
+    renderNext();
+   }finally{
+    state.processing=false;state.inFlight=null;
+    if(state.reloadQueued){state.reloadQueued=false;queueMicrotask(()=>loadCalendar(true))}
+   }
   })();
   return state.inFlight;
  }
@@ -512,7 +817,7 @@
  const hash=location.hash.match(/^#inj-market-event=(.+)$/);
  if(hash){try{openFromNotification(decodeURIComponent(hash[1]));history.replaceState(null,'',location.pathname+location.search)}catch{}}
 
- $('entryMarketEventsButton').addEventListener('click',openPanel);
+ $('entryMacroCalendarButton').addEventListener('click',openPanel);
  $('injMarketTickerEvents')?.addEventListener('click',openPanel);
  $('injEventsClose').addEventListener('click',closePanel);
  $('injEventsResultClose').addEventListener('click',hideResult);
@@ -529,6 +834,14 @@
  $('injEventsReminder').addEventListener('change',e=>{state.reminder=Number(e.target.value);save()});
  $('injEventsAlerts').addEventListener('click',setAlerts);
  $('injEventsRefresh').addEventListener('click',()=>loadCalendar(true));
+ $('injEventsPreferencesDone')?.addEventListener('click',()=>{
+  // Every change is applied and saved as it is made; Done only collapses.
+  const prefs=$('injEventsPreferences');
+  if(!prefs)return;
+  prefs.open=false;
+  $('injEventsPreferencesToggle')?.focus({preventScroll:true});
+  list();
+ });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.open){e.preventDefault();closePanel()}});
  new MutationObserver(()=>{applyLanguage();if(lastTickerPayload)renderTicker(lastTickerPayload);if(state.open)list()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  updatePeriodUI();
@@ -538,7 +851,13 @@
  // Background page refreshes cannot create push; only foreground visits can.
  updateTicker();loadCalendar();
  setInterval(()=>{if(document.hidden)return;updateTicker()},45000);
- setInterval(()=>{if(document.hidden)return;loadCalendar(true)},60000);
+ // Poll frequently around a numeric release, otherwise spare provider requests.
+ let lastCalendarPoll=now();
+ setInterval(()=>{
+  if(document.hidden)return;
+  const interval=calendarRefreshUrgent()?20000:90000;
+  if(now()-lastCalendarPoll>=interval){lastCalendarPoll=now();loadCalendar(true);}
+ },5000);
  setInterval(()=>{if(document.hidden)return;renderNext();if(state.open)list();maybeAnnounce(state.events)},45000);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden){updateTicker();loadCalendar(true)}});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){lastCalendarPoll=now();updateTicker();loadCalendar(true)}});
 })();

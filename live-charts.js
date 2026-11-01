@@ -12,6 +12,9 @@ const INJ_LISTING_START = Date.UTC(2020,9,21,4); // Binance INJ/USDT first liste
 const mobile = matchMedia('(hover:none) and (pointer:coarse)').matches || innerWidth <= 820;
 const maxFps = 60;
 const minFrameMs = 1000 / maxFps;
+// Embedded charts publish the existing live quote to the Market tab title.
+const marketQuoteBridge = (()=>{try{return new URLSearchParams(location.search).get('embed')==='market'&&parent!==window;}catch(_){return false;}})();
+let lastMarketQuoteSentAt=0;
 
 const ranges = {
   m1: {label:'1 MIN',windowMs:MINUTE,bucketMs:SECOND,source:'m1',interval:'1s',limit:180,minSpan:.000055,expand:90,relax:1500,expected:60,smooth:true},
@@ -644,7 +647,12 @@ $('indicatorToggle')?.addEventListener('click',()=>setIndicators(!state.indicato
 $('moreTimeframesToggle')?.addEventListener('click',(e)=>{e.stopPropagation();const wrap=e.currentTarget.closest('.timeframe-more-wrap');setMoreOpen(!wrap?.classList.contains('open'));});
 document.addEventListener('click',(e)=>{if(!e.target?.closest?.('.timeframe-more-wrap'))setMoreOpen(false);});
 
-function frame(ts){state.raf=0;if(document.hidden||state.stopped)return;if(ts-state.lastFrame<minFrameMs){state.raf=requestAnimationFrame(frame);return;}const dt=Math.max(8,Math.min(80,ts-(state.lastFrame||ts-minFrameMs)));state.lastFrame=ts;const target=state.targetPrice>0?state.targetPrice:state.lastPrice;if(target>0){if(!(state.visualPrice>0))state.visualPrice=target;const delta=target-state.visualPrice;state.visualPrice+=delta*(1-Math.exp(-dt/38));if(Math.abs(target-state.visualPrice)<Math.max(.0000005,target*1e-8))state.visualPrice=target;setLiveNumber('headerLivePrice',priceText(state.visualPrice),state.visualPrice);drawActive(Date.now(),dt,ts);}if(state.lastTickAt){const age=Date.now()-state.lastTickAt;setText('lastTickText',age<1100?'NOW':age<60000?`${Math.floor(age/1000)}s`:`${Math.floor(age/60000)}m`);}state.raf=requestAnimationFrame(frame);}
+function frame(ts){state.raf=0;if(document.hidden||state.stopped)return;if(ts-state.lastFrame<minFrameMs){state.raf=requestAnimationFrame(frame);return;}const dt=Math.max(8,Math.min(80,ts-(state.lastFrame||ts-minFrameMs)));state.lastFrame=ts;const target=state.targetPrice>0?state.targetPrice:state.lastPrice;if(target>0){if(!(state.visualPrice>0))state.visualPrice=target;const delta=target-state.visualPrice;state.visualPrice+=delta*(1-Math.exp(-dt/38));if(Math.abs(target-state.visualPrice)<Math.max(.0000005,target*1e-8))state.visualPrice=target;setLiveNumber('headerLivePrice',priceText(state.visualPrice),state.visualPrice);
+  if(marketQuoteBridge && ts-lastMarketQuoteSentAt>=350){
+    lastMarketQuoteSentAt=ts;
+    parent.postMessage({type:'injnode:market:chart-price',value:state.visualPrice},location.origin);
+  }
+  drawActive(Date.now(),dt,ts);}if(state.lastTickAt){const age=Date.now()-state.lastTickAt;setText('lastTickText',age<1100?'NOW':age<60000?`${Math.floor(age/1000)}s`:`${Math.floor(age/60000)}m`);}state.raf=requestAnimationFrame(frame);}
 function start(){if(!state.raf&&!document.hidden&&!state.stopped)state.raf=requestAnimationFrame(frame);}
 function stop(){state.stopped=true;if(state.raf)cancelAnimationFrame(state.raf);state.raf=0;clearTimeout(state.reconnect);clearTimeout(state.depthReconnect);clearInterval(state.priceWatchdog);clearInterval(state.book.watchdog);clearInterval(state.book.snapshotTimer);state.book.watchdog=0;state.book.snapshotTimer=0;if(state.book.timer){clearTimeout(state.book.timer);state.book.timer=0;}if(state.book.priceFlashTimer){clearTimeout(state.book.priceFlashTimer);state.book.priceFlashTimer=0;}try{state.ws?.close();}catch(_){}try{state.depthWs?.close();}catch(_){}state.ws=null;state.depthWs=null;}
 

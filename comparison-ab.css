@@ -98,3 +98,59 @@
  .cap-asset-a>.cap-source-stats strong,.cap-asset-b>.cap-target-foot strong{font-size:12px!important}
  .cap-asset-b .cap-target-foot small{font-size:8px!important}
 }
+
+/* INJ Node · Asset logos in A/B comparison (all themes / small screens).
+   Keep ticker and name visible; when remote image fails, fall back to text. */
+.cap-selected .cap-logo-frame,
+.cap-manual-selected .cap-logo-frame {
+ flex:0 0 30px!important;
+ width:30px;height:30px;min-width:30px;
+ display:grid!important;place-items:center;
+ border-radius:50%!important;
+ border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line))!important;
+ background:color-mix(in srgb,var(--accent) 8%,var(--panel-strong))!important;
+ overflow:hidden!important;
+}
+.cap-selected .cap-logo-frame[hidden],
+.cap-manual-selected .cap-logo-frame[hidden],
+.cap-logo-frame img[hidden]{display:none!important}
+.cap-logo-frame img{
+ display:block;width:100%;height:100%;object-fit:contain;
+ border-radius:50%;padding:3px;box-sizing:border-box;
+}
+.cap-asset-a .cap-selected,.cap-asset-b .cap-selected,
+.cap-asset-b .cap-manual-selected{gap:6px!important;min-width:0!important}
+.cap-asset-a .cap-selected>div,.cap-asset-b .cap-selected>div,
+.cap-asset-b .cap-manual-selected>strong{min-width:0!important}
+.cap-asset-a .cap-coin-symbol,.cap-asset-b .cap-coin-symbol{
+ flex:0 1 auto!important;min-width:0!important;max-width:70px!important;
+ width:auto!important;height:auto!important;min-height:30px!important;
+ padding:4px 5px!important;font-size:10px!important;line-height:1.2!important;
+ overflow:hidden;text-overflow:ellipsis;
+}
+.cap-search-item .cap-option-logo{
+ flex:0 0 24px!important;width:24px!important;height:24px!important;
+ max-width:24px!important;min-width:24px!important;min-height:24px!important;
+ border-radius:50%;object-fit:contain;background:transparent;
+}
+.cap-search-item .cap-option-logo+span:first-of-type{min-width:42px}
+@media(max-width:420px){
+ .cap-selected .cap-logo-frame,.cap-manual-selected .cap-logo-frame{
+  flex-basis:26px!important;width:26px;height:26px;min-width:26px;
+ }
+ .cap-asset-a .cap-selected,.cap-asset-b .cap-selected,
+ .cap-asset-b .cap-manual-selected{padding:7px 6px!important;gap:4px!important}
+ .cap-asset-a .cap-coin-symbol,.cap-asset-b .cap-coin-symbol{font-size:9px!important}
+ .cap-asset-a .cap-selected>div strong,.cap-asset-b .cap-selected>div strong,
+ .cap-asset-b .cap-manual-selected>strong{font-size:11px!important}
+}
+
+/* Keep ticker emphasis even when the logo image is the first child. */
+.cap-search-item > span:first-of-type{
+ min-width:43px!important;flex:0 0 auto!important;
+ color:var(--accent)!important;font-weight:850!important;font-size:12px!important;
+}
+.cap-search-item > span:last-of-type{
+ min-width:0!important;flex:1 1 auto!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}

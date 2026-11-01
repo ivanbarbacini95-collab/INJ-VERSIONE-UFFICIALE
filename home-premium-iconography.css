@@ -66,7 +66,7 @@ html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44
 @media(max-width:799px){
   html[data-inj-page="index"] body #entryGate
   .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
-  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton):not(#entryFreedomButton)
   > .inj-tile-scene.inj-luxury-icon {
     display:block!important;
     top:11px!important;left:50%!important;right:auto!important;bottom:auto!important;
@@ -81,7 +81,7 @@ html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44
 @media(min-width:800px){
   html[data-inj-page="index"] body #entryGate
   .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
-  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton)
+  > .entry-action:not(#entryInjcEtfButton):not(#entryWorkspaceButton):not(#entryTreasuryButton):not(#entryFreedomButton)
   > .inj-tile-scene.inj-luxury-icon {
     width:91px!important;height:52px!important;
     max-width:100%!important;

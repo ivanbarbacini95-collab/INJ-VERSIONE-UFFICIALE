@@ -39,7 +39,7 @@
   const icon=$('detailIcon');if(!icon.firstElementChild||icon.dataset.id!==coin.id){
    icon.dataset.id=coin.id;icon.replaceChildren();
    const img=document.createElement('img');img.src=coin.image||'';img.alt='';
-   img.loading='lazy';img.referrerPolicy='no-referrer';icon.append(img);
+   img.loading='eager';img.decoding='async';img.referrerPolicy='no-referrer';icon.append(img);
   }
   const stats=[
    [tr('Capitalizzazione','Market cap'),helpers.money(coin.market_cap,true)],
@@ -65,6 +65,28 @@
   host.replaceChildren(frag);
  }
  function clearTimer(){if(refresher){clearInterval(refresher);refresher=0}}
+ function abortChart(){
+  if(active?.controller){active.controller.abort();active.controller=null}
+ }
+ function quickPreview(coin,range){
+  const mapped={'1h':'1h','1d':'1d','7d':'1w','30d':'1m'}[range];
+  if(!mapped)return null;
+  const preview=window.INJ_DAY_CHART?.previewFor?.(coin,mapped);
+  return preview?.data?.length>=2?preview:null;
+ }
+ function seedPreview(range){
+  if(!active)return false;
+  const preview=quickPreview(active.coin,range);
+  if(!preview)return false;
+  active.series=preview.data;active.provider=preview.source==='feed'
+   ?tr('CoinGecko · anteprima storica verificata','CoinGecko · verified historical preview')
+   :tr('Storico verificato in cache','Verified cached history');
+  active.lastFetch=preview.stale?0:Date.now();
+  active.viewport=null;
+  draw(active.series,range);
+  setStatus(active.provider+(preview.stale?tr(' · NON LIVE',' · NOT LIVE'):''));
+  return true;
+ }
  function setStatus(str){const el=$('detailStatus');if(el)el.textContent=str}
  const rangeSpan={'1h':3600000,'1d':86400000,'7d':604800000,'30d':2592000000,'90d':7776000000,'1y':31536000000};
  let gesture=null,selectedPointer=null;
@@ -179,11 +201,11 @@
   '1y':{interval:'1d',limit:600}
  };
  async function binanceSeries(range,signal){
-  if(!active?.helpers.canStream||!['usd','eur'].includes(active.helpers.currency))throw Error('No verified Binance Spot pair');
-  const symbol=String(active.coin.symbol||'').toUpperCase();
-  if(!/^[A-Z0-9]{2,15}$/.test(symbol))throw Error('Unsupported symbol');
+  if(!['usd','eur'].includes(active?.helpers?.currency))throw Error('Unsupported chart currency');
+  const pair=window.INJ_DAY_CHART?.getPairForCoin?.(active.coin)||'';
+  if(!/^[A-Z0-9]{2,18}USDT$/.test(pair))throw Error('No verified Binance Spot pair');
   const cfg=binanceFrames[range];
-  const url='https://data-api.binance.vision/api/v3/klines?symbol='+encodeURIComponent(symbol+'USDT')+'&interval='+cfg.interval+'&limit='+cfg.limit;
+  const url='https://data-api.binance.vision/api/v3/klines?symbol='+encodeURIComponent(pair)+'&interval='+cfg.interval+'&limit='+cfg.limit;
   const res=await fetch(url,{cache:'no-store',signal});
   if(!res.ok)throw Error('Binance HTTP '+res.status);
   const raw=await res.json();
@@ -200,7 +222,10 @@
   try{
    const data=await binanceSeries(range,signal);
    return {data,provider:tr('Binance Spot · storico reale · scorrimento interattivo','Binance Spot · real historical candles · interactive navigation')};
-  }catch(_){/* CoinGecko fallback for unlisted pairs, regional restrictions or outages. */}
+  }catch(e){
+   if(signal?.aborted)throw e;
+   /* CoinGecko fallback for unlisted pairs, regional restrictions or outages. */
+  }
   const days=ranges[range],{helpers,coin}=active;
   const requestDays=range==='1h'?1:Math.min(365,days*2);
   const base=helpers.API+'/coins/'+encodeURIComponent(coin.id)+'/market_chart?vs_currency='+helpers.currency+'&days=';
@@ -220,8 +245,11 @@
   if(ref.loading&&!force)return;
   ref.loading=true;
   if(!ref.series.length)chart.textContent=tr('Caricamento grafico…','Loading chart…');
-  setStatus(tr('Sincronizzazione dati reali…','Syncing real data…'));
+  setStatus(ref.series.length>=2
+   ?tr('Storico verificato visibile · aggiornamento in corso…','Verified chart visible · refreshing details…')
+   :tr('Sincronizzazione dati reali…','Syncing real data…'));
   const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),13500);
+  ref.controller=ctrl;
   try{
    const {data,provider}=await getSeries(range,ctrl.signal);
    if(!active||active!==ref||token!==id||!modal.open)return;
@@ -230,9 +258,14 @@
    draw(data,range);setStatus(provider+' · '+new Date().toLocaleTimeString(english()?'en-US':'it-IT'));
   }catch(e){
    if(!active||active!==ref||token!==id)return;
-   if(ref.series.length<2)chart.textContent=tr('Grafico non disponibile per questo periodo','Chart not available for this timeframe');
-   setStatus(tr('Dati non disponibili · riprova cambiando timeframe','Data unavailable · try another timeframe'));
-  }finally{clearTimeout(timer);if(active===ref)ref.loading=false}
+   if(ref.series.length<2)chart.textContent=tr('Grafico temporaneamente non disponibile','Chart temporarily unavailable');
+   setStatus(ref.series.length>=2
+    ?tr('Ultimo grafico verificato · aggiornamento non disponibile','Last verified chart · update unavailable')
+    :tr('Dati non disponibili · riprova cambiando timeframe','Data unavailable · try another timeframe'));
+  }finally{
+   clearTimeout(timer);
+   if(active===ref&&ref.controller===ctrl){ref.loading=false;ref.controller=null}
+  }
  }
  function beginRefresh(){
   clearTimer();
@@ -244,21 +277,34 @@
  }
  function open(coin,helpers){
   if(!coin||!helpers)return;
+  abortChart();
   token++;lastPricePaint=0;lastChartPaint=0;selectedPointer=null;gesture=null;
-  active={coin,helpers,range:'1h',series:[],provider:'',lastFetch:0,loading:false,viewport:null,plot:null};
+  // Reuse the period visible in Global Crypto when its verified history is
+  // already available. Otherwise open 1D with the market-feed preview:
+  // this prevents a blank 1H chart and a needless cold network wait.
+  const selected={'1h':'1h','1d':'1d','1w':'7d','1m':'30d'}[window.INJ_DAY_CHART?.getFrame?.()]||'1d';
+  const initial=quickPreview(coin,selected)?selected:quickPreview(coin,'1d')?'1d':selected;
+  active={coin,helpers,range:initial,series:[],provider:'',lastFetch:0,loading:false,viewport:null,plot:null,controller:null};
   updateTabs();
   if(!modal.open)modal.showModal();
   renderPrimary();chart.textContent='';$('detailChartStart').textContent='—';$('detailChartEnd').textContent='—';
   $('detailChartHeading').textContent=tr('GRAFICO · TIMEFRAME','CHART · TIMEFRAME');
-  setStatus(tr('Preparazione grafico 1H…','Preparing 1H chart…'));
-  void loadChart(true);beginRefresh();
+  const seeded=seedPreview(initial);
+  if(!seeded)setStatus(tr('Preparazione dello storico…','Preparing historical chart…'));
+  // A recent detailed cached series needs no duplicate immediate download.
+  if(!seeded||active.provider.includes('CoinGecko')||active.lastFetch===0)void loadChart(true);
+  beginRefresh();
  }
  function updateCoin(coin,helpers){
   if(!active||!coin||coin.id!==active.coin.id)return;
   const currencyChanged=helpers?.currency!==active.helpers.currency;
   active.coin=coin;if(helpers)active.helpers=helpers;
   renderPrimary();
-  if(currencyChanged){active.series=[];active.lastFetch=0;active.viewport=null;void loadChart(true)}
+  if(currencyChanged){
+   abortChart();active.series=[];active.lastFetch=0;active.viewport=null;
+   if(!seedPreview(active.range))chart.textContent=tr('Caricamento grafico…','Loading chart…');
+   void loadChart(true);
+  }
  }
  function priceTick(coin,timestamp){
   if(!active||active.coin.id!==coin.id||!modal.open)return;
@@ -277,7 +323,7 @@
   while(series.length>2&&series[0].t<now-3600000)series.shift();
   if(now-lastChartPaint>1350){lastChartPaint=now;draw(series,'1h');}
  }
- function close(){token++;clearTimer();active=null;selectedPointer=null;gesture=null}
+ function close(){token++;abortChart();clearTimer();active=null;selectedPointer=null;gesture=null}
  function languageChange(){
   if(!active||!modal.open)return;
   renderPrimary();
@@ -289,9 +335,11 @@
   if(!b||!active||!ranges[b.dataset.detailRange])return;
   const next=b.dataset.detailRange;
   if(active.range===next)return;
+  abortChart();
   active.range=next;active.series=[];active.lastFetch=0;active.loading=false;active.viewport=null;selectedPointer=null;
   updateTabs();$('detailChartStart').textContent='—';$('detailChartEnd').textContent='—';
-  void loadChart(true);
+  if(!seedPreview(next))chart.textContent=tr('Caricamento grafico…','Loading chart…');
+  if(!active.series.length||active.provider.includes('CoinGecko')||active.lastFetch===0)void loadChart(true);
  });
 
  const zoomIn=$('detailZoomIn'),zoomOut=$('detailZoomOut'),reset=$('detailZoomReset');

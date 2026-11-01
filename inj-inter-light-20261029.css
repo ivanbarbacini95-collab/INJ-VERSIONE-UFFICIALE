@@ -1,0 +1,86 @@
+/* INJ NODE — Inter Light typography, entire application
+   2026-10-29 | Layout-safe layer: font families/weights only.
+   Loaded last on all application pages; no dimensions, data, navigation,
+   chart drawing, translations, animations or event handlers are modified. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap");
+
+:root {
+  --inj-inter-light-font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  --inj-minimal-font:var(--inj-inter-light-font);
+  --inj-node-terminal-font:var(--inj-inter-light-font);
+  --inj-home-title-face:var(--inj-inter-light-font);
+  --inj-home-description-face:var(--inj-inter-light-font);
+  --inj-editorial-face:var(--inj-inter-light-font);
+  /* Keep machine identifiers/code monospaced to avoid confusing characters. */
+  --inj-minimal-mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+}
+html, html body {
+  font-family:var(--inj-inter-light-font)!important;
+  font-weight:300!important;
+  font-variant-numeric:tabular-nums lining-nums;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+/* Higher specificity than the historical Supply Mono/editorial resets.
+   Exclude SVG and icon fonts so graph axes and pictograms stay unchanged.
+   Do not alter size, line height, wrapping, shadows or box layout. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font) {
+  font-family:var(--inj-inter-light-font)!important;
+  font-weight:300!important;
+  font-synthesis-weight:none;
+  font-variant-numeric:tabular-nums lining-nums;
+  -webkit-font-smoothing:antialiased;
+}
+/* Retain regular-weight detail at very small sizes for contrast on phones
+   and dense trading tables. Labels/figures remain Inter, never bold. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):is(
+  button,input,textarea,select,option,label,small,
+  .inj-tile-description,.inj-events-next-text,
+  .caption,.subtitle,.description,.hint,.note,
+  .market-asset-price,.market-ticker,.market-table,
+  .market-heatmap-card,.heatmap-card,.heatmap-card *,
+  .levels,.levels *, .book-meta,.columns,
+  .ws-data-value,.ws-section-value,.ws-chart-ticks,.ws-book,
+  .focus-display-dialog .focus-display-label,
+  .focus-display-dialog .focus-display-live,
+  .focus-display-dialog .focus-display-wallet,
+  .focus-display-dialog .focus-display-system,
+  .focus-display-dialog .focus-display-stats > div > span,
+  .focus-display-dialog .focus-display-range-copy,
+  .entry-desktop-metrics small,.entry-overview-stats small,
+  .treasury-metric small,.rewards-total-metrics small
+){
+  font-family:var(--inj-inter-light-font)!important;
+  font-weight:400!important;
+  font-synthesis-weight:none;
+}
+/* Slim Inter Light on big quotes, dashboards, Treasury, Market and Live View.
+   Removes the compressed appearance of the previous numerical typography. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):is(
+  #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,
+  #focusDisplayPrice,#focusDisplayWorth,#focusDisplayTotalInj,
+  #chartHeaderPrice,#headerLivePrice,#bookLivePrice,
+  #treasuryTotalMajor,#treasuryTotalDecimals,#treasuryTotalWorth,
+  #treasuryHeaderPrice,#treasuryPnl24Value,
+  #rewardsTotal,#rewardsTotalFiat,
+  #ccLivePrice,#ccNetWorth,#ccTotalInj,#ccTotalPnl,
+  #capSourcePrice,#capProjectedPrice,
+  .app-shell .hero-number,.app-shell .hero-secondary,
+  .app-shell .metric-card .metric-value,
+  .focus-display-dialog .focus-display-primary > strong,
+  .ws-main-price,.ws-price-value,.ws-price-main,.ws-hero-price,
+  .entry-market-mini > strong,.entry-overview-worth > strong,
+  .treasury-total-display > strong,.market-price-line > strong
+){
+  font-weight:300!important;
+  font-stretch:normal!important;
+  letter-spacing:-.008em!important;
+}
+/* Wallet addresses, hashes and technical code must remain distinguishable. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):is(
+  code,pre,kbd,samp,.tx-hash,.wallet-address,.address-hash,[data-monospace]
+){
+  font-family:var(--inj-minimal-mono)!important;
+  font-weight:400!important;
+  letter-spacing:0!important;
+}

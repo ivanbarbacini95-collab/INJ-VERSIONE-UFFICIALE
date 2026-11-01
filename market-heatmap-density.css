@@ -1,0 +1,159 @@
+/* INJ Node · Heatmap adjustable density (IT/EN, mobile/tablet/desktop).
+   Loaded AFTER the terminal themes to override their fixed tile grid sizes.
+   Geometry only: real performance colours and the live update pulse stay intact. */
+
+html[data-inj-market] #marketHeatmap .heatmap-density-bar {
+  display:flex;align-items:center;justify-content:flex-end;gap:9px;
+  min-height:30px;min-width:0;margin:0 2px 9px;
+  color:var(--muted,#a4bcc8);
+  font:700 10px/1.2 var(--inj-node-terminal-font,ui-monospace,monospace);
+  letter-spacing:.065em;user-select:none;-webkit-user-select:none;
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar .heatmap-density-label {
+  white-space:nowrap;opacity:.85;flex:none;
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar .heatmap-density-controls {
+  display:flex;align-items:center;gap:6px;min-width:0;
+  padding:4px 8px;border:1px solid color-mix(in srgb,var(--accent,#6ceec8) 17%,transparent);
+  background:color-mix(in srgb,var(--panel,#172634) 65%,transparent);
+  border-radius:999px;
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar button {
+  display:grid;place-items:center;flex:0 0 19px;
+  width:19px;height:19px;padding:0;border:0;border-radius:50%;
+  color:var(--text,#eaf7ff);background:transparent;
+  font:750 16px/1 system-ui,sans-serif;cursor:pointer;
+  touch-action:manipulation;
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar button:disabled {opacity:.25;cursor:default}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar button:focus-visible,
+html[data-inj-market] #marketHeatmap .heatmap-density-bar input:focus-visible{
+  outline:2px solid var(--accent,#7ce9c9);outline-offset:3px;
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar input[type="range"]{
+  -webkit-appearance:none;appearance:none;
+  width:clamp(92px,17vw,155px);height:4px;min-width:0;
+  flex:0 1 auto;margin:0;border:0;border-radius:999px;
+  background:linear-gradient(90deg,var(--accent,#79ddc0) 0%,var(--accent,#79ddc0) var(--density-progress,58%),color-mix(in srgb,var(--text,#deeef8) 20%,transparent) var(--density-progress,58%));
+  cursor:pointer;touch-action:none;
+  accent-color:var(--accent,#79ddc0);
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:15px;height:15px;
+  border:2px solid var(--accent,#79ddc0);border-radius:50%;
+  background:var(--panel,#122633);box-shadow:0 0 9px color-mix(in srgb,var(--accent,#79ddc0) 24%,transparent);
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar input[type="range"]::-moz-range-thumb{
+  width:12px;height:12px;border:2px solid var(--accent,#79ddc0);border-radius:50%;
+  background:var(--panel,#122633);
+}
+html[data-inj-market] #marketHeatmap .heatmap-density-bar output {
+  display:inline-block;min-width:72px;max-width:95px;text-align:right;
+  font-size:9px;font-weight:650;letter-spacing:.025em;
+  color:var(--text,#e4f4fa);white-space:nowrap;
+}
+
+/* The slider owns the same-sized grid in every viewport.
+   Override featured spans and all theme / breakpoint-specific column counts. */
+html[data-inj-market] #marketHeatmap .heatmap-grid {
+  display:grid!important;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--heat-card-size,126px)),1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:var(--heat-card-height,100px)!important;
+  gap:var(--heat-card-gap,6px)!important;
+  justify-content:stretch!important;align-items:stretch!important;
+  transition:none!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){
+  grid-column:span 1!important;grid-row:span 1!important;
+  width:100%!important;height:100%!important;
+  min-width:0!important;min-height:0!important;max-width:none!important;
+  align-items:center!important;justify-content:center!important;
+  text-align:center!important;gap:var(--heat-card-content-gap,4px)!important;
+  padding:var(--heat-card-padding,8px)!important;
+  border-radius:clamp(6px,1vw,11px)!important;
+  transform:none!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-identity {
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  gap:var(--heat-card-content-gap,4px)!important;margin:0!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-icon{
+  width:var(--heat-logo-size,24px)!important;height:var(--heat-logo-size,24px)!important;
+  max-width:100%!important;flex:0 0 auto!important;object-fit:contain!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-symbol{
+  display:block!important;max-width:100%!important;
+  font-size:var(--heat-symbol-size,12px)!important;line-height:1.05!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-name{
+  font-size:9px!important;line-height:1.1!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-change {
+  display:block!important;order:1!important;max-width:100%!important;
+  margin:0!important;font-size:var(--heat-change-size,14px)!important;
+  line-height:1.12!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-price {
+  display:block!important;order:2!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;font-size:var(--heat-price-size,10px)!important;
+  line-height:1.16!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-rank,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n) .hm-spark-wrap{
+  display:none!important;
+}
+/* At normal sizing the name is a useful secondary data field. */
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="full"] > .heatmap-tile:nth-child(n) .hm-name{
+  display:block!important;
+}
+/* Compact: ticker, % and current price remain readable. */
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="compact"] > .heatmap-tile:nth-child(n) .hm-name{
+  display:none!important;
+}
+/* Micro: show logo, ticker and selected-period change only. */
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="micro"] > .heatmap-tile:nth-child(n) .hm-name,
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="micro"] > .heatmap-tile:nth-child(n) .hm-price{
+  display:none!important;
+}
+/* Below the minimum readable width, show logos alone, retaining
+   full name / percentage / price through the native accessible title. */
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile:nth-child(n) .hm-labels,
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile:nth-child(n) .hm-name,
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile:nth-child(n) .hm-price,
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile:nth-child(n) .hm-change {
+  display:none!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile:nth-child(n){
+  padding:4px!important;gap:0!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile:nth-child(n) .hm-identity{
+  padding:0!important;gap:0!important;
+}
+/* Missing provider logo: never render a blank tile. Show its ticker instead. */
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile.heatmap-no-logo:nth-child(n) .hm-labels{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile.heatmap-no-logo:nth-child(n) .hm-symbol{
+  display:block!important;font-size:clamp(8px,2vw,11px)!important;
+  text-align:center!important;white-space:nowrap!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid[data-density="logo"] > .heatmap-tile.heatmap-no-logo:nth-child(n) .hm-name {
+  display:none!important;
+}
+@media(max-width:600px){
+ html[data-inj-market] #marketHeatmap .heatmap-density-bar{gap:6px;margin-bottom:8px}
+ html[data-inj-market] #marketHeatmap .heatmap-density-bar input[type="range"]{width:clamp(90px,30vw,128px)}
+ html[data-inj-market] #marketHeatmap .heatmap-density-bar output{min-width:58px;font-size:9px}
+ html[data-inj-market] #marketHeatmap .heatmap-density-bar .heatmap-density-controls{padding:3px 6px;gap:4px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){transition:none!important}
+}

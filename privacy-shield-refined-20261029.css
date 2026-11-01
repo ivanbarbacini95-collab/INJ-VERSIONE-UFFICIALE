@@ -1,0 +1,81 @@
+/* INJ Node / discreet privacy mask v2, 29 Oct 2026.
+   Screenshare-safe presentation: the underlying live amounts are unchanged.
+   Privacy mode is NOT an authentication or data security mechanism. */
+body.privacy-on .private{
+ filter:none!important;-webkit-filter:none!important;
+}
+/* Keep all private values hidden using the original Privacy Shield selectors.
+   Replace the five glowing bullets with a neutral, narrow concealed-value
+   indicator; avoid blur, strong neon boxes and digit-length disclosure. */
+body.privacy-on :is(
+ .private:is(strong,small,span,b,output),
+ .entry-overview-worth.private > :is(strong,small),
+ .entry-overview-stats.private > div > strong,
+ .entry-price-pnl.private > strong,
+ .focus-display-stats.private > div > strong,
+ .focus-display-stats.private .reward-accent-frame > strong,
+ .morning-brief-reward-grid.private > div > :is(strong,span)
+)::after{
+ content:""!important;
+ display:block!important;
+ visibility:visible!important;
+ position:absolute!important;
+ left:50%!important;top:50%!important;
+ transform:translate(-50%,-50%)!important;
+ width:clamp(39px,5.5ch,65px)!important;
+ min-width:39px!important;max-width:65px!important;
+ height:14px!important;min-height:14px!important;max-height:14px!important;
+ margin:0!important;padding:0!important;
+ border:0!important;border-radius:3px!important;
+ background-color:transparent!important;
+ background-image:
+   linear-gradient(90deg,color-mix(in srgb,var(--text,#e9eeef) 48%,transparent),color-mix(in srgb,var(--text,#e9eeef) 48%,transparent)),
+   linear-gradient(90deg,color-mix(in srgb,var(--text,#e9eeef) 28%,transparent),color-mix(in srgb,var(--text,#e9eeef) 28%,transparent)),
+   linear-gradient(90deg,color-mix(in srgb,var(--text,#e9eeef) 40%,transparent),color-mix(in srgb,var(--text,#e9eeef) 40%,transparent))!important;
+ background-size:30% 5px,22% 5px,25% 5px!important;
+ background-position:0 50%,43% 50%,78% 50%!important;
+ background-repeat:no-repeat!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;
+ text-shadow:none!important;box-shadow:none!important;
+ filter:none!important;-webkit-filter:none!important;
+ font-size:0!important;letter-spacing:0!important;
+ opacity:.9!important;
+ animation:inj-privacy-refined-enter .2s ease-out both!important;
+ pointer-events:none!important;
+}
+@keyframes inj-privacy-refined-enter{
+ from{opacity:0}to{opacity:.9}
+}
+/* Keep live connectivity clear while signalling Privacy on the full-screen
+   Live View as well as on Home. No overlay covering buttons or charts. */
+body.privacy-on #entryOverview .entry-overview-live,
+body.privacy-on #focusDisplayDialog .focus-display-live{
+ color:var(--muted,#afbec7)!important;
+}
+body.privacy-on #entryOverview .entry-overview-live::after{
+ font:400 9px/1.2 var(--inj-minimal-font,system-ui,sans-serif)!important;
+ letter-spacing:.09em!important;
+}
+body.privacy-on #focusDisplayDialog .focus-display-live > span{
+ font-size:0!important;
+}
+body.privacy-on #focusDisplayDialog .focus-display-live > span::after{
+ content:"PRIVATE"!important;
+ font:400 10px/1.2 var(--inj-minimal-font,system-ui,sans-serif)!important;
+ letter-spacing:.1em!important;
+}
+body.privacy-on :is(#entryPrivacyButton.active,#privacyButton.active){
+ box-shadow:none!important;
+ border-color:color-mix(in srgb,var(--accent,#b5c6c3) 43%,var(--line,#495862))!important;
+ background:color-mix(in srgb,var(--surface,#14242c) 90%,var(--accent,#b5c6c3) 10%)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body.privacy-on :is(
+  .private:is(strong,small,span,b,output),
+  .entry-overview-worth.private > :is(strong,small),
+  .entry-overview-stats.private > div > strong,
+  .entry-price-pnl.private > strong,
+  .focus-display-stats.private strong,
+  .morning-brief-reward-grid.private > div > :is(strong,span)
+ )::after{animation:none!important;opacity:1!important}
+}

@@ -1,0 +1,551 @@
+/* The former More destinations now live directly in the Home grid. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryMarketEventsButton{order:13!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryInjcEtfButton{order:14!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryWorkspaceButton{order:15!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryFreedomButton{order:16!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryTreasuryButton{order:17!important;grid-column:1/-1!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton>.inj-events-tile-stars,
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryFreedomButton>.freedom-entry-micro{display:none!important}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+  display:flex!important;position:relative!important;box-sizing:border-box!important;
+  grid-column:auto!important;grid-row:auto!important;flex:0 1 auto!important;
+  flex-flow:column nowrap!important;align-items:center!important;justify-content:flex-end!important;
+  align-self:stretch!important;gap:0!important;width:100%!important;min-width:0!important;
+  max-width:100%!important;height:92px!important;min-height:92px!important;max-height:92px!important;
+  margin:0!important;padding:7px 7px 9px!important;border:0!important;border-radius:0!important;
+  background:transparent!important;background-image:none!important;box-shadow:none!important;
+  overflow:hidden!important;text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.entry-action-arrow,.entry-action-icon:not(.freedom-entry-emblem)){display:none!important}
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem.entry-action-icon){
+  display:block!important;position:absolute!important;box-sizing:border-box!important;
+  z-index:1!important;flex:none!important;top:6px!important;bottom:auto!important;
+  left:50%!important;right:auto!important;width:70%!important;max-width:96px!important;
+  min-width:0!important;height:34px!important;min-height:0!important;max-height:34px!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;opacity:.88!important;
+  transform:translateX(-50%)!important;pointer-events:none!important;overflow:hidden!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem) svg{
+  display:block!important;width:100%!important;height:100%!important;max-height:100%!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-events-tile-copy,.freedom-entry-copy,span:not(.entry-action-icon):not(.inj-tile-scene):not(.inj-more-market-symbol)){
+  display:flex!important;position:relative!important;z-index:2!important;
+  flex:0 0 auto!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;align-self:center!important;order:1!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;
+  gap:3px!important;margin:0!important;padding:0!important;
+  background:transparent!important;text-align:center!important;overflow:visible!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ .inj-home-tile-title{
+  display:block!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;margin:0!important;
+  font-family:var(--inj-minimal-font,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:clamp(12px,3.35vw,14px)!important;font-weight:400!important;
+  line-height:1.25!important;letter-spacing:.015em!important;text-transform:uppercase!important;
+  text-align:center!important;white-space:normal!important;text-wrap:balance!important;
+  overflow:visible!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ :is(.inj-tile-description,#injMarketNextSummary){
+  display:block!important;width:100%!important;max-width:100%!important;margin:0!important;
+  font-family:system-ui,-apple-system,sans-serif!important;font-size:10.5px!important;
+  font-weight:400!important;line-height:1.2!important;letter-spacing:0!important;
+  text-transform:none!important;text-align:center!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+ }
+}
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+  display:flex!important;position:relative!important;box-sizing:border-box!important;
+  grid-column:auto!important;flex:0 0 auto!important;flex-flow:row nowrap!important;
+  align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;min-width:0!important;height:76px!important;min-height:76px!important;
+  max-height:76px!important;gap:0!important;margin:0!important;
+  padding:9px 125px 9px 19px!important;text-align:left!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:none!important;overflow:hidden!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.entry-action-arrow,.entry-action-icon:not(.freedom-entry-emblem)){display:none!important}
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem.entry-action-icon){
+  display:block!important;position:absolute!important;z-index:1!important;
+  top:50%!important;bottom:auto!important;left:auto!important;right:17px!important;
+  width:95px!important;height:48px!important;max-width:95px!important;max-height:48px!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+  transform:translateY(-50%)!important;pointer-events:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem) svg{
+  display:block!important;width:100%!important;height:100%!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-events-tile-copy,.freedom-entry-copy,span:not(.entry-action-icon):not(.inj-tile-scene):not(.inj-more-market-symbol)){
+  display:flex!important;position:relative!important;z-index:2!important;flex:1 1 auto!important;
+  flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;
+  align-self:center!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  height:auto!important;gap:3px!important;margin:0!important;padding:0!important;
+  text-align:left!important;overflow:hidden!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ .inj-home-tile-title{
+  display:block!important;width:100%!important;font-family:var(--inj-minimal-font,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:clamp(14px,1.08vw,17px)!important;font-weight:400!important;line-height:1.26!important;
+  letter-spacing:.015em!important;text-transform:uppercase!important;text-align:left!important;
+  white-space:normal!important;overflow:visible!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ :is(.inj-tile-description,#injMarketNextSummary){
+  display:block!important;width:100%!important;max-width:100%!important;
+  font-family:system-ui,-apple-system,sans-serif!important;font-size:11px!important;
+  font-weight:400!important;line-height:1.25!important;letter-spacing:0!important;
+  text-align:left!important;white-space:nowrap!important;overflow:hidden!important;
+  text-overflow:ellipsis!important;
+ }
+}
+
+
+/* 29 Oct · Screenshot correction: the first and fourth former-More tiles
+   were inheriting full-width decoration and the live-event preview text.
+   Preserve their 92px/2-column hit areas, center art above labels, and
+   keep the real Market Events control / data-fetch machinery unchanged. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton.entry-action-market-events #injMarketNextSummary,
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton.entry-action-market-events > .inj-events-tile-stars,
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryFreedomButton.entry-action-freedom > .freedom-entry-micro {
+  display:none!important;
+  visibility:hidden!important;
+}
+@media(max-width:799px){
+  /* Market Event: only a short title under a contained top-center chart icon. */
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryMarketEventsButton.entry-action-market-events{
+    display:block!important;
+    position:relative!important;
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    height:92px!important;
+    min-height:92px!important;
+    max-height:92px!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-more-market-symbol.inj-tile-scene{
+    display:block!important;
+    position:absolute!important;
+    z-index:1!important;
+    left:50%!important;
+    right:auto!important;
+    top:6px!important;
+    bottom:auto!important;
+    width:65px!important;
+    max-width:66%!important;
+    height:35px!important;
+    max-height:35px!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+    transform:translateX(-50%)!important;
+    pointer-events:none!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-more-market-symbol.inj-tile-scene svg{
+    width:100%!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-events-tile-copy{
+    display:flex!important;
+    position:absolute!important;
+    z-index:2!important;
+    left:5px!important;
+    right:5px!important;
+    top:auto!important;
+    bottom:12px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:19px!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    flex:none!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:0!important;
+    text-align:center!important;
+    overflow:hidden!important;
+    background:transparent!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-events-tile-copy > .inj-home-tile-title{
+    display:block!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:clamp(12px,3.35vw,14px)!important;
+    font-weight:400!important;
+    line-height:1.2!important;
+    letter-spacing:.015em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align:center!important;
+  }
+
+  /* Financial Freedom: constrain animation to a separate icon zone.
+     The two-line heading and the short caption never touch the artwork. */
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryFreedomButton.entry-action-freedom{
+    display:block!important;
+    position:relative!important;
+    grid-column:auto!important;
+    height:92px!important;
+    min-height:92px!important;
+    max-height:92px!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-emblem.entry-action-icon{
+    display:grid!important;
+    position:absolute!important;
+    z-index:1!important;
+    top:5px!important;
+    bottom:auto!important;
+    left:50%!important;
+    right:auto!important;
+    width:33px!important;
+    height:33px!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:33px!important;
+    max-height:33px!important;
+    flex:none!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    transform:translateX(-50%)!important;
+    pointer-events:none!important;
+    place-items:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-emblem.entry-action-icon .freedom-mark{
+    display:block!important;
+    width:33px!important;
+    height:33px!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:33px!important;
+    max-height:33px!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-copy{
+    display:flex!important;
+    position:absolute!important;
+    z-index:2!important;
+    top:auto!important;
+    bottom:7px!important;
+    left:3px!important;
+    right:3px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:45px!important;
+    min-height:0!important;
+    max-height:45px!important;
+    flex:none!important;
+    margin:0!important;
+    padding:0!important;
+    gap:2px!important;
+    flex-direction:column!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    align-self:auto!important;
+    background:transparent!important;
+    overflow:hidden!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-copy > .inj-home-tile-title{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    max-height:30px!important;
+    margin:0!important;
+    padding:0!important;
+    font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+    font-size:clamp(11.3px,3.1vw,13px)!important;
+    font-weight:400!important;
+    line-height:1.15!important;
+    letter-spacing:0!important;
+    text-transform:uppercase!important;
+    white-space:normal!important;
+    overflow:hidden!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-copy > .inj-tile-description{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    margin:0!important;
+    padding:0!important;
+    font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+    font-size:clamp(9px,2.45vw,10.5px)!important;
+    font-weight:400!important;
+    line-height:1.15!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align:center!important;
+  }
+}
+
+/* Screenshot fix v3: the old full-width event/freedom copy class names have
+   been removed from the HTML. The two destinations now have the same
+   self-contained icon + text cells as the other Home shortcuts. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton #injMarketNextSummary[hidden]{
+  display:none!important;
+}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton.entry-action-market-events,#entryFreedomButton.entry-action-freedom){
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:40px minmax(0,1fr)!important;
+  grid-auto-flow:row!important;
+  justify-items:center!important;
+  align-items:center!important;
+  align-content:stretch!important;
+  position:relative!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  box-sizing:border-box!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:92px!important;
+  min-height:92px!important;
+  max-height:92px!important;
+  padding:4px 6px 8px!important;
+  margin:0!important;
+  gap:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+  text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryFreedomButton)
+ >:is(.inj-home-market-art,.inj-home-freedom-art).inj-tile-scene{
+  display:grid!important;
+  position:relative!important;
+  grid-column:1!important;
+  grid-row:1!important;
+  place-items:center!important;
+  justify-self:center!important;
+  align-self:center!important;
+  z-index:1!important;
+  inset:auto!important;
+  left:auto!important;right:auto!important;
+  top:auto!important;bottom:auto!important;
+  box-sizing:border-box!important;
+  flex:none!important;
+  width:62px!important;
+  max-width:70%!important;
+  height:36px!important;
+  min-height:0!important;
+  max-height:36px!important;
+  padding:0!important;
+  margin:0!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  opacity:.86!important;
+  color:var(--accent,var(--text))!important;
+  pointer-events:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryFreedomButton.entry-action-freedom > .inj-home-freedom-art.inj-tile-scene {
+   width:38px!important;
+   max-width:38px!important;
+   height:36px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMarketEventsButton > .inj-home-market-art svg,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryFreedomButton > .inj-home-freedom-art svg.freedom-mark{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:100%!important;
+  max-height:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryFreedomButton)>span.inj-home-unified-copy{
+  display:flex!important;
+  position:relative!important;
+  grid-column:1!important;
+  grid-row:2!important;
+  z-index:2!important;
+  flex:none!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  inset:auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  gap:3px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  overflow:hidden!important;
+  text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryFreedomButton)
+ >.inj-home-unified-copy>strong.inj-home-tile-title{
+  display:block!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:22px!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+  font-size:clamp(11px,3.15vw,13.5px)!important;
+  font-weight:400!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  text-wrap:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+  transform:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryFreedomButton>.inj-home-unified-copy>small.inj-tile-description{
+  display:block!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  max-height:16px!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+  font-size:clamp(9px,2.55vw,10.5px)!important;
+  font-weight:400!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  color:var(--muted-strong,var(--muted))!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+ }
+}

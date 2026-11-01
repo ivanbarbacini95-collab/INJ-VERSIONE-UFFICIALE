@@ -1,0 +1,29 @@
+/* INJ NODE — Market launcher naming and visual consistency.
+   Standalone scoped styling: links remain semantic anchors and functional. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton){
+ text-decoration:none!important;
+ text-decoration-line:none!important;
+ text-decoration-color:transparent!important;
+ -webkit-text-decoration:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton):is(:link,:visited,:hover,:focus,:active),
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton) :is(.inj-home-tile-title,.inj-tile-description){
+ text-decoration:none!important;
+ text-decoration-line:none!important;
+ border-bottom:0!important;
+ box-shadow:none;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton)
+ :is(.inj-home-tile-title,.inj-tile-description)::after{
+ text-decoration:none!important;
+}
+/* The INJ Intelligence artwork is a dedicated fine-line network glyph,
+   drawn by the shared icon renderer in exactly the same size as its peers. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > #entryMarketButton > .inj-tile-scene.inj-luxury-icon{
+ pointer-events:none!important;
+}

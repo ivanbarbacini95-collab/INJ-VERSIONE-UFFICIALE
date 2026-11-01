@@ -1,0 +1,85 @@
+/* INJ Node · Global Crypto Heatmap: vivid performance colours and
+   independent quote-driven tile flashes (1 Nov 2026).
+   A tile is green for positive performance, red for negative, neutral
+   when missing/zero. The side signal is removed entirely. */
+html[data-inj-market] #marketHeatmap{
+  --arctic-green:#20eda4;
+  --arctic-red:#ff496a;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n){
+  /* The old right-edge bar no longer needs reserved horizontal space. */
+  padding-right:var(--heat-card-padding,8px)!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n)::after,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-up::after,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-down::after{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+  box-shadow:none!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-up,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-down{
+  background:
+    linear-gradient(154deg,rgba(255,255,255,.095),transparent 42%),
+    radial-gradient(ellipse 125% 108% at 83% 96%,
+      color-mix(in srgb,var(--arctic-tone) var(--heat-fill,28%),transparent) 0%,transparent 78%),
+    linear-gradient(134deg,
+      color-mix(in srgb,var(--arctic-tone) 57%,#0d2b31) 0%,
+      color-mix(in srgb,var(--arctic-tone) 47%,#0b202d) 58%,
+      color-mix(in srgb,var(--arctic-tone) 33%,#091a27) 100%)!important;
+  border-color:color-mix(in srgb,var(--arctic-tone) 75%,#607b86)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    inset 0 0 0 1px color-mix(in srgb,var(--arctic-tone) 20%,transparent),
+    0 4px 12px rgba(0,7,16,.23)!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-up .hm-change,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.is-down .hm-change{
+  color:#f4fffc!important;
+  text-shadow:0 1px 3px rgba(0,11,18,.30)!important;
+}
+/* Keep the card and its values perfectly stationary; only its translucent
+   full-surface layer flashes briefly, once per new displayed live value. */
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile:nth-child(n)::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:auto!important;
+  height:auto!important;
+  border-radius:inherit!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(145deg,
+      color-mix(in srgb,var(--heat-flash-tone,var(--arctic-tone)) 89%,transparent),
+      color-mix(in srgb,var(--heat-flash-tone,var(--arctic-tone)) 61%,transparent))!important;
+  box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--heat-flash-tone,var(--arctic-tone)) 80%,transparent)!important;
+  opacity:0;
+  transform:none!important;
+  filter:none!important;
+  animation:none!important;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-up{
+  --heat-flash-tone:#20eda4;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-down{
+  --heat-flash-tone:#ff496a;
+}
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-up::before,
+html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-down::before{
+  animation:injHeatmapTileFlash .82s cubic-bezier(.2,.08,.22,1) 1 both!important;
+}
+@keyframes injHeatmapTileFlash{
+  0%{opacity:0}
+  22%{opacity:.58}
+  49%{opacity:.39}
+  100%{opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-up::before,
+  html[data-inj-market] #marketHeatmap .heatmap-grid > .heatmap-tile.market-flash-down::before{
+    animation:none!important;
+  }
+}

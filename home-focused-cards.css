@@ -1,0 +1,188 @@
+/* INJ NODE · Home micro metrics v2 · 2026-10-28
+   Restore live wallet metrics and today's P/L as understated micro-rails.
+   Keep DOM IDs, live updates, privacy, theme palettes and wallet swipe clones.
+   Loaded after the older Home size styles on all PWA entry points. */
+
+/* One fine separator, no additional framed card beneath the overview. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats {
+  display:grid!important;
+  visibility:visible!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  align-items:stretch!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  height:34px!important;
+  min-height:34px!important;
+  max-height:34px!important;
+  margin:8px 0 0!important;
+  padding:5px 0 0!important;
+  gap:0!important;
+  border:0!important;
+  border-top:1px solid color-mix(in srgb,var(--line,#455367) 62%,transparent)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  min-width:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  gap:2px!important;
+  margin:0!important;
+  padding:0 3px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:center!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div + div {
+  border-left:1px solid color-mix(in srgb,var(--line,#455367) 42%,transparent)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > span{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  font:650 clamp(8px,2.15vw,9px)/1.1 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  letter-spacing:.045em!important;
+  color:var(--muted-strong,var(--muted,#aebac5))!important;
+  opacity:.82!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > strong{
+  display:block!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  font:690 clamp(9.7px,2.55vw,11px)/1.16 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  letter-spacing:0!important;
+  color:var(--text,#e9f1f6)!important;
+  opacity:.92!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > strong
+ :is(span,b,small,em,.number-roll-host,.number-roll-text,.number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer){
+  font-size:inherit!important;
+  font-family:inherit!important;
+  line-height:inherit!important;
+}
+
+/* Small unobtrusive line after the chart, instead of another P/L card. */
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl{
+  display:grid!important;
+  visibility:visible!important;
+  grid-template-columns:minmax(0,1fr) max-content!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  height:31px!important;
+  min-height:31px!important;
+  max-height:31px!important;
+  margin:7px 0 0!important;
+  padding:5px 2px 0!important;
+  column-gap:10px!important;
+  row-gap:0!important;
+  border:0!important;
+  border-top:1px solid color-mix(in srgb,var(--line,#455367) 62%,transparent)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl > div {
+  display:flex!important;
+  grid-column:1!important;
+  grid-row:1!important;
+  align-items:center!important;
+  justify-self:start!important;
+  align-self:center!important;
+  min-width:0!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl > div > span{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  font:650 clamp(10px,2.4vw,11px)/1.2 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  letter-spacing:.015em!important;
+  color:var(--muted-strong,var(--muted,#b7c5c9))!important;
+  opacity:.86!important;
+  white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl {
+  display:block!important;
+  visibility:visible!important;
+  grid-column:2!important;
+  grid-row:1!important;
+  align-self:center!important;
+  justify-self:end!important;
+  width:max-content!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  font:730 clamp(12px,3.1vw,14px)/1.18 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  letter-spacing:-.012em!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  text-align:right!important;
+  text-shadow:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl
+ :is(.number-roll-text,.number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer){
+  font-size:inherit!important;
+  line-height:inherit!important;
+  font-family:inherit!important;
+}
+/* The signed P/L colour is intentionally inherited from the existing
+   positive/negative/neutral data classes. No new data or animation logic. */
+@media(max-width:365px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+  :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div{
+   padding-inline:1px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+  :is(#entryOverview,.entry-wallet-card-slide) .entry-overview-stats > div > strong{
+   font-size:9.4px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entryInsightPnl{
+   font-size:12px!important;
+ }
+}

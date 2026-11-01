@@ -1,0 +1,107 @@
+/* INJ Node · 2026-10-28 · desktop Home native-scroll recovery
+ *
+ * The responsive Home grew taller than the old 100dvh fullscreen overlay.
+ * Its last rows must extend document height, not disappear under a
+ * viewport-height fixed/absolute clip. This selector is only active for the
+ * VISIBLE, ordinary Home (not an open modal/market section).
+ *
+ * One real document scrolling owner (html). No wheel interception, fake
+ * viewport zoom, position correction, or persistent resize state.
+ */
+@media(min-width:1000px){
+ html[data-inj-page="index"]:has(
+  body.entry-gate-open:not(
+   .menu-overlay-open,.drawer-open,.inj-section-open,.inj-freedom-open,
+   .chart-overlay-open,.focus-display-open,.pulse-view-open,.live-charts-open
+  ) #entryGate.entry-gate.visible[aria-hidden="false"]
+ ):not(:has(
+  #injMarketEventsOverlay:not([hidden]),
+  #injMarketPortal:not([hidden]),
+  #converterView.open,
+  #performanceTimelineView.open,
+  dialog[open],
+  .inj-content-frame,
+  #injFreedomOverlay:not([hidden])
+ )){
+  position:static!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  touch-action:auto!important;
+  overscroll-behavior-y:none!important;
+  scroll-behavior:auto!important;
+ }
+ html[data-inj-page="index"]:has(
+  body.entry-gate-open:not(
+   .menu-overlay-open,.drawer-open,.inj-section-open,.inj-freedom-open,
+   .chart-overlay-open,.focus-display-open,.pulse-view-open,.live-charts-open
+  ) #entryGate.entry-gate.visible[aria-hidden="false"]
+ ):not(:has(
+  #injMarketEventsOverlay:not([hidden]),
+  #injMarketPortal:not([hidden]),
+  #converterView.open,
+  #performanceTimelineView.open,
+  dialog[open],
+  .inj-content-frame,
+  #injFreedomOverlay:not([hidden])
+ )) body.entry-gate-open {
+  position:static!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:auto!important;
+ }
+ html[data-inj-page="index"] body.entry-gate-open:not(
+  .menu-overlay-open,.drawer-open,.inj-section-open,.inj-freedom-open,
+  .chart-overlay-open,.focus-display-open,.pulse-view-open,.live-charts-open
+ ) #entryGate.entry-gate.visible[aria-hidden="false"]:not(:has(
+  #injMarketEventsOverlay:not([hidden])
+ )){
+  position:relative!important;
+  inset:auto!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  touch-action:auto!important;
+  contain:none!important;
+ }
+ html[data-inj-page="index"] body.entry-gate-open:not(
+  .menu-overlay-open,.drawer-open,.inj-section-open,.inj-freedom-open,
+  .chart-overlay-open,.focus-display-open,.pulse-view-open,.live-charts-open
+ ) #entryGate.entry-gate.visible[aria-hidden="false"]
+ > .entry-gate-shell:not(.first-access){
+  position:relative!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  align-content:start!important;
+  box-sizing:border-box!important;
+  padding-bottom:max(26px,env(safe-area-inset-bottom,0px))!important;
+ }
+ /* Keep native wheel/trackpad/PageDown/End on the document; nested wallets
+    remain horizontally swipeable and do not own vertical scrolling. */
+ html[data-inj-page="index"] body.entry-gate-open
+ #entryGate.entry-gate.visible .entry-actions.entry-flat-v44{
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+ }
+}

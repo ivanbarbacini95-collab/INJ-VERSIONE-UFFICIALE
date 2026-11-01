@@ -1,0 +1,168 @@
+/* INJ Node · compact informative cards, 29 Oct 2026
+   Keeps existing typography scale, 2-column Home launcher, charts, data, click
+   targets and Wallet/Workspace persistence. Compacts DATA-only cards by
+   reducing internal whitespace; content may expand naturally when required. */
+
+/* DASHBOARD — wallet balances and APR information, not price-chart panels. */
+html[data-inj-page="index"] body .app-shell #top .metrics-grid > .data-card.metric-card,
+html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid > .data-card.metric-card{
+  box-sizing:border-box!important;
+  height:auto!important;
+  min-height:clamp(86px,6vw,106px)!important;
+  max-height:none!important;
+  padding:clamp(10px,.9vw,14px)!important;
+  align-content:center!important;
+  gap:clamp(3px,.4vw,6px)!important;
+}
+html[data-inj-page="index"] body .app-shell #top
+.metrics-grid > .data-card.metric-card .metric-value{
+  margin-top:0!important;
+  margin-bottom:0!important;
+  line-height:1.13!important;
+}
+html[data-inj-page="index"] body .app-shell #top
+.metrics-grid > .data-card.metric-card .card-label{
+  min-height:0!important;
+  line-height:1.25!important;
+}
+html[data-inj-page="index"] body .app-shell #top
+.metrics-grid > .data-card.metric-card > small{
+  line-height:1.25!important;
+}
+/* Multi-wallet summary: prevent label/value rails from becoming tall boxes. */
+html[data-inj-page="index"] body .app-shell #aggregateSection:not(.collapsed)
+> .aggregate-metric{
+  min-height:clamp(72px,5vw,96px)!important;
+  height:auto!important;
+  padding:9px 11px!important;
+  gap:4px!important;
+}
+html[data-inj-page="index"] body .app-shell #aggregateSection:not(.collapsed)
+> .aggregate-metric > strong{
+  margin-top:2px!important;
+  line-height:1.15!important;
+}
+
+/* Dashboard's small estimate cards — leave the target and progress bar visible. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid{
+  margin-top:clamp(9px,1vw,14px)!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard
+.reward-rate-grid > div{
+  box-sizing:border-box!important;
+  min-height:clamp(77px,5.7vw,96px)!important;
+  height:auto!important;
+  padding:10px 12px!important;
+  gap:4px!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard
+.reward-rate-grid > div > strong{
+  margin-top:0!important;
+  margin-bottom:0!important;
+  line-height:1.16!important;
+}
+html[data-inj-page="index"] body .app-shell :is(#yieldCard,#targetCard).data-card{
+  padding:clamp(12px,1vw,17px)!important;
+}
+html[data-inj-page="index"] body .app-shell
+:is(#yieldCard,#targetCard) .section-heading{
+  margin-bottom:clamp(6px,.7vw,10px)!important;
+}
+
+/* LIVE VIEW — smaller statistical boxes, closer labels/values. Main live price
+   remains prominent, controls stay untouched, and notches retain safe areas. */
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+  row-gap:clamp(10px,1.95vh,24px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog
+:is(.focus-display-price-block,.focus-display-worth-block){
+  row-gap:clamp(4px,.75vh,9px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats{
+  min-height:0!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats > div{
+  box-sizing:border-box!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:7px clamp(6px,1.2vw,10px)!important;
+  gap:3px!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats strong,
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats span{
+  line-height:1.2!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-range{
+  padding-top:2px!important;
+  row-gap:7px!important;
+}
+@media(max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+   row-gap:clamp(9px,1.55vh,17px)!important;
+ }
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats{
+   width:min(88vw,500px)!important;
+   max-width:100%!important;
+ }
+}
+/* On short landscape viewports avoid forcing cards taller than their text. */
+@media(orientation:landscape) and (max-height:720px){
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+   row-gap:8px!important;
+ }
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats > div{
+   padding:6px 8px!important;
+ }
+}
+
+/* Desktop-only Home information strip; never change primary Home launcher. */
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) .entry-desktop-metric{
+   box-sizing:border-box!important;
+   min-height:clamp(78px,6vh,98px)!important;
+   height:auto!important;
+   padding:clamp(10px,.95vw,15px)!important;
+   gap:4px!important;
+   align-content:center!important;
+ }
+}
+
+/* TREASURY — detail/account metric strip, not the graph/chart panels. */
+html[data-inj-page="treasury"] body
+.treasury-metrics .treasury-metric{
+  box-sizing:border-box!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:clamp(9px,.85vw,12px) clamp(10px,.9vw,14px)!important;
+  gap:3px!important;
+}
+html[data-inj-page="treasury"] body
+.treasury-allocation-metrics .treasury-metric{
+  padding-block:clamp(8px,.8vw,12px)!important;
+}
+html[data-inj-page="treasury"] body
+.treasury-allocation-metrics .treasury-metric:first-child{
+  padding-left:0!important;
+}
+html[data-inj-page="treasury"] body
+.treasury-allocation-metrics .treasury-metric:last-child{
+  padding-right:0!important;
+}
+
+/* LIVE REWARDS — summary metric cells; retain the live counter and orbit. */
+html[data-inj-page="live-rewards"] body
+.rewards-total-metrics{
+  margin-top:clamp(10px,1.2vw,15px)!important;
+}
+html[data-inj-page="live-rewards"] body
+.rewards-total-metrics > div{
+  box-sizing:border-box!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:8px clamp(9px,.95vw,13px)!important;
+  gap:3px!important;
+}
+
+/* Focus visibility and dynamic accessibility sizing take priority over density.
+   No overflow:hidden, text truncation, transforms or fixed card heights added. */

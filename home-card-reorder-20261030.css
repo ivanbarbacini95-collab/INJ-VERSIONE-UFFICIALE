@@ -1,0 +1,40 @@
+/* Hold-to-sort existing INJ Node Home/Market/Reward/More cards. */
+html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44>.entry-action{
+ -webkit-touch-callout:none;
+}
+html[data-inj-page="index"].inj-card-dragging,
+html[data-inj-page="index"].inj-card-dragging body{
+ -webkit-user-select:none!important;user-select:none!important;
+}
+html[data-inj-page="index"].inj-card-dragging body #entryGate .entry-actions.entry-flat-v44{
+ touch-action:none!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44
+ >.entry-action.inj-card-drag-source{
+ opacity:.28!important;
+ outline:1px dashed var(--accent,#8de2c9)!important;
+ outline-offset:-3px!important;
+ transition:none!important;
+}
+body>.inj-card-reorder-ghost{
+ display:flex!important;align-items:center;justify-content:center;
+ position:fixed!important;
+ z-index:2147483450!important;
+ transform:translate(-50%,-50%)!important;
+ box-sizing:border-box!important;
+ width:min(190px,42vw)!important;min-height:59px!important;
+ padding:10px 14px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8de2c9) 62%,transparent)!important;
+ border-radius:17px!important;
+ background:color-mix(in srgb,var(--surface-strong,#102221) 93%,transparent)!important;
+ color:var(--text,#eafaf6)!important;
+ font-family:var(--inj-chosen-face,ui-monospace,monospace)!important;
+ font-size:12px!important;font-weight:600!important;text-align:center!important;
+ box-shadow:0 16px 34px rgba(0,0,0,.24)!important;
+ opacity:.95!important;
+ pointer-events:none!important;
+ -webkit-user-select:none!important;user-select:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body>.inj-card-reorder-ghost{transition:none!important}
+}

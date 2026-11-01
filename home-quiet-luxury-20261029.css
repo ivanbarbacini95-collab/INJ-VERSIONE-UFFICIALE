@@ -1,0 +1,216 @@
+/* INJ Node · Quiet Luxury Terminal / Home, 29 October 2026.
+   Presentation only: no trading data, wallet state, routes or event behavior changed.
+   Loaded last; scoped to the returning-user Home. Theme tokens stay authoritative. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {
+  column-gap:clamp(9px,1vw,13px)!important;
+  row-gap:clamp(9px,1vw,13px)!important;
+  align-items:stretch!important;
+}
+
+/* Lock destination ordering independently of DOM insertion on every screen size. */
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryDashboardButton{order:1!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryLiveButton{order:2!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryLiveChartsButton{order:3!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryOrderBookButton{order:4!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryPerformanceButton{order:5!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryConverterButton{order:6!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryMarketButton{order:7!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryLiveRewardsButton{order:8!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryCommandCenterButton{order:9!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryComparisonButton{order:10!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryVisualizeWealthButton{order:11!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryRewardLadderButton{order:12!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > :is(#entryMarketEventsButton,#entryMacroCalendarButton){order:13!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryInjcEtfButton{order:14!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryWorkspaceButton{order:15!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryFreedomButton{order:16!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryTreasuryButton{order:17!important;grid-column:1/-1!important}
+
+/* Refined material: soft-corner frame + barely illuminated inner rim.
+   No large blur layers, no heavy glow and no fixed geometry on text. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton) {
+  border:1px solid color-mix(in srgb,var(--accent,#b0c3be) 16%,var(--line,#56636c))!important;
+  border-radius:18px!important;
+  background:linear-gradient(146deg,
+    color-mix(in srgb,var(--surface,#18262a) 88%,transparent) 0%,
+    color-mix(in srgb,var(--surface,#18262a) 73%,transparent) 100%)!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 5%,transparent),
+    0 5px 18px rgba(0,0,0,.055)!important;
+  transition:background-color .28s ease,border-color .28s ease,box-shadow .28s ease,
+    transform .28s cubic-bezier(.2,.75,.3,1)!important;
+  -webkit-tap-highlight-color:transparent;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton):hover {
+  border-color:color-mix(in srgb,var(--accent,#bacbc8) 43%,var(--line,#56636c))!important;
+  background:color-mix(in srgb,var(--surface,#18262a) 91%,var(--accent,#bacbc8) 9%)!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 9%,transparent),
+    0 7px 20px rgba(0,0,0,.09)!important;
+  transform:translateY(-1px)!important;
+ }
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):active {
+  transform:scale(.992)!important;
+  border-color:color-mix(in srgb,var(--accent,#bacbc8) 43%,var(--line,#56636c))!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44 > .entry-action:focus-visible{
+ outline:2px solid var(--accent,#a9c5c0)!important;outline-offset:3px!important;
+}
+
+/* Unified typography without changing the user's existing light-weight font. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action .inj-home-tile-title {
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-size:clamp(11.3px,1.02vw,13px)!important;
+ font-weight:400!important;line-height:1.22!important;
+ letter-spacing:.055em!important;text-transform:uppercase!important;
+ color:var(--text,#edf4f5)!important;opacity:.96!important;
+ text-wrap:balance!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action .inj-tile-description {
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-size:clamp(10px,.86vw,11.5px)!important;
+ font-weight:400!important;line-height:1.3!important;
+ letter-spacing:0!important;
+ color:color-mix(in srgb,var(--text,#edf4f5) 67%,transparent)!important;
+ opacity:1!important;
+}
+
+/* Icon geometry is already precise. Calm the luminance and animate only
+   an outer 1px breathing motion without overriding each icon's inner art. */
+@keyframes inj-quiet-icon {
+ 0%,100%{translate:0 0;opacity:.88}
+ 50%{translate:0 -1.2px;opacity:1}
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton) > :is(.inj-tile-scene,.entry-action-icon,.inj-more-market-symbol) svg {
+ animation:inj-quiet-icon 9s ease-in-out infinite!important;
+ animation-delay:var(--inj-icon-delay,-1s)!important;
+ filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-action .inj-luxury-icon{
+ color:color-mix(in srgb,var(--text,#e7efee) 78%,var(--accent,#bed0cc))!important;
+}
+
+/* Portfolio overview and chart share depth and corner treatment without
+   altering chart sizing, pointer interaction, balance updates or wallet swipe. */
+html[data-inj-page="index"] body #entryGate#entryGate
+:is(#entryOverview,#entryInsights,.entry-wallet-card-slide){
+ border-radius:21px!important;
+ border-color:color-mix(in srgb,var(--accent,#b5c9c2) 13%,var(--line,#47535d))!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 5%,transparent),
+   0 5px 20px rgba(0,0,0,.055)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-overview-main :is(#entryMarketPrice,.entry-market-mini > strong){
+ letter-spacing:-.035em!important;font-weight:300!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-overview-main :is(#entryWalletWorth,.entry-overview-worth > strong){
+ font-weight:300!important;letter-spacing:-.025em!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+:is(.entry-overview-head,.entry-insights-head) > div > span{
+ letter-spacing:.095em!important;font-weight:400!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-price-pnl #entryInsightPnl{
+ font-weight:300!important;letter-spacing:-.025em!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-desktop-metrics .entry-desktop-metric{
+ border-radius:16px!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 4%,transparent)!important;
+}
+
+/* B Capital Group: visual punctuation rather than a bright marketing banner.
+   The brand glyph occupies the existing arrow's footprint. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury{
+ border-radius:21px!important;
+ border:1px solid color-mix(in srgb,#c1ad8d 21%,var(--line,#516169))!important;
+ background:linear-gradient(115deg,
+   color-mix(in srgb,var(--surface,#18252c) 89%,transparent),
+   color-mix(in srgb,var(--surface,#18252c) 79%,#c1ad8d 5%))!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#d8c6a9 9%,transparent),
+   0 6px 19px rgba(0,0,0,.075)!important;
+ transition:border-color .3s ease,box-shadow .3s ease!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton > svg.entry-action-arrow{display:none!important}
+/* The existing animated B Capital SVG remains the single official brand icon. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton > .bcg-treasury-visual{
+ color:color-mix(in srgb,#ceb68e 44%,var(--accent,#b9c9c3))!important;
+ opacity:.76!important;
+ filter:drop-shadow(0 0 9px rgba(200,170,125,.055))!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton .bcg-orbit{animation-duration:26s!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton .bcg-signal{animation-duration:8s!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton .treasury-entry-copy > strong.inj-home-tile-title{
+ font-weight:400!important;letter-spacing:.075em!important;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryTreasuryButton:hover{
+ border-color:color-mix(in srgb,#c1ad8d 49%,var(--line,#516169))!important;
+ box-shadow:inset 0 1px 0 rgba(236,210,174,.1),0 7px 21px rgba(0,0,0,.095)!important;
+ }
+}
+
+/* Mobile: maintain balanced 2-column touch targets and readable subtitles. */
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+   height:96px!important;min-height:96px!important;max-height:96px!important;
+   padding:7px 8px 11px!important;border-radius:17px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action:not(#entryTreasuryButton) .inj-home-tile-title{
+   font-size:clamp(11px,3.05vw,13.2px)!important;letter-spacing:.042em!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action:not(#entryTreasuryButton) .inj-tile-description{
+   font-size:clamp(9.5px,2.55vw,10.6px)!important;line-height:1.24!important;
+ }
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action:not(#entryTreasuryButton){
+   padding-inline:6px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action .inj-home-tile-title{
+   font-size:10.7px!important;letter-spacing:.015em!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action svg,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryTreasuryButton .bcg-orbit,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryTreasuryButton .bcg-signal{
+   animation:none!important;
+   transition:none!important;
+   translate:none!important;
+ }
+}

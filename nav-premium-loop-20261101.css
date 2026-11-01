@@ -1,0 +1,92 @@
+/* INJ Node · comet-tail border, fitted exactly to the dock's rounded outline. */
+html[data-inj-page="index"] body>#injPrimaryBottomNav{
+ isolation:isolate!important;
+ overflow:hidden!important;
+ justify-items:stretch!important;
+ align-items:stretch!important;
+ grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ column-gap:3px!important;
+ padding:6px!important;
+ /* No separate menu frame. The moving comet IS the only perimeter line. */
+ border:0!important;
+ background:linear-gradient(145deg,
+  color-mix(in srgb,var(--surface-strong,#272338) 97%,var(--text,#fff) 3%),
+  color-mix(in srgb,var(--surface-strong,#272338) 93%,var(--bg,#0b1117) 7%))!important;
+ box-shadow:0 8px 24px rgba(0,0,0,.12)!important;
+}
+/* CSS-native orbit. The 94%-long cyan stroke guarantees continuity.
+   Increasingly shorter tinted strokes merge into a true comet gradient,
+   without the heavy Canvas loop or a separate static border. */
+html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit{
+ position:absolute!important;inset:0!important;
+ width:100%!important;height:100%!important;
+ display:block!important;overflow:visible!important;
+ z-index:3!important;pointer-events:none!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit rect{
+ stroke-linecap:butt!important;
+ stroke-linejoin:round!important;
+ stroke-width:1.32px!important;
+ vector-effect:non-scaling-stroke!important;
+ animation:inj-native-comet-orbit 17s linear infinite!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit .inj-comet-head-halo{
+ stroke-width:2.9px!important;stroke-linecap:round!important;
+ filter:drop-shadow(0 0 1.2px rgba(255,232,190,.32))!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit .inj-comet-head-core{
+ stroke-width:1.45px!important;stroke-linecap:round!important;
+ filter:drop-shadow(0 0 1.7px rgba(255,249,226,.42))!important;
+}
+@keyframes inj-native-comet-orbit{
+ from{stroke-dashoffset:var(--inj-comet-start,0px)}
+ to{stroke-dashoffset:calc(var(--inj-comet-start,0px) - var(--inj-comet-perimeter,1000px))}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit rect{
+  animation:none!important;
+  stroke-dashoffset:var(--inj-comet-start,0px)!important;
+  filter:none!important;
+ }
+}
+/* Retain the balanced five-column menu from the previous design. */
+html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-bottom-tab{
+ position:relative!important;z-index:1!important;
+ display:flex!important;
+ width:100%!important;max-width:100%!important;height:100%!important;min-width:0!important;
+ flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ gap:5px!important;padding:5px 2px!important;
+ border-radius:clamp(12px,3.8vw,17px)!important;
+ text-align:center!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-bottom-tab.is-active{
+ background:color-mix(in srgb,var(--accent,#e8beab) 11%,var(--surface,#231c35))!important;
+ box-shadow:none!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav .inj-bottom-tab-icon{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 24px!important;width:24px!important;height:24px!important;min-height:24px!important;margin:0 auto!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav .inj-bottom-tab-icon svg{
+ display:block!important;width:23px!important;height:23px!important;margin:auto!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav .inj-bottom-tab-label{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;max-width:100%!important;min-height:23px!important;flex:0 0 23px!important;
+ margin:0 auto!important;text-align:center!important;
+ white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+ overflow-wrap:normal!important;word-break:normal!important;text-wrap:balance!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-weight:700!important;font-size:clamp(9px,2.6vw,11.5px)!important;line-height:1.12!important;letter-spacing:-.012em!important;
+}
+html[data-inj-page="index"] body>#injPrimaryBottomNav .inj-bottom-tab[data-inj-tab="reward"] .inj-bottom-tab-label{
+ font-weight:800!important;
+}
+
+@media(max-width:365px){
+ html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-bottom-tab{gap:3px!important;padding:5px 1px!important}
+ html[data-inj-page="index"] body>#injPrimaryBottomNav .inj-bottom-tab-icon{flex-basis:22px!important;height:22px!important}
+ html[data-inj-page="index"] body>#injPrimaryBottomNav .inj-bottom-tab-icon svg{width:21px!important;height:21px!important}
+ html[data-inj-page="index"] body>#injPrimaryBottomNav .inj-bottom-tab-label{font-size:9px!important;line-height:1.1!important}
+}

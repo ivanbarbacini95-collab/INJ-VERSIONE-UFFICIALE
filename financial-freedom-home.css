@@ -1,0 +1,259 @@
+/* Financial Freedom · Home entry + isolated full-screen overlay · 2026-10-28 */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>#entryFreedomButton.entry-action{
+ display:flex!important;position:relative!important;order:16!important;
+ grid-column:1/-1!important;grid-row:auto!important;align-items:center!important;
+ gap:13px!important;width:100%!important;min-width:0!important;
+ min-height:78px!important;height:auto!important;padding:15px 17px!important;
+ overflow:hidden!important;text-align:left!important;
+ border-color:color-mix(in srgb,var(--accent) 26%,var(--line))!important;
+ background:radial-gradient(ellipse 42% 145% at 95% 8%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 84%),var(--dock-gradient,var(--card-gradient,var(--surface)))!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .entry-action-icon{
+ width:48px!important;height:48px!important;display:grid!important;place-items:center!important;
+ border-radius:12px!important;position:relative!important;flex:0 0 48px!important;
+ background:color-mix(in srgb,var(--accent) 10%,transparent)!important;color:var(--accent)!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .entry-action-icon svg{
+ width:30px!important;height:30px!important;display:block!important;fill:none!important;
+ stroke:currentColor!important;stroke-width:1.6!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy{
+ position:relative!important;display:flex!important;flex-direction:column!important;
+ flex:1 1 auto!important;align-items:flex-start!important;justify-content:center!important;
+ width:auto!important;min-width:0!important;height:auto!important;margin:0!important;padding:0!important;
+ gap:5px!important;text-align:left!important;background:transparent!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .inj-home-tile-title{
+ font-family:var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ font-weight:750!important;font-size:clamp(12px,1.7vw,14px)!important;
+ line-height:1.2!important;letter-spacing:.07em!important;text-transform:uppercase!important;
+ width:auto!important;text-align:left!important;white-space:normal!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .inj-tile-description{
+ display:block!important;font-family:var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+ font-size:10px!important;line-height:1.35!important;opacity:.79!important;
+ text-align:left!important;color:var(--muted-strong,var(--muted))!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.entry-action-arrow{
+ display:block!important;position:relative!important;flex:0 0 20px!important;
+ width:20px!important;height:20px!important;margin-left:auto!important;opacity:.7!important;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>#entryTreasuryButton{
+ order:17!important;
+}
+html[data-inj-page="index"] .inj-freedom-overlay[hidden]{display:none!important}
+html[data-inj-page="index"] .inj-freedom-overlay{
+ position:fixed!important;inset:0!important;z-index:2147483520!important;
+ background:var(--theme-canvas,var(--bg,#07121b))!important;
+ border:0!important;padding:0!important;margin:0!important;
+ width:100%!important;height:100%!important;overflow:hidden!important;
+}
+html[data-inj-page="index"] .inj-freedom-overlay iframe{
+ display:block!important;width:100%!important;height:100%!important;
+ border:0!important;background:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+html.inj-freedom-open,html.inj-freedom-open body{
+ overflow:hidden!important;overscroll-behavior:none!important;
+}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>#entryFreedomButton.entry-action{
+  height:auto!important;min-height:77px!important;flex-direction:row!important;justify-content:flex-start!important;
+  padding:13px 15px!important;gap:12px!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryFreedomButton .entry-action-icon{
+  flex-basis:43px!important;width:43px!important;height:43px!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryFreedomButton .entry-action-icon svg{width:28px!important;height:28px!important}
+ html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy{align-self:center!important}
+ html[data-inj-page="index"] body #entryGate #entryFreedomButton .inj-home-tile-title{
+  font-size:12px!important;line-height:1.24!important;text-align:left!important;
+ }
+}
+@media(max-width:375px){
+ html[data-inj-page="index"] body #entryGate #entryFreedomButton{padding:11px 10px!important;gap:9px!important}
+ html[data-inj-page="index"] body #entryGate #entryFreedomButton .inj-tile-description{font-size:9px!important}
+}
+
+
+/* v2 · Full-rail Financial Freedom · continuous, low-power motion.
+   Loaded after the generic two-column launcher rules on iPhone/iPad/desktop. */
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > #entryFreedomButton.entry-action {
+  grid-column:1 / -1!important;
+  grid-row:auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:88px!important;
+  min-height:88px!important;
+  max-height:none!important;
+  flex:0 0 100%!important;
+  order:16!important;
+  align-self:stretch!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  gap:15px!important;
+  padding:12px 19px!important;
+  border-radius:15px!important;
+  isolation:isolate!important;
+  /* The same surface and border used by every Home launcher. */
+  border-color:color-mix(in srgb,var(--accent) 20%,var(--line))!important;
+  background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 4%,var(--surface)),color-mix(in srgb,var(--surface-strong) 91%,var(--theme-canvas)))!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton::before {
+  content:"";position:absolute;z-index:0;inset:0;
+  pointer-events:none;opacity:0;
+  background:none;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-emblem.entry-action-icon {
+  position:relative!important;z-index:1!important;
+  display:grid!important;place-items:center!important;
+  top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;
+  transform:none!important;
+  flex:0 0 58px!important;
+  width:58px!important;height:58px!important;min-height:58px!important;
+  padding:0!important;margin:0!important;overflow:visible!important;
+  border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line))!important;
+  border-radius:15px!important;
+  background:radial-gradient(circle at 35% 28%,color-mix(in srgb,var(--accent) 13%,transparent),color-mix(in srgb,var(--surface) 75%,transparent))!important;
+  box-shadow:inset 0 0 18px color-mix(in srgb,var(--accent) 6%,transparent),0 0 24px color-mix(in srgb,var(--accent) 9%,transparent);
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark {
+  display:block!important;
+  width:54px!important;height:54px!important;min-height:0!important;
+  max-width:54px!important;overflow:visible!important;
+  fill:none!important;stroke:var(--accent)!important;stroke-width:1.65!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark-halo {
+  stroke:color-mix(in srgb,var(--accent) 35%,transparent)!important;stroke-width:.9!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark-grid {
+  stroke:color-mix(in srgb,var(--accent) 36%,transparent)!important;stroke-width:1.15!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark-orbit {
+  transform-origin:36px 36px;
+  animation:freedom-mark-orbit 13s linear infinite!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark-ascent {
+  stroke:var(--accent)!important;
+  stroke-width:2.9!important;
+  stroke-dasharray:61 61;
+  animation:freedom-mark-draw 5.6s ease-in-out infinite!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark-arrow{
+  stroke-width:2.2!important;
+  animation:freedom-mark-arrow 5.6s ease-in-out infinite!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark-signal {
+  fill:var(--accent)!important;stroke:var(--accent)!important;stroke-width:.7!important;
+  transform-box:fill-box;transform-origin:center;
+  animation:freedom-mark-beacon 3s ease-in-out infinite!important;
+}
+@keyframes freedom-mark-orbit {to{transform:rotate(360deg)}}
+@keyframes freedom-mark-draw {
+  0%,10%{stroke-dashoffset:61;opacity:.5}
+  47%,75%{stroke-dashoffset:0;opacity:1}
+  93%,100%{stroke-dashoffset:61;opacity:.5}
+}
+@keyframes freedom-mark-arrow {
+  0%,32%,95%,100%{opacity:.46}
+  52%,77%{opacity:1}
+}
+@keyframes freedom-mark-beacon {
+  0%,100%{transform:scale(.74);opacity:.55}
+  50%{transform:scale(1.26);opacity:1}
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy {
+  z-index:1!important;flex:1 1 auto!important;
+  justify-content:center!important;align-items:flex-start!important;
+  width:auto!important;min-width:0!important;
+  text-align:left!important;gap:6px!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy .inj-home-tile-title {
+  font-size:clamp(13px,1.7vw,16px)!important;font-weight:850!important;
+  letter-spacing:.052em!important;line-height:1.16!important;
+  text-align:left!important;white-space:normal!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy .inj-tile-description {
+  display:block!important;
+  color:var(--muted-strong,var(--muted))!important;
+  font-size:clamp(10px,1.3vw,11px)!important;
+  font-weight:550!important;line-height:1.32!important;
+  text-align:left!important;white-space:normal!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-micro {
+  display:flex!important;position:relative!important;z-index:1!important;
+  align-items:center!important;gap:7px!important;
+  flex:0 0 auto!important;order:2!important;
+  align-self:center!important;width:auto!important;
+  margin:0 12px 0 0!important;padding:0!important;
+  font-size:9px!important;letter-spacing:.14em!important;
+  color:var(--muted-strong,var(--muted))!important;
+  background:transparent!important;white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-micro span {
+  display:block;width:5px;height:5px;flex:0 0 5px;
+  border-radius:50%;background:var(--accent);
+  box-shadow:0 0 8px color-mix(in srgb,var(--accent) 48%,transparent);
+}
+html[data-inj-page="index"] body #entryGate #entryFreedomButton>.entry-action-arrow {
+  display:block!important;position:relative!important;z-index:1!important;
+  flex:0 0 18px!important;order:3!important;
+  width:18px!important;height:18px!important;
+  margin:0!important;padding:0!important;
+  align-self:center!important;opacity:.72!important;
+}
+@media(max-width:799px){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44>#entryFreedomButton.entry-action {
+    height:80px!important;min-height:80px!important;
+    padding:11px 12px!important;gap:11px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-emblem.entry-action-icon{
+    flex-basis:52px!important;width:52px!important;height:52px!important;min-height:52px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark {
+    width:49px!important;height:49px!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy {
+    flex:1 1 auto!important;order:1!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy .inj-home-tile-title{
+    font-size:13px!important;line-height:1.18!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-copy .inj-tile-description{
+    font-size:10px!important;
+  }
+}
+@media(max-width:530px){
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton>.freedom-entry-micro{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton :is(.freedom-mark-orbit,.freedom-mark-ascent,.freedom-mark-arrow,.freedom-mark-signal) {
+    animation:none!important;
+  }
+  html[data-inj-page="index"] body #entryGate #entryFreedomButton .freedom-mark-ascent {
+    stroke-dashoffset:0!important;
+  }
+}
+
+/* Full-screen fallback stays hidden unless the child document cannot load. */
+html[data-inj-page="index"] .inj-freedom-overlay .inj-freedom-recovery[hidden]{display:none!important}
+html[data-inj-page="index"] .inj-freedom-overlay .inj-freedom-recovery{
+  position:absolute!important;z-index:4!important;
+  right:max(12px,env(safe-area-inset-right,12px))!important;
+  top:max(14px,env(safe-area-inset-top,14px))!important;
+  min-height:40px!important;padding:9px 13px!important;
+  border:1px solid var(--line)!important;border-radius:10px!important;
+  color:var(--text)!important;
+  background:var(--surface,var(--theme-canvas,#081b25))!important;
+  font:700 11px/1.2 var(--inj-node-terminal-font,ui-monospace,monospace)!important;
+  box-shadow:0 6px 26px rgba(0,0,0,.18);
+}

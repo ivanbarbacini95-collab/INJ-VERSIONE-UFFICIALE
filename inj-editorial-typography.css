@@ -1,0 +1,255 @@
+/* INJ Node / Balanced Finance — Inter 350/400, 2026-10-29
+   Replaces the previous typography trial on INJNODE only.
+   Layout, themes, live data, canvas charts and interactive controls unchanged.
+   Weights: 350 hero numbers; 400 readable labels and supporting data.
+   Legacy pages include font-weight:800/900!important. The specificity bridge
+   below overrides these old rules without rewriting many separate stylesheets.
+*/
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;350;400;450;500&display=swap");
+:root{
+ --inj-minimal-font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ --inj-minimal-mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+ --inj-node-terminal-font:var(--inj-minimal-font);
+ --inj-home-title-face:var(--inj-minimal-font);
+ --inj-home-description-face:var(--inj-minimal-font);
+ --inj-editorial-face:var(--inj-minimal-font);
+}
+html,html body{
+ font-family:var(--inj-minimal-font)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+ -webkit-font-smoothing:antialiased;
+ text-rendering:optimizeLegibility;
+}
+/* The impossible ID pair in :is() boosts specificity; * matches all real
+   elements. Keep vector charts and font icons untouched. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-synthesis-weight:none;
+ -webkit-font-smoothing:antialiased;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+/* Primary prices and balances use an intermediate 350 weight: slim, not skeletal. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,
+ #entryDesktopDailyRewardValue,
+ #treasuryTotalMajor,#treasuryTotalDecimals,#treasuryTotalWorth,
+ #treasuryHeaderPrice,#treasuryPnl24Value,
+ #rewardsTotal,#rewardsTotalFiat,
+ #capSourcePrice,#capProjectedPrice,
+ #ccLivePrice,#ccNetWorth,#ccTotalInj,#ccTotalPnl,
+ #headerLivePrice,#bookLivePrice,
+ #wealthTotal,#wealthStaked,#wealthAllWorth,
+ #ladderRewardValue,#ladderRewardInj,
+ #etfSpotPrice,#freedomPrice,#freedomWorth,
+ #injIntelPrice,#detailPrice,
+ .entry-market-mini>strong,.entry-overview-worth>strong,
+ .entry-price-pnl strong,.entry-desktop-metric>strong,
+ .treasury-total-display>strong,.treasury-hero-worth,
+ .treasury-hero-pnl>strong,.rewards-total-value>strong,
+ .rewards-total-fiat,.wealth-amount,.wealth-growth-result-value,
+ .market-price-line>strong,.market-price>strong,
+ .market-price-row>strong,.ws-main-price,.ws-price-value,
+ .ws-price-main,.ws-price,.ws-hero-price,
+ .cc-now-price,.cc-price,.cc-primary-value,
+ .cap-total-value,.cap-hero-value,
+ .freedom-figure-worth,.freedom-hero-figure,
+ .inj-mi-snapshot article>strong,.overview article>strong,
+ .etf-hero-price,.etf-main-price
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:350!important;
+ font-synthesis-weight:none;
+ letter-spacing:-.012em!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+/* Dense trading and microdata remain regular 400 for readability. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .levels,.levels span,.levels strong,
+ .heatmap-card,.heatmap-card strong,.heatmap-card .price,
+ .ws-section-value,.ws-data-value,.ws-card-heading,
+ .treasury-metric>strong,.rewards-total-metrics strong,
+ .entry-overview-stats strong,.market-asset-price,
+ .inj-mi-snapshot small,.ws-chart-ticks,.ws-book,
+ .book-meta,.columns,.market-table,
+ .entry-pnl-stat strong,.entry-desktop-metrics small
+){
+ font-weight:400!important;
+ letter-spacing:0!important;
+}
+/* Understated titles: preserve original sizing and translated text. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ h1,h2,h3,h4,h5,h6,
+ .inj-home-tile-title,.ws-card-heading strong,.ws-card-title,
+ .treasury-kicker,.rewards-kicker,
+ .card-title,.card-heading,.card-label,.section-heading,
+ .metric-label,.section-label,.entry-pnl-heading-copy>span,
+ .inj-location-name,.inj-location-section,
+ .cc-eyebrow,.market-terminal-kicker,.ladder-eyebrow
+){
+ font-weight:400!important;
+ letter-spacing:.015em!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(.inj-tile-description,.inj-events-next-text,.ws-sub,
+ .ws-data-status,.caption,.subtitle,.description,.hint,
+ .note,.treasury-hero-copy>span,.rewards-total-label){
+ font-weight:400!important;
+ letter-spacing:0!important;
+}
+/* Keep addresses, transaction hashes and code distinct and unambiguous. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(code,kbd,samp,pre,.tx-hash,.wallet-address,
+ .address-hash,.mono,[data-monospace]){
+ --inj-node-terminal-font:var(--inj-minimal-mono);
+ font-family:var(--inj-minimal-mono)!important;
+ font-weight:400!important;
+ letter-spacing:0!important;
+}
+/* Price-change color/glow, user themes, SVG charts and icons stay intact. */
+
+
+/* INJ NODE 2026-10-29 — Dashboard + Live View proportion pass v3 */
+/* The preceding global reset kept these values at 400 because their
+   real DOM IDs were not in the earlier 300-weight list. These selectors
+   cover Dashboard and the fullscreen Live View without changing layout. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ /* Dashboard: principal numbers, personal balance, rewards and milestones */
+ .app-shell .hero-number,
+ .app-shell .hero-secondary,
+ .app-shell .metric-card .metric-value,
+ .app-shell .reward-rate-grid strong,
+ .app-shell .aggregate-metric>strong,
+ .app-shell .target-progress-copy,
+ .app-shell .target-live-missing>strong,
+ .app-shell .target-stats strong,
+ .app-shell #nativeUsdcBalance,
+ .app-shell #ownedVsStakedInj,
+ .app-shell #netWorthChange24h,
+ .app-shell #netWorthPnl,
+ .app-shell #marketChange,
+ .app-shell #marketChangeAmount,
+ .app-shell #rewardMilestoneLabel,
+ .app-shell #rewardAutoTargetLabel,
+ .app-shell .market-tf-meta b,
+ /* Fullscreen Live View: exact real IDs, plus live range/secondary figures */
+ #focusDisplayPrice,#focusDisplayWorth,
+ #focusDisplayTotalInj,#focusDisplayDailyReward,
+ #focusDisplayApr,#focusDisplayStaked,#focusDisplayRewards,
+ .focus-display-dialog .focus-display-primary>strong,
+ .focus-display-dialog .focus-display-clock,
+ /* Related chart-dialog quote and live chart headline */
+ #chartHeaderPrice,
+ #headerLivePrice,
+ /* Smaller number-heavy pages previously missed in the first pass */
+ #treasuryRewards,#treasuryAvailable,#treasuryStaked,#treasuryApr,
+ #treasuryNetWorthCurrent,#treasuryRewardDay,#treasuryRewardMonth,
+ #ccDailyReward,#ccDailyPnl,#ccAvailable,#ccStaked,
+ #rewardsHeaderPrice,
+ #capWalletNow,#capWalletFuture,
+ #wealthPrice,#wealthGrowthSimpleValue,#wealthGrowthCompoundValue,
+ #ladderPrice,#ladderStaked,
+ #freedomInj,#freedomSpendingTotal
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:350!important;
+ font-synthesis-weight:none;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+/* Keep tiny details at 400. These are visually slimmer than bold
+   terminal labels while staying legible on iPhone, iPad, and 4K screens. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .app-shell .market-tf-meta strong,
+ .app-shell .card-label,
+ .app-shell .timeframe-collapse-toggle strong,
+ .app-shell .allocation-labels b,
+ .app-shell .reward-auto-target-meta b,
+ .focus-display-dialog .focus-display-range-copy b,
+ .focus-display-dialog .focus-display-label,
+ .focus-display-dialog .focus-display-wallet,
+ .focus-display-dialog .focus-display-live,
+ .focus-display-dialog .focus-display-system,
+ .native-chart-summary strong,
+ .rewards-total-metrics strong,
+ .treasury-metric strong,
+ .ws-section-value,
+ .ws-data-value,
+ .levels strong,
+ .heatmap-card strong
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-synthesis-weight:none;
+}
+/* Retain existing positive/negative color, brief change glows, and
+   responsive font sizing: no text-shadow, transform or font-size overrides. */
+
+
+/* Proportional type tune-up: prevent compressed-looking figures in the
+   fullscreen Live View. Only font metrics change; the DOM, layout, prices,
+   status colors and responsive sizes are preserved. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ #focusDisplayPrice,#focusDisplayWorth,
+ .focus-display-dialog .focus-display-primary > strong
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:350!important;
+ font-stretch:normal!important;
+ letter-spacing:-.008em!important;
+ font-kerning:normal!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ #focusDisplayClock,
+ #focusDisplayTotalInj,#focusDisplayDailyReward,
+ #focusDisplayApr,#focusDisplayStaked,#focusDisplayRewards,
+ #focusDisplayRangeMin,#focusDisplayRangeMax,
+ #focusDisplayChange24h,#focusDisplaySystemText
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-stretch:normal!important;
+ letter-spacing:0!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .focus-display-dialog .focus-display-clock,
+ .focus-display-dialog .focus-display-label,
+ .focus-display-dialog .focus-display-live,
+ .focus-display-dialog .focus-display-wallet,
+ .focus-display-dialog .focus-display-stats > div > span,
+ .focus-display-dialog .focus-display-range-copy,
+ .focus-display-dialog .focus-display-system
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-stretch:normal!important;
+ letter-spacing:.012em!important;
+}
+/* Shared financial numerals: generous kerning without excessive visual
+   compression. Small trading rows retain weight 400 from the rules above. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .app-shell .hero-number,.app-shell .hero-secondary,
+ .app-shell .metric-card .metric-value,
+ #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,
+ #treasuryTotalMajor,#treasuryTotalWorth,
+ #chartHeaderPrice,#headerLivePrice,
+ #ccLivePrice,#ccNetWorth,.ws-main-price,.ws-price-value,
+ .market-price-line > strong,.rewards-total-value,
+ .wealth-amount,.cap-total-value,.ladder-reward-value
+){
+ font-weight:350!important;
+ font-stretch:normal!important;
+ letter-spacing:-.012em!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .ws-data-value,.ws-section-value,
+ .levels strong,.heatmap-card strong,.market-asset-price,
+ .entry-overview-stats strong,.treasury-metric strong,
+ .rewards-total-metrics strong
+){
+ font-weight:400!important;
+ font-stretch:normal!important;
+ letter-spacing:0!important;
+}
+/* Respect device accessibility settings, font icons, and system text zoom:
+   no scaleX(), scaleY(), custom width/height, or forced nowrap. */

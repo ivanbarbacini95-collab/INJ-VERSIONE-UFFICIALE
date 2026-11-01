@@ -81,3 +81,46 @@
     padding:5px 7px;
   }
 }
+
+/* Live P/L scale on the right of Performance Timeline, shared axis with EMA. */
+#performanceTimelineView .entry-pnl-chart-frame {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) clamp(46px,6vw,62px)!important;
+  width:100%!important;min-width:0!important;min-height:0!important;
+  align-items:stretch!important;flex:1 1 auto;position:relative;
+}
+#performanceTimelineView .entry-pnl-chart-frame > .entry-pnl-timeline-scroll {
+  min-width:0!important;max-width:100%!important;width:100%!important;
+  box-sizing:border-box!important;
+}
+#performanceTimelineView .entry-pnl-value-axis {
+  position:relative!important;display:block;align-self:stretch!important;
+  min-width:0;min-height:0;overflow:hidden;
+  border-left:1px solid color-mix(in srgb,var(--accent,#8ee0c3) 22%,transparent);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--accent,#8ee0c3) 4%,transparent),transparent);
+  color:var(--text-muted,var(--muted,#a8bccb));
+  font:650 clamp(9px,.75vw,11px)/1.2 var(--inj-node-terminal-font,ui-monospace,monospace);
+  font-variant-numeric:tabular-nums;z-index:2;pointer-events:none;
+}
+#performanceTimelineView .entry-pnl-value-axis[hidden]{display:none!important}
+#performanceTimelineView .entry-pnl-axis-tick{
+  position:absolute;left:0;right:0;display:block;
+  text-align:right;white-space:nowrap;padding:0 4px 0 5px;
+  transform:translateY(-50%);
+}
+#performanceTimelineView .entry-pnl-axis-tick:before{
+  content:"";position:absolute;left:0;top:50%;width:4px;height:1px;
+  background:color-mix(in srgb,var(--text-muted,#b0c8d3) 60%,transparent);
+}
+#performanceTimelineView .entry-pnl-axis-tick.is-zero{color:var(--accent,#8ee0c3);font-weight:850}
+#performanceTimelineView .entry-pnl-axis-tick.is-zero:before{width:7px;background:currentColor}
+#performanceTimelineView #entryPnlTimeline.empty .entry-pnl-chart-frame{grid-template-columns:minmax(0,1fr)!important}
+@media(max-width:600px){
+ #performanceTimelineView .entry-pnl-chart-frame{grid-template-columns:minmax(0,1fr) 47px!important}
+ #performanceTimelineView .entry-pnl-value-axis{font-size:9px}
+ #performanceTimelineView .entry-pnl-axis-tick{padding:0 3px}
+}
+@media(prefers-reduced-motion:reduce){
+ #performanceTimelineView .entry-pnl-value-axis,
+ #performanceTimelineView .entry-pnl-axis-tick{transition:none!important;animation:none!important}
+}

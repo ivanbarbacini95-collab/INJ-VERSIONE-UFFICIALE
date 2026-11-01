@@ -246,3 +246,85 @@ body.ws-immersive .ws-card[data-type="price"][data-price-trend="neutral"]{
   transition:none!important;animation:none!important;
  }
 }
+
+
+/* Workspace Screen Fit Guide v1 · viewport-aware editor overlay. */
+.ws-toolbar .ws-screen-fit-button{
+ display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+ min-height:37px;padding:8px 12px;
+ border:1px solid color-mix(in srgb,var(--ws-accent) 24%,var(--ws-line));
+ border-radius:9px;background:color-mix(in srgb,var(--ws-panel) 95%,transparent);
+ color:var(--ws-muted);font:750 11px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+ letter-spacing:.05em;white-space:nowrap;
+}
+.ws-toolbar .ws-screen-fit-button[aria-pressed=true]{
+ color:var(--ws-accent);
+ border-color:color-mix(in srgb,var(--ws-accent) 48%,var(--ws-line));
+ background:color-mix(in srgb,var(--ws-accent) 8%,var(--ws-panel));
+}
+.ws-toolbar .ws-screen-fit-stats{
+ display:inline-flex;align-items:center;flex:0 1 auto;
+ min-width:0;max-width:440px;
+ font:700 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+ color:var(--ws-muted);letter-spacing:.03em;white-space:normal;
+ overflow-wrap:anywhere;
+}
+.ws-toolbar .ws-screen-fit-stats[hidden]{display:none!important}
+body main{position:relative}
+.ws-grid.ws-screen-guided{isolation:isolate}
+.ws-screen-boundary{
+ position:absolute;
+ box-sizing:border-box;
+ border:1px dashed color-mix(in srgb,var(--ws-accent) 44%,transparent);
+ border-bottom:2px dashed color-mix(in srgb,var(--ws-accent) 76%,transparent);
+ border-radius:4px 4px 0 0;
+ z-index:9500;pointer-events:none;
+ background:none!important;
+ box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ws-accent) 5%,transparent);
+}
+.ws-screen-boundary[hidden]{display:none!important}
+.ws-screen-boundary .ws-screen-top,
+.ws-screen-boundary .ws-screen-bottom{
+ position:absolute;pointer-events:none;display:block;
+ max-width:calc(100% - 14px);
+ border:1px solid color-mix(in srgb,var(--ws-accent) 33%,var(--ws-line));
+ border-radius:6px;
+ padding:5px 8px;
+ background:var(--ws-panel);
+ color:var(--ws-accent);
+ font:760 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+ letter-spacing:.07em;white-space:normal;text-align:right;
+}
+.ws-screen-boundary .ws-screen-top{top:5px;right:7px;opacity:.78}
+.ws-screen-boundary .ws-screen-bottom{
+ bottom:0;right:7px;transform:translateY(50%);
+ box-shadow:0 5px 15px color-mix(in srgb,var(--ws-bg) 25%,transparent);
+}
+.ws-screen-boundary.ws-screen-near-edge{
+ border-bottom-style:solid;
+ border-bottom-color:var(--ws-accent);
+}
+.ws-screen-boundary.ws-screen-near-edge .ws-screen-bottom{
+ border-color:var(--ws-accent);
+}
+.ws-screen-boundary.ws-screen-overflow{
+ border-bottom-color:var(--warning,#daa96e);
+}
+.ws-screen-boundary.ws-screen-overflow .ws-screen-bottom{
+ border-color:var(--warning,#daa96e);
+ color:var(--warning,#daa96e);
+}
+body.ws-immersive .ws-screen-boundary,
+body.ws-immersive .ws-screen-fit-stats,
+body.ws-immersive .ws-screen-fit-button{
+ display:none!important;
+}
+@media(max-width:600px){
+ .ws-toolbar .ws-screen-fit-button{min-height:34px;padding:7px 9px;font-size:10px}
+ .ws-toolbar .ws-screen-fit-stats{order:12;width:100%;max-width:100%;font-size:9px}
+ .ws-screen-boundary .ws-screen-top{font-size:8px}
+ .ws-screen-boundary .ws-screen-bottom{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .ws-screen-boundary{transition:none!important}
+}

@@ -1,0 +1,212 @@
+/* INJ Node · Fluid Screen Fit v1 · Oct 28, 2026
+   One shared viewport-width strategy across user-facing sections.
+   No zoom/scale/transforms, no canvas resizing and no saved-card mutations.
+   Desktop fills the actual browser window; phone/tablet layouts retain their
+   intentionally tighter grid and notch/safe-area behavior. */
+:root{
+ --inj-screen-gutter:clamp(10px,1.25vw,52px);
+ --inj-screen-panel-gap:clamp(10px,1.1vw,27px);
+}
+html[data-inj-page],html[data-inj-market]{
+ width:100%;max-width:100%;
+}
+html[data-inj-page] body,html[data-inj-market] body{
+ max-width:100%;
+ overflow-x:clip;
+}
+/* Grid and flex children must be allowed to shrink to their own area. */
+html[data-inj-page] :is(
+ .treasury-panel,.treasury-grid,.treasury-metrics,.treasury-main,
+ .rewards-layout,.rewards-main,.cap-panel,.cap-main,.cap-results-grid,
+ .wealth-main,.wealth-results,.cc-main,.cc-market-stage,.cc-data-stage,
+ .ladder-main,.ladder-steps,.book-page,.book-shell,.live-page,
+ .ws-grid,.ws-card,.ws-card-body,.freedom-page
+),html[data-inj-market] :is(.shell,.overview,.heatmap-grid,.market-asset-section){
+ min-width:0;
+}
+/* Tablet / small laptop: preserve section-specific columns and use available
+   width instead of an old fixed max-width from initial desktop designs. */
+@media(min-width:900px){
+ html[data-inj-page="treasury"] .treasury-shell,
+ html[data-inj-page="live-rewards"] .rewards-shell,
+ html[data-inj-page="comparison"] .cap-shell,
+ html[data-inj-page="visualize-wealth"] .wealth-shell,
+ html[data-inj-page="reward-ladder"] .ladder-main,
+ html[data-inj-page="command-center"] .cc-main,
+ html[data-inj-page="live-charts"] .live-page,
+ html[data-inj-page="order-book"] .book-page,
+ html[data-inj-page="financial-freedom"] .freedom-page,
+ html[data-inj-market] .shell{
+  max-width:none!important;
+  min-width:0;
+ }
+ html[data-inj-page="treasury"] .treasury-shell{
+  width:calc(100% - var(--inj-screen-gutter) - var(--inj-screen-gutter))!important;
+  margin-inline:auto!important;
+ }
+ html[data-inj-page="live-rewards"] .rewards-shell{
+  width:calc(100% - var(--inj-screen-gutter) - var(--inj-screen-gutter))!important;
+  margin-inline:auto!important;
+ }
+ html[data-inj-page="visualize-wealth"] .wealth-shell,
+ html[data-inj-page="comparison"] .cap-shell{
+  width:100%!important;
+  margin-inline:auto!important;
+  padding-inline:var(--inj-screen-gutter)!important;
+ }
+ html[data-inj-page="reward-ladder"] .ladder-main{
+  width:100%!important;
+  margin-inline:auto!important;
+  padding-inline:var(--inj-screen-gutter)!important;
+ }
+ html[data-inj-page="visualize-wealth"] .wealth-main{
+  width:100%!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+ }
+ html[data-inj-page="command-center"] .cc-main{
+  width:100%!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+  padding-inline:var(--inj-screen-gutter)!important;
+ }
+ html[data-inj-page="live-charts"] .live-page,
+ html[data-inj-page="order-book"] .book-page{
+  width:100%!important;
+  max-width:none!important;
+  padding-inline:var(--inj-screen-gutter)!important;
+ }
+ html[data-inj-page="order-book"] .book-shell,
+ html[data-inj-page="live-charts"] .terminal-shell{
+  width:100%!important;
+  max-width:none!important;
+ }
+ html[data-inj-page="financial-freedom"] .freedom-page{
+  width:100%!important;
+  padding-inline:var(--inj-screen-gutter)!important;
+ }
+ html[data-inj-market] .shell{
+  width:100%!important;
+  max-width:none!important;
+  padding-inline:var(--inj-screen-gutter)!important;
+  margin-inline:auto!important;
+ }
+ html[data-inj-page="workspace"] main{
+  padding-inline:var(--inj-screen-gutter)!important;
+ }
+ /* Existing Dashboard and launcher are separate shells. Preserve their
+    internal layout regions while removing only the outer artificial cap. */
+ html[data-inj-page="index"] body .app-shell,
+ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access){
+  width:calc(100% - var(--inj-screen-gutter) - var(--inj-screen-gutter))!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin-inline:auto!important;
+ }
+}
+/* Larger monitors get broader, proportional breathing room and equal gutters.
+   This overrides the 2160/2200/2260 caps in the older adaptive layer. */
+@media(min-width:1800px){
+ :root{
+  --inj-screen-gutter:clamp(22px,1.25vw,60px);
+  --inj-screen-panel-gap:clamp(15px,1.05vw,34px);
+ }
+ html[data-inj-page="index"] #entryGate .entry-gate-shell:not(.first-access){
+  grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)!important;
+ }
+ html[data-inj-page="treasury"] .treasury-grid,
+ html[data-inj-page="live-rewards"] .rewards-layout,
+ html[data-inj-page="comparison"] .cap-results-grid,
+ html[data-inj-page="visualize-wealth"] .wealth-all-grid{
+  gap:var(--inj-screen-panel-gap);
+ }
+ html[data-inj-page="treasury"] .treasury-metrics{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+ }
+ html[data-inj-page="comparison"] :is(.cap-picker-grid,.cap-wallet-cards){
+  gap:var(--inj-screen-panel-gap);
+ }
+ html[data-inj-page="reward-ladder"] .ladder-main{
+  max-width:none!important;
+ }
+ html[data-inj-page="reward-ladder"] .ladder-steps{
+  width:100%;max-width:none;
+ }
+ html[data-inj-page="command-center"] .cc-main{
+  max-width:none!important;
+ }
+ html[data-inj-market] .inj-mi-snapshot{
+  width:100%;max-width:none;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr))!important;
+ }
+ html[data-inj-market] .heatmap-grid{
+  width:100%;min-width:0;max-width:none;
+ }
+}
+/* Extra-wide Home: use the right column as a responsive 2-up terminal
+   launcher instead of leaving a tall narrow list and empty horizontal area.
+   Treasury, Workspace, Market Events, ETF and Freedom remain full width. */
+@media(min-width:2300px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:auto!important;
+  align-content:start!important;
+  align-items:stretch!important;
+  gap:clamp(9px,.65vw,16px)!important;
+  width:100%!important;
+  min-width:0!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >.entry-action{
+  min-width:0!important;max-width:100%!important;
+  width:100%!important;grid-row:auto!important;
+  align-self:stretch!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryTreasuryButton,#entryWorkspaceButton,#entryInjcEtfButton,#entryMarketEventsButton,#entryFreedomButton){
+  grid-column:1/-1!important;
+ }
+ /* Keep recognizable controls centered in their new half-width tiles. */
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >.entry-action:not(#entryTreasuryButton):not(#entryWorkspaceButton):not(#entryInjcEtfButton):not(#entryMarketEventsButton):not(#entryFreedomButton){
+  padding-right:clamp(94px,6vw,150px)!important;
+ }
+}
+@media(max-width:899px){
+ /* No forced two-up launcher on narrow screens, no viewport resize jitter.
+    Mobile continues using the existing tested 2-column Home tile preset. */
+ :root{--inj-screen-gutter:clamp(8px,2vw,16px)}
+}
+
+
+/* Dedicated ETF page shares the same horizontal treatment as other terminals. */
+@media(min-width:900px){
+ .etf-shell{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  padding-inline:var(--inj-screen-gutter)!important;
+ }
+}
+/* A long ladder should become a genuine dashboard on a large monitor,
+   instead of nine meter-wide horizontal strips. */
+@media(min-width:1200px){
+ html[data-inj-page="reward-ladder"] .ladder-steps{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:var(--inj-screen-panel-gap)!important;
+ }
+ html[data-inj-page="reward-ladder"] .ladder-step{min-width:0;height:100%}
+}
+@media(min-width:2100px){
+ html[data-inj-page="reward-ladder"] .ladder-steps{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}

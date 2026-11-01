@@ -4,6 +4,7 @@
 (()=>{
 'use strict';
 const root=document.documentElement;
+const isAndroid=/Android/i.test(navigator.userAgent||'');
 const host=document.getElementById('appIconControl');
 if(!host)return;
 const variants={
@@ -32,11 +33,19 @@ function apply(){
  if(preview)preview.src='./icons/'+data.png180;
  text('appIconTitle',english?'App icon':'Icona app');
  text('appIconSubtitle',data.title+' · '+(english?'choose style':'scegli stile'));
- text('appIconNote',english?
-  'Open INJ Node in Safari with your selected icon, then use Share → Add to Home Screen. Existing icons cannot change automatically. Keep your saved wallets and settings before replacing an installation.':
-  'Apri INJ Node in Safari con l’icona scelta, poi usa Condividi → Aggiungi alla schermata Home. L’icona attuale non cambia automaticamente. Conserva i wallet e le impostazioni locali prima di sostituire la PWA.');
- text('appIconInstallText',english?'Open INJ Node in browser':'Apri INJ Node nel browser');
- text('appIconCopyLink',english?'Copy link for Safari':'Copia link per Safari');
+ text('appIconNote',isAndroid?
+  (english?
+   'Open the selected icon page in Chrome on Android, then choose Install app from Chrome’s menu if the install prompt does not appear. An installed icon cannot change automatically. Sync your wallets before replacing an installation.':
+   'Su Android apri in Chrome la pagina dell’icona scelta, poi dal menu di Chrome seleziona Installa app se non compare la richiesta. L’icona installata non cambia da sola. Sincronizza i wallet prima di sostituire l’app.'):
+  (english?
+   'Open INJ Node in Safari with your selected icon, then use Share → Add to Home Screen. Existing icons cannot change automatically. Keep your saved wallets and settings before replacing an installation.':
+   'Apri INJ Node in Safari con l’icona scelta, poi usa Condividi → Aggiungi alla schermata Home. L’icona attuale non cambia automaticamente. Conserva i wallet e le impostazioni locali prima di sostituire la PWA.'));
+ text('appIconInstallText',isAndroid?
+  (english?'Open selected icon in Chrome':'Apri icona scelta in Chrome'):
+  (english?'Open INJ Node in browser':'Apri INJ Node nel browser'));
+ text('appIconCopyLink',isAndroid?
+   (english?'Copy link for Chrome':'Copia link per Chrome'):
+   (english?'Copy link for Safari':'Copia link per Safari'));
  const link=item('appIconInstallLink');
  if(link){
   link.href='./install-icon-'+selected+'.html';
@@ -67,10 +76,14 @@ if(copyButton){
   const english=lang()==='en';
   try{
    await navigator.clipboard.writeText(url);
-   copyButton.textContent=english?'Link copied — open in Safari':'Link copiato — aprilo in Safari';
+   copyButton.textContent=isAndroid?
+     (english?'Link copied — open in Chrome':'Link copiato — aprilo in Chrome'):
+     (english?'Link copied — open in Safari':'Link copiato — aprilo in Safari');
   }catch(_){
    // Older standalone WebKit environments can deny clipboard writes.
-   window.prompt(english?'Copy and open this URL in Safari':'Copia questo link e aprilo in Safari',url);
+   window.prompt(isAndroid?
+    (english?'Copy and open this URL in Chrome':'Copia e apri questo indirizzo in Chrome'):
+    (english?'Copy and open this URL in Safari':'Copia questo link e aprilo in Safari'),url);
   }
  });
 }

@@ -1,0 +1,72 @@
+/* INJ Node · typography, navigation, regions and respectful motion. */
+html[data-inj-font] body :is(button,input,select,textarea,option,summary,label,nav,a,small,strong,em,h1,h2,h3,h4,p,span,div,header,footer,article,section):not([class*="icon-font"]){
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+}
+html[data-inj-font] :is(.menu-action-copy,.menu-action-copy *,#injPrimaryBottomNav *,#injTabHeading *, .inj-market-tab-rail *, .inj-market-tab-head *){
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+}
+html[data-inj-page="index"] body #injPrimaryBottomNav{
+  box-shadow:0 5px 20px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.045)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="mercato"])[data-inj-dock-idle="false"]
+ body > #injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="mercato"])[data-inj-dock-idle="false"]
+ body > #injPrimaryBottomNav:popover-open{
+ opacity:1!important;visibility:visible!important;transform:translate(-50%,0)!important;
+ pointer-events:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="mercato"])[data-inj-dock-idle="true"]
+ body > #injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="mercato"])[data-inj-dock-idle="true"]
+ body > #injPrimaryBottomNav:popover-open{
+ opacity:0!important;visibility:hidden!important;transform:translate(-50%,18px)!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-action{
+ transition:background-color .22s ease,box-shadow .22s ease,transform .18s ease,opacity .22s ease!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-action:active{transform:scale(.985)!important}
+html.inj-ux-ready[data-inj-page="index"] #injTabHeading:not([hidden]){
+ animation:inj-subtle-enter .25s ease both;
+}
+html.inj-ux-ready[data-inj-page="market"] .shell > main,
+html.inj-ux-ready[data-inj-page="cloud-sync"] .cs-shell > main,
+html.inj-ux-ready[data-inj-market="1"] .shell > main{
+ animation:inj-subtle-enter .3s ease both;
+}
+@keyframes inj-subtle-enter{from{opacity:.92;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.inj-world-region-navigation{
+ display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;
+ padding:2px 1px 13px;margin:8px 0 8px;scroll-snap-type:x proximity;
+}
+.inj-world-region-navigation::-webkit-scrollbar{display:none}
+.inj-world-region-navigation button{
+ flex:0 0 auto;min-height:37px;white-space:nowrap;border-radius:11px;
+ padding:8px 14px;color:var(--text,#e3eded);
+ border:1px solid color-mix(in srgb,var(--text,#f4fff8) 12%,transparent);
+ background:color-mix(in srgb,var(--surface,#102220) 78%,transparent);
+ font:inherit;font-size:12px;cursor:pointer;scroll-snap-align:start;
+}
+.inj-world-region-navigation button.is-active{
+ color:var(--accent,#95ebcd);border-color:color-mix(in srgb,var(--accent,#95ebcd) 50%,transparent);
+ background:color-mix(in srgb,var(--accent,#95ebcd) 12%,transparent);
+}
+#injWorldMarket .inj-world-mapframe{overflow:hidden!important}
+#injWorldMarket #injWorldMapSvg,#injWorldMarket #injWorldMapPins{
+ transform:translate(var(--inj-region-pan-x,0%),var(--inj-region-pan-y,0%)) scale(var(--inj-region-zoom,1));
+ transition:transform .55s cubic-bezier(.22,.68,.2,1);
+ transform-origin:center center;
+}
+#injWorldMarket .inj-wm-region.is-inj-region-selected{
+ border-color:color-mix(in srgb,var(--accent,#9bdac7) 45%,transparent)!important;
+ background:color-mix(in srgb,var(--accent,#9bdac7) 6%,transparent)!important;
+}
+#injWorldMarket .inj-wm-sector-empty{
+ color:var(--muted,#9babab);font-size:12px;line-height:1.4;margin:5px 0 14px;
+}
+@media(prefers-reduced-motion:reduce){
+ html.inj-ux-ready *,html.inj-ux-ready *::before,html.inj-ux-ready *::after{
+  animation-duration:.01ms!important;scroll-behavior:auto!important;
+ }
+ #injWorldMarket #injWorldMapSvg,#injWorldMarket #injWorldMapPins{transition:none!important}
+}

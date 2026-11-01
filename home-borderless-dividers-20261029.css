@@ -1,0 +1,178 @@
+/* INJ Node · 29 Oct 2026
+   Frameless Home. Tiny theme-aware separators distinguish every destination.
+   Scoped to the returning-user Home only; no resizing or JS/event changes. */
+html[data-inj-page="index"] body #entryGate {
+  --inj-home-hairline:color-mix(in srgb,var(--accent,#8ae4ce) 22%,var(--line,#405260));
+}
+
+/* Home shortcuts and More stay frameless.
+   B Capital Group / Treasury intentionally keeps its framed card. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 :is(
+  .entry-action:not(#entryTreasuryButton),
+  #entryWorkspaceButton,
+  #entryInjcEtfButton,
+  #entryMarketEventsButton,
+  #entryFreedomButton
+),
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 :is(
+  .entry-action:not(#entryTreasuryButton),
+  #entryWorkspaceButton,
+  #entryInjcEtfButton,
+  #entryMarketEventsButton,
+  #entryFreedomButton
+):is(:hover,:active,:focus) {
+  border:0!important;
+  border-color:transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  outline-offset:2px;
+  isolation:isolate;
+}
+
+/* Section shortcuts: short centered line, not another boxed button.
+   No change to child SVG illustrations, captions, motion, click/touch targets. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action{
+  position:relative!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action:not(#entryTreasuryButton)::before{
+  content:none!important;
+  display:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action:not(#entryTreasuryButton)::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:29%!important;
+  right:29%!important;
+  bottom:1px!important;
+  top:auto!important;
+  width:auto!important;
+  height:1px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:var(--inj-home-hairline)!important;
+  box-shadow:none!important;
+  opacity:.85!important;
+  transform:none!important;
+  animation:none!important;
+  pointer-events:none!important;
+  z-index:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+#entryWorkspaceButton::after{
+  left:36%!important;right:36%!important;
+}
+
+/* More: a straight line above and below the label, without a surrounding card. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore[open] > .inj-home-more-toggle,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle:hover {
+  position:relative!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::before,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  width:auto!important;
+  height:1px!important;
+  left:0!important;
+  right:0!important;
+  top:auto!important;
+  bottom:auto!important;
+  background:var(--inj-home-hairline)!important;
+  opacity:.76!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  animation:none!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::before{
+  top:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::after{
+  bottom:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-content{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-content > .inj-market-events-slot{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* Wallet selection tiles, the first two Home cards (wallet portfolio
+   and price chart), and their swipe clones keep their original theme frames.
+   Only the container behind them and secondary desktop metrics remain flat. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) :is(.entry-wallet-section,.entry-desktop-metrics,.entry-desktop-metric) {
+  border-color:transparent!important;
+  border-style:none!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-desktop-metric {
+  border-bottom:1px solid var(--inj-home-hairline)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) #injMarketTicker.inj-market-ticker {
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Focus remains visible even with frameless buttons. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44 .entry-action:focus-visible,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle:focus-visible {
+  outline:1px solid var(--accent,#8ae4ce)!important;
+  outline-offset:1px!important;
+}
+
+/* The minimum-size hit area, responsive tile layout and motion are unchanged. */
+@media(min-width:800px){
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action:not(#entryTreasuryButton)::after{
+    left:34%!important;right:34%!important;
+  }
+}

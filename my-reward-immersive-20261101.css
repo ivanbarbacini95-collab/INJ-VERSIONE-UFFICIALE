@@ -1,0 +1,122 @@
+/* Minimal, immersive My Reward — heavy Geist, permanently green accrual. */
+html[data-inj-page="index"][data-inj-home-tab="reward"] body>#injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-home-tab="reward"] body>#injPrimaryBottomNav:popover-open{
+ display:none!important;visibility:hidden!important;pointer-events:none!important
+}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate #injTabHeading{display:none!important}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+ grid-template-rows:min-content!important;row-gap:0!important;
+ padding-top:max(14px,calc(env(safe-area-inset-top,0px) + 10px))!important;padding-bottom:24px!important
+}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{grid-row:1!important}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate #injMyRewardPanel{max-width:920px!important;padding:0 0 18px!important}
+#injMyRewardPanel .inj-myreward-nav-row{
+ display:flex!important;align-items:center!important;gap:9px!important;
+ min-width:0!important;width:100%!important;margin:0 0 18px!important
+}
+#injMyRewardPanel .inj-myreward-home{
+ flex:0 0 43px!important;display:grid!important;place-items:center!important;
+ width:43px!important;height:42px!important;min-height:42px!important;
+ padding:0!important;cursor:pointer!important;border-radius:13px!important;
+ background:color-mix(in srgb,var(--surface,#132826) 92%,transparent)!important;
+ color:var(--text,#eaf8f1)!important;
+ border:1px solid color-mix(in srgb,var(--text,#eaf8f1) 16%,transparent)!important;
+ box-shadow:none!important;touch-action:manipulation!important
+}
+#injMyRewardPanel .inj-myreward-home svg{width:21px!important;height:21px!important;display:block!important}
+#injMyRewardPanel .inj-myreward-home:focus-visible{outline:2px solid #43e69b!important;outline-offset:3px!important}
+#injMyRewardPanel .inj-myreward-pages{flex:1 1 auto!important;min-width:0!important;padding:2px 0!important;gap:5px!important}
+#injMyRewardPanel .inj-myreward-pages button{
+ min-height:42px!important;border-radius:12px!important;padding:9px 12px!important;
+ font-family:"INJ Geist","Geist",system-ui,sans-serif!important;font-weight:800!important;
+ font-size:clamp(11px,2.8vw,13px)!important;letter-spacing:-.01em!important;box-shadow:none!important
+}
+#injMyRewardPanel .inj-myreward-pages button.is-active{
+ border-color:color-mix(in srgb,#43e69b 48%,transparent)!important;
+ color:#43e69b!important;background:color-mix(in srgb,#43e69b 10%,var(--surface,#102624))!important
+}
+#injMyRewardPanel .inj-myreward-overview{gap:11px!important}
+#injMyRewardPanel .inj-myreward-wallet-head{padding:4px 0 10px!important;gap:9px!important}
+#injMyRewardPanel .inj-myreward-wallet-title strong{font-family:"INJ Geist","Geist",system-ui,sans-serif!important;font-weight:850!important}
+#injMyRewardPanel .inj-myreward-stake-card{
+ border-radius:17px!important;background:color-mix(in srgb,var(--surface,#0d2420) 96%,transparent)!important;
+ border:1px solid color-mix(in srgb,var(--text,#eaf8f1) 12%,transparent)!important;
+ box-shadow:none!important;padding:clamp(19px,4vw,30px)!important;min-height:0!important
+}
+#injMyRewardPanel .inj-myreward-staked{
+ font-family:"INJ Geist","Geist",system-ui,sans-serif!important;font-weight:850!important;
+ font-size:clamp(31px,6.6vw,59px)!important;letter-spacing:-.036em!important;line-height:1.12!important
+}
+#injMyRewardPanel .inj-myreward-fiat{
+ color:var(--muted-strong,#b3c8c1)!important;font-family:"INJ Geist","Geist",system-ui,sans-serif!important;
+ font-weight:750!important;font-size:clamp(16px,3.4vw,24px)!important
+}
+#injMyRewardPanel .inj-myreward-separator{
+ background:color-mix(in srgb,var(--text,#e8f9f2) 13%,transparent)!important;
+ margin:21px 0 18px!important;height:1px!important
+}
+#injMyRewardPanel :is(.inj-myreward-accrued,.inj-myreward-reward-fiat){
+ color:#43e69b!important;font-family:"INJ Geist","Geist",system-ui,sans-serif!important;
+ font-weight:850!important;text-shadow:none!important
+}
+#injMyRewardPanel .inj-myreward-accrued{
+ font-size:clamp(27px,5.8vw,47px)!important;line-height:1.16!important;letter-spacing:-.034em!important;margin-top:8px!important
+}
+#injMyRewardPanel .inj-myreward-reward-fiat{font-size:clamp(14px,3vw,20px)!important;margin-top:7px!important}
+#injMyRewardPanel .inj-myreward-meta{gap:9px!important}
+#injMyRewardPanel .inj-myreward-meta>div{border-radius:12px!important;background:transparent!important;box-shadow:none!important;padding:11px 13px!important}
+#injMyRewardPanel :is(.inj-myreward-meta strong,.inj-myreward-card-top>span:first-child,.inj-myreward-reward-label){
+ font-family:"INJ Geist","Geist",system-ui,sans-serif!important;font-weight:800!important
+}
+#injMyRewardPanel .inj-myreward-frame-host{
+ border-radius:12px!important;box-shadow:none!important;
+ border:1px solid color-mix(in srgb,var(--text,#eff8f5) 9%,transparent)!important;
+ height:calc(100dvh - 117px)!important;min-height:360px!important;max-height:none!important
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate #entryMyRewardButton.entry-action{
+ border:1px solid color-mix(in srgb,#43e69b 48%,var(--line,#344f4b))!important;
+ background:color-mix(in srgb,#43e69b 9%,var(--surface,#102825))!important;box-shadow:none!important
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate #entryMyRewardButton :is(.entry-action-icon,.entry-action-icon svg,.inj-home-tile-title){color:#43e69b!important}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate #entryMyRewardButton .inj-home-tile-title{
+ font-family:"INJ Geist","Geist",system-ui,sans-serif!important;font-weight:900!important;
+ font-size:clamp(13px,3.1vw,18px)!important
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate #entryMyRewardButton .inj-tile-description{
+ font-family:"INJ Geist","Geist",system-ui,sans-serif!important;font-weight:650!important
+}
+@media(max-width:520px){
+ #injMyRewardPanel .inj-myreward-nav-row{gap:7px!important;margin-bottom:13px!important}
+ #injMyRewardPanel .inj-myreward-home{flex-basis:40px!important;width:40px!important;height:40px!important;min-height:40px!important}
+ #injMyRewardPanel .inj-myreward-pages button{min-height:40px!important;padding:8px 10px!important;font-size:11px!important}
+ #injMyRewardPanel .inj-myreward-frame-host{height:calc(100dvh - 106px)!important}
+}
+@media(prefers-reduced-motion:reduce){#injMyRewardPanel .inj-myreward-nav-row *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Specificity guard: legacy PWA Home dock uses a :has() selector with two IDs. */
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav:popover-open{
+ display:none!important;visibility:hidden!important;pointer-events:none!important
+}
+
+/* The green accent belongs to the My Reward navigation destination, not a Home card. */
+html[data-inj-page="index"] body #injPrimaryBottomNav#injPrimaryBottomNav
+ .inj-bottom-tab[data-inj-tab="reward"],
+html[data-inj-page="index"] body #injPrimaryBottomNav#injPrimaryBottomNav
+ .inj-bottom-tab[data-inj-tab="reward"] .inj-bottom-tab-label,
+html[data-inj-page="index"] body #injPrimaryBottomNav#injPrimaryBottomNav
+ .inj-bottom-tab[data-inj-tab="reward"] .inj-bottom-tab-icon {
+ color:#43e69b!important;
+ font-weight:800!important;
+}
+
+/* The Live Reward destination is the consolidated reward treasury. */
+#injMyRewardPanel #injMyRewardPages button[data-myreward-page="live"]{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;
+ gap:3px!important;min-height:47px!important;line-height:1.05!important;
+}
+#injMyRewardPanel #injMyRewardPages button[data-myreward-page="live"]::after{
+ content:"TREASURY";display:block;color:#43e69b;font-size:8px;font-weight:900;
+ letter-spacing:.16em;line-height:1.1;
+}
+@media(max-width:520px){#injMyRewardPanel #injMyRewardPages button[data-myreward-page="live"]{min-height:44px!important;gap:2px!important}}

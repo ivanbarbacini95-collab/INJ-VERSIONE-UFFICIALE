@@ -1,0 +1,30 @@
+/* Compact informative cards; leave chart canvases, wallet logic and navigation untouched. */
+html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell :is(.metric-card,.aggregate-metric,.data-card){
+  min-height:0!important;
+}
+html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell .metrics-grid>.data-card{
+  padding-block:clamp(11px,1.1vw,17px)!important;
+  gap:clamp(5px,.55vw,9px)!important;
+}
+html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell :is(.metric-card,.aggregate-metric) {
+  padding-block:clamp(9px,.85vw,15px)!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44>.entry-action:not(#entryTreasuryButton){
+  min-height:0!important;
+  padding-block:clamp(12px,1.1vw,18px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats{
+  gap:clamp(7px,.85vw,13px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats>div{
+  min-height:0!important;
+  padding-block:clamp(10px,1vw,16px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+  row-gap:clamp(10px,1.2vw,20px)!important;
+}
+@media(max-width:599px){
+ html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell .metrics-grid>.data-card{
+   padding-block:12px!important;
+ }
+}

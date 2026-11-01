@@ -1,0 +1,412 @@
+/* INJ Node · eight font choices. Official matches the approved Supply Mono / IBM Plex stack and heavier weights.
+   Supply Mono is commercial and is NOT bundled. Remaining four faces are SIL OFL.
+   This stylesheet loads AFTER historical overrides and intentionally wins them. */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500;600;700&family=Oxanium:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap");
+@font-face{font-family:"INJ Geist";src:url("./assets/fonts/inj-geist.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:"INJ Space Grotesk";src:url("./assets/fonts/inj-space-grotesk.woff2") format("woff2");font-style:normal;font-weight:400 600;font-display:swap}
+@font-face{font-family:"INJ IBM Plex Mono";src:url("./assets/fonts/inj-ibm-plex-mono-regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"INJ IBM Plex Mono";src:url("./assets/fonts/inj-ibm-plex-mono-medium.woff2") format("woff2");font-style:normal;font-weight:500 600;font-display:swap}
+@font-face{font-family:"INJ Oxanium";src:url("./assets/fonts/inj-oxanium.woff2") format("woff2");font-style:normal;font-weight:400 600;font-display:swap}
+/* The official edition's supply-mono.css uses this exact family stack.
+   Supply Mono is a separately licensed, locally installed font (not bundled).
+   Its normal web fallback IBM Plex Mono is loaded in the 400–700 range. */
+html[data-inj-font="official"]{
+ --inj-chosen-face:"Supply Mono","PP Supply Mono","IBM Plex Mono","INJ IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:700;--inj-chosen-heading:700;--inj-chosen-detail:400;
+}
+html[data-inj-font="original"]{
+ --inj-chosen-face:"Supply Mono","PP Supply Mono","INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:500;
+}
+html[data-inj-font="inter-light"]{
+ --inj-chosen-face:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ --inj-chosen-weight:300;--inj-chosen-emphasis:300;--inj-chosen-heading:400;
+ --inj-chosen-detail:400;
+}
+html[data-inj-font="geist"]{
+ --inj-chosen-face:"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:600;
+}
+/* Full-app Geist Bold. 600 body for readability, 700 for data and headings;
+   detail remains 550 so small iPhone labels don't turn into black blocks. */
+html[data-inj-font="geist-bold"]{
+ --inj-chosen-face:"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:600;--inj-chosen-emphasis:700;--inj-chosen-heading:700;
+ --inj-chosen-detail:550;
+}
+html[data-inj-font="space"]{
+ --inj-chosen-face:"INJ Space Grotesk","Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:500;
+}
+html[data-inj-font="plex"]{
+ --inj-chosen-face:"INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:500;
+}
+html[data-inj-font="oxanium"]{
+ --inj-chosen-face:"INJ Oxanium","Oxanium","Inter",sans-serif;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:600;
+}
+html[data-inj-font]{
+ --inj-inter-light-font:var(--inj-chosen-face);
+ --inj-minimal-font:var(--inj-chosen-face);
+ --inj-minimal-mono:var(--inj-chosen-face);
+ --inj-node-terminal-font:var(--inj-chosen-face);
+ --inj-home-title-face:var(--inj-chosen-face);
+ --inj-home-description-face:var(--inj-chosen-face);
+ --inj-editorial-face:var(--inj-chosen-face);
+ font-family:var(--inj-chosen-face)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace#__injFace):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-weight)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+ -webkit-font-smoothing:antialiased;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace#__injFace):is(
+ h1,h2,h3,h4,h5,h6,strong,b,th,
+ .menu-font-title,.menu-action-copy strong,.entry-action strong,.entry-gate-title,
+ .hero-number,.hero-secondary,.metric-value,.number-roll-text,.number-roll-static-digit,
+ .number-roll-digit,.number-roll-digit-layer,[id$="Price"],[id$="Worth"],[id$="Pnl"],
+ [id$="PnL"],[id$="Value"],.market-price,.ws-main-price,.ws-price-main,
+ .ws-hero-price,.cc-now-price,.cc-price,.treasury-total-display,.rewards-total-value
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-emphasis)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace):is(h1,h2,h3,h4,h5,h6,.home-safe-heading h1,.entry-gate-title){
+ font-weight:var(--inj-chosen-heading)!important;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace):is(
+ button,input,textarea,select,option,label,small,.caption,.subtitle,.description,.hint,.note,
+ code,pre,kbd,samp,.tx-hash,.wallet-address,.address-hash,[data-monospace],
+ .market-table,.market-asset-price,.ws-data-value,.ws-section-value,.ws-chart-ticks,.book-meta
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-detail,var(--inj-chosen-weight))!important;
+}
+/* Preserve monospace identifiers in restored Inter Light, as before the redesign. */
+html[data-inj-font="inter-light"] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace#__injFace):is(code,pre,kbd,samp,.tx-hash,.wallet-address,.address-hash,[data-monospace]){
+ font-family:"INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,monospace!important;
+ font-weight:400!important;
+}
+
+/* Restore the full-bodied official hierarchy without changing font sizes,
+   positions, cards, chart geometry, or any functional JS. */
+html[data-inj-font="official"] body :is(*,#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial):is(
+ #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,#headerLivePrice,#bookLivePrice,
+ #ccLivePrice,#ccNetWorth,#ccTotalInj,#ccTotalPnl,#treasuryTotalMajor,#treasuryTotalDecimals,
+ #treasuryTotalWorth,#rewardsTotal,#rewardsTotalFiat,.hero-number,.hero-secondary,
+ .ws-main-price,.ws-price-main,.ws-hero-price,.market-price,.metric-value,
+ .number-roll-text,.number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer
+){
+ font-weight:700!important;
+}
+html[data-inj-font="official"] body :is(*,#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial):is(
+ #entryInsightPnl,#treasuryTotalMajor,#rewardsTotal,.entry-price-pnl strong
+){
+ font-weight:800!important;
+}
+html[data-inj-font="official"][data-inj-page="index"] body #entryGate .entry-actions strong.inj-home-tile-title{
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:600!important;
+}
+html[data-inj-font="official"] body :is(*,#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial):is(
+ .inj-tile-description,.menu-font-description,small,.caption,.subtitle,.description,.hint,.note
+){
+ font-weight:400!important;
+}
+
+/* Change SVG chart text, but never replace SVG icon/path drawing. */
+html[data-inj-font] body svg :is(text,tspan){font-family:var(--inj-chosen-face)!important;font-weight:var(--inj-chosen-weight)!important}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control{
+ width:100%!important;min-width:0!important;grid-column:1/-1!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;margin:0!important;padding:0!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control>summary{list-style:none!important;cursor:pointer!important}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control>summary::-webkit-details-marker{display:none}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control .menu-font-chevron{
+ width:16px;height:16px;flex:0 0 16px;transition:transform .2s ease;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control[open] .menu-font-chevron{transform:rotate(180deg)}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control .menu-action-copy{flex:1;min-width:0}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-current{
+ color:var(--muted,var(--text,#cedcdd));font-size:10px!important;letter-spacing:0!important;
+ font-weight:400!important;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-options{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px 0 4px;margin:0;
+ background:transparent!important;border:0!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;gap:6px;
+ min-width:0;min-height:102px;padding:11px 10px!important;margin:0!important;text-align:left!important;cursor:pointer;
+ border:1px solid color-mix(in srgb,var(--line,#64747a) 70%,transparent)!important;border-radius:13px!important;
+ background:color-mix(in srgb,var(--surface,#152229) 94%,var(--text,#dbe8e9) 6%)!important;
+ box-shadow:none!important;transition:background-color .2s ease,border-color .2s ease!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option[aria-pressed="true"]{
+ background:color-mix(in srgb,var(--surface,#152229) 90%,var(--accent,#92c6bf) 10%)!important;
+ border-color:color-mix(in srgb,var(--line,#63737a) 30%,var(--accent,#a1cec8) 70%)!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option:focus-visible{outline:2px solid var(--accent,#91beb7);outline-offset:2px}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-name{
+ display:flex;align-items:flex-start;justify-content:space-between;gap:4px;
+ font-size:11.5px!important;line-height:1.2!important;color:var(--text,#edf4f5)!important;overflow-wrap:anywhere;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-check{
+ opacity:0;flex:none;color:var(--accent,#b4d9d5);font-size:14px!important;line-height:1!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option[aria-pressed="true"] .menu-font-check{opacity:1}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-sample{
+ display:block;max-width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ font-size:16px!important;line-height:1.3!important;letter-spacing:0!important;
+ color:var(--text,#dfe8e8)!important;font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-description{
+ display:block;color:var(--muted,#a9b9bd)!important;font-size:10px!important;line-height:1.4!important;
+ font-weight:400!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-note{
+ color:var(--muted,#a9b9bd)!important;font-size:10px!important;font-weight:400!important;
+ line-height:1.4!important;margin:8px 2px 0!important;padding:0!important;
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #headerMenuPanel .menu-font-options{grid-template-columns:1fr}
+ html[data-inj-page="index"] body #headerMenuPanel .menu-font-option{min-height:80px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #headerMenuPanel .menu-font-control *{transition:none!important}
+}
+
+/* INJ Node · selected-font consistency bridge (2026-11-01) */
+/* Text semantics are shared by Dashboard, Home, Market, all standalone pages
+   and the same-origin Market iframe. Respect the selected Settings font; don't
+   hardcode a second typeface on nested tracker titles or native inputs. */
+html[data-inj-font] body :is(
+  h1,h2,h3,h4,h5,h6,[role="heading"],
+  .section-heading,.section-heading h2,.section-heading .card-label,
+  .tracker-collapse-trigger,.tracker-collapse-trigger h2,.tracker-collapse-trigger .card-label,
+  .card-heading,.card-title,.card-label,.metric-label,.section-label,
+  .tracker-panel,.tracker-panel :is(strong,span,small,p),
+  .entry-action,.inj-home-tile-title,.inj-tile-description,
+  .menu-action,.menu-action-copy,.menu-font-title,
+  .reward-heading-tools,.target-input-label,
+  .market-table,.market-ticker,.market-asset-price,.market-price,
+  .heatmap-card,.ws-card-heading,.ws-section-title,
+  button,input,textarea,select,option,label
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-stretch:normal;
+}
+/* Production rate, Next INJ target and Validator now use the same heading
+   face, weight, kerning and tracking, without changing card geometry. */
+html[data-inj-font] body .analytics-grid .section-heading h2,
+html[data-inj-font] body .app-shell .section-heading :is(h2,h3){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-heading,var(--inj-chosen-weight,400))!important;
+ font-stretch:normal!important;
+ font-kerning:normal;
+ letter-spacing:.015em!important;
+}
+/* Preserve a separate label hierarchy without introducing another font. */
+html[data-inj-font] body .app-shell .section-heading .card-label,
+html[data-inj-font] body .app-shell .tracker-collapse-trigger .card-label{
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-detail,var(--inj-chosen-weight,400))!important;
+}
+/* Text drawn by SVG remains readable; do not change SVG icons or paths. */
+html[data-inj-font] body svg :is(text,tspan,textPath){
+ font-family:var(--inj-chosen-face)!important;
+}
+
+/* INJ Node · Production Rate: INJ produced + fiat countervalue side by side.
+   Only presentation changes; values are still calculated by app.js. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:0!important;
+  width:100%;
+  min-width:0;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+  display:grid!important;
+  grid-template-columns:minmax(90px,.85fr) minmax(0,1.35fr) minmax(78px,.8fr)!important;
+  grid-template-rows:auto!important;
+  align-items:center!important;
+  column-gap:clamp(8px,1.25vw,20px)!important;
+  row-gap:0!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:72px!important;
+  box-sizing:border-box!important;
+  padding:clamp(13px,1.4vw,18px) clamp(12px,1.5vw,22px)!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {
+  grid-column:1!important;
+  grid-row:1!important;
+  justify-self:start!important;
+  align-self:center!important;
+  min-width:0!important;
+  margin:0!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-size:clamp(12px,1.1vw,15px)!important;
+  line-height:1.25!important;
+  letter-spacing:.04em!important;
+  color:var(--text,#e9f0f2)!important;
+  opacity:.86!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {
+  grid-column:2!important;
+  grid-row:1!important;
+  display:inline-flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:baseline!important;
+  justify-content:flex-end!important;
+  justify-self:end!important;
+  align-self:center!important;
+  gap:.28em!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  text-align:right!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  font-size:clamp(17px,1.45vw,24px)!important;
+  line-height:1.2!important;
+  letter-spacing:-.02em!important;
+  white-space:nowrap!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+  color:var(--text,#f3f7f8)!important;
+  opacity:1!important;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+/* app.js writes the numeric figure and INJ unit as separate spans;
+   explicitly keep both on one line rather than letting legacy styles stack them. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong.reward-estimate-value > :is(.reward-estimate-number,.reward-estimate-unit) {
+  display:inline!important;
+  position:static!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  line-height:inherit!important;
+  font-family:inherit!important;
+  font-size:1em!important;
+  font-weight:inherit!important;
+  color:inherit!important;
+  opacity:1!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong.reward-estimate-value > .reward-estimate-unit {
+  font-size:1em!important;
+  letter-spacing:0!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {
+  grid-column:3!important;
+  grid-row:1!important;
+  justify-self:end!important;
+  align-self:center!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  text-align:right!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-size:clamp(17px,1.45vw,24px)!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  color:var(--text,#edf4f5)!important;
+  opacity:.9!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+@media (max-width:599px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    grid-template-columns:minmax(66px,.65fr) minmax(0,1.4fr) minmax(0,.88fr)!important;
+    column-gap:7px!important;
+    min-height:67px!important;
+    padding:13px 11px!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {
+    font-size:clamp(10.5px,2.9vw,12px)!important;
+    letter-spacing:.015em!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {
+    font-size:clamp(14px,3.8vw,18px)!important;
+    gap:.2em!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {
+    font-size:clamp(14px,3.8vw,18px)!important;
+  }
+}
+/* On the narrowest phones preserve full figures by moving only the period
+   label above the two amounts; INJ and fiat remain adjacent. */
+@media (max-width:359px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+    row-gap:5px!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {
+    grid-column:1 / -1!important;
+    grid-row:1!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {
+    grid-column:1!important;
+    grid-row:2!important;
+    justify-self:start!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {
+    grid-column:2!important;
+    grid-row:2!important;
+  }
+}
+@media (min-width:1600px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    min-height:80px!important;
+    padding:16px 22px!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {font-size:15px!important}
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {font-size:24px!important}
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {font-size:24px!important}
+}
+
+
+/* Production Rate: make fiat countervalue glyphs exactly the same size as INJ.
+   Countervalues are rendered inside a number-roll wrapper whose nested spans
+   may retain legacy reduced font sizes. Set one shared size for both fields. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+  --inj-production-amount-size:clamp(15px,1.3vw,21px);
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > :is(strong,small) {
+  font-size:var(--inj-production-amount-size)!important;
+  line-height:1.2!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+}
+/* Override any reduced size assigned to the USD rolling digits/number span. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small,
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small *,
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong.reward-estimate-value > :is(.reward-estimate-number,.reward-estimate-unit) {
+  font-size:var(--inj-production-amount-size)!important;
+  line-height:1.2!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  font-style:normal!important;
+}
+@media(max-width:599px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    --inj-production-amount-size:clamp(13px,3.4vw,16px);
+  }
+}
+@media(min-width:1600px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    --inj-production-amount-size:21px;
+  }
+}

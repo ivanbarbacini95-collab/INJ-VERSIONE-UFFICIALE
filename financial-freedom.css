@@ -1,0 +1,681 @@
+/* INJ Node · Financial Freedom | v2026-10-28. Scoped, responsive, theme aware. */
+:root{--bg:#07121b;--theme-canvas:#07121b;--text:#edf6f8;--muted:#91abb8;--muted-strong:#b3c8d1;--accent:#86deda;--line:rgba(148,198,214,.20);--surface:#132631;--page-gradient:linear-gradient(143deg,#07121b,#0d202b 57%,#071c25);--freedom-ink:var(--text,#edf6f8);color-scheme:dark;font-family:var(--inj-node-terminal-font,"IBM Plex Mono",ui-monospace,monospace)}
+:root[data-theme="light"]{--bg:#eef5ff;--theme-canvas:#eef5ff;--text:#1a3040;--muted:#58717f;--muted-strong:#3f5c70;--accent:#127c87;--surface:#e6f1f8;--line:rgba(34,85,108,.21);--page-gradient:linear-gradient(135deg,#eef5ff,#d7f1f6 60%,#f0f3ff);color-scheme:light}
+:root[data-theme="black"]{--bg:#000;--theme-canvas:#000;--surface:#13191b;--page-gradient:linear-gradient(133deg,#000,#121b1d 72%,#000)}
+:root[data-theme="amber"]{--bg:#05080d;--theme-canvas:#05080d;--page-gradient:linear-gradient(145deg,#05080d,#161518 80%,#0c1719)}
+*,*::before,*::after{box-sizing:border-box}
+html{margin:0;min-height:100%;scroll-behavior:auto!important;background-color:var(--theme-canvas,var(--bg))!important;background-image:var(--page-gradient,none)!important;background-position:center top!important;background-attachment:scroll!important}
+body{margin:0;min-height:100dvh;color:var(--text,#edf6f8);background:transparent!important;font:12px/1.5 var(--inj-node-terminal-font,ui-monospace,monospace);overflow-x:hidden;overscroll-behavior-y:none}
+button,select,input{font:inherit;touch-action:manipulation}
+button,select{cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent,#86deda);outline-offset:3px}
+.freedom-page{width:min(1160px,100%);margin:0 auto;padding:clamp(16px,3vw,30px) max(14px,env(safe-area-inset-right,14px)) max(28px,env(safe-area-inset-bottom,20px)) max(14px,env(safe-area-inset-left,14px));display:flex;flex-direction:column;gap:15px;min-width:0}
+.freedom-header{display:flex;align-items:flex-start;gap:13px;padding:4px 0 17px;border-bottom:1px solid var(--line)}
+.freedom-close{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;color:var(--text);background:color-mix(in srgb,var(--surface) 65%,transparent);border:1px solid var(--line);border-radius:12px;padding:10px}
+.freedom-close svg{width:21px;height:21px}
+.freedom-heading{min-width:0;flex:1}
+.freedom-heading>small,.freedom-section-heading small{font-size:9px;font-weight:750;letter-spacing:.16em;color:var(--accent);display:block}
+.freedom-heading h1{font-size:clamp(22px,4.5vw,37px);line-height:1.08;margin:6px 0 7px;letter-spacing:-.04em;font-weight:850}
+.freedom-heading p{font-size:10px;line-height:1.45;margin:0;color:var(--muted-strong);max-width:620px}
+.freedom-live{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin-top:11px;font-size:9px;font-weight:800;letter-spacing:.10em;color:var(--accent)}
+.freedom-live i{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px color-mix(in srgb,var(--accent) 60%,transparent)}
+.freedom-live.is-offline{color:var(--muted)}
+.freedom-live.is-offline i{background:var(--muted);box-shadow:none}
+.freedom-toolbar{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:10px}
+.freedom-select-wrap,.freedom-price-rail{min-width:0;display:flex;flex-direction:column;gap:5px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:color-mix(in srgb,var(--surface) 63%,transparent)}
+.freedom-select-wrap>span,.freedom-price-rail>span,.freedom-hero-top small,.freedom-figures article small,.freedom-target-grid small{font-size:9px;line-height:1.35;letter-spacing:.095em;font-weight:800;color:var(--muted-strong)}
+.freedom-select-wrap select{width:100%;padding:7px 27px 7px 0;border:0;background:transparent;color:var(--text);outline:none;font-size:13px;font-weight:700;white-space:nowrap;text-overflow:ellipsis}
+.freedom-select-wrap select option{background:var(--surface,#132631);color:var(--text)}
+.freedom-price-rail strong{font-size:clamp(15px,2.7vw,21px);letter-spacing:-.02em}
+.freedom-price-rail small{font-size:9px;color:var(--muted)}
+.freedom-hero{padding:clamp(15px,3vw,25px);border-radius:17px;border:1px solid color-mix(in srgb,var(--accent) 31%,var(--line));background:radial-gradient(ellipse 72% 115% at 92% 6%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 80%),linear-gradient(132deg,color-mix(in srgb,var(--surface) 88%,transparent),color-mix(in srgb,var(--theme-canvas) 55%,transparent));box-shadow:0 18px 52px rgba(0,0,0,.06)}
+.freedom-hero-top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.freedom-hero-top>div:first-child{min-width:0;flex:1}
+.freedom-hero h2{margin:9px 0 6px;font-size:clamp(17px,3.65vw,31px);line-height:1.14;letter-spacing:-.034em;max-width:630px;overflow-wrap:anywhere}
+.freedom-hero p{margin:0;color:var(--muted-strong);font-size:11px;line-height:1.6;max-width:650px}
+.freedom-meter{width:clamp(104px,19vw,142px);height:clamp(104px,19vw,142px);flex:0 0 auto;padding:8px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) var(--freedom-progress,0%),color-mix(in srgb,var(--accent) 13%,var(--surface)) 0)}
+.freedom-meter>div{width:100%;height:100%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;background:var(--surface);padding:6px}
+.freedom-meter strong{font-size:clamp(18px,3.6vw,27px);letter-spacing:-.05em;line-height:1;font-weight:800}
+.freedom-meter small{font-size:8px;text-wrap:balance;letter-spacing:.06em}
+.freedom-bar{height:5px;border-radius:7px;background:color-mix(in srgb,var(--accent) 15%,var(--surface));overflow:hidden;margin:18px 0 9px}
+.freedom-bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 72%,white));border-radius:inherit;transition:width .35s ease}
+.freedom-hero-foot{display:flex;justify-content:space-between;gap:10px;color:var(--muted-strong);font-size:10px;line-height:1.45}
+.freedom-hero-foot span:last-child{text-align:right}
+.freedom-figures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.freedom-figures article,.freedom-section{min-width:0;border:1px solid var(--line);border-radius:13px;background:color-mix(in srgb,var(--surface) 60%,transparent);padding:17px}
+.freedom-figures article{display:flex;flex-direction:column;gap:8px}
+.freedom-figures article strong{font-size:clamp(17px,2.5vw,26px);line-height:1.1;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.freedom-figures article>span{font-size:10px;color:var(--muted-strong);overflow-wrap:anywhere}
+.freedom-section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.freedom-section-heading h2{font-size:clamp(13px,2vw,17px);line-height:1.3;margin:5px 0 0;letter-spacing:.02em;font-weight:850}
+.freedom-pill{padding:6px 10px;border:1px solid color-mix(in srgb,var(--accent) 33%,var(--line));border-radius:7px;font-size:10px;color:var(--accent);font-weight:800;text-align:right}
+.freedom-tier-track{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+.freedom-tier{min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;opacity:.58}
+.freedom-tier .freedom-tier-bar{width:100%;height:6px;border-radius:4px;background:var(--line)}
+.freedom-tier.current,.freedom-tier.reached{opacity:1}
+.freedom-tier.reached .freedom-tier-bar{background:color-mix(in srgb,var(--accent) 63%,var(--surface))}
+.freedom-tier.current .freedom-tier-bar{background:var(--accent);box-shadow:0 0 11px color-mix(in srgb,var(--accent) 38%,transparent)}
+.freedom-tier strong{font-size:9px;line-height:1.3;color:var(--muted-strong)}
+.freedom-tier.current strong{color:var(--text)}
+.freedom-tier small{font-size:9px;line-height:1.2;color:var(--muted)}
+.freedom-section>p{font-size:10px;line-height:1.55;color:var(--muted);margin:13px 0 0}
+.freedom-lifestyle{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.freedom-lifestyle-item{display:grid;grid-template-columns:35px minmax(0,1fr) auto;align-items:center;gap:9px;padding:12px 10px;border:1px solid var(--line);border-radius:11px;min-width:0}
+.freedom-lifestyle-item .freedom-lifestyle-emoji{font-size:21px;text-align:center}
+.freedom-lifestyle-item .freedom-lifestyle-name{min-width:0;display:flex;flex-direction:column;gap:4px}
+.freedom-lifestyle-item strong{font-size:11px;line-height:1.25}
+.freedom-lifestyle-item small{font-size:9px;color:var(--muted)}
+.freedom-lifestyle-item .freedom-lifestyle-result{text-align:right;font-size:10px;font-weight:800;color:var(--accent);max-width:110px}
+.freedom-lifestyle-item.not-yet .freedom-lifestyle-result{color:var(--muted-strong)}
+#freedomSpendHint{color:var(--muted);font-size:9px}
+.freedom-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.freedom-settings label{display:flex;flex-direction:column;gap:8px;min-width:0}
+.freedom-settings label>span{font-size:9px;line-height:1.35;color:var(--muted-strong);font-weight:750;letter-spacing:.06em}
+.freedom-settings input{width:100%;height:45px;min-width:0;border:1px solid var(--line);border-radius:9px;background:color-mix(in srgb,var(--surface) 90%,transparent);color:var(--text);font-size:18px;font-weight:750;padding:8px 12px}
+.freedom-target-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.freedom-target-grid>div{display:flex;flex-direction:column;gap:7px;border-radius:10px;padding:14px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 48%,transparent)}
+.freedom-target-grid strong{font-size:clamp(16px,2.4vw,23px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.freedom-stress{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;padding:13px 2px;border-top:1px solid var(--line)}
+.freedom-stress>div{display:flex;flex-direction:column;gap:4px}
+.freedom-stress span{font-size:10px;font-weight:800;letter-spacing:.06em}
+.freedom-stress small{font-size:10px;color:var(--muted)}
+.freedom-stress strong{font-size:20px;color:var(--accent)}
+.freedom-plan>p{border-top:1px solid var(--line);padding-top:11px}
+.freedom-page>footer{text-align:center;padding:13px 0 24px;font-size:10px;letter-spacing:.14em;color:var(--muted-strong)}
+.freedom-page>footer span{opacity:.65}
+.privacy-active .private{filter:blur(10px);user-select:none;pointer-events:none}
+@media(min-width:900px){.freedom-page{padding-top:35px;gap:18px}}
+@media(max-width:560px){
+.freedom-page{gap:10px;padding:12px 10px 26px}
+.freedom-header{gap:10px;padding-bottom:13px}
+.freedom-heading h1{font-size:23px}
+.freedom-heading p{font-size:9px}
+.freedom-live{font-size:8px}
+.freedom-toolbar{gap:7px}
+.freedom-select-wrap,.freedom-price-rail{padding:10px 9px}
+.freedom-select-wrap select{font-size:11px}
+.freedom-price-rail strong{font-size:15px}
+.freedom-hero{padding:15px 12px}
+.freedom-hero-top{gap:10px}
+.freedom-meter{width:100px;height:100px}
+.freedom-meter strong{font-size:20px}
+.freedom-hero h2{font-size:17px}
+.freedom-hero p{font-size:10px}
+.freedom-figures{gap:6px}
+.freedom-figures article{padding:11px 8px;gap:6px}
+.freedom-figures article strong{font-size:15px}
+.freedom-figures article>span{font-size:9px}
+.freedom-section{padding:13px 10px}
+.freedom-section-heading{margin-bottom:12px}
+.freedom-tier-track{gap:4px}
+.freedom-tier strong{font-size:8px}
+.freedom-tier small{font-size:8px}
+.freedom-lifestyle{gap:6px}
+.freedom-lifestyle-item{gap:6px;grid-template-columns:26px minmax(0,1fr);padding:11px 7px}
+.freedom-lifestyle-item .freedom-lifestyle-emoji{font-size:18px}
+.freedom-lifestyle-item .freedom-lifestyle-result{grid-column:2;text-align:left;max-width:none;font-size:10px}
+.freedom-lifestyle-item strong{font-size:10px}
+.freedom-hero-foot{font-size:9px}
+}
+@media(max-width:350px){.freedom-hero-top{align-items:flex-start}.freedom-meter{width:88px;height:88px}.freedom-meter strong{font-size:17px}.freedom-heading h1{font-size:20px}.freedom-figures article strong{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.freedom-bar span{transition:none}}
+
+/* Parent privacy shield must not leak wealth rank through the ladder or meter. */
+.privacy-active :is(.freedom-price-rail,.freedom-hero,.freedom-figures,.freedom-wealth,.freedom-options,.freedom-target-grid,.freedom-stress){
+ filter:blur(10px)!important;user-select:none!important;pointer-events:none!important;
+}
+
+
+/* v2 · Compact premium hierarchy. Stable column geometry across EUR/USD. */
+.freedom-page{gap:12px}
+.freedom-header{align-items:center;padding-bottom:12px;gap:12px}
+.freedom-heading>small{font-size:9px;letter-spacing:.12em}
+.freedom-heading h1{margin:3px 0 3px;letter-spacing:-.025em}
+.freedom-heading p{max-width:100%;font-size:10px;line-height:1.38}
+.freedom-close{width:39px;height:39px;flex-basis:39px;border-radius:11px}
+.freedom-toolbar{grid-template-columns:minmax(0,1.5fr) minmax(0,.85fr);gap:9px}
+.freedom-select-wrap,.freedom-price-rail{padding:11px 13px;gap:4px}
+.freedom-select-wrap select{min-height:26px;font-size:13px}
+.freedom-price-rail strong{font-variant-numeric:tabular-nums}
+.freedom-overview{
+ display:grid;grid-template-columns:minmax(0,1.10fr) minmax(0,.90fr);
+ gap:11px;align-items:stretch;min-width:0;
+}
+.freedom-hero{
+ display:flex;flex-direction:column;min-width:0;height:100%;
+ padding:20px 21px;border-radius:14px;
+}
+.freedom-hero-top{flex:1;align-items:center;gap:14px}
+.freedom-hero-message{min-width:0}
+.freedom-hero h2{margin:8px 0 8px;font-size:clamp(18px,2.1vw,26px);letter-spacing:-.028em;line-height:1.17}
+.freedom-hero p{font-size:10px;line-height:1.45;max-width:380px}
+.freedom-meter{width:clamp(110px,10vw,132px);height:clamp(110px,10vw,132px);padding:7px}
+.freedom-meter>div{background:var(--surface);border:1px solid color-mix(in srgb,var(--accent) 6%,transparent)}
+.freedom-meter strong{font-size:clamp(20px,2.25vw,27px);font-variant-numeric:tabular-nums}
+.freedom-meter small{font-size:8px;max-width:85px;line-height:1.2}
+.freedom-bar{margin:19px 0 13px;height:4px}
+.freedom-hero-foot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.freedom-hero-foot-stat{display:flex;flex-direction:column;gap:5px;min-width:0}
+.freedom-hero-foot-stat:last-child{text-align:right}
+.freedom-hero-foot-stat small{font-size:9px;letter-spacing:.065em;line-height:1.4;color:var(--muted)}
+.freedom-hero-foot-stat strong{
+ font-size:clamp(15px,1.55vw,20px);font-variant-numeric:tabular-nums;
+ line-height:1.15;letter-spacing:-.026em;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;color:var(--text);
+}
+.freedom-hero-foot-stat:first-child strong{color:var(--accent)}
+.freedom-figures{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ grid-template-rows:repeat(2,minmax(0,1fr));
+ gap:10px;min-width:0;height:100%;
+}
+.freedom-figures article{
+ padding:17px 15px;
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+ min-width:0;gap:7px;border-radius:12px;
+}
+.freedom-figures .freedom-figure-worth{
+ grid-column:1/-1;
+ background:linear-gradient(110deg,color-mix(in srgb,var(--surface) 87%,transparent),color-mix(in srgb,var(--surface) 54%,transparent))
+}
+.freedom-figures .freedom-figure-worth strong{font-size:clamp(24px,3vw,34px)}
+.freedom-figures article strong{font-size:clamp(16px,1.85vw,23px);font-variant-numeric:tabular-nums;line-height:1.15;max-width:100%}
+.freedom-figures article small{color:var(--muted);font-size:9px;letter-spacing:.085em}
+.freedom-figures article>span{color:var(--muted-strong);font-size:9px;line-height:1.38;max-width:100%;overflow-wrap:anywhere}
+.freedom-figures .freedom-figure-daily strong{color:var(--accent)}
+.freedom-section{padding:17px 18px;border-radius:12px}
+.freedom-section-heading{margin-bottom:13px;align-items:center}
+.freedom-section-heading small{font-size:9px;letter-spacing:.10em}
+.freedom-section-heading h2{font-size:clamp(13px,1.55vw,16px);line-height:1.22;margin:4px 0 0}
+.freedom-tier-track{gap:8px;margin:2px 0 0}
+.freedom-tier{gap:7px}
+.freedom-tier strong{font-size:9px}
+.freedom-tier small{font-size:9px}
+.freedom-wealth>p{margin-top:12px}
+.freedom-lower-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;
+ align-items:start;min-width:0;
+}
+.freedom-lower-grid>.freedom-section{height:100%;min-width:0}
+.freedom-lower-grid .freedom-section-heading{min-height:36px;gap:8px}
+.freedom-lower-grid .freedom-lifestyle{gap:8px}
+.freedom-lower-grid .freedom-lifestyle-item{grid-template-columns:30px minmax(0,1fr) auto;gap:8px;padding:10px 9px}
+.freedom-lower-grid .freedom-lifestyle-item .freedom-lifestyle-result{max-width:96px;white-space:normal;overflow-wrap:anywhere}
+.freedom-lower-grid .freedom-settings{gap:9px}
+.freedom-lower-grid .freedom-settings input{height:40px;font-size:16px;font-variant-numeric:tabular-nums}
+.freedom-settings label>small{font-size:9px;color:var(--muted);line-height:1.2}
+.freedom-lower-grid .freedom-target-grid{gap:8px}
+.freedom-lower-grid .freedom-target-grid>div{padding:11px}
+.freedom-lower-grid .freedom-target-grid strong{font-size:clamp(14px,1.6vw,20px);font-variant-numeric:tabular-nums}
+.freedom-lower-grid .freedom-stress{margin-top:11px;padding:11px 1px}
+.freedom-lower-grid .freedom-section>p{font-size:9px;line-height:1.48}
+@media(max-width:850px){
+ .freedom-overview{grid-template-columns:1fr;gap:9px}
+ .freedom-hero{min-height:175px}
+ .freedom-figures{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto;height:auto;gap:8px}
+ .freedom-figures .freedom-figure-worth{grid-column:auto}
+ .freedom-figures .freedom-figure-worth strong{font-size:clamp(16px,2.4vw,25px)}
+ .freedom-figures article{min-height:92px;padding:12px}
+ .freedom-lower-grid{grid-template-columns:1fr;gap:9px}
+ .freedom-lower-grid .freedom-section-heading{min-height:0}
+ .freedom-lower-grid .freedom-lifestyle{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .freedom-page{gap:9px;padding:11px 10px 25px}
+ .freedom-heading h1{font-size:22px}
+ .freedom-heading p{font-size:9px}
+ .freedom-toolbar{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:7px}
+ .freedom-select-wrap,.freedom-price-rail{padding:9px 10px}
+ .freedom-price-rail strong{font-size:15px}
+ .freedom-hero{min-height:0;padding:15px 12px}
+ .freedom-hero h2{font-size:clamp(16px,4vw,19px)}
+ .freedom-hero p{font-size:10px}
+ .freedom-meter{width:102px;height:102px;flex-basis:102px}
+ .freedom-meter strong{font-size:21px}
+ .freedom-hero-foot-stat small{font-size:8px}
+ .freedom-hero-foot-stat strong{font-size:clamp(13px,3.8vw,17px)}
+ .freedom-figures{gap:6px}
+ .freedom-figures article{min-height:93px;padding:11px 8px;gap:7px}
+ .freedom-figures article strong{font-size:clamp(14px,3.8vw,18px)}
+ .freedom-figures .freedom-figure-worth strong{font-size:clamp(15px,3.9vw,19px)}
+ .freedom-figures article>span{font-size:8px}
+ .freedom-figures article small{font-size:8px}
+ .freedom-section{padding:13px 11px}
+ .freedom-section-heading{margin-bottom:11px}
+ .freedom-section-heading h2{font-size:13px}
+ .freedom-lower-grid .freedom-lifestyle-item{grid-template-columns:26px minmax(0,1fr);gap:6px;padding:10px 8px}
+ .freedom-lower-grid .freedom-lifestyle-item .freedom-lifestyle-result{grid-column:2;max-width:100%;text-align:left}
+ .freedom-lower-grid .freedom-target-grid strong{font-size:15px}
+ .freedom-tier-track{gap:5px}
+ .freedom-tier strong{font-size:8px}
+ .freedom-tier small{font-size:8px}
+}
+@media(max-width:365px){
+ .freedom-figures article strong,.freedom-figures .freedom-figure-worth strong{font-size:13px}
+ .freedom-meter{width:90px;height:90px;flex-basis:90px}
+ .freedom-hero-foot-stat strong{font-size:13px}
+}
+
+/* v3: Dedicated scroll surface in iOS standalone iframe; parent remains still. */
+html[data-inj-page="financial-freedom"]{
+ height:100%!important;min-height:0!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="financial-freedom"] body{
+ height:100%!important;min-height:0!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ -webkit-overflow-scrolling:touch;
+ overscroll-behavior-y:contain;
+ touch-action:pan-y!important;
+}
+html[data-inj-page="financial-freedom"] .freedom-page{
+ min-height:100%;height:auto;
+}
+html[data-inj-page="financial-freedom"] .freedom-settings input{
+ min-width:0;max-width:100%;
+}
+
+
+/* v5 · Personal spending list — editable, persistent, theme-adaptive. */
+.freedom-options{min-width:0}
+.freedom-spending-summary{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ min-width:0;padding:12px 13px;margin:-1px 0 11px;
+ border-radius:11px;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line));
+ background:color-mix(in srgb,var(--surface) 81%,transparent);
+}
+.freedom-spending-summary-copy{min-width:0;display:flex;flex-direction:column;gap:3px}
+.freedom-spending-summary-copy small{font-size:9px;font-weight:780;letter-spacing:.065em;color:var(--muted-strong)}
+.freedom-spending-summary-copy strong{
+ min-width:0;max-width:100%;
+ font-size:clamp(20px,2.3vw,27px);line-height:1.15;font-weight:800;
+ letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.freedom-spending-summary-copy>span{
+ font-size:10px;line-height:1.35;color:var(--muted-strong);
+}
+.freedom-spending-use-goal{
+ display:flex;align-items:center;justify-content:center;
+ flex:0 0 auto;max-width:43%;min-height:32px;padding:9px 12px;
+ border:1px solid color-mix(in srgb,var(--accent) 48%,var(--line));
+ border-radius:8px;background:color-mix(in srgb,var(--accent) 9%,var(--surface));
+ color:var(--accent);font-size:9px;font-weight:850;letter-spacing:.03em;
+ text-align:center;line-height:1.3;
+}
+.freedom-spending-use-goal:disabled{opacity:.33;cursor:default}
+.freedom-options .freedom-lifestyle{
+ display:grid;grid-template-columns:1fr!important;gap:6px!important;
+ min-width:0;
+}
+.freedom-options .freedom-lifestyle-item{
+ display:grid!important;
+ grid-template-columns:29px minmax(0,1fr) minmax(65px,auto) 25px!important;
+ grid-template-rows:auto 4px!important;
+ align-items:center!important;
+ gap:7px 9px!important;padding:10px 9px!important;
+ min-width:0;border:1px solid var(--line);border-radius:9px;
+ background:color-mix(in srgb,var(--surface) 49%,transparent);
+}
+.freedom-options .freedom-lifestyle-emoji{grid-column:1;grid-row:1;font-size:18px}
+.freedom-options .freedom-lifestyle-name{grid-column:2;grid-row:1;min-width:0;gap:3px}
+.freedom-options .freedom-lifestyle-name strong{
+ display:block;font-size:11px;line-height:1.24;white-space:normal;overflow-wrap:anywhere;
+}
+.freedom-options .freedom-lifestyle-name small{
+ display:block;font-size:9px;line-height:1.3;color:var(--muted-strong);
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.freedom-options .freedom-lifestyle-result{
+ grid-column:3!important;grid-row:1!important;
+ min-width:0!important;max-width:115px!important;
+ color:var(--accent);font-size:10px;font-weight:800;
+ line-height:1.25;text-align:right!important;white-space:normal;
+}
+.freedom-options .freedom-lifestyle-remove{
+ display:grid;grid-column:4!important;grid-row:1!important;place-items:center;
+ width:25px;height:26px;min-width:25px;padding:0!important;
+ border:1px solid color-mix(in srgb,var(--muted) 23%,transparent);
+ border-radius:7px;background:color-mix(in srgb,var(--surface) 68%,transparent);
+ color:var(--muted-strong);font-size:18px;line-height:1;
+}
+.freedom-options .freedom-lifestyle-remove:hover{
+ color:var(--text);border-color:var(--accent);
+}
+.freedom-options .freedom-lifestyle-progress{
+ grid-column:2/5;grid-row:2;height:4px;width:100%;
+ border-radius:5px;overflow:hidden;
+ background:color-mix(in srgb,var(--accent) 10%,var(--surface));
+}
+.freedom-options .freedom-lifestyle-progress span{
+ display:block;height:100%;width:0;border-radius:inherit;
+ background:var(--accent);opacity:.83;transition:width .2s ease;
+}
+.freedom-options .freedom-spending-empty{
+ padding:16px 10px;border:1px dashed var(--line);
+ border-radius:9px;text-align:center;font-size:10px;color:var(--muted-strong);
+}
+.freedom-spending-editor{
+ margin-top:10px;border:1px solid var(--line);border-radius:10px;
+ background:color-mix(in srgb,var(--surface) 54%,transparent);
+ overflow:hidden;
+}
+.freedom-spending-editor>summary{
+ display:flex;align-items:center;gap:9px;
+ min-height:41px;padding:9px 12px;
+ font-size:10px;font-weight:830;letter-spacing:.065em;
+ cursor:pointer;list-style:none;user-select:none;
+}
+.freedom-spending-editor>summary::-webkit-details-marker{display:none}
+.freedom-spending-plus{
+ display:grid;place-items:center;width:25px;height:25px;flex:0 0 25px;
+ border:1px solid color-mix(in srgb,var(--accent) 42%,var(--line));
+ border-radius:6px;color:var(--accent);font-size:18px;font-weight:600;line-height:1;
+}
+.freedom-spending-chevron{margin-left:auto;font-size:18px;transition:transform .2s ease}
+.freedom-spending-editor[open] .freedom-spending-chevron{transform:rotate(180deg)}
+.freedom-spending-form{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;padding:12px;border-top:1px solid var(--line);
+}
+.freedom-spending-form label{
+ display:flex;flex-direction:column;gap:6px;min-width:0;
+}
+.freedom-spending-form-wide{grid-column:1/-1}
+.freedom-spending-form label>span{
+ font-size:9px;font-weight:790;letter-spacing:.065em;color:var(--muted-strong);
+}
+.freedom-spending-form :is(input,select){
+ width:100%;min-width:0;max-width:100%;height:38px;
+ border:1px solid var(--line);border-radius:8px;
+ background:color-mix(in srgb,var(--surface) 92%,transparent);
+ color:var(--text);padding:8px 10px;
+ font-size:12px;font-variant-numeric:tabular-nums;
+}
+.freedom-spending-form input::placeholder{color:var(--muted)}
+.freedom-spending-form select option{background:var(--surface);color:var(--text)}
+.freedom-spending-form>button{
+ grid-column:1/-1;min-height:39px;
+ border:1px solid color-mix(in srgb,var(--accent) 46%,var(--line));
+ border-radius:8px;background:color-mix(in srgb,var(--accent) 11%,var(--surface));
+ color:var(--accent);font-size:10px;font-weight:850;letter-spacing:.055em;
+}
+.freedom-spending-form>button:active{opacity:.72}
+.freedom-spending-form #freedomSpendingError{
+ grid-column:1/-1;min-height:0;font-size:9px;color:var(--muted-strong);line-height:1.3;
+}
+.freedom-spending-form #freedomSpendingError:empty{display:none}
+.privacy-active .freedom-spending-summary-copy{filter:blur(10px);pointer-events:none;user-select:none}
+@media(max-width:560px){
+ .freedom-spending-summary{padding:11px 10px;gap:8px}
+ .freedom-spending-summary-copy strong{font-size:22px}
+ .freedom-spending-use-goal{font-size:8px;padding:8px 9px;max-width:42%}
+ .freedom-options .freedom-lifestyle-item{
+  grid-template-columns:25px minmax(0,1fr) minmax(58px,auto) 24px!important;
+  gap:7px 6px!important;padding:10px 8px!important;
+ }
+ .freedom-options .freedom-lifestyle-emoji{font-size:17px}
+ .freedom-options .freedom-lifestyle-name strong{font-size:11px}
+ .freedom-options .freedom-lifestyle-result{font-size:9px!important}
+ .freedom-options .freedom-lifestyle-progress{grid-column:2/5}
+ .freedom-spending-editor>summary{padding:10px}
+ .freedom-spending-form{gap:8px;padding:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .freedom-spending-chevron,.freedom-options .freedom-lifestyle-progress span{transition:none}
+}
+
+
+/* v6 · Calm premium expense list, guarded editing and iOS no-focus-zoom. */
+.freedom-spending-header-actions{
+ display:flex;align-items:center;justify-content:flex-end;gap:10px;
+ min-width:0;flex:0 0 auto;
+}
+.freedom-spending-header-actions #freedomSpendHint{
+ margin:0;white-space:nowrap;font-size:9px!important;
+ letter-spacing:.07em;color:var(--muted);font-weight:680;
+}
+#freedomSpendingManage{
+ appearance:none;-webkit-appearance:none;flex:0 0 auto;
+ display:inline-flex;align-items:center;justify-content:center;
+ padding:7px 11px;min-height:33px;
+ border:1px solid var(--line);border-radius:8px;
+ background:color-mix(in srgb,var(--surface) 70%,transparent);
+ color:var(--muted-strong);font-size:10px;font-weight:800;
+ letter-spacing:.065em;line-height:1.1;white-space:nowrap;
+ transition:border-color .16s ease,color .16s ease;
+}
+#freedomSpendingManage[aria-pressed="true"]{
+ border-color:color-mix(in srgb,var(--accent) 42%,var(--line));
+ color:var(--accent);
+}
+.freedom-options .freedom-lifestyle-item{
+ grid-template-columns:29px minmax(0,1fr) minmax(65px,auto)!important;
+ grid-template-rows:auto 4px!important;
+ border-color:color-mix(in srgb,var(--line) 86%,transparent);
+ background:color-mix(in srgb,var(--surface) 45%,transparent);
+}
+.freedom-options .freedom-lifestyle-name{
+ gap:4px;align-self:center;
+}
+.freedom-options .freedom-lifestyle-name strong{
+ color:var(--text);font-weight:760;
+ font-size:11px;line-height:1.25;
+}
+.freedom-options .freedom-lifestyle-name small{
+ letter-spacing:0;font-size:10px;
+ color:var(--muted-strong);line-height:1.3;
+}
+.freedom-options .freedom-lifestyle-result{
+ grid-column:3!important;grid-row:1!important;
+ justify-self:end;text-align:right!important;
+ font-variant-numeric:tabular-nums;
+ font-size:11px;font-weight:820;
+ max-width:115px!important;white-space:normal;
+}
+.freedom-options .freedom-lifestyle-progress{
+ grid-column:2/4!important;grid-row:2!important;height:3px;
+}
+.freedom-options .freedom-lifestyle-remove{
+ display:none!important;
+}
+.freedom-options.is-managing .freedom-lifestyle-item{
+ grid-template-columns:29px minmax(0,1fr) minmax(65px,auto) minmax(70px,auto)!important;
+}
+.freedom-options.is-managing .freedom-lifestyle-result{
+ max-width:110px!important;
+}
+.freedom-options.is-managing .freedom-lifestyle-remove{
+ display:inline-flex!important;
+ grid-column:4!important;grid-row:1!important;
+ align-items:center;justify-content:center;
+ min-width:65px;width:auto;height:30px;padding:0 7px!important;
+ border-color:color-mix(in srgb,var(--muted) 24%,var(--line));
+ border-radius:7px;background:transparent;color:var(--muted);
+ font-size:9px;font-weight:760;line-height:1;
+ letter-spacing:.035em;text-transform:uppercase;
+}
+.freedom-options.is-managing .freedom-lifestyle-remove:hover,
+.freedom-options.is-managing .freedom-lifestyle-remove:focus-visible{
+ border-color:color-mix(in srgb,var(--accent) 48%,var(--line));
+ color:var(--text);
+}
+.freedom-options.is-managing .freedom-lifestyle-remove.is-confirming{
+ background:color-mix(in srgb,var(--accent) 10%,var(--surface));
+ border-color:var(--accent);color:var(--accent);
+}
+.freedom-options.is-managing .freedom-lifestyle-progress{grid-column:2/5!important}
+.freedom-options .freedom-spending-editor{margin-top:12px}
+.freedom-spending-form #freedomSpendingSearch{
+ appearance:auto;-webkit-appearance:searchfield;
+}
+.freedom-spending-form #freedomSpendingPreset,
+.freedom-spending-form #freedomSpendingPeriod{
+ appearance:auto;-webkit-appearance:menulist;
+}
+/* iOS Safari auto-zooms focusable form fields when the computed font
+   is under 16px. Apply at every phone/tablet viewport and coarse pointer,
+   without disabling user pinch-zoom accessibility. */
+@media(max-width:1024px),(pointer:coarse){
+ html[data-inj-page="financial-freedom"] :is(
+  .freedom-select-wrap select,
+  .freedom-spending-form input,
+  .freedom-spending-form select,
+  .freedom-settings input
+ ){
+  font-size:16px!important;
+  line-height:1.25!important;
+  min-height:42px!important;
+  touch-action:manipulation;
+  -webkit-text-size-adjust:100%;
+ }
+ html[data-inj-page="financial-freedom"] .freedom-spending-form select option{
+  font-size:16px!important;
+ }
+}
+@media(max-width:560px){
+ .freedom-spending-header-actions{gap:7px}
+ #freedomSpendingManage{min-height:31px;padding:7px 9px;font-size:9px}
+ .freedom-options .freedom-lifestyle-item{
+  grid-template-columns:25px minmax(0,1fr) minmax(55px,auto)!important;
+  grid-template-rows:auto 3px!important;
+  gap:6px 7px!important;
+  padding:11px 9px!important;
+ }
+ .freedom-options .freedom-lifestyle-result{
+  font-size:10px!important;max-width:90px!important;
+ }
+ .freedom-options .freedom-lifestyle-progress{grid-column:2/4!important}
+ .freedom-options.is-managing .freedom-lifestyle-item{
+  grid-template-columns:25px minmax(0,1fr) minmax(53px,auto) minmax(59px,auto)!important;
+  gap:6px 5px!important;
+ }
+ .freedom-options.is-managing .freedom-lifestyle-remove{
+  min-width:58px!important;padding:0 5px!important;
+  height:29px!important;font-size:8px!important;
+ }
+ .freedom-options.is-managing .freedom-lifestyle-progress{grid-column:2/5!important}
+}
+@media(max-width:350px){
+ .freedom-spending-header-actions #freedomSpendHint{display:none}
+ .freedom-options.is-managing .freedom-lifestyle-item{
+  grid-template-columns:23px minmax(0,1fr) minmax(47px,auto) minmax(52px,auto)!important;
+ }
+ .freedom-options.is-managing .freedom-lifestyle-remove{min-width:52px!important;font-size:8px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #freedomSpendingManage{transition:none}
+}
+
+
+/* v8 · Return selected expenses to the original two-column cube layout.
+   Each cube separates recurrent coverage (%) from reward affordability
+   (one expense every N days). Deletion stays hidden outside Manage. */
+.freedom-options #freedomLifestyle.freedom-lifestyle{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:10px!important;
+ align-items:stretch!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item{
+ display:grid!important;
+ position:relative!important;
+ grid-template-columns:minmax(0,1fr) auto!important;
+ grid-template-rows:25px minmax(33px,auto) auto auto 4px!important;
+ gap:6px 8px!important;
+ align-content:start!important;
+ min-height:169px!important;
+ width:100%!important;
+ padding:13px 12px 12px!important;
+ border-radius:12px!important;
+ background:color-mix(in srgb,var(--surface) 59%,transparent)!important;
+ border:1px solid var(--line)!important;
+ box-shadow:inset 0 1px color-mix(in srgb,var(--text) 3%,transparent);
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-emoji{
+ grid-column:1!important;grid-row:1!important;
+ justify-self:start!important;align-self:center!important;
+ width:25px!important;font-size:19px!important;text-align:left!important;
+ line-height:1.1!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-name{
+ grid-column:1/-1!important;grid-row:2!important;
+ align-self:start!important;min-width:0!important;
+ gap:4px!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-name strong{
+ display:block!important;font-size:11px!important;font-weight:800!important;
+ line-height:1.3!important;letter-spacing:.01em!important;
+ overflow-wrap:anywhere!important;white-space:normal!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-name small{
+ display:block!important;color:var(--muted-strong)!important;
+ font-size:10px!important;line-height:1.35!important;
+ text-overflow:clip!important;overflow:visible!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-result{
+ display:block!important;
+ grid-column:1/-1!important;grid-row:3!important;
+ justify-self:start!important;text-align:left!important;
+ min-width:0!important;max-width:100%!important;
+ font-size:11px!important;line-height:1.23!important;
+ font-weight:850!important;letter-spacing:0!important;
+ white-space:normal!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-cadence{
+ display:block!important;
+ grid-column:1/-1!important;grid-row:4!important;
+ color:var(--muted-strong)!important;
+ font-size:9px!important;line-height:1.45!important;
+ font-weight:730!important;letter-spacing:.035em!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-progress{
+ display:block!important;
+ grid-column:1/-1!important;grid-row:5!important;
+ width:100%!important;height:4px!important;
+ margin-top:3px!important;
+ border-radius:8px!important;
+}
+.freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-remove{
+ display:none!important;
+}
+.freedom-options.is-managing #freedomLifestyle>.freedom-lifestyle-item{
+ grid-template-columns:minmax(0,1fr) auto!important;
+}
+.freedom-options.is-managing #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-remove{
+ display:inline-flex!important;
+ grid-column:2!important;grid-row:1!important;
+ justify-self:end!important;align-self:center!important;
+ width:auto!important;min-width:58px!important;height:28px!important;
+ padding:0 7px!important;
+ font-size:8px!important;
+ letter-spacing:.015em!important;
+}
+.freedom-options #freedomLifestyle>.freedom-spending-empty{
+ grid-column:1/-1!important;
+}
+@media(max-width:560px){
+ .freedom-options #freedomLifestyle.freedom-lifestyle{gap:7px!important}
+ .freedom-options #freedomLifestyle>.freedom-lifestyle-item{
+  min-height:164px!important;
+  padding:11px 9px 10px!important;
+  gap:5px 6px!important;
+  grid-template-rows:24px minmax(36px,auto) auto auto 4px!important;
+ }
+ .freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-name strong{font-size:10px!important}
+ .freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-name small{font-size:9px!important}
+ .freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-result{font-size:10px!important}
+ .freedom-options #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-cadence{font-size:9px!important}
+}
+@media(max-width:360px){
+ .freedom-options #freedomLifestyle.freedom-lifestyle{gap:6px!important}
+ .freedom-options #freedomLifestyle>.freedom-lifestyle-item{
+  padding:10px 8px!important;
+  min-height:170px!important;
+ }
+ .freedom-options.is-managing #freedomLifestyle>.freedom-lifestyle-item .freedom-lifestyle-remove{
+  min-width:52px!important;padding:0 5px!important;font-size:8px!important;
+ }
+}

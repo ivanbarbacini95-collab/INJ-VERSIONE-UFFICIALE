@@ -1,0 +1,116 @@
+/* INJ Node · My Reward · minimal wallet-scoped live reward surface. */
+html[data-inj-page="index"] body #entryGate #injMyRewardPanel[hidden],
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="reward"]) body #entryGate #injMyRewardPanel{display:none!important}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+ display:block!important;grid-column:1!important;width:100%!important;min-width:0!important;
+ overflow:visible!important;padding:0!important;min-height:0!important
+}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate #injMyRewardPanel{
+ display:block!important;width:100%!important;grid-column:1/-1!important;min-width:0!important;max-width:1140px!important;
+ margin:0 auto!important;padding:0 0 20px!important;box-sizing:border-box!important
+}
+#injMyRewardPanel [hidden]{display:none!important}
+#injMyRewardPanel *,#entryMyRewardButton *{box-sizing:border-box}
+#injMyRewardPanel{color:var(--text,#e8f5ef)}
+#injMyRewardPanel .inj-myreward-pages{
+ display:flex;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
+ -webkit-overflow-scrolling:touch;touch-action:pan-x;
+ gap:7px;padding:2px 1px 16px;white-space:nowrap;
+}
+#injMyRewardPanel .inj-myreward-pages::-webkit-scrollbar{display:none}
+#injMyRewardPanel .inj-myreward-pages button{
+ flex:0 0 auto;min-height:39px;padding:9px 13px;cursor:pointer;
+ border-radius:13px;background:color-mix(in srgb,var(--surface,#112a28) 82%,transparent);
+ color:var(--muted-strong,#acc5bf);border:1px solid color-mix(in srgb,var(--text,#f0fbf6) 10%,transparent);
+ font:500 clamp(11px,2.8vw,13px) var(--inj-chosen-face,system-ui,sans-serif);
+}
+#injMyRewardPanel .inj-myreward-pages button.is-active{
+ background:color-mix(in srgb,var(--accent,#96e3c9) 13%,var(--surface,#112a28));
+ border-color:color-mix(in srgb,var(--accent,#96e3c9) 40%,transparent);color:var(--accent,#9be6cc);
+}
+#injMyRewardPanel .inj-myreward-viewport{min-width:0;width:100%;overflow:visible}
+#injMyRewardPanel .inj-myreward-overview{width:100%;display:grid;gap:14px;padding-bottom:8px}
+#injMyRewardPanel .inj-myreward-wallet-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+ gap:12px;padding:8px 1px}
+#injMyRewardPanel .inj-myreward-wallet-title{display:grid;gap:5px;min-width:0;max-width:100%}
+#injMyRewardPanel .inj-myreward-wallet-title small,#injMyRewardPanel .inj-myreward-picker>span{
+ color:var(--muted-strong,#a2c3bc);font-size:10px;letter-spacing:.1em}
+#injMyRewardPanel .inj-myreward-wallet-title strong{font-size:clamp(15px,3.2vw,20px);font-weight:650;overflow:hidden;text-overflow:ellipsis}
+#injMyRewardPanel #injMyRewardAddress{font-size:11px;color:var(--muted,#8aa7a0);font-variant-numeric:tabular-nums}
+#injMyRewardPanel .inj-myreward-picker{display:grid;gap:6px;min-width:min(100%,240px)}
+#injMyRewardPanel .inj-myreward-picker select{max-width:100%;height:40px;border-radius:11px;padding:8px 10px;
+ border:1px solid color-mix(in srgb,var(--accent,#9ce8d2) 24%,transparent);
+ background:var(--surface,#102424);color:var(--text,#effcf5);font-size:13px}
+#injMyRewardPanel .inj-myreward-stake-card{position:relative;overflow:hidden;isolation:isolate;
+ border:1px solid color-mix(in srgb,var(--accent,#89dcc8) 22%,var(--line,#54665f));
+ background:linear-gradient(142deg,color-mix(in srgb,var(--surface,#112521) 95%,transparent),
+ color-mix(in srgb,var(--accent,#89dcc8) 4%,var(--surface,#112521)));
+ border-radius:23px;box-shadow:0 9px 28px rgba(0,0,0,.09);
+ padding:clamp(22px,5vw,42px);display:flex;flex-direction:column;align-items:flex-start;
+ min-height:310px
+}
+#injMyRewardPanel .inj-myreward-card-top{width:100%;display:flex;align-items:center;justify-content:space-between;
+ gap:10px;flex-wrap:wrap;margin-bottom:14px}
+#injMyRewardPanel .inj-myreward-card-top>span:first-child,#injMyRewardPanel .inj-myreward-reward-label{
+ color:var(--muted-strong,#a2bdb7);font-size:clamp(10px,2.5vw,12px);letter-spacing:.11em;font-weight:600}
+#injMyRewardPanel .inj-myreward-status{font-size:10px;letter-spacing:.07em;
+ color:var(--muted,#b0c1c1);display:inline-flex;align-items:center;gap:7px}
+#injMyRewardPanel .inj-myreward-status::before{content:'';width:6px;height:6px;flex:none;border-radius:50%;
+ background:currentColor;opacity:.75}
+#injMyRewardPanel .inj-myreward-status[data-state="live"]{color:var(--accent,#87e6c6)}
+#injMyRewardPanel .inj-myreward-status[data-state="stale"]{color:#e8a98a}
+#injMyRewardPanel .inj-myreward-staked{
+ font-size:clamp(30px,6.8vw,64px);line-height:1.14;font-weight:650;letter-spacing:-.035em;
+ font-variant-numeric:tabular-nums;overflow-wrap:anywhere;max-width:100%}
+#injMyRewardPanel .inj-myreward-fiat{font-size:clamp(17px,3.5vw,28px);font-weight:500;
+ color:var(--accent,#9de8d0);margin-top:7px;font-variant-numeric:tabular-nums}
+#injMyRewardPanel .inj-myreward-separator{height:1px;width:100%;margin:28px 0 24px;
+ background:linear-gradient(90deg,color-mix(in srgb,var(--text,#edf8f5) 20%,transparent),transparent)}
+#injMyRewardPanel .inj-myreward-accrued{
+ display:block;font-size:clamp(22px,5.3vw,44px);font-weight:600;line-height:1.3;
+ letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;
+ max-width:100%;margin-top:9px}
+#injMyRewardPanel .inj-myreward-reward-fiat{font-size:clamp(12px,2.8vw,18px);
+ color:var(--muted-strong,#b4c9c3);font-variant-numeric:tabular-nums;margin-top:5px}
+#injMyRewardPanel .inj-myreward-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#injMyRewardPanel .inj-myreward-meta>div{border:1px solid color-mix(in srgb,var(--text,#edf8f5) 9%,transparent);
+ background:color-mix(in srgb,var(--surface,#142725) 85%,transparent);
+ border-radius:16px;padding:15px 18px;display:grid;gap:7px;min-width:0}
+#injMyRewardPanel .inj-myreward-meta small{font-size:10px;color:var(--muted,#97a9a8);letter-spacing:.08em}
+#injMyRewardPanel .inj-myreward-meta strong{font-size:clamp(14px,3vw,20px);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#injMyRewardPanel .inj-myreward-updated,#injMyRewardPanel .inj-myreward-explanation{
+ margin:0;color:var(--muted,#9bb1aa);font-size:11px;line-height:1.6}
+#injMyRewardPanel .inj-myreward-frame-host{display:block;width:100%;min-width:0;
+ height:calc(100dvh - 168px);min-height:480px;max-height:1080px;overflow:hidden;
+ border-radius:17px;border:1px solid color-mix(in srgb,var(--text,#e6f9f2) 9%,transparent);
+ background:var(--bg,#07141e)}
+#injMyRewardPanel .inj-myreward-frame{width:100%;height:100%;border:0;display:block;
+ overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+html[data-inj-page="index"] body #entryGate #entryMyRewardButton.entry-action{grid-column:auto!important;
+ min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate .entry-actions > #entryMyRewardButton{
+ order:3!important}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate .entry-actions > #entryTreasuryButton{
+ order:4!important}
+html[data-inj-page="index"] body.privacy-on #injMyRewardPanel .private,
+html[data-inj-page="index"] body.privacy-on #injMyRewardPanel .inj-myreward-meta strong{
+ filter:blur(8px)!important;user-select:none!important}
+@media(min-width:1100px){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  grid-template-rows:auto auto auto!important;min-height:0!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryMyRewardButton.entry-action{height:92px!important;min-height:92px!important;max-height:92px!important;grid-column:1/-1!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action{grid-row:auto!important;grid-column:1/-1!important}
+}
+@media(max-width:520px){
+ #injMyRewardPanel .inj-myreward-wallet-head{align-items:stretch}
+ #injMyRewardPanel .inj-myreward-picker{min-width:100%}
+ #injMyRewardPanel .inj-myreward-frame-host{height:calc(100dvh - 138px);min-height:380px}
+ #injMyRewardPanel .inj-myreward-stake-card{min-height:290px}
+}
+@media(prefers-reduced-motion:reduce){
+ #injMyRewardPanel *{scroll-behavior:auto!important}
+}

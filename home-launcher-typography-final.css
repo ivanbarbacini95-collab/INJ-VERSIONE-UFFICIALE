@@ -1,0 +1,86 @@
+/* INJ NODE · Home launcher final typography + Treasury alignment
+   2026-10-28 · Scoped to the returning-user Home in every theme.
+   No changes to launcher hit areas, ordering, card height, events data or translations. */
+
+/* Market Events: use the identical UI face as INJC ETF and Workspace captions.
+   The preview text stays live, single-line and ellipsized before the ★★★ rail. */
+html[data-inj-page="index"] body #entryGate
+ .inj-market-events-slot > #entryMarketEventsButton.entry-action
+ > .inj-events-tile-copy > small.inj-events-next-text {
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:11px!important;
+  font-weight:500!important;
+  line-height:1.25!important;
+  letter-spacing:.01em!important;
+  text-transform:none!important;
+  color:color-mix(in srgb,var(--text,#dbe9f8) 75%,transparent)!important;
+  opacity:1!important;
+  display:block!important;
+  max-width:100%!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:left!important;
+}
+
+/* Treasury: keep the brand at left and INJ TREASURY at right, but put
+   "Totale dei tuoi wallet" directly beneath the left-hand brand. The
+   existing translation nodes and the complete single-link target remain. */
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy {
+  grid-template-columns:minmax(0,1fr) max-content!important;
+  grid-template-rows:auto auto!important;
+  align-content:center!important;
+  align-items:center!important;
+  row-gap:4px!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action-treasury
+ > .treasury-entry-copy > strong.inj-home-tile-title {
+  grid-column:1!important;
+  grid-row:1!important;
+  align-self:end!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action-treasury
+ > .treasury-entry-copy > .treasury-entry-details {
+  display:contents!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action-treasury
+ > .treasury-entry-copy > .treasury-entry-details > .treasury-entry-subtitle {
+  grid-column:2!important;
+  grid-row:1 / span 2!important;
+  justify-self:end!important;
+  align-self:center!important;
+  text-align:right!important;
+}
+html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action-treasury
+ > .treasury-entry-copy > .treasury-entry-details > .inj-tile-description {
+  grid-column:1!important;
+  grid-row:2!important;
+  justify-self:start!important;
+  align-self:start!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+@media(max-width:375px) {
+ html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryTreasuryButton.entry-action-treasury > .treasury-entry-copy {
+   column-gap:5px!important;
+   row-gap:3px!important;
+ }
+}

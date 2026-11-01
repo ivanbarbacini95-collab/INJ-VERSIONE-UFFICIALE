@@ -1,0 +1,94 @@
+/* INJ Node | Android native scroll, 2026-11-01.
+   Android Home/Reward/More uses ONE scroll owner (the document). Previously
+   both html and body were overflow:auto and Home also had its own 100dvh box.
+   Respect real overlays; keep Market/ETF and horizontal wallet controls intact. */
+
+html[data-inj-page="index"][data-inj-platform="android"]
+  body.entry-gate-open:not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open) {
+  overscroll-behavior-y:auto!important;
+}
+
+/* Only the visible Home or tabbed launcher, never a modal/immersive page. */
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"]):has(>body.entry-gate-open:not(.boot-loading):not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open)):not(:has(.inj-content-frame,dialog[open],#injMarketPortal:not([hidden]),#injMarketEventsOverlay:not([hidden]),#injFreedomOverlay:not([hidden]),#converterView.open,#performanceTimelineView.open)) {
+  position:static!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open:not(.boot-loading):not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open) {
+  position:static!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:auto!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open:not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch)
+  #entryGate#entryGate.entry-gate.visible[aria-hidden="false"]:not(.immersive-underlay):not(.dashboard-underlay) {
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+  contain:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open #entryGate.entry-gate.visible[aria-hidden="false"]
+  >.entry-gate-shell:not(.first-access) {
+  position:relative!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  touch-action:auto!important;
+  align-content:start!important;
+  contain:none!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open #entryGate.entry-gate.visible[aria-hidden="false"]
+  >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44 {
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* Native Dashboard after closing Home; never unlock a real overlay. */
+html[data-inj-page="index"][data-inj-platform="android"][data-inj-scroll="dashboard"]:not(:has(#entryGate.visible[aria-hidden="false"],.inj-content-frame,dialog[open],#injMarketPortal:not([hidden]),#converterView.open,#performanceTimelineView.open)) {
+  position:static!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  touch-action:auto!important;
+}
+html[data-inj-page="index"][data-inj-platform="android"][data-inj-scroll="dashboard"]
+  body.dashboard-scroll-ready:not(.entry-gate-open):not(.menu-overlay-open):not(.inj-section-open):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open) {
+  position:static!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+}

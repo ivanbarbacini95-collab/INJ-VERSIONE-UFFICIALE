@@ -2,6 +2,10 @@
 (() => {
   'use strict';
   const launcher = document.getElementById('entryMarketButton');
+  const marketLaunchers = [launcher,
+    document.getElementById('entryGlobalMarketsButton'),
+    document.getElementById('entryGlobalCryptoButton'),
+    document.getElementById('entryMarketFavoritesButton')].filter(Boolean);
   const portal = document.getElementById('injMarketPortal');
   const frame = document.getElementById('injMarketFrame');
   if (!launcher || !portal || !frame) return;
@@ -23,7 +27,7 @@
   const originalTitle = document.title;
   const titleFor = () => { try { return localStorage.getItem('inj_node_language_v1') === 'en' ? 'Market' : 'Mercato'; } catch (_) { return 'Mercato'; } };
   const insideOrigin = (location.origin && location.origin !== 'null') ? location.origin : '*';
-  function reveal() {
+  function reveal(requestedView = 'intel') {
     if (open) return;
     window.INJ_HOME_SCROLL?.save();
     open = true;
@@ -33,7 +37,9 @@
     portal.setAttribute('aria-label', titleFor());
     frame.title = titleFor();
     // The primary app, wallet selection and Home are untouched underneath.
-    frame.src = './market.html?v=16102450&lang=' + (window.INJ_I18N?.getLanguage?.() || localStorage.getItem('inj_node_language_v1') || 'it');
+    const target=['intel','world','crypto','favorites'].includes(requestedView)?requestedView:'intel';
+    frame.src = './market.html?v=20261030favorites1&entry=' + target +
+      '&lang=' + (window.INJ_I18N?.getLanguage?.() || localStorage.getItem('inj_node_language_v1') || 'it');
     document.title = 'INJ NODE | ' + titleFor();
     // Keep the parent URL/history stationary: an edge swipe must not close Market.
   }
@@ -53,12 +59,11 @@
       if (!open) window.INJ_HOME_SCROLL?.restore();
     });
   }
-  launcher.addEventListener('click', (event) => {
-    // Ordinary keyboard/touch interaction stays in INJ Node. Modified clicks
-    // still allow the standalone URL to be opened in another tab.
+  for (const card of marketLaunchers) card.addEventListener('click', (event) => {
+    // All three cards reuse the single market iframe and its live data source.
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
     event.preventDefault();
-    reveal();
+    reveal(card.dataset.injMarketView || 'intel');
   });
   window.addEventListener('message', (event) => {
     if (event.source !== frame.contentWindow) return;

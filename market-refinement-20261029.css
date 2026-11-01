@@ -1,0 +1,220 @@
+/* INJ Node / Market density & live ribbon · 29 Oct 2026
+   Pure presentation: quote requests, source status, asset routing and app
+   scrolling remain owned by their existing scripts. */
+html[data-inj-market] #marketTicker.market-ticker{
+ position:sticky!important;top:0!important;z-index:85!important;
+ width:100%!important;min-height:38px!important;height:38px!important;
+ margin:0 0 9px!important;
+ border:1px solid color-mix(in srgb,var(--line,#455766) 60%,transparent)!important;
+ border-radius:11px!important;
+ background:color-mix(in srgb,var(--panel,#0c1824) 94%,var(--theme-canvas,var(--bg,#08121c)))!important;
+ box-shadow:0 3px 13px rgba(0,0,0,.075)!important;
+ isolation:isolate;
+}
+html[data-inj-market] #marketTicker :is(.market-ticker-viewport,.market-ticker-track){
+ min-height:36px!important;height:36px!important;
+}
+html[data-inj-market] #marketTicker .market-ticker-group{
+ min-height:36px!important;gap:17px!important;padding:0 15px!important;
+}
+html[data-inj-market] #marketTicker .market-ticker-item{gap:6px!important}
+html[data-inj-market] #marketTicker .market-ticker-label{
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-weight:400!important;font-size:10px!important;letter-spacing:.075em!important;
+}
+html[data-inj-market] #marketTicker .market-ticker-number{
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-weight:400!important;font-size:11px!important;letter-spacing:0!important;
+}
+html[data-inj-market] #marketTicker .market-ticker-track{
+ animation-duration:76s!important;will-change:transform;
+}
+html[data-inj-market] #marketTicker .market-ticker-track:has(.market-ticker-wait){animation:none!important}
+html[data-inj-market] #marketTicker .market-ticker-wait{
+ font-size:10px!important;font-weight:400!important;letter-spacing:.02em!important;
+}
+/* A single horizontal category rail immediately below Global Markets' intro.
+   It stays reachable while scrolling long sections, without forcing the user
+   to go back to the world map. Under the 38px global metrics ribbon. */
+html[data-inj-market][data-market-section="world"] #injWorldQuickNav.inj-wm-quick-nav{
+ position:sticky!important;top:40px!important;z-index:79!important;
+ margin:7px 0 10px!important;padding:5px 5px 7px!important;
+ border:1px solid color-mix(in srgb,var(--line,#455766) 55%,transparent)!important;
+ border-radius:12px!important;
+ background:color-mix(in srgb,var(--panel,#0c1824) 96%,var(--theme-canvas,var(--bg,#08121c)))!important;
+ box-shadow:0 3px 12px rgba(0,0,0,.07)!important;
+}
+html[data-inj-market] #injWorldQuickNav > button[data-world-jump]{
+ min-height:34px!important;padding:7px 11px!important;
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-weight:400!important;font-size:11px!important;letter-spacing:.012em!important;
+ border-radius:9px!important;
+}
+html[data-inj-market][data-market-section="world"] .inj-world-section{
+ scroll-margin-top:109px!important;
+ padding:clamp(10px,1vw,16px)!important;
+ margin-top:10px!important;
+ border-radius:15px!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-section-head{
+ margin-bottom:10px!important;padding-bottom:9px!important;gap:8px!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-section-head h3{
+ font-weight:400!important;font-size:clamp(17px,1.7vw,22px)!important;
+ letter-spacing:0!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-section-head p{
+ font-size:10.5px!important;line-height:1.4!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-grid{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:7px!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-grid.sectors{
+ grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-stock-sector .inj-wm-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-stocks{gap:15px 13px!important}
+html[data-inj-market] #injWorldMarket .inj-wm-regions{gap:13px!important;margin-top:13px!important}
+html[data-inj-market] #injWorldMarket .inj-wm-region-title{
+ font-size:11px!important;font-weight:400!important;
+ margin-bottom:7px!important;letter-spacing:.06em!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-tile{
+ display:flex!important;flex-flow:column nowrap!important;
+ gap:5px!important;justify-content:space-between!important;
+ min-height:83px!important;height:auto!important;
+ padding:9px 10px!important;border-radius:11px!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 4%,transparent)!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-sector-card{min-height:91px!important}
+html[data-inj-market] #injWorldMarket .inj-wm-name{
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-size:clamp(11px,.85vw,13px)!important;font-weight:400!important;
+ line-height:1.22!important;letter-spacing:.005em!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-symbol{
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-size:9.5px!important;line-height:1.3!important;letter-spacing:0!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-tile-values{
+ display:flex!important;align-items:baseline!important;
+ justify-content:space-between!important;flex-wrap:wrap!important;
+ gap:3px 8px!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-price{
+ font-weight:400!important;font-size:clamp(11px,.86vw,14px)!important;
+ line-height:1.2!important;letter-spacing:-.01em!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-change{
+ font-weight:400!important;font-size:clamp(11px,.88vw,14px)!important;
+ line-height:1.2!important;letter-spacing:0!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-tile-meta{
+ display:block!important;min-width:0!important;max-width:100%!important;
+ font:400 9px/1.25 var(--inj-minimal-font,system-ui,sans-serif)!important;
+ letter-spacing:0!important;white-space:nowrap!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;
+ color:var(--muted,#9cabb5)!important;opacity:.78!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-proxy{
+ font-size:9px!important;line-height:1.2!important;
+}
+html[data-inj-market] #injWorldMarket .inj-wm-subgroup-title{
+ grid-column:1/-1!important;min-width:0!important;
+ margin:5px 0 0!important;padding:7px 1px 4px!important;
+ font:400 10px/1.2 var(--inj-minimal-font,system-ui,sans-serif)!important;
+ letter-spacing:.1em!important;color:var(--muted)!important;
+ border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)!important;
+}
+/* Crypto market overview metrics no longer consume excessive vertical space. */
+html[data-inj-market] #injGlobalMarket .overview{
+ gap:7px!important;margin:0 0 10px!important;
+}
+html[data-inj-market] #injGlobalMarket .overview article{
+ min-height:83px!important;padding:10px 11px!important;
+ gap:3px!important;border-radius:12px!important;
+}
+html[data-inj-market] #injGlobalMarket .overview article strong{
+ font-size:clamp(16px,1.8vw,24px)!important;min-height:0!important;
+ line-height:1.13!important;
+}
+html[data-inj-market] #injGlobalMarket .overview article small{
+ font-weight:400!important;font-size:9px!important;
+}
+@media(min-width:1400px){
+ html[data-inj-market] #injWorldMarket .inj-wm-grid,
+ html[data-inj-market] #injWorldMarket .inj-wm-grid.sectors{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:1050px){
+ html[data-inj-market] #injWorldMarket .inj-wm-grid,
+ html[data-inj-market] #injWorldMarket .inj-wm-grid.sectors{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:690px){
+ html[data-inj-market] #marketTicker.market-ticker{border-radius:9px!important}
+ html[data-inj-market] #marketTicker .market-ticker-track{animation-duration:82s!important}
+ html[data-inj-market] #injWorldMarket .inj-wm-grid,
+ html[data-inj-market] #injWorldMarket .inj-wm-grid.sectors,
+ html[data-inj-market] #injWorldMarket .inj-wm-stock-sector .inj-wm-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;
+ }
+ html[data-inj-market] #injWorldMarket .inj-wm-tile{
+  min-height:85px!important;padding:9px 8px!important;gap:5px!important;
+ }
+ html[data-inj-market] #injWorldMarket .inj-wm-sector-card{min-height:92px!important}
+ html[data-inj-market] #injWorldMarket .inj-wm-name{font-size:11.5px!important}
+ html[data-inj-market] #injWorldMarket .inj-wm-price{font-size:11.4px!important}
+ html[data-inj-market] #injWorldMarket .inj-wm-change{font-size:11.7px!important}
+ html[data-inj-market] #injWorldMarket .inj-wm-tile-meta{font-size:8.6px!important}
+ html[data-inj-market] #injGlobalMarket .overview article{min-height:80px!important;padding:9px!important}
+ html[data-inj-market] #injGlobalMarket .overview article strong{font-size:clamp(15px,4.2vw,20px)!important}
+}
+@media(max-width:340px){
+ html[data-inj-market] #injWorldMarket .inj-wm-grid,
+ html[data-inj-market] #injWorldMarket .inj-wm-grid.sectors{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-inj-market] #injWorldMarket .inj-wm-name{font-size:10.4px!important}
+ html[data-inj-market] #injWorldMarket .inj-wm-symbol{font-size:8.5px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-market] #marketTicker .market-ticker-track{
+  animation:none!important;transform:none!important;
+ }
+ html[data-inj-market] #marketTicker .market-ticker-viewport{
+  overflow-x:auto!important;touch-action:pan-x!important;
+ }
+}
+
+/* INJNODE · Global Crypto ticker edge-to-edge · 2026-11-01 */
+/* The live market ribbon is currently constrained by .shell padding.
+   Break out of that container without expanding the whole page.
+   In embedded Market mode, vw is the iframe's actual full viewport width.
+   Retain sticky placement, untouched content/scrolling and quote refresh. */
+html[data-inj-market]:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+ body > .shell > main > #marketTicker.market-ticker{
+ box-sizing:border-box!important;
+ display:block!important;
+ width:100vw!important;
+ min-width:100vw!important;
+ max-width:none!important;
+ margin-left:calc(50% - 50vw)!important;
+ margin-right:calc(50% - 50vw)!important;
+ border-radius:0!important;
+ border-left:0!important;
+ border-right:0!important;
+}
+/* Ensure the full-bleed viewport remains a single clipping window
+   while the ticker track continues its existing native animation. */
+html[data-inj-market]:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+ #marketTicker > #marketTickerViewport.market-ticker-viewport{
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+}

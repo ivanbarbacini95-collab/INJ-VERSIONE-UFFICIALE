@@ -1,0 +1,129 @@
+/* INJ Node · Home launcher — classic rounded cards (29 Oct 2026).
+   Restore the familiar soft-corner framed tiles, without reverting the
+   two-column grouping, the descriptions, the live content or the
+   B Capital Group treasury card. Scoped exclusively to the Home grid. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  column-gap:10px!important;
+  row-gap:10px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton),
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):is(:hover,:active,:focus){
+  box-sizing:border-box!important;
+  border:1px solid color-mix(in srgb,var(--accent,#b2c7c4) 23%,var(--line,#48545b))!important;
+  border-radius:18px!important;
+  background:color-mix(in srgb,var(--surface,#152127) 67%,transparent)!important;
+  background-image:none!important;
+  box-shadow:0 2px 10px rgba(0,0,0,.08)!important;
+  -webkit-box-shadow:0 2px 10px rgba(0,0,0,.08)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  overflow:hidden!important;
+  isolation:isolate;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color .22s ease,background .22s ease,box-shadow .22s ease!important;
+}
+/* A soft interactive highlight, not a permanent bright or glowing frame. */
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton):hover{
+  border-color:color-mix(in srgb,var(--accent,#b2c7c4) 47%,var(--line,#48545b))!important;
+  background:color-mix(in srgb,var(--accent,#b2c7c4) 7%,var(--surface,#152127))!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.11)!important;
+ }
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):focus-visible{
+ outline:1px solid var(--accent,#b4c9c2)!important;
+ outline-offset:2px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):active{
+ background:color-mix(in srgb,var(--accent,#b2c7c4) 9%,var(--surface,#152127))!important;
+}
+/* No additional line at the bottom of each framed destination; the
+   rounded border is its only divider. Icon pseudo effects remain untouched. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton)::after{
+ content:none!important;
+ display:none!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+/* Four former More destinations follow exactly the same framing as the
+   standard sections. Keep their existing carefully fixed icon/text layout. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> :is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+ border-radius:18px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#b2c7c4) 23%,var(--line,#48545b))!important;
+ background:color-mix(in srgb,var(--surface,#152127) 67%,transparent)!important;
+ box-shadow:0 2px 10px rgba(0,0,0,.08)!important;
+}
+/* Treasury stays the last full-width card and keeps its established
+   border, radius, gradient and brand mark. */
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+   border-radius:16px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+   border-radius:16px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+   transition:none!important;
+ }
+}
+
+/* Keep the Market Event subtitle after retiring the circuit stylesheet.
+   The live calendar keeps its independent hidden data element. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton.entry-action-market-events
+>.inj-home-unified-copy>.inj-home-market-caption.inj-tile-description{
+ display:block!important;
+ visibility:visible!important;
+ opacity:.85!important;
+ position:relative!important;
+ flex:0 0 auto!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+ min-height:12px!important;
+ max-height:none!important;
+ height:auto!important;
+ padding:0!important;
+ margin:0!important;
+ font-family:var(--inj-minimal-font,system-ui,-apple-system,sans-serif)!important;
+ font-size:clamp(9px,2.55vw,10.5px)!important;
+ font-weight:400!important;
+ line-height:1.2!important;
+ letter-spacing:0!important;
+ white-space:nowrap!important;
+ overflow:hidden!important;
+ text-overflow:ellipsis!important;
+ text-align:center!important;
+ color:var(--muted-strong,var(--muted,#a9b0b5))!important;
+}
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMarketEventsButton.entry-action-market-events
+ >.inj-home-unified-copy>.inj-home-market-caption.inj-tile-description{
+   font-size:11px!important;
+   text-align:left!important;
+ }
+}
