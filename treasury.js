@@ -7,7 +7,7 @@ const LCD_ENDPOINTS = [
   'https://lcd.injective.network',
   'https://1rpc.io/inj-lcd'
 ];
-const REWARD_CHAIN_REFRESH_MS = 1500;
+const REWARD_CHAIN_REFRESH_MS = 8000;
 const REWARD_DROP_EPSILON = 1e-10;
 const REWARD_COMPARE_TOLERANCE = 2e-8;
 const CLAIM_BALANCE_TOLERANCE = 5e-6;
@@ -1970,10 +1970,26 @@ async function fetchJson(url, timeout = 7000) {
   try { const response=await fetch(url,{cache:'no-store',signal:controller.signal}); if(!response.ok)throw new Error(`HTTP ${response.status}`); return await response.json(); }
   finally { clearTimeout(timer); }
 }
-async function lcd(path) {
+let preferredLcd=null;
+const lcdCooldownUntil=new Map();
+async function lcd(path){
+  const now=Date.now();
+  const hosts=[...LCD_ENDPOINTS].sort((a,b)=>(a===preferredLcd?-1:0)-(b===preferredLcd?-1:0));
+  const healthy=hosts.filter(base=>(lcdCooldownUntil.get(base)||0)<now);
+  const candidates=healthy.length?healthy:hosts;
   let lastError;
-  for (const base of LCD_ENDPOINTS) { try { return await fetchJson(base+path); } catch(error){ lastError=error; } }
-  throw lastError || new Error('Rete Injective non disponibile');
+  for(const [index,base] of candidates.entries()){
+    try{
+      const result=await fetchJson(base+path,index===candidates.length-1?4000:2500);
+      preferredLcd=base;
+      lcdCooldownUntil.delete(base);
+      return result;
+    }catch(error){
+      lastError=error;
+      lcdCooldownUntil.set(base,Date.now()+15000);
+    }
+  }
+  throw lastError||new Error('Injective LCD unavailable');
 }
 function findInj(coins=[]) { const coin=coins.find((item)=>item?.denom==='inj'); return coin?fromWei(coin.amount):0; }
 function delegationTotal(data) { return (data?.delegation_responses||[]).reduce((sum,row)=>sum+fromWei(row?.balance?.amount),0); }
@@ -2142,23 +2158,29 @@ async function refreshTreasuryChainRewards(force=false){
     await Promise.all([worker(),worker(),worker()]);
   }finally{state.rewardChainLoading=false;}
 }
-async function loadApr(force=false) {
+let aprRequest=null;
+async function loadApr(force=false){
   const cached=number(state.data?.apr);
   if(!force&&cached>0&&state.aprUpdatedAt&&Date.now()-state.aprUpdatedAt<60000)return cached;
-  try {
-    const [official,annual,pool,distribution]=await Promise.all([
-      fetchJson(OFFICIAL_APR_ENDPOINT,7000).catch(()=>null),
-      lcd('/cosmos/mint/v1beta1/annual_provisions').catch(()=>null),
-      lcd('/cosmos/staking/v1beta1/pool').catch(()=>null),
-      lcd('/cosmos/distribution/v1beta1/params').catch(()=>null)
-    ]);
-    const officialApr=aprPercent(official?.apr);
-    const annualProvisions=number(annual?.annual_provisions),bondedTokens=number(pool?.pool?.bonded_tokens),communityTax=rate(distribution?.params?.community_tax);
-    const fallback=bondedTokens>0?(annualProvisions/bondedTokens)*100*Math.max(0,1-communityTax):0;
-    const next=officialApr||fallback||cached;
-    if(next>0)state.aprUpdatedAt=Date.now();
-    return next;
-  } catch (_) { return cached; }
+  if(aprRequest)return aprRequest;
+  aprRequest=(async()=>{
+    try{
+      const official=await fetchJson(OFFICIAL_APR_ENDPOINT,4200).catch(()=>null);
+      const verified=aprPercent(official?.apr);
+      if(verified>0){state.aprUpdatedAt=Date.now();return verified;}
+      const [annual,pool,distribution]=await Promise.all([
+        lcd('/cosmos/mint/v1beta1/annual_provisions').catch(()=>null),
+        lcd('/cosmos/staking/v1beta1/pool').catch(()=>null),
+        lcd('/cosmos/distribution/v1beta1/params').catch(()=>null)
+      ]);
+      const provisions=number(annual?.annual_provisions),bonded=number(pool?.pool?.bonded_tokens);
+      const tax=rate(distribution?.params?.community_tax);
+      const fallback=bonded>0?provisions/bonded*100*Math.max(0,1-tax):0;
+      if(fallback>0){state.aprUpdatedAt=Date.now();return fallback;}
+    }catch(_){}
+    return cached;
+  })();
+  try{return await aprRequest;}finally{aprRequest=null;}
 }
 async function loadTreasury(force=false) {
   if(state.loading)return;
@@ -2167,7 +2189,15 @@ async function loadTreasury(force=false) {
   const badge=$('treasuryLiveBadge');badge.classList.add('sync');badge.classList.remove('error');
   try {
     const batchStartedAt=Date.now();
-    const [rows,apr]=await Promise.all([loadRows(),loadApr()]);
+    let latestApr=number(state.data?.apr);
+    // APR is optional for balances: a slow APR host cannot blank the Treasury.
+    void loadApr().then(next=>{
+      if(number(next)>0){
+        latestApr=number(next);
+        if(state.data){state.data.apr=latestApr;render();}
+      }
+    }).catch(()=>{});
+    const rows=await loadRows();
     if(!rows.length)throw new Error('Rete Injective non disponibile');
     // Non eliminare un wallet dal totale solo perche un LCD ha fallito quel giro:
     // manteniamo l'ultima lettura valida e sostituiamo esclusivamente i wallet riusciti.
@@ -2189,9 +2219,16 @@ async function loadTreasury(force=false) {
     });
     state.walletRows=merged;
     const managedRows=TREASURY_ADDRESSES.map((address)=>merged[address]).filter(Boolean);
+    if(managedRows.length<TREASURY_ADDRESSES.length){
+      // Never publish a fake portfolio dip when only some addresses respond.
+      // Keep the previous verified aggregate, and retry the missing wallets.
+      badge.classList.add('sync');
+      if(!state.data)throw new Error('Lettura incompleta dei wallet');
+      return;
+    }
     const totals=treasuryTotalsFromRows(managedRows);
-    const data={ok:true,...totals,apr:number(apr),walletCount:TREASURY_ADDRESSES.length,liveWallets:rows.length,updatedAt:Date.now()};
-    state.data=data;state.updatedAt=data.updatedAt;state.fullRefreshAt=data.updatedAt;persistSnapshot(data);recordHistory(data.total,data.updatedAt);state.treasuryReady=true;recordCurrentWorth(true);badge.classList.remove('sync','error');void repairWorthHistoryAfterResume();
+    const data={ok:true,...totals,apr:latestApr,walletCount:TREASURY_ADDRESSES.length,liveWallets:rows.length,updatedAt:Date.now()};
+    state.data=data;state.updatedAt=data.updatedAt;state.fullRefreshAt=data.updatedAt;persistSnapshot(data);if(rows.length===TREASURY_ADDRESSES.length)recordHistory(data.total,data.updatedAt);state.treasuryReady=rows.length===TREASURY_ADDRESSES.length;recordCurrentWorth(true);badge.classList.remove('error');badge.classList.toggle('sync',rows.length<TREASURY_ADDRESSES.length);void repairWorthHistoryAfterResume();
   } catch(error) {
     badge.classList.remove('sync');badge.classList.add('error');$('treasuryUpdated').textContent='Rete Injective temporaneamente non disponibile';
   } finally { state.loading=false;render(); }
@@ -2204,7 +2241,11 @@ async function loadEurRate() {
 }
 async function loadPrice() {
   try {
-    const ticker=await fetchJson('https://api.binance.com/api/v3/ticker/24hr?symbol=INJUSDT',6000);
+    let ticker=null;
+    for(const host of ['https://data-api.binance.vision','https://api.binance.com']){
+      try{ticker=await fetchJson(host+'/api/v3/ticker/24hr?symbol=INJUSDT',4500);if(number(ticker?.lastPrice)>0)break;}catch(_){}
+    }
+    if(!ticker||!(number(ticker?.lastPrice)>0))throw new Error('INJ ticker unavailable');
     const price=number(ticker?.lastPrice),open24=number(ticker?.openPrice),change24=number(ticker?.priceChangePercent);
     if(price>0){state.price=price;state.lastPriceAt=Date.now();if(open24>0)state.open24=open24;state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}
   } catch(_) {
@@ -2289,7 +2330,7 @@ function boot() {
   void restoreTimelineBackups().then(()=>{state.historyReady=true;render();void repairWorthHistoryAfterResume();});
   Promise.allSettled([loadPrice(),loadEurRate(),loadTreasury(true)]).finally(()=>{state.firstPaint=false;});
   connectPriceSocket();
-  setInterval(()=>{if(!document.hidden)void loadTreasury(false);},5000);
+  setInterval(()=>{if(!document.hidden)void loadTreasury(false);},12000);
   setInterval(()=>{if(!document.hidden)void refreshTreasuryChainRewards(false);},REWARD_CHAIN_REFRESH_MS);
   setInterval(()=>{if(!document.hidden)maintainPriceRealtime();},2500);
   document.addEventListener('visibilitychange',()=>{
