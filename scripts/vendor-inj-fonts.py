@@ -16,6 +16,7 @@ GOOGLE_FONTS_COMMIT = "6157dfaa640ca5738b4d1a7070fe389c3036d7fc"
 BASE = "https://raw.githubusercontent.com/google/fonts/" + GOOGLE_FONTS_COMMIT + "/"
 FONTS = {
     "inj-geist.woff2": "ofl/geist/Geist[wght].ttf",
+    "inj-rubik.woff2": "ofl/rubik/Rubik[wght].ttf",
     "inj-space-grotesk.woff2": "ofl/spacegrotesk/SpaceGrotesk[wght].ttf",
     "inj-ibm-plex-mono-regular.woff2": "ofl/ibmplexmono/IBMPlexMono-Regular.ttf",
     "inj-ibm-plex-mono-medium.woff2": "ofl/ibmplexmono/IBMPlexMono-Medium.ttf",
@@ -23,6 +24,7 @@ FONTS = {
 }
 LICENSES = {
     "OFL-Geist.txt": "ofl/geist/OFL.txt",
+    "OFL-Rubik.txt": "ofl/rubik/OFL.txt",
     "OFL-Space-Grotesk.txt": "ofl/spacegrotesk/OFL.txt",
     "OFL-IBM-Plex-Mono.txt": "ofl/ibmplexmono/OFL.txt",
     "OFL-Oxanium.txt": "ofl/oxanium/OFL.txt",

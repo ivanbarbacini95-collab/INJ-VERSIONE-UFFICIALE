@@ -1,8 +1,9 @@
 /* INJ Node · 8 typefaces, including Geist Bold and the official edition. */
 (function(){
 'use strict';
-const STORE='inj_node_font_v1',MIGRATION='inj_node_official_font_rollout_v1',root=document.documentElement;
+const STORE='inj_node_font_v1',MIGRATION='inj_node_official_font_rollout_v1',RUBIK_ROLLOUT='inj_node_rubik_bold_rollout_v1',root=document.documentElement;
 const fonts=[
+ {id:'rubik-bold',name:'Rubik Bold',font:'"INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',subtitleIt:'Bold moderno per tutte le sezioni',subtitleEn:'Modern bold throughout INJ Node',weight:700},
  {id:'official',name:'Versione Ufficiale',font:'"Supply Mono","PP Supply Mono","IBM Plex Mono","INJ IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace',subtitleIt:'Il carattere corposo della Versione ufficiale',subtitleEn:'Bold typography from the official edition',weight:700},
  {id:'original',name:'INJ Original',font:'"Supply Mono","PP Supply Mono","INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace',subtitleIt:'Tipografia storica di INJ Node',subtitleEn:'Original INJ Node typography',weight:400},
  {id:'inter-light',name:'Inter Light · Classico',font:'"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif',subtitleIt:'Alternativa essenziale a tratto sottile',subtitleEn:'Lightweight minimalist alternative',weight:300},
@@ -13,7 +14,7 @@ const fonts=[
  {id:'oxanium',name:'Oxanium',font:'"INJ Oxanium","Oxanium",sans-serif',subtitleIt:'Future terminal',subtitleEn:'Future terminal',weight:500}
 ];
 const byId=Object.fromEntries(fonts.map(f=>[f.id,f]));
-let active='official';
+let active='rubik-bold';
 function current(){
  try{
   let id=localStorage.getItem(STORE);
@@ -25,13 +26,18 @@ function current(){
     id='official';localStorage.setItem(STORE,id);
    }
   }
+  if(!localStorage.getItem(RUBIK_ROLLOUT)){
+   id='rubik-bold';
+   localStorage.setItem(RUBIK_ROLLOUT,'1');
+   localStorage.setItem(STORE,id);
+  }
   if(id==='inter')id='inter-light';
-  return byId[id]?id:'official';
- }catch(_){return 'official'}
+  return byId[id]?id:'rubik-bold';
+ }catch(_){return 'rubik-bold'}
 }
 function english(){try{return localStorage.getItem('inj_node_language_v1')==='en'||root.lang==='en'}catch(_){return root.lang==='en'}}
 function change(id,save){
- active=byId[id]?id:'official';
+ active=byId[id]?id:'rubik-bold';
  root.setAttribute('data-inj-font',active);
  if(save){try{localStorage.setItem(STORE,active)}catch(_){}}
  refresh();
@@ -44,8 +50,8 @@ function refresh(){
  if(caption)caption.textContent=(en?'Selected: ':'Selezionato: ')+byId[active].name;
  const note=holder.querySelector('.menu-font-note');
  if(note)note.textContent=en?
-  'Eight selectable fonts, including Geist Bold. Official Edition recreates the Supply Mono / IBM Plex Mono family. Supply Mono is used only if installed. Your choice is saved on this device.':
-  'Otto font selezionabili, incluso Geist Bold. Versione Ufficiale riprende Supply Mono / IBM Plex Mono. Supply Mono viene usato solo se installato. La scelta viene salvata sul dispositivo.';
+  'Nine selectable fonts, including Rubik Bold. Your selection is saved on this device.':
+  'Nove font selezionabili, incluso Rubik Bold. La scelta viene salvata sul dispositivo.';
  holder.setAttribute('aria-label',en?'Interface font':'Font interfaccia');
  holder.querySelectorAll('[data-inj-font-choice]').forEach(button=>{
   const f=byId[button.getAttribute('data-inj-font-choice')];
@@ -68,7 +74,7 @@ function setup(){
  holder.innerHTML=
   '<summary class="menu-action menu-setting menu-font-trigger">'+
    '<span class="menu-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 7V5h16v2M12 5v14M8 19h8M7 14l5-9 5 9"/></svg></span>'+
-   '<span class="menu-action-copy"><strong class="menu-font-title">Font</strong><small class="menu-font-current">Versione Ufficiale</small></span>'+
+   '<span class="menu-action-copy"><strong class="menu-font-title">Font</strong><small class="menu-font-current">Rubik Bold</small></span>'+
    '<svg class="menu-font-chevron" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>'+
   '</summary><div class="menu-font-options" role="group" aria-label="Font"></div><p class="menu-font-note"></p>';
  const options=holder.querySelector('.menu-font-options');

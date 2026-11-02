@@ -1,11 +1,11 @@
-const CACHE_NAME = 'inj-node-v20261102-official-input-nozoom1';
+const CACHE_NAME = 'inj-node-v20261102-rubikbold-global1';
 const APP_SHELL = [
   './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
   './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
   './inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1',
   './inj-light-home-20261102.js?v=20261102-litepro-ohlc-official1',
-  './inj-home-candles-20261102.css?v=20261102-lite-circle2',
-  './inj-home-candles-20261102.js?v=20261102-lite-circle2',
+  './inj-home-candles-20261102.css?v=20261102-home-lines1',
+  './inj-home-candles-20261102.js?v=20261102-home-lines1',
   './inj-ios-statusbar-palette-20261102.css?v=20261102-litepro-ohlc-official1',
   './market-refinement-20261029.css?v=crypto-fullbleed1',
   './live-view-clock-below-title-20261101.css?v=1',
@@ -27,6 +27,8 @@ const APP_SHELL = [
   './market-embedded-compact-20261031.css?v=marketcompact3',
   './world-market-ticker-center-20261101.css?v=20261101bold2',
   './assets/fonts/inj-geist.woff2',
+  './assets/fonts/inj-rubik.woff2',
+  './inj-rubik-global-20261102.css?v=rubikbold1',
   './market-crypto-scope-20261030.css?v=scope3',
   './market-favorites-latched-20261030.css?v=latch4',
   './market-crypto-one-day-20261030.css?v=dropdown6',
@@ -311,6 +313,8 @@ self.addEventListener('install', (event) => {
       './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
       './inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1',
       './inj-light-home-20261102.js?v=20261102-litepro-ohlc-official1',
+      './inj-rubik-global-20261102.css?v=rubikbold1',
+      './assets/fonts/inj-rubik.woff2',
       './inj-home-candles-20261102.css?v=20261102-lite-circle2',
       './inj-home-candles-20261102.js?v=20261102-lite-circle2',
       './inj-ios-statusbar-palette-20261102.css?v=20261102-litepro-ohlc-official1',

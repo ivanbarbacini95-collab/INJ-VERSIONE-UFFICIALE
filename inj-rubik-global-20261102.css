@@ -1,0 +1,47 @@
+/* INJ Node Rubik Bold · selected font on every app page; no layout or data changes. */
+html[data-inj-font="rubik-bold"]{
+ --inj-chosen-face:"INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:500;--inj-chosen-detail:500;
+ --inj-chosen-emphasis:700;--inj-chosen-heading:700;
+ --inj-node-terminal-font:var(--inj-chosen-face);
+ --inj-minimal-font:var(--inj-chosen-face);
+ --inj-minimal-mono:var(--inj-chosen-face);
+ --inj-home-title-face:var(--inj-chosen-face);
+ --inj-home-description-face:var(--inj-chosen-face);
+ --inj-editorial-face:var(--inj-chosen-face);
+ font-family:var(--inj-chosen-face)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-font="rubik-bold"] body,
+html[data-inj-font="rubik-bold"] body :is(*,#__injRubik#__injRubik#__injRubik#__injRubik#__injRubik#__injRubik):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
+ font-family:var(--inj-chosen-face)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+ -webkit-font-smoothing:antialiased;
+ font-synthesis-weight:none;
+}
+html[data-inj-font="rubik-bold"] body :is(*,#__injRubik#__injRubik#__injRubik#__injRubik#__injRubik):is(
+ h1,h2,h3,h4,h5,h6,[role="heading"],strong,b,th,.entry-action strong,
+ .inj-home-tile-title,.menu-action-copy strong,.section-heading h2,.section-heading h3,
+ .metric-value,.hero-number,.hero-secondary,.number-roll-text,
+ .number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer,
+ [id$="Price"],[id$="Worth"],[id$="Pnl"],[id$="PnL"],[id$="Value"],
+ .market-price,.ws-main-price,.ws-price-main,.ws-hero-price,.cc-now-price,
+ .cc-price,.treasury-total-display,.rewards-total-value){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:700!important;
+}
+html[data-inj-font="rubik-bold"] body :is(*,#__injRubik#__injRubik#__injRubik#__injRubik#__injRubik):is(
+ button,input,textarea,select,option,label,small,.caption,.subtitle,.description,
+ .hint,.note,.inj-tile-description,.menu-font-description,.card-label,
+ .metric-label,.market-table,.market-asset-price,.ws-data-value,.book-meta){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:500!important;
+}
+html[data-inj-font="rubik-bold"] body svg :is(text,tspan,textPath),
+html[data-inj-font="rubik-bold"] body #injLightHome,
+html[data-inj-font="rubik-bold"] body #injLightHome :is(button,span,strong,small,p,div,h1,h2,h3){
+ font-family:var(--inj-chosen-face)!important;
+}
+html[data-inj-font="rubik-bold"] body #injLightHome :is(.inj-light-brand,.inj-light-value,h1,h2,strong){
+ font-weight:700!important;
+}
