@@ -77,3 +77,35 @@ body{min-height:100dvh}
  .map-panel .map-overlay{gap:10px;left:10px;right:auto;top:10px;max-width:calc(100% - 20px);
     padding:8px 10px;border-radius:9px;font-size:9px}
 }
+
+
+/* INJ Node Official — 2026-11-02: prevent browser focus-autozoom.
+   iOS zooms form pages if an editable field is rendered below 16 CSS px.
+   Keep natural pan/scroll, pinch accessibility and existing responsive layout. */
+@media screen and (max-width:767px), screen and (hover:none) and (pointer:coarse) {
+  html body :is(
+    input:not([type]),
+    input[type="text"],input[type="number"],input[type="email"],
+    input[type="password"],input[type="search"],input[type="tel"],
+    input[type="url"],input[type="date"],input[type="datetime-local"],
+    input[type="time"],input[type="month"],input[type="week"],
+    textarea,select,[contenteditable]:not([contenteditable="false"])
+  ) {
+    font-size:max(16px,1em)!important;
+  }
+  html {
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+  }
+}
+/* Do not create a horizontal scroll/zoom illusion when fields are focused.
+   Excludes sliders, checkboxes, radio controls and chart touch surfaces. */
+@media (max-width:767px) {
+  html body :is(input:not([type]),input[type="text"],input[type="number"],
+    input[type="email"],input[type="password"],input[type="search"],
+    input[type="tel"],input[type="url"],textarea,select) {
+    min-width:0;
+    max-width:100%;
+    box-sizing:border-box;
+  }
+}

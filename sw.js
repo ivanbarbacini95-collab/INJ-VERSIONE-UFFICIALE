@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v20261102-official-all-chain-resilience5';
+const CACHE_NAME = 'inj-node-v20261102-official-input-nozoom1';
 const APP_SHELL = [
   './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
   './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',

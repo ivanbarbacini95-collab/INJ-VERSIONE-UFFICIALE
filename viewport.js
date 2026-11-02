@@ -8,7 +8,7 @@
   let lastScroll = -1;
   let scrollIdleTimer = 0;
   let lastScrollActivity = 0;
-  const editable = () => document.activeElement?.matches('input,textarea,[contenteditable="true"]');
+  const editable = () => document.activeElement?.matches('input,select,textarea,[contenteditable]:not([contenteditable="false"])');
 
   function syncDocumentTop() {
     const scroll = Math.max(0, window.scrollY || 0);
@@ -28,11 +28,16 @@
       document.body.appendChild(probe);
     }
     const visual = window.visualViewport;
-    // A software keyboard reduces the usable area; pinch zoom must remain native.
+    // Keep the document geometry stable when a keyboard appears. Previously
+    // shrinking --inj-viewport-height to visualViewport.height caused panels
+    // to snap or appear to zoom when focusing a field.
+    // Native scrolling handles bringing the active control above the keyboard.
     if (visual && Math.abs(visual.scale - 1) > 0.02) return;
-    const keyboard = editable() && visual && visual.height < window.innerHeight * 0.8;
+    const keyboard = !!(editable() && visual && lastHeight > 0 &&
+      visual.height < lastHeight * 0.83);
     const cssHeight = probe?.getBoundingClientRect().height || 0;
-    const height = Math.ceil(keyboard ? visual.height : Math.max(window.innerHeight || 0, cssHeight, visual?.height || 0));
+    const height = Math.ceil(keyboard ? lastHeight :
+      Math.max(window.innerHeight || 0, cssHeight, visual?.height || 0));
     if (height > 0 && height !== lastHeight) {
       root.style.setProperty('--inj-viewport-height', height + 'px');
       lastHeight = height;
