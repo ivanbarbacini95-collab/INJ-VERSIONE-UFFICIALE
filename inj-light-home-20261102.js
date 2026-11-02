@@ -38,9 +38,9 @@
     '</div>'+
     '<section class="inj-light-chart"><div class="inj-light-chart-head">'+
        '<h2 data-light-it="Andamento INJ" data-light-en="INJ price movement">Andamento INJ</h2>'+ 
-       '<span class="inj-light-6h-performance" id="injLightPerf6h" aria-live="off">— · 6H</span>'+
+       '<span class="inj-light-6h-performance" id="injLightPerf6h" aria-live="off">— · 1W</span>'+
        '<span class="inj-light-live"><i aria-hidden="true"></i><span id="injLightLive">SYNC</span></span></div>'+
-       '<p class="inj-light-chart-sub" data-light-it="INJ / USDT · ULTIME 6 ORE" data-light-en="INJ / USDT · ROLLING 6 HOURS">INJ / USDT · ULTIME 6 ORE</p>'+
+       '<p class="inj-light-chart-sub" data-light-it="INJ / USDT · ULTIMI 7 GIORNI" data-light-en="INJ / USDT · ROLLING 7 DAYS">INJ / USDT · ULTIMI 7 GIORNI</p>'+
        '<div id="injLightChartPlot" class="inj-light-chart-plot">'+
           '<svg viewBox="0 0 320 150" preserveAspectRatio="none" role="img" aria-label="Grafico INJ durante la giornata UTC">'+
           '<g class="inj-light-grid"><path d="M0 24H320M0 72H320M0 120H320"/></g>'+
@@ -490,7 +490,7 @@
    const fiat=Number.isFinite(rewards)&&Number.isFinite(displayPrice)&&displayPrice>0?
      new Intl.NumberFormat(locale(),{style:'currency',currency,minimumFractionDigits:2,maximumFractionDigits:2}).format(rewards*displayPrice):'—';
    output('injLightRewardFiat',fiat==='—'?'—':'≈ '+fiat);
-   // 6H live OHLC view is rendered by inj-home-candles-20261102.js.
+   // Rolling 1W OHLC view is rendered by inj-home-candles-20261102.js.
    // Never draw the old UTC-day curve, scale or tick colors over it.
    if(!$('injLightWalletSheet').hidden)updateWalletOptions();
  }

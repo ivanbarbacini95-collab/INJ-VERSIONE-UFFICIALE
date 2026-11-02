@@ -1,6 +1,4 @@
-/* INJ Node · Home + Light OHLC candlesticks.
-   Pro: 15-minute candles for the UTC session.
-   Light: 5-minute candles on a continuously rolling 6-hour window. */
+/* INJ Node Home · Pro native UTC-day line, Lite rolling seven-day 4H OHLC candlesticks. */
 html[data-inj-page="index"] body #entryGate #entrySparkStage[data-inj-candles-ready="true"] > svg:not(#injProCandleSvg){
  opacity:0!important;
 }
@@ -33,7 +31,7 @@ html[data-inj-page="index"] body :is(#injLightCandleSvg,#injProCandleSvg) .inj-c
  fill:#dc7483;stroke:#dc7483;
 }
 html[data-inj-page="index"] body :is(#injLightCandleSvg,#injProCandleSvg) .inj-candle-wick{
- stroke-width:1;opacity:.86;
+ stroke-width:1;opacity:.88;vector-effect:non-scaling-stroke;
 }
 html[data-inj-page="index"] body :is(#injLightCandleSvg,#injProCandleSvg) .inj-candle-body{
  stroke:none;opacity:.95;
@@ -160,8 +158,7 @@ html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-pric
  box-sizing:border-box!important;
 }
 
-/* Time labels follow the 6H rolling chart clock (user's local time zone).
-   Positions are derived from the same x-domain as the 5m candles. */
+/* Four date labels follow the rolling seven-day chart in the user's local zone. */
 html[data-inj-page="index"] body #injLightHome #injLightTimeAxis.inj-light-axis{
  display:block!important;position:relative!important;
  width:calc(100% - var(--inj-light-axis-width,67px))!important;
@@ -254,9 +251,7 @@ html[data-inj-page="index"] body
  border-radius:7px!important;
 }
 
-/* Restored Home line charts (02 Nov 2026).
-   Pro uses its native UTC-day SVG. Lite keeps the six-hour rolling data
-   window, native chart inspector and punctual live endpoint. */
+/* Pro continues to use its existing intraday line without an overlay. */
 html[data-inj-page="index"] body #entryGate#entryGate
  #entryInsights .entry-price-timebar{
   padding-right:0!important;
