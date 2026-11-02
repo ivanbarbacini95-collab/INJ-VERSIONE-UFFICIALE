@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v20261102-official-treasury-reward-netfix4';
+const CACHE_NAME = 'inj-node-v20261102-official-all-chain-resilience5';
 const APP_SHELL = [
   './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
   './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
@@ -48,7 +48,7 @@ const APP_SHELL = [
   './home-bottom-tabs-20261030.js?v=20261102-litepro-nav1',
   './market-tab-navigation-20261031.css?v=marketrail11',
   './market-tab-navigation-20261031.js?v=marketrail14',
-  './app.js?v=20261102-litepro-charts1',
+  './app.js?v=20261102-home-lcd-resilience2',
   './inj-font-switcher-20261029.css?v=geistbold8',
   './inj-font-switcher-20261029.js?v=geistbold8',
   './inj-fluid-screen-fit.css?v=20261028fullmonitor1',
@@ -332,7 +332,7 @@ self.addEventListener('install', (event) => {
   './cloud-sync-qr-20261101.js?v=1',
   './vendor/qrcode.min.js?v=1',
       './','./index.html','./manifest.webmanifest?v=20261102litepro1',
-      './app.js?v=20261102-litepro-charts1',
+      './app.js?v=20261102-home-lcd-resilience2',
       './style.css?v=16.01.44','./viewport.css?v=16.00.74',
       './viewport.js?v=20261102litepro-native1',
       './navigation.css?v=160090',

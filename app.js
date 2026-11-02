@@ -3959,19 +3959,30 @@ async function fetchJson(url, timeout = 9000) {
   }
 }
 
-async function lcd(path) {
+let preferredHomeLcd=null;
+const homeLcdCooldown=new Map();
+async function lcd(path){
+  // Share a preferred responsive endpoint across Home, Dashboard and My Reward.
+  // Slow LCD nodes must not delay each wallet by 9s before trying another.
+  const hosts=[...LCD_ENDPOINTS].sort((a,b)=>(a===preferredHomeLcd?-1:0)-(b===preferredHomeLcd?-1:0));
+  const healthy=hosts.filter(base=>(homeLcdCooldown.get(base)||0)<Date.now());
+  const candidates=healthy.length?healthy:hosts;
   let lastError;
-  for (const base of LCD_ENDPOINTS) {
-    try {
-      const data = await fetchJson(base + path);
-      state.endpoint = base;
-      $('endpointLabel').textContent = `API · ${new URL(base).hostname}`;
+  for(const [index,base] of candidates.entries()){
+    try{
+      const data=await fetchJson(base+path,index===candidates.length-1?4000:2500);
+      preferredHomeLcd=base;
+      homeLcdCooldown.delete(base);
+      state.endpoint=base;
+      const indicator=$('endpointLabel');
+      if(indicator)indicator.textContent=`API · ${new URL(base).hostname}`;
       return data;
-    } catch (error) {
-      lastError = error;
+    }catch(error){
+      lastError=error;
+      homeLcdCooldown.set(base,Date.now()+15000);
     }
   }
-  throw lastError || new Error('Rete Injective non disponibile');
+  throw lastError||new Error('Rete Injective non disponibile');
 }
 
 function findInj(coins = []) {
