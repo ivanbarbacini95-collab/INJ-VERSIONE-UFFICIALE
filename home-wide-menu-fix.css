@@ -197,10 +197,15 @@ html[data-inj-page="index"] #headerMenu.open #headerMenuPanel{
           calc(24px + env(safe-area-inset-bottom,0px))!important;
   border:0!important;border-radius:0!important;
   background:var(--theme-canvas,var(--bg,#07121b))!important;
-  background-image:var(--page-gradient,none)!important;
-  background-position:center center!important;
+  background-image:
+    linear-gradient(180deg,
+      var(--inj-native-top-tone,var(--theme-canvas,var(--bg,#07121b))) 0px,
+      color-mix(in srgb,var(--inj-native-top-tone,var(--theme-canvas,var(--bg,#07121b))) 40%,transparent) 66px,
+      transparent 145px),
+    var(--page-gradient,none)!important;
+  background-position:center top,center center!important;
   background-size:100% 100%!important;
-  background-attachment:local!important;
+  background-attachment:fixed!important;
   background-repeat:no-repeat!important;
   box-shadow:none!important;
   color:var(--text)!important;
