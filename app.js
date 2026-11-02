@@ -8315,6 +8315,9 @@ function bindMobileFastTap() {
     if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
     const button = event.target?.closest?.('button:not(:disabled)');
     if (!button || !document.documentElement.contains(button)) return;
+    // Navigation uses ONE native click. The old synthetic pointerup click
+    // could be followed by an iOS click retargeted to ETF or Market.
+    if (button.matches('#entryGate .entry-actions .entry-action, #injPrimaryBottomNav .inj-bottom-tab, #injMarketTabPanel .inj-market-tab-link, #injMarketHomeLink')) return;
     mobileFastTap.pointerId = event.pointerId;
     mobileFastTap.button = button;
     mobileFastTap.startX = event.clientX;
