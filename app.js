@@ -2079,6 +2079,7 @@ function resetEntryPriceSession(dayStart = entryMarketDayBounds().start) {
   state.entrySpark.loadedAt = 0;
   state.entrySpark.dayStart = dayStart;
   state.entrySpark.openPrice = 0;
+  state.entrySpark.price24Open = 0;
   state.entrySpark.lastLiveSampleAt = 0;
   state.entrySpark.plot = null;
   state.entrySpark.inspectIndex = -1;
@@ -2086,22 +2087,31 @@ function resetEntryPriceSession(dayStart = entryMarketDayBounds().start) {
 }
 
 function entrySparkPath(points) {
-  const bounds = entryMarketDayBounds();
-  const dayStart = number(state.entrySpark.dayStart) || bounds.start;
-  const dayEnd = bounds.start === dayStart ? bounds.end : dayStart + 86_400_000;
+  // The first Home card is a rolling 24H performance gauge. Its adjacent
+  // price curve MUST use the same rolling window, not midnight UTC.
+  // Daily UTC candles in Performance Timeline remain a separate dataset.
+  const now = Date.now();
+  const windowStart = now - 86_400_000;
+  const windowEnd = now;
+  const baseline = number(state.marketOpen24) || number(state.entrySpark.price24Open);
   const rows = Array.isArray(points)
     ? points
-        .filter((row) => number(row?.price) > 0 && number(row?.t) >= dayStart && number(row?.t) <= dayEnd)
+        .filter((row) => number(row?.price) > 0 && number(row?.t) >= windowStart && number(row?.t) <= windowEnd)
         .sort((a, b) => number(a.t) - number(b.t))
     : [];
+  if(baseline > 0) {
+    // The native ticker's rolling 24H open is the same reference the
+    // first card uses. It is not the UTC-day candle opening price.
+    if(rows.length && rows[0].t <= windowStart + 1000)rows[0] = {t:windowStart,price:baseline};
+    else rows.unshift({t:windowStart,price:baseline});
+  }
   if (rows.length < 2) {
     if (!rows.length) return { line: '', area: '', direction: 0, last: null };
-    // At the exact start of a new day, show the real opening dot; the
-    // historical curve will grow from it as the exchange receives candles.
+    // A single reading is neutral; there is no invented intraday trend.
     const row = rows[0];
-    const x = Math.max(0, Math.min(320, ((number(row.t) - dayStart) / (dayEnd - dayStart)) * 320));
+    const x = Math.max(0, Math.min(320, ((number(row.t) - windowStart) / (windowEnd - windowStart)) * 320));
     const y = 75;
-    return { line: `M${x.toFixed(2)} ${y}`, area: '', direction: number(row.price) - number(state.entrySpark.openPrice),
+    return { line: `M${x.toFixed(2)} ${y}`, area: '', direction: state.price > 0 ? number(state.change) : 0,
       last: [x, y], samples: [{ x, y, t: number(row.t), price: number(row.price) }], width: 320, height: 150 };
   }
 
@@ -2125,10 +2135,10 @@ function entrySparkPath(points) {
   // padding still keeps the peaks/troughs legible; the P/L stays below the plot.
   const top = 10;
   const bottom = 143;
-  const timeSpan = Math.max(1, dayEnd - dayStart);
+  const timeSpan = Math.max(1, windowEnd - windowStart);
 
   const coords = rows.map((row) => {
-    const x = Math.max(0, Math.min(width, ((number(row.t) - dayStart) / timeSpan) * width));
+    const x = Math.max(0, Math.min(width, ((number(row.t) - windowStart) / timeSpan) * width));
     const y = bottom - ((number(row.price) - min) / span) * (bottom - top);
     return [x, y];
   });
@@ -2142,8 +2152,11 @@ function entrySparkPath(points) {
   const firstX = coords[0][0];
   const lastX = coords.at(-1)[0];
   const area = `${line} L${lastX.toFixed(2)} ${height} L${firstX.toFixed(2)} ${height} Z`;
-  const open = number(state.entrySpark.openPrice) || prices[0];
-  return { line, area, direction: prices.at(-1) - open, last: coords.at(-1), samples, width, height };
+  const open = baseline || prices[0];
+  // The 24H direction must always agree with the number in entryMarketChange.
+  const change24h = state.price > 0 ? Number(state.change) : NaN;
+  const direction = Number.isFinite(change24h) ? change24h : prices.at(-1) - open;
+  return { line, area, direction, last: coords.at(-1), samples, width, height };
 }
 
 function entrySparkTimeLabel(timestamp) {
@@ -2170,7 +2183,7 @@ function showEntrySparkSample(index) {
   if (!stage || !cursor || !tooltip || !samples.length) return;
   const safeIndex = Math.max(0, Math.min(samples.length - 1, Math.round(index)));
   const sample = samples[safeIndex];
-  const open = number(state.entrySpark.openPrice) || samples[0]?.price || 0;
+  const open = number(state.marketOpen24) || number(state.entrySpark.price24Open) || samples[0]?.price || 0;
   const perf = open > 0 ? ((sample.price / open) - 1) * 100 : 0;
   const xPct = (sample.x / plot.width) * 100;
   const yPct = (sample.y / plot.height) * 100;
@@ -2255,12 +2268,12 @@ function renderEntryAtGlance() {
   if (!wallet) return;
 
   const total = number(row?.total);
-  const openPrice = number(state.entrySpark.openPrice);
-  const pnlToday = total > 0 && openPrice > 0 && state.price > 0 ? total * (state.price - openPrice) : 0;
+  const openPrice = number(state.marketOpen24) || number(state.entrySpark.price24Open);
+  const pnl24h = total > 0 && openPrice > 0 && state.price > 0 ? total * (state.price - openPrice) : 0;
   const pnl = $('entryInsightPnl');
   if (pnl) {
-    pnl.className = pnlToday > 0 ? 'positive' : pnlToday < 0 ? 'negative' : 'neutral';
-    setEntryAnimatedValue('entryInsightPnl', total > 0 && openPrice > 0 && state.price > 0 ? `${pnlToday > 0 ? '+' : ''}${money(pnlToday, 2)}` : '—', total > 0 && openPrice > 0 && state.price > 0 ? pnlToday : NaN, { directional: true });
+    pnl.className = pnl24h > 0 ? 'positive' : pnl24h < 0 ? 'negative' : 'neutral';
+    setEntryAnimatedValue('entryInsightPnl', total > 0 && openPrice > 0 && state.price > 0 ? `${pnl24h > 0 ? '+' : ''}${money(pnl24h, 2)}` : '—', total > 0 && openPrice > 0 && state.price > 0 ? pnl24h : NaN, { directional: true });
   }
 
   const spark = entrySparkPath(state.entrySpark.points);
@@ -2322,22 +2335,36 @@ async function loadEntrySparkline(force = false) {
   renderEntryAtGlance();
   try {
     const end = Date.now();
-    const data = await fetchJson(`https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=3m&startTime=${bounds.start}&endTime=${end}&limit=500`, 9000);
+    const start = end - 86_400_000;
+    // 480 three-minute candles cover the full rolling 24H. The same
+    // response also includes today's UTC-open candle for P/L Timeline.
+    const query = `/api/v3/klines?symbol=INJUSDT&interval=3m&startTime=${Math.floor(start/180000)*180000}&endTime=${end}&limit=500`;
+    let data;
+    try { data = await fetchJson('https://data-api.binance.vision' + query, 9000); }
+    catch (_) { data = await fetchJson('https://api.binance.com' + query, 9000); }
     // A pending request must not redraw yesterday after midnight UTC.
     if (entryMarketDayBounds().start !== bounds.start) return;
     const rows = Array.isArray(data) ? data.filter((row) => number(row?.[4]) > 0 && number(row?.[0]) < end) : [];
     if (rows.length) {
-      const openPrice = number(rows[0]?.[1]);
+      // Preserve the opening price at 00:00 UTC for Performance Timeline:
+      // its daily candles are intentionally NOT converted to rolling 24H.
+      const todayOpen = rows.find(row => number(row?.[0]) >= bounds.start);
+      const dailyPrice = number(todayOpen?.[1]);
       state.entrySpark.dayStart = bounds.start;
-      state.entrySpark.openPrice = openPrice > 0 ? openPrice : number(rows[0]?.[4]);
-      const points = [{ t: bounds.start, price: state.entrySpark.openPrice, live: false }];
+      if (dailyPrice > 0) state.entrySpark.openPrice = dailyPrice;
+      const tickerOpen = number(state.marketOpen24);
+      const candleOpen = number(rows[0]?.[1]);
+      state.entrySpark.price24Open = tickerOpen > 0 ? tickerOpen : candleOpen;
+      const points = [{
+        t: start, price: state.entrySpark.price24Open, live:false
+      }];
       rows.forEach((row) => {
         const closeAt = number(row?.[6]);
         // Binance reports the end of an unfinished candle in the future;
         // never plot historical values beyond the current real timestamp.
         const t = Math.min(end, closeAt > 0 ? closeAt : number(row?.[0]));
         const price = number(row?.[4]);
-        if (price > 0 && t > bounds.start && t > number(points.at(-1)?.t)) {
+        if (price > 0 && t > start && t > number(points.at(-1)?.t)) {
           points.push({ t, price, live: false });
         }
       });
@@ -2960,7 +2987,7 @@ const state = {
   wallets: [],
   walletSummaries: {},
   entrySelectedAddress: '',
-  entrySpark: { points: [], loadedAt: 0, loading: false, dayStart: 0, openPrice: 0, lastLiveSampleAt: 0, plot: null, inspectIndex: -1 },
+  entrySpark: { points: [], loadedAt: 0, loading: false, dayStart: 0, openPrice: 0, price24Open: 0, lastLiveSampleAt: 0, plot: null, inspectIndex: -1 },
   entryPnlTimeline: { address: '', rows: [], renderKey: '', frame: 0, saveAt: 0, lastPaintAt: 0, followLatest: true, inspectDay: 0, rolloverTimer: 0, rolloverAt: 0, lastHydrateAttempt: 0, metricMode: 'usd', emaVisible: true, layoutMode: 'fit', layoutPreferenceLoaded: false },
   summariesLoading: false,
   summariesLastRefresh: 0,
@@ -4794,7 +4821,12 @@ function updateMarket(next) {
   }
   if (Number.isFinite(Number(next.change))) state.marketRawChange = Number(next.change);
   if (Number.isFinite(Number(next.changeAmount))) state.marketRawChangeAmount = Number(next.changeAmount);
-  if (number(next.open24h) > 0) state.marketOpen24 = number(next.open24h);
+  if (number(next.open24h) > 0) {
+    state.marketOpen24 = number(next.open24h);
+    // Keep the plotted baseline synced to the first Home card, including
+    // during websocket updates while the full history is still loading.
+    state.entrySpark.price24Open = state.marketOpen24;
+  }
   if (number(next.low) > 0) state.low = number(next.low);
   if (number(next.high) > 0) state.high = number(next.high);
 
@@ -4814,9 +4846,9 @@ function updateMarket(next) {
     if (state.currentView === 'charts') updateLiveChartsTick(rawPrice, Date.now());
   }
 
-  // Keep the Home day chart historically truthful: only raw exchange ticks are
-  // stored. The final live point is visually interpolated by the global motion
-  // frame without manufacturing extra historical samples.
+  // Home is a rolling 24H chart; keep only actual exchange closes/ticks,
+  // continuously discard observations outside that window, and use the same
+  // ticker-derived baseline as the first Home card.
   if ($('entryGate')?.classList.contains('visible')) {
     const now = Date.now();
     const bounds = entryMarketDayBounds(now);
@@ -4825,6 +4857,9 @@ function updateMarket(next) {
       void loadEntrySparkline(true);
     }
     if (rawPrice > 0 && number(state.entrySpark.dayStart) === bounds.start) {
+      state.entrySpark.points = state.entrySpark.points.filter(
+        row => number(row?.t) >= now - 86_400_000
+      );
       let lastSpark = state.entrySpark.points.at(-1);
       const sampleAge = now - number(state.entrySpark.lastLiveSampleAt);
       if (!lastSpark || !lastSpark.live || sampleAge >= 180_000) {
