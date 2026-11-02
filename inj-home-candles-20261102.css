@@ -253,3 +253,37 @@ html[data-inj-page="index"] body
  white-space:nowrap!important;
  border-radius:7px!important;
 }
+
+/* Restored Home line charts (02 Nov 2026).
+   Pro uses its native UTC-day SVG. Lite keeps the six-hour rolling data
+   window, native chart inspector and punctual live endpoint. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ #entryInsights .entry-price-timebar{
+  padding-right:0!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage
+ #entrySparkTooltip small{
+  display:none!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage
+ #entrySparkTooltip strong{
+  font-variant-numeric:tabular-nums!important;
+  letter-spacing:0!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleSvg
+ .inj-six-hour-line-area{
+  fill:var(--inj-light-performance-color,var(--inj-light-plot,var(--accent,#78d3b8)))!important;
+  fill-opacity:.085!important;
+  stroke:none!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleSvg
+ .inj-six-hour-line-path{
+  fill:none!important;
+  stroke:var(--inj-light-performance-color,var(--inj-light-plot,var(--accent,#78d3b8)))!important;
+  stroke-width:2.15!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  vector-effect:non-scaling-stroke!important;
+  pointer-events:none!important;
+}
