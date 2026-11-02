@@ -43,36 +43,39 @@ html[data-theme][data-inj-page="index"] body #entryGate
 /* The moving Velvet/Ocean atmospheres remain untouched, as do the content
    cards, modals, menu settings and full-screen market/ETF destinations. */
 
-/* INJ Node · Native iOS/Android chrome-to-Home palette transition v2.
-   An iOS 27 Home Screen PWA may expose an OS-owned, opaque status area
-   above the web viewport. Web content cannot paint that region. Instead,
-   start the actual web canvas at EXACTLY the same solid theme base color and
-   gently dissolve into the theme's own gradient over the first 140 CSS px.
-   No fake overlay element, no solid dark rectangle, no new scroll layers.
-   The underlying --page-gradient and animated atmospheric art stay intact.
-   Full width, fixed to the viewport: scrolling never restarts the gradient. */
-@media (max-width:900px), (hover:none) and (pointer:coarse) {
- html[data-theme][data-inj-page="index"] {
+/* 2026-11-02 · Match the PWA top to the chosen theme without the former
+   opaque dark strip over the first 150px. All Home backgrounds keep a
+   single continuous root gradient. The native iOS status area itself is OS
+   controlled, but the nearest web canvas and theme-color share a tint. */
+html[data-theme][data-inj-page="index"]{
+ --inj-native-top-tone:color-mix(
+   in srgb,var(--theme-canvas,var(--bg,#07121b)) 84%,var(--accent,#75c7c3) 16%
+ );
+}
+html[data-theme="black"][data-inj-page="index"]{
+ --inj-native-top-tone:#000000;
+}
+@media(max-width:900px),(hover:none) and (pointer:coarse){
+ html[data-theme][data-inj-page="index"]{
   background-color:var(--theme-canvas,var(--bg,#07121b))!important;
   background-image:
-   linear-gradient(180deg,
-    var(--theme-canvas,var(--bg,#07121b)) 0px,
-    color-mix(in srgb,var(--theme-canvas,var(--bg,#07121b)) 82%,transparent) 22px,
-    color-mix(in srgb,var(--theme-canvas,var(--bg,#07121b)) 42%,transparent) 70px,
-    color-mix(in srgb,var(--theme-canvas,var(--bg,#07121b)) 12%,transparent) 112px,
-    transparent 150px),
-   var(--page-gradient,none)!important;
-  background-position:center center!important;
+    linear-gradient(180deg,
+     var(--inj-native-top-tone) 0px,
+     color-mix(in srgb,var(--inj-native-top-tone) 40%,transparent) 66px,
+     transparent 145px),
+    var(--page-gradient,none)!important;
+  background-position:center top,center center!important;
   background-size:100% 100%!important;
-  background-attachment:fixed!important;
   background-repeat:no-repeat!important;
+  background-attachment:fixed!important;
  }
- /* Secondary layers never repaint a hard-edged, independently scaled top.
-    Onboarding and actual content cards keep their intentional backgrounds. */
+ html[data-theme="black"][data-inj-page="index"]{
+  background-image:var(--page-gradient,none)!important;
+ }
  html[data-theme][data-inj-page="index"] body>#entryGate.entry-gate,
  html[data-theme][data-inj-page="index"] body>#entryGate.entry-gate.visible,
  html[data-theme][data-inj-page="index"] body>#entryGate.entry-gate>.entry-gate-shell:not(.first-access),
- html[data-theme][data-inj-page="index"] body>.app-shell {
+ html[data-theme][data-inj-page="index"] body>.app-shell{
   background:transparent!important;
   background-image:none!important;
  }
