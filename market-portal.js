@@ -59,7 +59,20 @@
       if (!open) window.INJ_HOME_SCROLL?.restore();
     });
   }
+  const marketIntent=new WeakMap();
+  for(const card of marketLaunchers){
+    for(const type of ['pointerdown','touchstart','mousedown'])
+      card.addEventListener(type,()=>marketIntent.set(card,performance.now()),{passive:true});
+  }
   for (const card of marketLaunchers) card.addEventListener('click', (event) => {
+    // A Market card cannot open from a click that began on Dashboard.
+    const began=marketIntent.get(card)||0;
+    marketIntent.delete(card);
+    const fromGesture=began>0&&performance.now()-began<1600;
+    const fromKeyboard=event.isTrusted&&event.detail===0;
+    if(!fromGesture&&!fromKeyboard){
+      event.preventDefault();event.stopImmediatePropagation();return;
+    }
     // All three cards reuse the single market iframe and its live data source.
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
     event.preventDefault();
