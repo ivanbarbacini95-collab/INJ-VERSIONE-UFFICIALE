@@ -57,6 +57,25 @@
  nav.className='inj-primary-bottom-nav';
  nav.setAttribute('aria-label','Navigazione principale');
  const buttons=new Map();
+ // Require a gesture that started on this tab; reject ghost/retargeted clicks.
+ const tabIntent=new WeakMap();
+ function rememberTabGesture(event){
+  const target=event.target?.closest?.('.inj-bottom-tab');
+  if(target&&nav.contains(target))tabIntent.set(target,performance.now());
+ }
+ for(const type of ['pointerdown','touchstart','mousedown'])
+  nav.addEventListener(type,rememberTabGesture,{capture:true,passive:true});
+ nav.addEventListener('click',event=>{
+  const target=event.target?.closest?.('.inj-bottom-tab');
+  if(!target||!nav.contains(target))return;
+  const began=tabIntent.get(target)||0;
+  tabIntent.delete(target);
+  const fromGesture=began>0&&performance.now()-began<1600;
+  const fromKeyboard=event.isTrusted&&event.detail===0;
+  if(fromGesture||fromKeyboard)return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+ },true);
  sections.forEach(section=>{
   const button=document.createElement('button');
   button.type='button';button.className='inj-bottom-tab';button.dataset.injTab=section.id;
