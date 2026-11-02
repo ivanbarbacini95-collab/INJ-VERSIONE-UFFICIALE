@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v16.11.02-settings-isolation-top-theme-v1';
+const CACHE_NAME = 'inj-node-v16.11.02-home-24h-performance-sync-v1';
 const APP_SHELL = [
   './market-refinement-20261029.css?v=crypto-fullbleed1',
   './live-view-clock-below-title-20261101.css?v=1',
@@ -41,7 +41,7 @@ const APP_SHELL = [
   './home-bottom-tabs-20261030.js?v=20261102-routefix1',
   './market-tab-navigation-20261031.css?v=marketrail11',
   './market-tab-navigation-20261031.js?v=marketrail14',
-  './app.js?v=20261102-routefix1',
+  './app.js?v=20261102-home24-sync1',
   './inj-font-switcher-20261029.css?v=geistbold8',
   './inj-font-switcher-20261029.js?v=geistbold8',
   './inj-fluid-screen-fit.css?v=20261028fullmonitor1',
@@ -318,7 +318,7 @@ self.addEventListener('install', (event) => {
   './cloud-sync-qr-20261101.js?v=1',
   './vendor/qrcode.min.js?v=1',
       './','./index.html','./manifest.webmanifest?v=16.06.29',
-      './app.js?v=20261102-routefix1',
+      './app.js?v=20261102-home24-sync1',
       './style.css?v=16.01.44','./viewport.css?v=16.00.74',
       './viewport.js?v=20261028ios27',
       './navigation.css?v=160090',
