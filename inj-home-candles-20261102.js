@@ -353,10 +353,26 @@
    // Animations finish naturally even if the quote updates several times.
    markerSvg=ensureChart(lightStage,'injLightCandleMarkerSvg');
    if(!candleHalo || candleHalo.ownerSVGElement!==markerSvg){
-     candleHalo=node('circle',{r:8.5,class:'inj-candle-last-halo'});
-     candleDot=node('circle',{r:2.8,class:'inj-candle-last-dot'});
+     // The marker SVG stretches to the chart size (preserveAspectRatio:none).
+     // Its circles previously became ovals on tall mobile screens. Ellipses
+     // with separately calibrated radii draw perfectly round CSS-pixel dots.
+     candleHalo=node('ellipse',{rx:8,ry:8,class:'inj-candle-last-halo'});
+     candleDot=node('ellipse',{rx:2.1,ry:2.1,class:'inj-candle-last-dot'});
      markerSvg.replaceChildren(candleHalo,candleDot);
      candleHalo.addEventListener('animationend',()=>candleHalo.classList.remove('is-pulsing'));
+   }
+   // Always size the center and halo in REAL screen pixels. Recalibrate
+   // whenever chart bounds change; keep the soft glow animation untouched.
+   const markerRect=markerSvg.getBoundingClientRect();
+   if(markerRect.width>0&&markerRect.height>0){
+     const unitsPerPxX=320/markerRect.width;
+     const unitsPerPxY=150/markerRect.height;
+     const size=(element,radiusPx)=>{
+       element.setAttribute('rx',(radiusPx*unitsPerPxX).toFixed(4));
+       element.setAttribute('ry',(radiusPx*unitsPerPxY).toFixed(4));
+     };
+     size(candleDot,2.1);   // crisp, 4.2px circular core
+     size(candleHalo,8);    // existing understated 16px glow
    }
    const latest=lite[lite.length-1];
    const latestX=Math.min(geo.x1,Math.max(geo.x0,geo.center(latest)));
@@ -394,6 +410,12 @@
    requestAnimationFrame(()=>{pending=false;render();});
  }
  function boot(){
+   const litePlot=get('injLightChartPlot');
+   if(litePlot && typeof ResizeObserver==='function'){
+     // Immediately recalibrate after Pro → Lite and on device rotation.
+     new ResizeObserver(schedule).observe(litePlot);
+   }
+   window.addEventListener('resize',schedule,{passive:true});
    const price=get('entryMarketPrice');
    if(price)new MutationObserver(schedule).observe(price,{
      subtree:true,childList:true,characterData:true,attributes:true,

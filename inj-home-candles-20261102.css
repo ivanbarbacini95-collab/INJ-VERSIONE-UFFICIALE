@@ -106,7 +106,8 @@ html[data-inj-page="index"] body #injLightHome #injLightCandleMarkerSvg .inj-can
 }
 html[data-inj-page="index"] body #injLightHome #injLightCandleMarkerSvg .inj-candle-last-dot{
  fill:var(--inj-light-performance-color,#62c7a2)!important;
- stroke:var(--theme-canvas,var(--bg,#07131a))!important;stroke-width:1.4!important;
+ stroke:var(--theme-canvas,var(--bg,#07131a))!important;
+ stroke-width:1!important;vector-effect:non-scaling-stroke!important;
 }
 html[data-inj-page="index"] body #injLightHome #injLightCandleMarkerSvg .inj-candle-last-halo.is-pulsing{
  animation:inj-candle-soft-glow 1.05s ease-out 1!important;
