@@ -5,8 +5,8 @@
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#071320",
-  "theme_color": "#071320",
+  "background_color": "#10272a",
+  "theme_color": "#10272a",
   "description": "Monitor live di wallet, staking e mercati Injective.",
   "icons": [
     {

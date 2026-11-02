@@ -100,7 +100,7 @@
    const performanceView=document.getElementById('performanceTimelineView');
    const marketPerformance=root.dataset.injHomeTab==='mercato' &&
      performanceView && !performanceView.hidden;
-   const visible=gate.classList.contains('visible') &&
+   const visible=root.dataset.injViewMode!=='light' && root.dataset.injModeTransition!=='leaving' && gate.classList.contains('visible') &&
      (gate.getAttribute('aria-hidden')==='false'||marketPerformance) &&
      document.body.classList.contains('entry-gate-open') &&
      root.dataset.injHomeTab!=='mercato' &&
@@ -121,7 +121,7 @@
   visibilityObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
   visibilityObserver.observe(gate,{attributes:true,attributeFilter:['class','aria-hidden']});
   visibilityObserver.observe(gate.querySelector('.entry-gate-shell'),{attributes:true,attributeFilter:['class']});
-  visibilityObserver.observe(root,{attributes:true,attributeFilter:['data-inj-home-tab']});
+  visibilityObserver.observe(root,{attributes:true,attributeFilter:['data-inj-home-tab','data-inj-view-mode','data-inj-mode-transition']});
   const performanceView=document.getElementById('performanceTimelineView');
   if(performanceView)visibilityObserver.observe(performanceView,{attributes:true,attributeFilter:['hidden','class']});
   window.addEventListener('pageshow',syncTopLayer);
@@ -188,7 +188,7 @@
  // The Home dock must remain present from the first visible Home screen,
  // independent of vertical scrolling; fullscreen overlays still hide it.
  function updateDockReveal(){
-  const show=root.dataset.injHomeTab==='home'?isHomeForeground():true;
+  const show=root.dataset.injViewMode!=='light' && root.dataset.injModeTransition!=='leaving' && (root.dataset.injHomeTab==='home'?isHomeForeground():true);
   const value=String(show);
   if(root.dataset.injHomeNavVisible!==value)root.dataset.injHomeNavVisible=value;
  }
@@ -204,6 +204,8 @@
  window.addEventListener('resize',scheduleDockRefresh,{passive:true});
  window.visualViewport?.addEventListener('resize',scheduleDockRefresh,{passive:true});
  window.addEventListener('pageshow',scheduleDockRefresh,{passive:true});
+ const modeDockObserver=new MutationObserver(scheduleDockRefresh);
+ modeDockObserver.observe(root,{attributes:true,attributeFilter:['data-inj-view-mode','data-inj-mode-transition']});
 
  function applyVisibility(section){
   const shown=new Set(section.ids);

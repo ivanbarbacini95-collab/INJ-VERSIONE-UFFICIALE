@@ -1,0 +1,59 @@
+/* INJ Node · OS status bar / Home palette continuity · 2026-11-02
+   New iOS PWAs cannot render arbitrary web gradients inside the native
+   status area. Use a per-theme SOLID opening tone and smoothly reveal the
+   existing full-page gradient underneath. No pseudo-element fake status bar,
+   no fixed inset overlays, no changes to scrolling or safe-area geometry.
+   Status color metadata is kept in sync via viewport.js. */
+html[data-inj-page="index"][data-theme="navy"]{--inj-native-status-tone:#10272a}
+html[data-inj-page="index"][data-theme="black"]{--inj-native-status-tone:#000000}
+html[data-inj-page="index"][data-theme="light"]{--inj-native-status-tone:#f3f8ff}
+html[data-inj-page="index"][data-theme="amber"]{--inj-native-status-tone:#181923}
+html[data-inj-page="index"][data-theme="velvet"]{--inj-native-status-tone:#322942}
+html[data-inj-page="index"][data-theme="ocean-x-solar"]{--inj-native-status-tone:#51334f}
+
+/* On mobile, the native status bar and the top pixel of Home now use
+   the same palette tone. The gradient appears gradually, not as a seam. */
+@media (max-width:900px),(hover:none) and (pointer:coarse){
+ html[data-inj-page="index"][data-theme]{
+  background-color:var(--inj-native-status-tone,var(--theme-canvas,#10272a))!important;
+  background-image:
+    linear-gradient(180deg,
+      var(--inj-native-status-tone,var(--theme-canvas,#10272a)) 0px,
+      color-mix(in srgb,var(--inj-native-status-tone,var(--theme-canvas,#10272a)) 94%,transparent) 18px,
+      color-mix(in srgb,var(--inj-native-status-tone,var(--theme-canvas,#10272a)) 72%,transparent) 65px,
+      color-mix(in srgb,var(--inj-native-status-tone,var(--theme-canvas,#10272a)) 34%,transparent) 128px,
+      transparent 185px),
+    var(--page-gradient,none)!important;
+  background-size:100% 185px,100% 100%!important;
+  background-position:center top,center top!important;
+  background-repeat:no-repeat!important;
+  background-attachment:fixed!important;
+ }
+ html[data-inj-page="index"][data-theme] body{
+  background:transparent!important;
+ }
+ html[data-inj-page="index"][data-theme] body>#entryGate.entry-gate,
+ html[data-inj-page="index"][data-theme] body>#entryGate.entry-gate.visible,
+ html[data-inj-page="index"][data-theme] body>#entryGate.entry-gate>.entry-gate-shell{
+  background:transparent!important;
+  background-image:none!important;
+ }
+ /* Lite has its own full-height surface: blend that into the same native
+    palette tone, so returning to it doesn't bring back a separate top slab. */
+ html[data-inj-page="index"][data-theme] body #injLightHome .inj-light-screen{
+  background-color:var(--inj-native-status-tone,var(--theme-canvas,#10272a))!important;
+  background-image:
+    linear-gradient(180deg,
+      var(--inj-native-status-tone,var(--theme-canvas,#10272a)) 0px,
+      color-mix(in srgb,var(--inj-native-status-tone,var(--theme-canvas,#10272a)) 88%,transparent) 24px,
+      color-mix(in srgb,var(--inj-native-status-tone,var(--theme-canvas,#10272a)) 47%,transparent) 98px,
+      transparent 182px),
+    radial-gradient(ellipse 72% 38% at 79% -10%,
+      color-mix(in srgb,var(--accent,#6dc8b7) 12%,transparent),transparent 88%),
+    linear-gradient(150deg,
+      color-mix(in srgb,var(--theme-canvas,var(--bg,#0b1920)) 95%,var(--accent,#6dc8b7) 5%),
+      var(--theme-canvas,var(--bg,#07131a)) 75%)!important;
+  background-position:center top!important;
+  background-repeat:no-repeat!important;
+ }
+}

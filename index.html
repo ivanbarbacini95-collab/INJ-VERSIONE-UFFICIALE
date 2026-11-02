@@ -4,14 +4,14 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<meta content="#020708" name="theme-color"/>
+<meta content="#10272a" name="theme-color"/>
 <style id="inj-prepaint-canvas">html,body{background-color:#020708;color-scheme:dark}html[data-theme="black"],html[data-theme="black"] body{background-color:#000}html[data-theme="light"],html[data-theme="light"] body{background-color:#eef5ff;color-scheme:light}html[data-theme="amber"],html[data-theme="amber"] body{background-color:#05080d}html[data-theme="velvet"],html[data-theme="velvet"] body{background-color:#0a1024}html[data-theme="ocean-x-solar"],html[data-theme="ocean-x-solar"] body{background-color:#1b122c}</style>
 
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="INJ Node" name="apple-mobile-web-app-title"/>
 <meta content="INJ Node — dashboard essenziale per wallet, staking e mercato Injective." name="description"/>
 <title>INJ Node</title>
-<link href="manifest.webmanifest?v=16.06.29" rel="manifest"/>
+<link href="manifest.webmanifest?v=20261102litepro1" rel="manifest"/>
 
 
 
@@ -21,8 +21,8 @@
     try {
       const savedTheme = (localStorage.getItem('inj_monitor_theme') === 'dynamic' ? 'navy' : localStorage.getItem('inj_monitor_theme'));
       document.documentElement.dataset.theme = ['navy', 'black', 'light', 'amber', 'velvet', 'ocean-x-solar'].includes(savedTheme) ? savedTheme : 'navy';
-      const initialTone = {navy:'#020708',black:'#000000',light:'#eef5ff',amber:'#05080d',velvet:'#0a1024','ocean-x-solar':'#1b122c'};
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||'#07121b');
+      const initialTone = {navy:'#10272a',black:'#000000',light:'#f3f8ff',amber:'#181923',velvet:'#322942','ocean-x-solar':'#51334f'};
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.navy);
       const savedUiStyle = localStorage.getItem('inj_monitor_ui_style');
       document.documentElement.dataset.uiStyle = ['elegant', 'futuristic', 'ultra'].includes(savedUiStyle) ? savedUiStyle : 'elegant';
       if (sessionStorage.getItem('inj_node_return_home') === '1') {
@@ -36,9 +36,9 @@
   </script>
 <style>html[data-return-home="1"] .boot-splash{display:none!important}</style>
 <link href="style.css?v=16.01.44" rel="stylesheet"/>
-<script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--theme-canvas').trim()||cs.getPropertyValue('--bg').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
+<script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--inj-native-status-tone').trim()||cs.getPropertyValue('--theme-canvas').trim()||cs.getPropertyValue('--bg').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <link rel="stylesheet" href="viewport.css?v=16.00.74">
-<script defer src="viewport.js?v=20261028ios27"></script>
+<script defer src="viewport.js?v=20261102litepro-native1"></script>
 
 <style id="entry-flat-v44-css">
 .entry-actions.entry-flat-v44{display:flex!important;flex-direction:column!important;gap:10px!important;width:100%!important}
@@ -378,7 +378,7 @@
 <link rel="stylesheet" href="./inj-inter-light-20261029.css?v=interlight-global-1"/>
 <link rel="stylesheet" href="./inj-font-switcher-20261029.css?v=geistbold8"/>
 <link rel="stylesheet" href="./home-bottom-tabs-20261030.css?v=20261101-home-fixed5"/>
-<script defer src="./home-bottom-tabs-20261030.js?v=20261102-routefix1"></script>
+<script defer src="./home-bottom-tabs-20261030.js?v=20261102-litepro-nav1"></script>
 <link rel="stylesheet" href="./market-tab-navigation-20261031.css?v=marketrail11"/>
 <script defer src="./market-tab-navigation-20261031.js?v=marketrail14"></script>
 <link rel="stylesheet" href="./my-reward-20261101.css?v=1">
@@ -400,6 +400,14 @@
 <script defer src="./nav-premium-loop-20261101.js?v=12"></script>
 <link rel="stylesheet" href="./home-theme-continuity-20261101.css?v=20261102-toptone1">
 <link rel="stylesheet" href="./live-view-clock-below-title-20261101.css?v=1">
+<script>try{document.documentElement.dataset.injViewMode=localStorage.getItem("inj_node_view_mode_v1")==="light"?"light":"pro"}catch(_){document.documentElement.dataset.injViewMode="pro"}</script>
+<link rel="stylesheet" href="./inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1">
+<link rel="stylesheet" href="./inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1">
+<link rel="stylesheet" href="./inj-home-candles-20261102.css?v=20261102-litepro-ohlc-official1">
+<link rel="stylesheet" href="./inj-ios-statusbar-palette-20261102.css?v=20261102-litepro-ohlc-official1">
+<script defer src="./inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1"></script>
+<script defer src="./inj-light-home-20261102.js?v=20261102-litepro-ohlc-official1"></script>
+<script defer src="./inj-home-candles-20261102.js?v=20261102-litepro-ohlc-official1"></script>
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
@@ -1413,7 +1421,7 @@
   </article>
 </section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
-<script defer="" src="app.js?v=20261102-home-day-openclose2"></script>
+<script defer="" src="app.js?v=20261102-litepro-charts1"></script>
 <script defer src="./morning-brief.js?v=160737"></script>
 <script>
 (function(){

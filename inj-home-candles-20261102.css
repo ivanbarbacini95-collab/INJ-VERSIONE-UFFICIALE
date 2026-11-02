@@ -1,0 +1,254 @@
+/* INJ Node · Home + Light OHLC candlesticks.
+   Pro: 15-minute candles for the UTC session.
+   Light: 5-minute candles on a continuously rolling 6-hour window. */
+html[data-inj-page="index"] body #entryGate #entrySparkStage[data-inj-candles-ready="true"] > svg:not(#injProCandleSvg){
+ opacity:0!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage[data-inj-candles-ready="true"]
+ :is(#entrySparkLiveDot,#entrySparkLiveLabel){display:none!important}
+html[data-inj-page="index"] body #entryGate #entrySparkStage > #injProCandleSvg{
+ position:absolute!important;inset:0!important;
+ display:block!important;width:100%!important;height:100%!important;
+ max-width:100%!important;max-height:100%!important;
+ overflow:hidden!important;pointer-events:none!important;
+ opacity:1!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-inj-candles-ready="true"] > svg:not(#injLightCandleSvg):not(#injLightCandleMarkerSvg){
+ opacity:0!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot > #injLightCandleSvg{
+ position:absolute!important;top:0!important;left:0!important;
+ display:block!important;width:calc(100% - var(--inj-light-axis-width,67px))!important;
+ height:100%!important;max-height:100%!important;
+ overflow:hidden!important;pointer-events:none!important;opacity:1!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-plot > #injLightCandleSvg :is(.inj-candle-up,.inj-candle-down),
+html[data-inj-page="index"] body #entryGate #injProCandleSvg :is(.inj-candle-up,.inj-candle-down){
+ stroke-linecap:round;vector-effect:non-scaling-stroke;
+}
+html[data-inj-page="index"] body :is(#injLightCandleSvg,#injProCandleSvg) .inj-candle-up{
+ fill:#62c7a2;stroke:#62c7a2;
+}
+html[data-inj-page="index"] body :is(#injLightCandleSvg,#injProCandleSvg) .inj-candle-down{
+ fill:#dc7483;stroke:#dc7483;
+}
+html[data-inj-page="index"] body :is(#injLightCandleSvg,#injProCandleSvg) .inj-candle-wick{
+ stroke-width:1;opacity:.86;
+}
+html[data-inj-page="index"] body :is(#injLightCandleSvg,#injProCandleSvg) .inj-candle-body{
+ stroke:none;opacity:.95;
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleSvg .inj-candle-last-halo{
+ opacity:0;fill:var(--inj-light-performance-color,#62c7a2);
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleSvg .inj-candle-last-dot{
+ fill:var(--inj-light-performance-color,#62c7a2);
+ stroke:var(--theme-canvas,var(--bg,#07131a));
+ stroke-width:1.4;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-performance="negative"]{
+ --inj-light-performance-color:#dc7483;
+ --inj-light-dot:#dc7483;
+ --inj-light-plot:#dc7483;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-performance="positive"]{
+ --inj-light-performance-color:#62c7a2;
+ --inj-light-dot:#62c7a2;
+ --inj-light-plot:#62c7a2;
+}
+@keyframes inj-candle-soft-glow{
+ 0%,100%{opacity:0}
+ 38%{opacity:.22}
+ 70%{opacity:.09}
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleSvg .inj-candle-last-halo.is-pulsing{
+ animation:inj-candle-soft-glow 1.05s ease-out 1!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPerf6h{
+ margin-left:auto!important;
+ font-size:clamp(10px,2.5vw,12px)!important;
+ line-height:1!important;
+ white-space:nowrap!important;
+ font-weight:var(--inj-chosen-detail,500)!important;
+ font-variant-numeric:tabular-nums!important;
+ color:var(--muted,#83a3a3)!important;
+ letter-spacing:0!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPerf6h.positive{color:#62c7a2!important}
+html[data-inj-page="index"] body #injLightHome #injLightPerf6h.negative{color:#dc7483!important}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-head .inj-light-live{margin-left:0!important}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-inj-candles-ready="true"]
+ #injLightPriceNow{
+ color:var(--inj-light-performance-color,#62c7a2)!important;
+ border-color:color-mix(in srgb,var(--inj-light-performance-color,#62c7a2) 28%,transparent)!important;
+ background:color-mix(in srgb,var(--inj-light-performance-color,#62c7a2) 12%,var(--theme-canvas,var(--bg,#07131a)))!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-inj-candles-ready="true"]
+ .inj-light-price-tick{opacity:.72!important}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-inj-candles-ready="true"]
+ #injLightGraphDot,
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-inj-candles-ready="true"]
+ #injLightGraphHalo{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #injLightHome #injLightCandleSvg .inj-candle-last-halo.is-pulsing{animation:none!important}
+}
+
+
+/* Persistent live marker — its halo animation must never be destroyed by
+   repaints of the OHLC candle group (common on websocket bursts). */
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot > #injLightCandleMarkerSvg{
+ position:absolute!important;top:0!important;left:0!important;
+ display:block!important;width:calc(100% - var(--inj-light-axis-width,67px))!important;
+ height:100%!important;pointer-events:none!important;overflow:hidden!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleMarkerSvg .inj-candle-last-halo{
+ opacity:0;fill:var(--inj-light-performance-color,#62c7a2)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleMarkerSvg .inj-candle-last-dot{
+ fill:var(--inj-light-performance-color,#62c7a2)!important;
+ stroke:var(--theme-canvas,var(--bg,#07131a))!important;stroke-width:1.4!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightCandleMarkerSvg .inj-candle-last-halo.is-pulsing{
+ animation:inj-candle-soft-glow 1.05s ease-out 1!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #injLightHome #injLightCandleMarkerSvg .inj-candle-last-halo.is-pulsing{
+  animation:none!important;
+ }
+}
+
+
+/* Price axis for Pro Home matches the Light chart's price references.
+   Reserve explicit width rather than squeezing candles into text labels. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ #entrySparkStage#entrySparkStage{
+ --inj-pro-axis-width:68px;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ #entrySparkStage#entrySparkStage > #injProCandleSvg{
+ width:calc(100% - var(--inj-pro-axis-width))!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage .inj-pro-price-axis{
+ position:absolute!important;right:0!important;top:0!important;bottom:0!important;
+ width:var(--inj-pro-axis-width,68px)!important;
+ pointer-events:none!important;
+ border-left:1px solid color-mix(in srgb,var(--line,#63827f) 26%,transparent)!important;
+ z-index:11!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage .inj-pro-price-axis[hidden]{display:none!important}
+html[data-inj-page="index"] body #entryGate #entrySparkStage :is(.inj-pro-price-tick,.inj-pro-price-now){
+ position:absolute!important;right:1px!important;left:3px!important;
+ transform:translateY(-50%)!important;
+ white-space:nowrap!important;text-align:right!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-size:clamp(9px,2.4vw,11px)!important;font-variant-numeric:tabular-nums!important;
+ font-weight:var(--inj-chosen-detail,500)!important;letter-spacing:0!important;
+ line-height:1.25!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage .inj-pro-price-tick{color:var(--muted,#809c9b)!important;opacity:.7!important}
+html[data-inj-page="index"] body #entryGate #entrySparkStage .inj-pro-price-now{
+ padding:2px 3px!important;border-radius:5px!important;
+ color:var(--accent,#8edbc7)!important;
+ background:color-mix(in srgb,var(--accent,#8edbc7) 13%,var(--theme-canvas,var(--bg,#0c1b1f)))!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8edbc7) 27%,transparent)!important;
+ font-weight:var(--inj-chosen-emphasis,600)!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage .inj-pro-price-tick[hidden]{display:none!important}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-timebar{
+ padding-right:var(--inj-pro-axis-width,68px)!important;
+ box-sizing:border-box!important;
+}
+
+/* Time labels follow the 6H rolling chart clock (user's local time zone).
+   Positions are derived from the same x-domain as the 5m candles. */
+html[data-inj-page="index"] body #injLightHome #injLightTimeAxis.inj-light-axis{
+ display:block!important;position:relative!important;
+ width:calc(100% - var(--inj-light-axis-width,67px))!important;
+ height:19px!important;min-height:19px!important;
+ padding:0!important;box-sizing:border-box!important;
+ font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightTimeAxis > span{
+ position:absolute!important;top:2px!important;left:0;
+ transform:translateX(-50%)!important;
+ white-space:nowrap!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-size:clamp(9px,2.4vw,11px)!important;
+ letter-spacing:0!important;color:var(--muted,#75979a)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightTimeAxis > span:first-child{
+ transform:none!important;
+}
+
+/* One shared, device-friendly interaction surface for Light and Pro.
+   Horizontal pointer exploration works without blocking vertical page scroll. */
+html[data-inj-page="index"] body #entryGate #entrySparkStage
+ .inj-candle-interaction,
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot
+ .inj-candle-interaction{
+ position:absolute!important;left:0!important;top:0!important;bottom:0!important;
+ box-sizing:border-box!important;
+ background:transparent!important;
+ z-index:15!important;touch-action:pan-y!important;cursor:crosshair!important;
+ overflow:visible!important;
+}
+html[data-inj-page="index"] body #entryGate #entrySparkStage .inj-candle-interaction{
+ right:var(--inj-pro-axis-width,68px)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot .inj-candle-interaction{
+ right:var(--inj-light-axis-width,67px)!important;
+}
+html[data-inj-page="index"] body .inj-candle-interaction:focus-visible{
+ outline:1px solid var(--accent,#8dcfb9)!important;outline-offset:-1px!important;
+}
+html[data-inj-page="index"] body .inj-candle-interaction .inj-candle-inspect-line{
+ display:none;position:absolute;top:0;bottom:0;width:0;
+ border-left:1px dashed color-mix(in srgb,var(--text,#d4e7df) 47%,transparent);
+ pointer-events:none!important;
+}
+html[data-inj-page="index"] body .inj-candle-interaction .inj-candle-inspect-point{
+ display:none;position:absolute;width:5px;height:5px;border-radius:50%;
+ border:1px solid var(--text,#d6f1e9);
+ background:var(--accent,#8dcfb9);
+ transform:translate(-50%,-50%);pointer-events:none!important;
+}
+html[data-inj-page="index"] body .inj-candle-interaction .inj-candle-inspect-tooltip{
+ display:none;position:absolute;top:3px;left:50%;width:max-content;
+ max-width:calc(100% - 12px);
+ transform:translateX(-50%);
+ border:1px solid color-mix(in srgb,var(--accent,#90d8c6) 21%,var(--line,#49646a))!important;
+ border-radius:8px!important;padding:5px 7px!important;
+ background:color-mix(in srgb,var(--surface,#15282b) 96%,var(--theme-canvas,#07151b))!important;
+ color:var(--text,#e6f4ee)!important;
+ box-shadow:0 2px 15px rgba(0,0,0,.15)!important;
+ font:var(--inj-chosen-detail,500) clamp(9px,2.25vw,11px)/1.35 var(--inj-chosen-face,system-ui,sans-serif)!important;
+ white-space:normal!important;text-align:center!important;pointer-events:none!important;
+ font-variant-numeric:tabular-nums!important;letter-spacing:0!important;
+}
+html[data-inj-page="index"] body .inj-candle-interaction.is-inspecting
+ :is(.inj-candle-inspect-line,.inj-candle-inspect-point,.inj-candle-inspect-tooltip){
+ display:block!important;
+}
+/* Old line-chart inspection is disabled while native candlesticks are active. */
+html[data-inj-page="index"] body #entryGate #entrySparkStage[data-inj-candles-ready="true"]
+ :is(#entrySparkCursor,#entrySparkTooltip){display:none!important}
+@media(max-width:365px){
+ html[data-inj-page="index"] body #entryGate #entrySparkStage{--inj-pro-axis-width:60px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body .inj-candle-interaction *{animation:none!important;transition:none!important}
+}
+
+
+/* Price-only inspection bubble: one compact number, no OHLC row. */
+html[data-inj-page="index"] body
+ .inj-candle-interaction .inj-candle-inspect-tooltip{
+ padding:5px 9px!important;
+ min-width:0!important;
+ max-width:calc(100% - 10px)!important;
+ font-size:clamp(11px,2.7vw,13px)!important;
+ font-weight:var(--inj-chosen-emphasis,600)!important;
+ line-height:1.2!important;
+ white-space:nowrap!important;
+ border-radius:7px!important;
+}

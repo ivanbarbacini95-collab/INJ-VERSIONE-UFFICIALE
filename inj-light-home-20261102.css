@@ -1,0 +1,453 @@
+/* INJ NODE · independent Light experience, 02 Nov 2026.
+   One data pipeline: the existing Home remains mounted and updates price, wallet
+   and real UTC-day sparkline. Pro remains unchanged. */
+html[data-inj-page="index"] body > #injLightHome[hidden]{display:none!important}
+html[data-inj-page="index"][data-inj-light-active="true"] body > #injLightHome:not([hidden]),
+html[data-inj-page="index"][data-inj-mode-transition="leaving"] body > #injLightHome:not([hidden]){
+ display:flex!important;position:fixed!important;inset:0!important;
+ z-index:2147483400!important;overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+ padding:0!important;margin:0!important;align-items:flex-start!important;justify-content:center!important;
+ background:var(--theme-canvas,var(--bg,#07131a))!important;
+ color:var(--text,#e9f4f3)!important;
+ pointer-events:auto!important;touch-action:pan-y!important;
+}
+html[data-inj-page="index"][data-inj-light-active="true"] body > #entryGate{
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-view-mode="light"] body > #injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-view-mode="light"] body > #injPrimaryBottomNav:popover-open,
+html[data-inj-page="index"][data-inj-light-active="true"] body > #injPrimaryBottomNav{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-screen{
+ box-sizing:border-box!important;width:100%!important;max-width:760px!important;
+ min-height:100dvh!important;margin:0 auto!important;
+ padding:calc(env(safe-area-inset-top,0px) + 30px) clamp(19px,5.4vw,36px) calc(env(safe-area-inset-bottom,0px) + 32px)!important;
+ display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:0!important;
+ background:
+ radial-gradient(ellipse 72% 38% at 79% -10%,color-mix(in srgb,var(--accent,#6dc8b7) 12%,transparent),transparent 88%),
+ linear-gradient(150deg,color-mix(in srgb,var(--theme-canvas,var(--bg,#0b1920)) 95%,var(--accent,#6dc8b7) 5%),var(--theme-canvas,var(--bg,#07131a)) 75%)!important;
+ color:var(--text,#e9f4f3)!important;
+}
+html[data-inj-page="index"] body #injLightHome,
+html[data-inj-page="index"] body #injLightHome :is(button,span,strong,small,p,div,h1,h2){
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ letter-spacing:normal!important;
+}
+html[data-inj-page="index"] body #injLightHome button{cursor:pointer!important;-webkit-tap-highlight-color:transparent!important}
+html[data-inj-page="index"] body #injLightHome button:focus-visible{
+ outline:2px solid var(--accent,#8ddac7)!important;outline-offset:3px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-header{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;width:100%!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-brand{
+ margin:0!important;padding:0!important;font-size:clamp(23px,5.5vw,29px)!important;
+ font-weight:var(--inj-chosen-heading,650)!important;line-height:1.1!important;letter-spacing:-.045em!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-brand span{
+ font-weight:var(--inj-chosen-weight,400)!important;opacity:.77!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-kicker{
+ display:block!important;margin-top:8px!important;font-size:9px!important;letter-spacing:.15em!important;
+ color:var(--muted,#87a6a6)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightModeToggle{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:none!important;gap:8px!important;padding:9px 12px!important;margin:0!important;
+ min-height:35px!important;background:color-mix(in srgb,var(--accent,#8fd8c7) 7%,var(--surface,#0d2023))!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8fd8c7) 27%,var(--line,#405758))!important;
+ border-radius:999px!important;color:var(--text,#d4eeea)!important;
+ font-size:10px!important;font-weight:var(--inj-chosen-detail,500)!important;letter-spacing:.07em!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightModeToggle svg{width:15px!important;height:15px!important;fill:none!important;stroke:var(--accent,#8fd8c7)!important;stroke-width:1.7!important;stroke-linecap:round!important}
+html[data-inj-page="index"] body #injLightHome .inj-light-walletbar{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ width:100%!important;margin-top:clamp(26px,5vh,38px)!important;padding:0 0 17px!important;
+ gap:10px!important;border-bottom:1px solid color-mix(in srgb,var(--line,#658384) 42%,transparent)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightWalletToggle{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ text-align:left!important;flex:1!important;min-width:0!important;gap:8px!important;
+ border:0!important;padding:0!important;background:none!important;box-shadow:none!important;
+ color:inherit!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-eyebrow{
+ display:block!important;font-size:10px!important;color:var(--muted,#91aaa9)!important;
+ font-weight:var(--inj-chosen-detail,500)!important;letter-spacing:.09em!important;line-height:1.35!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-copy{min-width:0!important}
+html[data-inj-page="index"] body #injLightHome .inj-light-address{
+ display:block!important;margin-top:6px!important;font-size:clamp(12px,3vw,14px)!important;
+ font-weight:var(--inj-chosen-weight,400)!important;white-space:nowrap!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;color:var(--text,#dcecea)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-chevron{font-size:18px!important;color:var(--muted,#9fb7b3)!important;line-height:1!important}
+html[data-inj-page="index"] body #injLightHome .inj-light-status{
+ flex:none!important;display:block!important;width:7px!important;height:7px!important;
+ border-radius:50%!important;background:var(--accent,#80d6b7)!important;
+ box-shadow:0 0 12px color-mix(in srgb,var(--accent,#80d6b7) 55%,transparent)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-values{
+ display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)!important;
+ gap:clamp(9px,3vw,24px)!important;margin-top:clamp(30px,5vh,42px)!important;min-width:0!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-values > div{min-width:0!important}
+html[data-inj-page="index"] body #injLightHome .inj-light-values > div + div{
+ border-left:1px solid color-mix(in srgb,var(--line,#678889) 36%,transparent)!important;
+ padding-left:clamp(12px,3.5vw,24px)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-value{
+ margin:10px 0 0!important;font-size:clamp(21px,5.6vw,38px)!important;
+ font-weight:var(--inj-chosen-emphasis,600)!important;letter-spacing:-.045em!important;
+ line-height:1.2!important;white-space:nowrap!important;font-variant-numeric:tabular-nums lining-nums!important;
+ color:var(--text,#ebf8f4)!important;overflow:hidden!important;text-overflow:clip!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-value small{
+ font-size:clamp(10px,2.4vw,13px)!important;font-weight:var(--inj-chosen-detail,400)!important;
+ letter-spacing:0!important;color:var(--muted,#8daaa8)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-meta{
+ display:block!important;margin-top:8px!important;font-size:11px!important;
+ color:var(--muted,#9db5b4)!important;white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-meta.positive{color:#7acead!important}
+html[data-inj-page="index"] body #injLightHome .inj-light-meta.negative{color:#e88b96!important}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart{
+ margin-top:clamp(39px,7vh,59px)!important;width:100%!important;min-width:0!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-head h2{
+ margin:0!important;padding:0!important;font-size:clamp(14px,3.4vw,17px)!important;
+ line-height:1.2!important;font-weight:var(--inj-chosen-emphasis,600)!important;color:var(--text,#e9f4f3)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-live{
+ display:flex!important;align-items:center!important;gap:6px!important;color:var(--accent,#87d5bb)!important;
+ font-size:10px!important;font-weight:var(--inj-chosen-detail,500)!important;letter-spacing:.12em!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-live i{
+ display:block!important;width:5px!important;height:5px!important;background:currentColor!important;border-radius:50%!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-sub{
+ margin:6px 0 0!important;color:var(--muted,#88aaa8)!important;font-size:10px!important;letter-spacing:.055em!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-plot{
+ position:relative!important;margin-top:16px!important;width:100%!important;height:clamp(154px,25vh,230px)!important;
+ --inj-light-plot:var(--accent,#78d3b8);
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-plot.negative{--inj-light-plot:#e47785}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-plot svg{
+ display:block!important;width:100%!important;height:100%!important;overflow:visible!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-plot .inj-light-grid{
+ stroke:var(--text,#bcdad3)!important;stroke-opacity:.10!important;stroke-width:.6!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightGraphArea{fill:var(--inj-light-plot)!important;fill-opacity:.09!important;stroke:none!important}
+html[data-inj-page="index"] body #injLightHome #injLightGraphLine{
+ fill:none!important;stroke:var(--inj-light-plot)!important;stroke-width:2.2!important;
+ stroke-linejoin:round!important;stroke-linecap:round!important;vector-effect:non-scaling-stroke!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightGraphDot{
+ fill:var(--inj-light-plot)!important;stroke:var(--theme-canvas,var(--bg,#07131a))!important;
+ stroke-width:2!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-pending{
+ position:absolute!important;inset:0!important;display:grid!important;place-items:center!important;
+ color:var(--muted,#9ab0b0)!important;font-size:12px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-axis{
+ display:flex!important;justify-content:space-between!important;gap:6px!important;
+ font-size:10px!important;margin-top:8px!important;color:var(--muted,#75979a)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-reward{
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ margin-top:clamp(31px,5vh,46px)!important;
+ padding:clamp(18px,4vw,23px)!important;
+ border-radius:18px!important;border:1px solid color-mix(in srgb,var(--accent,#78d9c6) 23%,var(--line,#3e6464))!important;
+ background:linear-gradient(115deg,color-mix(in srgb,var(--accent,#69bdad) 13%,var(--surface,#13242a)),color-mix(in srgb,var(--surface,#122127) 94%,transparent))!important;
+ box-shadow:none!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-reward-head{
+ display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-reward-head > span:last-child{
+ color:var(--accent,#9ecdbb)!important;font-size:10px!important;letter-spacing:.06em!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-reward-values{
+ display:flex!important;justify-content:space-between!important;align-items:baseline!important;
+ gap:12px!important;margin-top:15px!important;min-width:0!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-reward-values strong{
+ font-weight:var(--inj-chosen-emphasis,600)!important;font-variant-numeric:tabular-nums!important;
+ letter-spacing:-.04em!important;white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightReward{
+ font-size:clamp(23px,6vw,37px)!important;min-width:0!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightReward small{
+ font-size:clamp(11px,2.5vw,14px)!important;color:var(--muted,#a1ccc1)!important;
+ font-weight:var(--inj-chosen-weight,400)!important;letter-spacing:0!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightRewardFiat{
+ color:var(--accent,#afdcca)!important;font-size:clamp(15px,4.1vw,23px)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-reward-note{
+ display:block!important;margin-top:10px!important;color:var(--muted,#7d999b)!important;font-size:10px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-footer{
+ text-align:center!important;margin:25px 0 0!important;font-size:9px!important;
+ letter-spacing:.13em!important;color:var(--muted,#779e9d)!important;opacity:.75!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightWalletSheet[hidden]{display:none!important}
+html[data-inj-page="index"] body #injLightHome #injLightWalletSheet:not([hidden]){
+ position:fixed!important;inset:0!important;display:flex!important;
+ align-items:flex-end!important;justify-content:center!important;
+ z-index:2147483450!important;background:rgba(0,0,0,.58)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-panel{
+ box-sizing:border-box!important;width:100%!important;max-width:550px!important;
+ border-radius:22px 22px 0 0!important;
+ background:var(--surface-strong,var(--surface,#12262a))!important;
+ border:1px solid var(--line,#365d5b)!important;border-bottom:0!important;
+ padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px)!important;
+ max-height:70dvh!important;overflow-y:auto!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-panel-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ margin-bottom:12px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-panel h2{margin:0!important;font-size:16px!important}
+html[data-inj-page="index"] body #injLightHome #injLightWalletClose{
+ border:0!important;background:transparent!important;color:var(--text,#fff)!important;
+ padding:8px!important;font-size:22px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-option{
+ width:100%!important;display:flex!important;justify-content:space-between!important;
+ align-items:center!important;gap:12px!important;margin-top:7px!important;
+ padding:12px 10px!important;border:1px solid var(--line,#2d4c4d)!important;
+ border-radius:12px!important;background:transparent!important;color:var(--text,#fff)!important;
+ text-align:left!important;font-size:13px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-option[aria-selected="true"]{
+ border-color:var(--accent,#89e0c5)!important;background:color-mix(in srgb,var(--accent,#89e0c5) 9%,transparent)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-wallet-option small{
+ display:block!important;font-size:10px!important;color:var(--muted,#8ca7a8)!important;
+ margin-top:4px!important;
+}
+html[data-inj-page="index"] body.privacy-on #injLightHome .private{
+ filter:blur(8px)!important;user-select:none!important;
+}
+@media(min-width:760px){
+ html[data-inj-page="index"] body #injLightHome .inj-light-screen{
+  justify-content:center!important;max-width:760px!important;min-height:100dvh!important;
+  padding-top:48px!important;padding-bottom:48px!important;
+ }
+}
+@media(max-width:370px){
+ html[data-inj-page="index"] body #injLightHome .inj-light-screen{padding-left:16px!important;padding-right:16px!important}
+ html[data-inj-page="index"] body #injLightHome .inj-light-value{font-size:clamp(20px,5.3vw,24px)!important}
+ html[data-inj-page="index"] body #injLightHome #injLightReward{font-size:21px!important}
+ html[data-inj-page="index"] body #injLightHome #injLightRewardFiat{font-size:16px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #injLightHome *{animation:none!important;transition:none!important}
+}
+
+/* Light's dock exclusion is unconditional (also during overlays and during
+   iOS popover transition). JS additionally closes the native popover. */
+html[data-inj-page="index"][data-inj-view-mode="light"] body.entry-gate-open
+  > #injPrimaryBottomNav#injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-view-mode="light"] body.entry-gate-open
+  > #injPrimaryBottomNav#injPrimaryBottomNav:popover-open,
+html[data-inj-page="index"][data-inj-light-active="true"] body
+  > #injPrimaryBottomNav#injPrimaryBottomNav {
+  display:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* No loading text is ever rendered in Light's plot, including the case
+   where the live series has not arrived yet. */
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-pending,
+html[data-inj-page="index"] body #injLightHome #injLightChartPending{
+  display:none!important;
+}
+
+/* Dot color shows the direction of the latest price tick, independently
+   of the 24-hour direction of the overall chart. */
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-tick="up"]{
+  --inj-light-dot:#75dbad;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-tick="down"]{
+  --inj-light-dot:#eb7386;
+}
+/* The center pixel is always solid and never scales or disappears.
+   Only its surrounding aura fades gently on a genuine quote update. */
+html[data-inj-page="index"] body #injLightHome #injLightGraphDot{
+  fill:var(--inj-light-dot,var(--inj-light-plot))!important;
+  stroke:var(--theme-canvas,var(--bg,#07131a))!important;
+  stroke-width:1.6!important;
+  transition:fill .38s ease!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightGraphHalo{
+  fill:var(--inj-light-dot,var(--inj-light-plot))!important;
+  opacity:0;
+  pointer-events:none!important;
+}
+@keyframes inj-light-quote-soft-glow{
+  0%{opacity:0}
+  24%{opacity:.28}
+  55%{opacity:.18}
+  100%{opacity:0}
+}
+html[data-inj-page="index"] body #injLightHome #injLightGraphHalo.inj-light-quote-pulse{
+  animation:inj-light-quote-soft-glow .95s cubic-bezier(.25,.45,.25,1) 1!important;
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #injLightHome
+    #injLightGraphHalo.inj-light-quote-pulse{
+    animation:none!important;
+  }
+}
+
+
+/* Native INJ/USDT price scale on the right side of the Light price chart. */
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot{
+ --inj-light-axis-width:67px;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot > svg{
+ width:calc(100% - var(--inj-light-axis-width))!important;
+ height:100%!important;
+ display:block!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-price-axis{
+ position:absolute!important;top:0!important;right:0!important;bottom:0!important;
+ width:var(--inj-light-axis-width)!important;
+ pointer-events:none!important;
+ border-left:1px solid color-mix(in srgb,var(--line,#658384) 26%,transparent)!important;
+ font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"] body #injLightHome :is(.inj-light-price-tick,.inj-light-price-now){
+ position:absolute!important;right:0!important;left:3px!important;
+ text-align:right!important;transform:translateY(-50%)!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-weight:var(--inj-chosen-detail,500)!important;
+ font-size:clamp(9px,2.5vw,11px)!important;
+ letter-spacing:-.015em!important;line-height:1.3!important;
+ white-space:nowrap!important;font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-price-tick{
+ color:var(--muted,#789799)!important;opacity:.76!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceNow{
+ left:1px!important;padding:3px 3px!important;border-radius:5px!important;
+ background:color-mix(in srgb,var(--inj-light-dot,var(--accent,#8bdbc5)) 15%,var(--theme-canvas,var(--bg,#07131a)))!important;
+ color:var(--inj-light-dot,var(--accent,#8bdbc5))!important;
+ font-weight:var(--inj-chosen-emphasis,600)!important;
+ border:1px solid color-mix(in srgb,var(--inj-light-dot,var(--accent,#8bdbc5)) 27%,transparent)!important;
+ transition:top .15s linear,background-color .35s ease,color .35s ease!important;
+}
+html[data-inj-page="index"] body #injLightHome :is(.inj-light-price-tick,.inj-light-price-now)[hidden]{
+ display:none!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-axis{
+ padding-right:var(--inj-light-axis-width,67px)!important;
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #injLightHome #injLightChartPlot{--inj-light-axis-width:61px}
+}
+
+
+/* Minimal real-time tick direction next to the Light quote. Keep the 24H
+   percentage and 6H chart performance independent of this latest-tick state. */
+html[data-inj-page="index"] body #injLightHome #injLightPriceRow.inj-light-price-row{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ gap:clamp(3px,.75vw,7px)!important;min-width:0!important;
+ margin-top:10px!important;
+ --inj-light-price-direction:var(--text,#e9f4f3);
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceRow[data-direction="up"]{
+ --inj-light-price-direction:#62d5aa;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceRow[data-direction="down"]{
+ --inj-light-price-direction:#ed7887;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceRow #injLightPrice.inj-light-value{
+ margin:0!important;min-width:0!important;
+ flex:0 1 auto!important;
+ white-space:nowrap!important;
+ color:var(--inj-light-price-direction)!important;
+ transition:color .16s ease!important;
+ text-shadow:none!important;filter:none!important;
+ font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceArrow.inj-light-price-arrow{
+ width:clamp(12px,3.2vw,17px)!important;height:clamp(12px,3.2vw,17px)!important;
+ flex:none!important;align-items:center!important;justify-content:center!important;
+ display:inline-flex!important;opacity:0!important;visibility:hidden!important;
+ color:var(--inj-light-price-direction)!important;
+ transition:color .16s ease!important;
+ text-shadow:none!important;filter:none!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceRow[data-direction]
+ #injLightPriceArrow.inj-light-price-arrow{
+ opacity:1!important;visibility:visible!important;
+ transition:color .16s ease!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceArrow svg{
+ display:block!important;width:100%!important;height:100%!important;
+ overflow:visible!important;fill:none!important;stroke:currentColor!important;
+ stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+ transform:rotate(0deg)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightPriceRow[data-direction="down"] #injLightPriceArrow svg{
+ transform:rotate(180deg)!important;
+}
+@media(max-width:375px){
+ html[data-inj-page="index"] body #injLightHome #injLightPriceRow.inj-light-price-row{
+  gap:3px!important;
+ }
+ html[data-inj-page="index"] body #injLightHome #injLightPriceArrow.inj-light-price-arrow{
+  width:12px!important;height:12px!important;
+ }
+}
+
+
+
+/* Light / Pro crossfade: overlay remains a fixed GPU-composited surface.
+   No layout resizing, scroll resets, or opacity flashes while switching. */
+html[data-inj-page="index"] body > #injLightHome:not([hidden]){
+ opacity:1!important;
+ transform:translate3d(0,0,0)!important;
+ transition:opacity .30s cubic-bezier(.22,.61,.36,1),
+            transform .30s cubic-bezier(.22,.61,.36,1)!important;
+ backface-visibility:hidden!important;
+}
+html[data-inj-page="index"] body > #injLightHome.inj-light-fade-in-start:not([hidden]){
+ opacity:0!important;transform:translate3d(0,6px,0)!important;
+}
+html[data-inj-page="index"] body > #injLightHome.inj-light-fade-out:not([hidden]){
+ opacity:0!important;transform:translate3d(0,5px,0)!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-mode-transition="entering"][data-inj-light-active="true"]
+ body > #entryGate{
+ opacity:1!important;visibility:visible!important;pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-mode-transition="leaving"]
+ body > #injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-mode-transition="leaving"]
+ body > #injPrimaryBottomNav:popover-open{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body > #injLightHome:not([hidden]){
+  transition:none!important;transform:none!important;
+ }
+}

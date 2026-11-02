@@ -2143,7 +2143,8 @@ function entrySparkPath(points) {
   const lastX = coords.at(-1)[0];
   const area = `${line} L${lastX.toFixed(2)} ${height} L${firstX.toFixed(2)} ${height} Z`;
   const open = number(state.entrySpark.openPrice) || prices[0];
-  return { line, area, direction: prices.at(-1) - open, last: coords.at(-1), samples, width, height };
+  return { line, area, direction: prices.at(-1) - open, last: coords.at(-1), samples, width, height,
+    priceScale: { min, max, top, bottom } };
 }
 
 function entrySparkTimeLabel(timestamp) {
@@ -2271,6 +2272,21 @@ function renderEntryAtGlance() {
   const liveLabel = $('entrySparkLiveLabel');
   if (path) path.setAttribute('d', spark.line);
   if (area) area.setAttribute('d', spark.area);
+  // Share Home autoscaling data with the Lite dashboard.
+  const stage = $('entrySparkStage');
+  if (stage) {
+    if (spark.priceScale) {
+      stage.dataset.priceScaleMin = String(spark.priceScale.min);
+      stage.dataset.priceScaleMax = String(spark.priceScale.max);
+      stage.dataset.priceScaleTop = String(spark.priceScale.top);
+      stage.dataset.priceScaleBottom = String(spark.priceScale.bottom);
+    } else {
+      delete stage.dataset.priceScaleMin;
+      delete stage.dataset.priceScaleMax;
+      delete stage.dataset.priceScaleTop;
+      delete stage.dataset.priceScaleBottom;
+    }
+  }
   if (liveDot || liveLabel) {
     if (spark.last) {
       const xPct = (spark.last[0] / spark.width) * 100;
@@ -8233,7 +8249,7 @@ function applyTheme(theme, notify = false) {
   $('themeButton').dataset.theme = selected;
   $('themeButton').title = `Tema: ${themes[selected].label}`;
   $('themeButton').setAttribute('aria-label', `Tema attuale ${themes[selected].label}. Cambia tema`);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--theme-canvas').trim() || themes[selected].color);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', (getComputedStyle(document.documentElement).getPropertyValue('--inj-native-status-tone').trim() || getComputedStyle(document.documentElement).getPropertyValue('--theme-canvas').trim() || themes[selected].color));
   document.querySelectorAll('[data-theme-choice]').forEach((button) => {
     const active = button.dataset.themeChoice === selected;
     button.classList.toggle('active', active);
