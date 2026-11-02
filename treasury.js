@@ -104,6 +104,7 @@ const state = {
   socketGeneration: 0,
   lastPriceAt: 0,
   worthBackfillRunning: false,
+  worthBackfillLastAttempt: 0,
   priceReady: false,
   aprUpdatedAt: 0,
   treasuryReady: false,
@@ -383,14 +384,20 @@ function hydrateSnapshot() {
 function persistSnapshot(data) { try { localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(data)); } catch (_) {} }
 function normalizeTimeline(rows) {
   const cleaned = (Array.isArray(rows) ? rows : [])
-    .map((row) => ({ t:number(row?.t), value:number(row?.value) }))
+    .map((row) => ({
+      t:number(row?.t), value:number(row?.value),
+      ...(row?.estimated === true ? {estimated:true} : {})
+    }))
     .filter((row) => row.t > 0 && row.value > 0)
     .sort((a,b) => a.t - b.t);
   const deduped = [];
   for (const row of cleaned) {
     const last = deduped.at(-1);
-    if (last && Math.abs(last.t - row.t) < 1000) last.value = row.value;
-    else deduped.push(row);
+    if(last && Math.abs(last.t-row.t)<1000){
+      // A verified sample always takes precedence over a recovered estimate.
+      if(last.estimated!==true && row.estimated===true)continue;
+      deduped[deduped.length-1]=row;
+    }else deduped.push(row);
   }
   return deduped;
 }
@@ -523,6 +530,9 @@ function recordWorthHistory(total, price, at = Date.now(), force = false) {
   }
 }
 function recordCurrentWorth(force = false) {
+  // Never create an apparent new observation from yesterday's cached
+  // wallet balances while today's chain refresh is still pending.
+  if(!state.treasuryReady)return;
   const total = number(state.data?.total);
   const lastConfirmedTotal = number(state.samples.at(-1)?.value);
   if (number(state.claimGraceUntil) >= Date.now() && lastConfirmedTotal > 0 && total < lastConfirmedTotal - TREASURY_HISTORY_DROP_EPSILON) return;
@@ -586,19 +596,32 @@ function newestWorthGap(){
 }
 async function fetchBinanceWorthBridge(startTime,endTime,plan){
   const rows=[];
-  let cursor=Math.max(0,Math.floor(startTime+plan.step));
+  // Both documented Binance Spot endpoints expose public INJUSDT klines.
+  // The market-data-only host is generally more resilient in browser PWAs.
+  const hosts=['https://data-api.binance.vision','https://api.binance.com'];
+  let cursor=Math.max(0,Math.floor(startTime/plan.step)*plan.step);
   let requests=0;
   while(cursor<endTime&&requests<WORTH_BACKFILL_MAX_REQUESTS){
-    const url=`https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=${encodeURIComponent(plan.interval)}&startTime=${Math.floor(cursor)}&endTime=${Math.floor(endTime-1)}&limit=1000`;
-    const data=await fetchJson(url,9000);
-    const candles=Array.isArray(data)?data:[];
-    if(!candles.length)break;
+    const query='/api/v3/klines?symbol=INJUSDT&interval='+
+      encodeURIComponent(plan.interval)+'&startTime='+Math.floor(cursor)+
+      '&endTime='+Math.floor(endTime-1)+'&limit=1000';
+    let candles=null,lastError=null;
+    for(const host of hosts){
+      try{
+        const result=await fetchJson(host+query,7500);
+        if(Array.isArray(result)&&result.length){candles=result;break;}
+      }catch(error){lastError=error;}
+    }
+    if(!candles?.length){
+      if(!rows.length)throw lastError||new Error('Historical INJ prices unavailable');
+      break;
+    }
     for(const candle of candles){
-      const t=Math.min(endTime-1,number(candle?.[6])||number(candle?.[0]));
+      const t=number(candle?.[6])||number(candle?.[0]);
       const price=number(candle?.[4]);
       if(t>startTime&&t<endTime&&price>0){
         const total=totalAtHistoryTime(t);
-        if(total>0)rows.push({t,value:total*price});
+        if(total>0)rows.push({t,value:total*price,estimated:true});
       }
     }
     const lastOpen=number(candles.at(-1)?.[0]);
@@ -609,10 +632,14 @@ async function fetchBinanceWorthBridge(startTime,endTime,plan){
   }
   return rows;
 }
+
 async function repairWorthHistoryAfterResume(){
   if(state.worthBackfillRunning||!state.priceReady||!state.treasuryReady||!state.historyReady)return;
   const gap=newestWorthGap();
   if(!gap)return;
+  // Avoid repeated history API requests on every live price websocket tick.
+  if(Date.now()-state.worthBackfillLastAttempt<60000)return;
+  state.worthBackfillLastAttempt=Date.now();
   state.worthBackfillRunning=true;
   try{
     const plan=worthBackfillPlan(gap.gap);
@@ -678,7 +705,8 @@ function allWorthRows(){
     .filter((row)=>number(row.t)>0&&number(row.value)>0)
     .map((row)=>({...row,t:number(row.t),value:number(row.value)}))
     .sort((a,b)=>a.t-b.t);
-  const liveWorth=number(state.data?.total)*number(state.price);
+  const liveWorth=state.treasuryReady&&state.priceReady
+    ? number(state.data?.total)*number(state.price):0;
   if(liveWorth>0){
     const now=Date.now();
     const last=rows.at(-1);
@@ -1366,6 +1394,32 @@ function placeTreasuryLiveDot(id, point, width=320, height=96) {
   dot.style.top=`${Math.max(0,Math.min(100,(number(point.y)/height)*100))}%`;
   dot.hidden=false;
 }
+// Give intermittent staking accrual a gentle, continuous visual curve.
+// For long intervals with plausible reward-sized increases, add interpolation
+// points to the SVG path ONLY; on-chain records and tooltips stay unchanged.
+// Larger deposits, withdrawals and transfers retain their true sharp change.
+function smoothTreasuryGrowthPath(points){
+  if(points.length<2)return monotoneCurvePath(points);
+  const display=[points[0]];
+  for(let i=0;i<points.length-1;i++){
+    const a=points[i],b=points[i+1];
+    const elapsed=b.t-a.t,change=b.value-a.value;
+    const organic=elapsed>=15*MINUTE&&change>0&&
+      change/Math.max(1,a.value)<=Math.min(.004,.001+elapsed/DAY*.001);
+    if(organic){
+      const steps=Math.min(8,Math.max(3,Math.ceil(elapsed/(15*MINUTE))));
+      for(let j=1;j<steps;j++){
+        const f=j/steps;
+        // Soft Hermite-like easing: 70% linear accrual and 30% rounded
+        // transition at each observed endpoint; no overshooting.
+        const blend=.7*f+.3*f*f*(3-2*f);
+        display.push({x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*blend});
+      }
+    }
+    display.push(b);
+  }
+  return monotoneCurvePath(display);
+}
 function renderSparkline() {
   const svg = $('treasurySparkline');
   if (!svg) return;
@@ -1407,7 +1461,9 @@ function renderSparkline() {
     x:Math.max(0,Math.min(320,((number(row.t)-startT)/timeSpan)*320)),
     y:Math.max(topY,Math.min(bottomY,bottomY-((number(row.value)-displayMin)/valueSpan)*chartHeight))
   }));
-  const d=monotoneCurvePath(plotted);
+  // The archive and tooltip values remain exact; only the line between
+  // sparse readings is visually eased, never stored as invented INJ rewards.
+  const d=smoothTreasuryGrowthPath(plotted);
   const first=plotted[0],last=plotted.at(-1);
   const area=`${d} L${last.x.toFixed(2)} 92 L${first.x.toFixed(2)} 92 Z`;
   svg.innerHTML=`<defs><linearGradient id="treasuryGrowthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".14"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${treasuryGridSvg()}<path class="treasury-growth-area" d="${area}"></path><path class="treasury-growth-line" d="${d}"></path>`;
@@ -1576,6 +1632,8 @@ function renderWorthSparkline() {
   const svg = $('treasuryWorthSparkline');
   if (!svg) return;
   const rawSamples = currentWorthRows();
+  const estimateNote=$('treasuryReconstructedNote');
+  if(estimateNote)estimateNote.hidden=!rawSamples.some(row=>row.estimated===true);
   syncWorthRangeControls();
   if (rawSamples.length < 2) {
     state.worthPlot = null;
@@ -1612,7 +1670,7 @@ function renderWorthSparkline() {
   else if(state.worthRange==='m1'){startT=currentMonthStart(now);endT=Math.max(now,maxSampleT,startT+1);}
   const timeSpan=Math.max(1,endT-startT),topY=12,bottomY=84,chartHeight=bottomY-topY;
   const plotted=samples.map((row)=>({
-    t:number(row.t),value:number(row.value),
+    t:number(row.t),value:number(row.value),estimated:row.estimated===true,
     x:Math.max(0,Math.min(320,((number(row.t)-startT)/timeSpan)*320)),
     y:Math.max(topY,Math.min(bottomY,bottomY-((number(row.value)-displayMin)/valueSpan)*chartHeight))
   }));
@@ -1656,7 +1714,8 @@ function showWorthSample(index) {
   cursor.hidden = false;
   dockChartTooltip(tooltip,leftPct);
   tooltip.querySelector('strong').textContent = money(sample.value,2);
-  tooltip.querySelector('small').textContent = historyFullLabel(sample.t);
+  tooltip.querySelector('small').textContent = historyFullLabel(sample.t) +
+    (sample.estimated === true ? ' · STIMA RICOSTRUITA' : '');
   tooltip.hidden = false;
   stage.classList.add('inspecting');
   state.worthInspectIndex = safe;
@@ -2132,7 +2191,7 @@ async function loadTreasury(force=false) {
     const managedRows=TREASURY_ADDRESSES.map((address)=>merged[address]).filter(Boolean);
     const totals=treasuryTotalsFromRows(managedRows);
     const data={ok:true,...totals,apr:number(apr),walletCount:TREASURY_ADDRESSES.length,liveWallets:rows.length,updatedAt:Date.now()};
-    state.data=data;state.updatedAt=data.updatedAt;state.fullRefreshAt=data.updatedAt;persistSnapshot(data);recordHistory(data.total,data.updatedAt);recordCurrentWorth(true);state.treasuryReady=true;badge.classList.remove('sync','error');void repairWorthHistoryAfterResume();
+    state.data=data;state.updatedAt=data.updatedAt;state.fullRefreshAt=data.updatedAt;persistSnapshot(data);recordHistory(data.total,data.updatedAt);state.treasuryReady=true;recordCurrentWorth(true);badge.classList.remove('sync','error');void repairWorthHistoryAfterResume();
   } catch(error) {
     badge.classList.remove('sync');badge.classList.add('error');$('treasuryUpdated').textContent='Rete Injective temporaneamente non disponibile';
   } finally { state.loading=false;render(); }
