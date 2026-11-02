@@ -2265,3 +2265,13 @@ body.dashboard-scroll-root.menu-overlay-open .app-shell{
     -webkit-font-smoothing:antialiased;
   }
 }
+
+/* Treasury 2026-11-02: a discreet, softer INJ accrual curve. */
+.treasury-session-panel .treasury-sparkline path.treasury-growth-line{
+  stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+  filter:drop-shadow(0 0 2px color-mix(in srgb,var(--up) 12%,transparent))!important;
+}
+.treasury-backfill-note:not([hidden]){
+  display:block;margin:3px 2px 6px;color:var(--muted);opacity:.87;
+  font-size:clamp(9px,.85vw,11px);font-weight:500;line-height:1.5;letter-spacing:.015em;
+}
