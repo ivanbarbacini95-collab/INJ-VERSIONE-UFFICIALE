@@ -3,11 +3,11 @@
 const $ = (id) => document.getElementById(id);
 const INJ_DECIMALS = 1e18;
 const YEAR_MS = 365.25 * 24 * 60 * 60 * 1000;
-const REWARD_REFRESH_MS = 1500;
+const REWARD_REFRESH_MS = 8000;
 const VELOCITY_PULSE_QUANTUM = 0.00001;
 const reducedVelocityMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const REWARD_COMPARE_TOLERANCE = 2e-8;
-const STATUS_REFRESH_MS = 15000;
+const STATUS_REFRESH_MS = 30000;
 const CLAIM_DROP_EPSILON = 1e-9;
 const CLAIM_REBOUND_GUARD_MS = 45000;
 const OFFICIAL_APR_ENDPOINT = 'https://api.ui.injective.network/api/v1/cache/stats/apr';
@@ -118,16 +118,15 @@ function updateHeaderPrice(){
 function formatStaked(value){
   return number(value).toLocaleString(lang()==='en'?'en-US':'it-IT',{minimumFractionDigits:0,maximumFractionDigits:2,useGrouping:true});
 }
-function currentReward(row, now = Date.now()) {
-  // Il primo dato mostrato e' SEMPRE l'ultimo reward verificato on-chain.
-  // Tra due conferme il contatore continua a crescere senza pause usando
-  // esclusivamente il ritmo teorico del wallet: INJ in staking × APR rete.
-  if(!row.synced) return NaN;
-  const anchor=Math.max(0,number(row.confirmedReward));
-  const anchorAt=number(row.lastNetworkAt);
-  const elapsed=anchorAt>0?Math.max(0,now-anchorAt):0;
-  const rate=Math.max(0,number(row.ratePerMs));
-  return Math.max(0,anchor + rate*elapsed);
+function currentReward(row,now=Date.now()){
+  // The on-chain reward is the only anchor. Never extrapolate indefinitely
+  // while offline or when public LCD endpoints are rate-limiting.
+  if(!row.synced)return NaN;
+  const base=Math.max(0,number(row.confirmedReward));
+  const at=number(row.lastNetworkAt);
+  const age=at>0?Math.max(0,now-at):Infinity;
+  if(age>60000)return base;
+  return base+Math.max(0,number(row.ratePerMs))*age;
 }
 function currentTotal() {
   const now=Date.now();
@@ -382,11 +381,52 @@ function renderFrame(frameNow = 0) {
   if($('rewardsApr'))$('rewardsApr').textContent=weightedApr>0?`${weightedApr.toFixed(3)}%`:'—';
 }
 async function fetchJson(url,timeout=7000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const response=await fetch(url,{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error(`HTTP ${response.status}`);return await response.json();}finally{clearTimeout(timer)}}
-async function lcd(path){let lastError;for(const base of LCD_ENDPOINTS){try{return await fetchJson(base+path)}catch(error){lastError=error}}throw lastError||new Error('Injective unavailable')}
+let preferredLcd=null;
+const lcdCooldownUntil=new Map();
+async function lcd(path){
+  const hosts=[...LCD_ENDPOINTS].sort((a,b)=>(a===preferredLcd?-1:0)-(b===preferredLcd?-1:0));
+  const active=hosts.filter(base=>(lcdCooldownUntil.get(base)||0)<Date.now());
+  const candidates=active.length?active:hosts;
+  let lastError;
+  for(const [index,base] of candidates.entries()){
+    try{
+      const value=await fetchJson(base+path,index===candidates.length-1?4000:2500);
+      preferredLcd=base;
+      lcdCooldownUntil.delete(base);
+      return value;
+    }catch(error){
+      lastError=error;
+      lcdCooldownUntil.set(base,Date.now()+15000);
+    }
+  }
+  throw lastError||new Error('Injective LCD unavailable');
+}
 function delegationTotal(data){return (data?.delegation_responses||[]).reduce((sum,row)=>sum+fromWei(row?.balance?.amount),0)}
 function rewardTotal(data){return (data?.total||[]).filter((coin)=>coin?.denom==='inj').reduce((sum,coin)=>sum+fromWei(coin.amount),0)}
 function aprPercent(value){const n=number(value);if(n<=0)return 0;return n<=1?n*100:n}
-async function loadApr(){try{const data=await fetchJson(OFFICIAL_APR_ENDPOINT,7000);return aprPercent(data?.apr)}catch(_){return state.apr}}
+let aprRequest=null;
+async function loadApr(){
+  if(aprRequest)return aprRequest;
+  aprRequest=(async()=>{
+    try{
+      const official=await fetchJson(OFFICIAL_APR_ENDPOINT,4200);
+      const apr=aprPercent(official?.apr);
+      if(apr>0)return apr;
+    }catch(_){}
+    try{
+      const [mint,pool,params]=await Promise.all([
+        lcd('/cosmos/mint/v1beta1/annual_provisions'),
+        lcd('/cosmos/staking/v1beta1/pool'),
+        lcd('/cosmos/distribution/v1beta1/params')
+      ]);
+      const annual=number(mint?.annual_provisions),bonded=number(pool?.pool?.bonded_tokens);
+      const tax=number(params?.params?.community_tax);
+      if(annual>0&&bonded>0)return annual/bonded*100*Math.max(0,1-tax);
+    }catch(_){}
+    return state.apr;
+  })();
+  try{return await aprRequest;}finally{aprRequest=null;}
+}
 async function rewardFromEndpoint(base,address){
   const path=`/cosmos/distribution/v1beta1/delegators/${address}/rewards`;
   const data=await fetchJson(base+path,6500);
@@ -515,27 +555,31 @@ async function syncRewardFlow(force=false){
         if(verified)liveCount++;
         if(verified)state.lastSync=now;
         if(verified&&$('rewardsUpdated'))$('rewardsUpdated').textContent=`${copy('Dato on-chain verificato','Verified on-chain')} · ${new Date(now).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`;
-        if($('rewardsWalletStatus'))$('rewardsWalletStatus').textContent=`${state.rows.filter(r=>r.synced).length}/5 LIVE`;
+        if($('rewardsWalletStatus'))$('rewardsWalletStatus').textContent=`${state.rows.filter(r=>r.lastNetworkAt>0&&Date.now()-r.lastNetworkAt<30000).length}/5 LIVE`;
         $('rewardsLiveBadge')?.classList.remove('sync','error');
         renderRows();
       }catch(_){
         // Non sostituire mai un dato valido con una lettura dubbia.
-        row.online=row.synced;
+        row.online=false;
         row.confidence='hold';
       }
     }));
 
-    if(!liveCount && !state.rows.some(row=>row.synced))throw new Error('No wallets live');
-    state.lastSync=state.lastSync||Date.now();
-    if(state.rows.some(row=>row.synced)){
+    const recent=state.rows.filter(row=>row.lastNetworkAt>0&&Date.now()-row.lastNetworkAt<30000).length;
+    if($('rewardsWalletStatus'))$('rewardsWalletStatus').textContent=recent+'/5 LIVE';
+    if(recent){
       $('rewardsLiveBadge')?.classList.remove('sync','error');
-      if($('rewardsWalletStatus'))$('rewardsWalletStatus').textContent=`${state.rows.filter(r=>r.synced).length}/5 LIVE`;
+    }else{
+      $('rewardsLiveBadge')?.classList.remove('sync');
+      $('rewardsLiveBadge')?.classList.add('error');
+      if($('rewardsUpdated'))$('rewardsUpdated').textContent=copy('Riconnessione ai dati on-chain…','Reconnecting to on-chain data…');
     }
     renderRows();
   }catch(_){
     $('rewardsLiveBadge')?.classList.remove('sync');
     $('rewardsLiveBadge')?.classList.add('error');
     if($('rewardsUpdated'))$('rewardsUpdated').textContent=copy('In attesa di conferma on-chain','Waiting for on-chain confirmation');
+    if($('rewardsWalletStatus'))$('rewardsWalletStatus').textContent='0/5 LIVE';
     renderRows();
   }finally{
     state.rewardLoading=false;
@@ -577,7 +621,15 @@ async function syncStatus(force=false){
   }
 }
 
-async function loadPrice(){try{const ticker=await fetchJson('https://api.binance.com/api/v3/ticker/price?symbol=INJUSDT',6000);const price=number(ticker?.price);if(price>0){state.price=price;state.lastPriceAt=Date.now();updateHeaderPrice();}}catch(_){}}
+async function loadPrice(){
+  for(const base of ['https://data-api.binance.vision','https://api.binance.com']){
+    try{
+      const ticker=await fetchJson(base+'/api/v3/ticker/price?symbol=INJUSDT',4500);
+      const price=number(ticker?.price);
+      if(price>0){state.price=price;state.lastPriceAt=Date.now();updateHeaderPrice();renderRows();return;}
+    }catch(_){}
+  }
+}
 async function loadEurRate(){try{const cached=number(localStorage.getItem('inj_monitor_eur_rate'));if(cached>0){state.eurRate=cached;updateHeaderPrice();}const data=await fetchJson('https://api.frankfurter.app/latest?from=USD&to=EUR',6000);const next=number(data?.rates?.EUR);if(next>0){state.eurRate=next;localStorage.setItem('inj_monitor_eur_rate',String(next));updateHeaderPrice();renderRows();}}catch(_){}}
 function schedulePriceReconnect(delay=1100){
   clearTimeout(state.reconnectTimer);
