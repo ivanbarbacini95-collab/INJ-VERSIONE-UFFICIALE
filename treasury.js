@@ -2248,6 +2248,9 @@ function maintainPriceRealtime(){
 }
 function resumeTreasuryRealtime(force=true){
   if(navigator.onLine===false)return;
+  // A resumed PWA may have live prices but a stale last-session wallet total.
+  // Prevent a fresh-looking worth point until the current chain scan finishes.
+  if(Date.now()-number(state.updatedAt)>10000)state.treasuryReady=false;
   connectPriceSocket(false);void loadPrice();void loadTreasury(force);void refreshTreasuryChainRewards(true);
 }
 
@@ -2290,13 +2293,13 @@ function boot() {
   setInterval(()=>{if(!document.hidden)void refreshTreasuryChainRewards(false);},REWARD_CHAIN_REFRESH_MS);
   setInterval(()=>{if(!document.hidden)maintainPriceRealtime();},2500);
   document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){persistHistory();persistWorthHistory();}
+    if(document.hidden){state.treasuryReady=false;persistHistory();persistWorthHistory();}
     else{void restoreTimelineBackups().then(()=>{state.historyReady=true;render();void repairWorthHistoryAfterResume();});resumeTreasuryRealtime(true);}
   });
   window.addEventListener('online',()=>resumeTreasuryRealtime(true));
   window.addEventListener('focus',()=>{if(!document.hidden)resumeTreasuryRealtime(false);},{passive:true});
   window.addEventListener('pageshow',()=>{try{state.currency=localStorage.getItem('inj_monitor_currency')==='EUR'?'EUR':'USD';}catch(_){};void restoreTimelineBackups().then(()=>{state.historyReady=true;render();void repairWorthHistoryAfterResume();});render();if(!document.hidden)resumeTreasuryRealtime(false);});
-  window.addEventListener('pagehide',()=>{persistHistory();persistWorthHistory();try{state.socket?.close()}catch(_){};clearTimeout(state.reconnectTimer);});
+  window.addEventListener('pagehide',()=>{state.treasuryReady=false;persistHistory();persistWorthHistory();try{state.socket?.close()}catch(_){};clearTimeout(state.reconnectTimer);});
   window.addEventListener('beforeunload',()=>{persistHistory();persistWorthHistory();try{state.socket?.close()}catch(_){};clearTimeout(state.reconnectTimer);});
 }
 
