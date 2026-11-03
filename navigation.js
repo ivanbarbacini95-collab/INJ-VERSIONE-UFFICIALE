@@ -112,7 +112,7 @@ function syncSectionTheme(){
    for(const key of themeKeys){const value=css.getPropertyValue(key).trim();if(value)root.style.setProperty(key,value);else root.style.removeProperty(key);}
   }
  }catch(_){}
- root.style.colorScheme=theme==='arctic'?'light':'dark';
+ root.style.colorScheme=['arctic','frost-white','warm-ivory','pearl-glass','classic-white','classic-ivory','classic-champagne'].includes(theme)?'light':'dark';
  const color=getComputedStyle(root).getPropertyValue('--bg').trim();
  if(color)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',color);
 }
