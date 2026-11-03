@@ -16,6 +16,12 @@
     {id:'performance',it:'Performance',en:'Performance',launcher:'entryPerformanceButton'},
     {id:'world',it:'Global Market',en:'Global Market',entry:'world'}
   ];
+  // Opaque sibling below the Market content shields the retained Home,
+  // including transparent chart frames and the rail's safe-area margins.
+  const backdrop=document.createElement('div');
+  backdrop.id='injMarketTabBackdrop';
+  backdrop.hidden=true;
+  backdrop.setAttribute('aria-hidden','true');
   const panel=document.createElement('section');
   panel.id='injMarketTabPanel';
   panel.className='inj-market-tab-panel';
@@ -164,7 +170,7 @@
   frame.setAttribute('referrerpolicy','same-origin');
   content.append(loading,frame);
   panel.append(content);
-  document.body.append(head,panel);
+  document.body.append(backdrop,head,panel);
 
   let selected='crypto',lastMarketEntry='crypto',currentUrl='',wasMarket=false;
   let modalPending=false,modalWasOpened=false;
@@ -369,6 +375,7 @@
   });
   function syncTab(){
     const now=isMarket();
+    backdrop.hidden=!now;
     panel.hidden=!now;
     head.hidden=!now;
     panel.setAttribute('aria-hidden',String(!now));

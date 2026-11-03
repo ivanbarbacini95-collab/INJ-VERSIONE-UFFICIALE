@@ -1,0 +1,111 @@
+/* INJ Node Privacy · understated concealed numbers.
+   No skeleton bars, gray stripes, blur, glow or animated placeholders.
+   This is a presentation mask, NOT a security/authorization boundary. */
+html[data-inj-page="index"] body.privacy-on :is(
+  .private:is(strong,small,span,b,output),
+  .entry-overview-worth.private > :is(strong,small),
+  .entry-overview-stats.private > div > strong,
+  .entry-price-pnl.private > strong,
+  .focus-display-stats.private > div > strong,
+  .focus-display-stats.private .reward-accent-frame > strong,
+  .morning-brief-reward-grid.private > div > :is(strong,span)
+)::after{
+  content:"••••"!important;
+  visibility:visible!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  transform:translate(-50%,-50%)!important;
+  width:max-content!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  background-image:none!important;
+  color:color-mix(in srgb,var(--accent,#92d9c7) 66%,var(--muted,#91a9a5))!important;
+  -webkit-text-fill-color:currentColor!important;
+  font-family:var(--inj-chosen-face,system-ui,sans-serif)!important;
+  font-size:clamp(13px,.5em,23px)!important;
+  font-weight:700!important;
+  letter-spacing:.24em!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  opacity:.82!important;
+  filter:none!important;
+  text-shadow:none!important;
+  box-shadow:none!important;
+  animation:none!important;
+  pointer-events:none!important;
+}
+
+/* Lite keeps the exact same value concealment as Pro: no heavy blur and no
+   numeric width-dependent ghosting from private holdings or reward fields. */
+html[data-inj-page="index"] body.privacy-on #injLightHome :is(
+  #injLightAddress.private,
+  .inj-light-value.private,
+  #injLightRewardText.private,
+  #injLightRewardFiat.private
+){
+  position:relative!important;
+  visibility:hidden!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  text-shadow:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+html[data-inj-page="index"] body.privacy-on #injLightHome :is(
+  #injLightAddress.private,
+  .inj-light-value.private,
+  #injLightRewardText.private,
+  #injLightRewardFiat.private
+)::after{
+  content:"••••"!important;
+  display:inline-block!important;
+  visibility:visible!important;
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  transform:translate(-50%,-50%)!important;
+  width:max-content!important;
+  min-width:0!important;
+  height:auto!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  filter:none!important;
+  color:color-mix(in srgb,var(--accent,#92d9c7) 66%,var(--muted,#91a9a5))!important;
+  -webkit-text-fill-color:currentColor!important;
+  opacity:.82!important;
+  font-family:var(--inj-chosen-face,system-ui,sans-serif)!important;
+  font-size:clamp(13px,.5em,23px)!important;
+  font-weight:700!important;
+  letter-spacing:.24em!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  animation:none!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] body.privacy-on #injLightHome #injLightAddress.private::after {
+  left:0!important;
+  transform:translateY(-50%)!important;
+}
+/* Quiet but obvious active privacy toggle, without extra decoration. */
+html[data-inj-page="index"] body.privacy-on :is(#entryPrivacyButton.active,#privacyButton.active){
+  box-shadow:none!important;
+  border-color:color-mix(in srgb,var(--accent,#92d9c7) 35%,var(--line,#495862))!important;
+  background:color-mix(in srgb,var(--accent,#92d9c7) 7%,var(--surface,#14242c))!important;
+}

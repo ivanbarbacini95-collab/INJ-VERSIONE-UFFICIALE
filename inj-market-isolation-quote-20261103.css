@@ -1,0 +1,129 @@
+/* INJ Node Market · full visual isolation and clear persistent INJ quote.
+   The existing Market destinations, iframe data feeds and charts stay intact. */
+html[data-inj-page="index"] body > #injMarketTabBackdrop[hidden] {
+  display:none!important;
+}
+html[data-inj-page="index"] body > #injMarketTabBackdrop:not([hidden]) {
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483440!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  pointer-events:auto!important;
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+  background-color:var(--bg,#09191a)!important;
+  opacity:1!important;
+  filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body > #injMarketTabPanel:not([hidden]) {
+  z-index:2147483460!important;
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+  background-color:var(--bg,#09191a)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body > #injMarketTabHead:not([hidden]) {
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+  background-color:var(--bg,#09191a)!important;
+}
+html[data-inj-page="index"] body #injMarketTabPanel :is(.inj-market-tab-content,.inj-market-tab-loading,.inj-market-tab-frame) {
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+  background-color:var(--bg,#09191a)!important;
+}
+html[data-inj-page="index"] body #injMarketTabPanel .inj-market-tab-loading {
+  z-index:1!important;
+}
+/* A little more vertical room prevents large, sharp numbers being cropped. */
+html[data-inj-page="index"] {
+  --inj-market-head-size:calc(max(14px,env(safe-area-inset-top,0px)) + 92px);
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body > #injMarketTabHead:not([hidden]) {
+  height:var(--inj-market-head-size)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="shown"] body > #injMarketTabPanel:not([hidden]),
+html[data-inj-page="index"][data-inj-home-tab="mercato"]:not([data-inj-market-chrome="hidden"]) body > #injMarketTabPanel:not([hidden]),
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="shown"] body #performanceTimelineView.open:not([hidden]) {
+  top:var(--inj-market-head-size)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body #injMarketEventsOverlay:not([hidden]) {
+  padding-top:calc(var(--inj-market-head-size) + 8px)!important;
+}
+@media(min-width:800px){
+  html[data-inj-page="index"]{
+    --inj-market-head-size:calc(max(20px,env(safe-area-inset-top,0px)) + 98px);
+  }
+}
+#injMarketTabHead .inj-market-kicker-row {
+  min-height:clamp(39px,4.4vh,56px)!important;
+  align-items:center!important;
+  padding-bottom:8px!important;
+}
+#injMarketTabHead .inj-market-persistent-quote{
+  display:inline-flex!important;
+  align-items:baseline!important;
+  justify-content:flex-end!important;
+  flex:0 0 auto!important;
+  max-width:min(72%,560px)!important;
+  gap:clamp(5px,.7vw,12px)!important;
+  padding:3px 0 3px clamp(8px,1vw,18px)!important;
+  border-left:1px solid color-mix(in srgb,var(--accent,#8bdfce) 30%,transparent)!important;
+  white-space:nowrap!important;
+  opacity:1!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  line-height:1.15!important;
+}
+#injMarketTabHead .inj-market-persistent-quote .inj-quote-symbol{
+  font-size:clamp(10px,.78vw,15px)!important;
+  font-weight:700!important;
+  letter-spacing:.06em!important;
+}
+#injMarketTabHead .inj-market-persistent-quote .inj-quote-value{
+  font-size:clamp(19px,1.65vw,34px)!important;
+  line-height:1.08!important;
+  font-weight:750!important;
+  letter-spacing:-.035em!important;
+  font-variant-numeric:tabular-nums!important;
+  color:inherit!important;
+}
+#injMarketTabHead .inj-market-persistent-quote .inj-quote-day {
+  font-size:clamp(10px,.85vw,16px)!important;
+  font-weight:650!important;
+  line-height:1.1!important;
+}
+#injMarketTabHead .inj-market-tab-rail{
+  align-items:center!important;
+}
+#injMarketTabHead .inj-market-tab-link{
+  font-size:clamp(12px,1vw,15px)!important;
+}
+@media(max-width:420px){
+  #injMarketTabHead .inj-market-kicker-row .inj-market-tab-kicker {
+    font-size:9px!important;
+    letter-spacing:.04em!important;
+  }
+  #injMarketTabHead .inj-market-persistent-quote{
+    gap:4px!important;
+    padding-left:7px!important;
+    max-width:68%!important;
+  }
+  #injMarketTabHead .inj-market-persistent-quote .inj-quote-symbol{
+    display:none!important;
+  }
+  #injMarketTabHead .inj-market-persistent-quote .inj-quote-value{
+    font-size:clamp(18px,5.5vw,22px)!important;
+  }
+  #injMarketTabHead .inj-market-persistent-quote .inj-quote-day{
+    font-size:clamp(9px,2.65vw,11px)!important;
+  }
+}
+
+/* Embedded market documents must paint an opaque theme canvas so no underlying
+   Home pixels show through a transparent iframe, including before charts load. */
+html[data-inj-market-embedded="true"] {
+  background-color:var(--bg,#09191a)!important;
+}
+html[data-inj-market-embedded="true"] body {
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+  background-color:var(--bg,#09191a)!important;
+}
