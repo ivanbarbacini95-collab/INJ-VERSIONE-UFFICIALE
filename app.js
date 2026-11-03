@@ -8247,14 +8247,14 @@ function registerPwa() {
 
 function applyTheme(theme, notify = false) {
   const themes = {
-    navy: { label: 'Aurora', color: '#07121b' },
-    black: { label: 'Nero', color: '#000000' },
-    light: { label: 'Chiaro', color: '#eef5ff' },
-    amber: { label: 'Midnight Ember', color: '#05080d' },
-    velvet: { label: 'Velvet Nebula', color: '#0a1024' },
-    'ocean-x-solar': { label: 'Solar Surge', color: '#1b122c' }
+    obsidian: { label: 'Obsidian Pulse', color: '#0b1722' },
+    arctic: { label: 'Arctic Glass', color: '#f3f9fc' },
+    orbit: { label: 'Deep Orbit', color: '#15152e' },
+    emerald: { label: 'Emerald Flux', color: '#10251e' },
+    ember: { label: 'Ember Gold', color: '#24141d' },
+    titanium: { label: 'Liquid Titanium', color: '#2b363f' }
   };
-  const selected = themes[theme] ? theme : 'navy';
+  const selected = themes[theme] ? theme : 'obsidian';
   document.documentElement.dataset.theme = selected;
   localStorage.setItem('inj_monitor_theme', selected);
   $('themeButton').dataset.theme = selected;
