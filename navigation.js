@@ -100,7 +100,7 @@ function syncSectionTheme(){
  try{theme=localStorage.getItem('inj_monitor_theme')||theme;}catch(_){}
  // Six current official themes. Legacy values are mapped once, never
  // written back as an obsolete "navy" fallback by embedded pages.
- const official=['obsidian','arctic','orbit','emerald','ember','titanium'];
+ const official=["obsidian","arctic","orbit","emerald","ember","titanium","pure-black","graphite","frost-white","warm-ivory","midnight-blue","slate-grey","liquid-silver","chrome-blue","pearl-glass","rose-copper","sapphire-glass","golden-satin","neon-grid","cyber-cyan","quantum-purple","matrix-green","solar-circuit","red-horizon","classic-black","classic-white","classic-navy","classic-ivory","classic-stone","classic-champagne"];
  const legacy={navy:'obsidian',black:'obsidian',light:'arctic',amber:'ember',velvet:'orbit','ocean-x-solar':'ember',
    ocean:'emerald',chromatic:'orbit',aqua:'arctic','ocean-x-electric':'orbit','ocean-x-ion':'orbit',
    'ocean-x-toxic':'emerald',dynamic:'obsidian'};
