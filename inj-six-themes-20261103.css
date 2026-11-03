@@ -7,7 +7,7 @@ html[data-theme="obsidian"] {
  --text:#edf8fc;--muted:#91a8b4;--muted-strong:#c3d4dc;
  --accent:#67daee;--accent-ink:#04202a;--accent-soft:rgba(103,218,238,.10);
  --up:#27c58b;--down:#f16d79;--up-soft:rgba(39,197,139,.12);--down-soft:rgba(241,109,121,.12);
- --inj-theme-art:url("./assets/inj-theme-obsidian-ribbons-20261103.svg?v=visible-iphone2");
+ --inj-theme-art:url("./assets/inj-theme-obsidian-seamless-20261103.svg?v=loop1");
  --page-gradient:linear-gradient(155deg,#0c1722 0%,#060b11 58%,#0a1623 100%);
  --card-gradient:linear-gradient(145deg,rgba(19,32,43,.95),rgba(9,16,24,.97));
  --market-gradient:linear-gradient(150deg,rgba(19,34,46,.96),rgba(7,15,23,.98));
@@ -21,7 +21,7 @@ html[data-theme="arctic"] {
  --text:#162d3a;--muted:#637f90;--muted-strong:#425e70;
  --accent:#2e8db4;--accent-ink:#ffffff;--accent-soft:rgba(46,141,180,.10);
  --up:#087b5a;--down:#c83f5a;--up-soft:rgba(8,123,90,.10);--down-soft:rgba(200,63,90,.10);
- --inj-theme-art:url("./assets/inj-theme-arctic-ribbons-20261103.svg?v=visible-iphone2");
+ --inj-theme-art:url("./assets/inj-theme-arctic-seamless-20261103.svg?v=loop1");
  --page-gradient:linear-gradient(145deg,#ffffff 0%,#f2f7fa 54%,#e9f2f7 100%);
  --card-gradient:linear-gradient(145deg,rgba(255,255,255,.96),rgba(239,247,251,.97));
  --market-gradient:linear-gradient(148deg,rgba(255,255,255,.97),rgba(235,244,250,.96));
@@ -35,7 +35,7 @@ html[data-theme="orbit"] {
  --text:#f1efff;--muted:#9e9bbb;--muted-strong:#ccc6e7;
  --accent:#b5a2ff;--accent-ink:#170f33;--accent-soft:rgba(181,162,255,.12);
  --up:#3dc9a1;--down:#f47a92;--up-soft:rgba(61,201,161,.12);--down-soft:rgba(244,122,146,.12);
- --inj-theme-art:url("./assets/inj-theme-orbit-ribbons-20261103.svg?v=visible-iphone2");
+ --inj-theme-art:url("./assets/inj-theme-orbit-seamless-20261103.svg?v=loop1");
  --page-gradient:linear-gradient(153deg,#14152c 0%,#080b1a 53%,#111128 100%);
  --card-gradient:linear-gradient(145deg,rgba(26,28,57,.96),rgba(11,13,32,.97));
  --market-gradient:linear-gradient(145deg,rgba(26,29,60,.96),rgba(11,13,32,.98));
@@ -49,7 +49,7 @@ html[data-theme="emerald"] {
  --text:#eefbf4;--muted:#90b4a4;--muted-strong:#c0e2cf;
  --accent:#61e3aa;--accent-ink:#04291d;--accent-soft:rgba(97,227,170,.12);
  --up:#5bebb0;--down:#f18484;--up-soft:rgba(91,235,176,.12);--down-soft:rgba(241,132,132,.12);
- --inj-theme-art:url("./assets/inj-theme-emerald-ribbons-20261103.svg?v=visible-iphone2");
+ --inj-theme-art:url("./assets/inj-theme-emerald-seamless-20261103.svg?v=loop1");
  --page-gradient:linear-gradient(150deg,#0b211b 0%,#06110f 58%,#0b251c 100%);
  --card-gradient:linear-gradient(145deg,rgba(20,47,38,.95),rgba(9,26,22,.97));
  --market-gradient:linear-gradient(145deg,rgba(18,43,37,.96),rgba(8,23,20,.98));
@@ -63,7 +63,7 @@ html[data-theme="ember"] {
  --text:#fff5ee;--muted:#b9a29c;--muted-strong:#e3c9b8;
  --accent:#ecc18a;--accent-ink:#362014;--accent-soft:rgba(236,193,138,.12);
  --up:#62cba3;--down:#f0878c;--up-soft:rgba(98,203,163,.12);--down-soft:rgba(240,135,140,.12);
- --inj-theme-art:url("./assets/inj-theme-ember-ribbons-20261103.svg?v=visible-iphone2");
+ --inj-theme-art:url("./assets/inj-theme-ember-seamless-20261103.svg?v=loop1");
  --page-gradient:linear-gradient(150deg,#25151d 0%,#150c12 56%,#291a1c 100%);
  --card-gradient:linear-gradient(145deg,rgba(49,30,39,.96),rgba(25,14,22,.97));
  --market-gradient:linear-gradient(145deg,rgba(47,29,37,.96),rgba(23,13,21,.98));
@@ -77,7 +77,7 @@ html[data-theme="titanium"] {
  --text:#f4f7f8;--muted:#a7b6bc;--muted-strong:#d5dfe2;
  --accent:#c7dfe6;--accent-ink:#1c2b32;--accent-soft:rgba(199,223,230,.10);
  --up:#52c89f;--down:#e87981;--up-soft:rgba(82,200,159,.12);--down-soft:rgba(232,121,129,.12);
- --inj-theme-art:url("./assets/inj-theme-titanium-ribbons-20261103.svg?v=visible-iphone2");
+ --inj-theme-art:url("./assets/inj-theme-titanium-seamless-20261103.svg?v=loop1");
  --page-gradient:linear-gradient(140deg,#29363f 0%,#151b21 54%,#28333c 100%);
  --card-gradient:linear-gradient(145deg,rgba(50,61,69,.96),rgba(26,34,41,.97));
  --market-gradient:linear-gradient(145deg,rgba(48,59,67,.96),rgba(25,34,41,.98));
@@ -215,10 +215,10 @@ html[data-inj-page="index"][data-theme] body #entryGate.entry-gate > .entry-gate
    circles. It uses the exact same silk motif chosen for the whole page. */
 html[data-inj-page="index"][data-theme] body #entryGate #entryOverview.entry-overview {
  background-color:var(--surface)!important;
- background-image:var(--inj-theme-art),var(--card-gradient)!important;
- background-position:55% 51%,center!important;
- background-size:122% 128%,cover!important;
- background-repeat:no-repeat,no-repeat!important;
+ background-image:var(--card-gradient)!important;
+ background-position:center!important;
+ background-size:cover!important;
+ background-repeat:no-repeat!important;
  border-color:var(--line-strong,var(--line))!important;
 }
 html[data-inj-page="index"][data-theme] body #entryGate #entryOverview.entry-overview::before,
@@ -263,3 +263,92 @@ html[data-inj-page="index"][data-theme] body #headerMenuPanel #themePicker > .th
 #themePicker .theme-swatch.ember{background-image:url("./assets/inj-theme-ember-ribbons-20261103.svg?v=visible-iphone2"),linear-gradient(145deg,#29151d,#150c12)!important}
 #themePicker .theme-swatch.titanium{background-image:url("./assets/inj-theme-titanium-ribbons-20261103.svg?v=visible-iphone2"),linear-gradient(145deg,#2e3b45,#151b21)!important}
 
+
+/* 2026-11-03 · Official six-theme refinement
+   The original preview-size ribbons were drawn across the wallet/card
+   surface. Keep only clean solid/glass card paints; animate a periodic,
+   gently veiled SVG on the background, always from right to left.
+   Each new SVG starts and ends at the same Y and slope, so exactly one
+   viewport width of travel returns to identical pixels without a jump. */
+html[data-theme] {
+ --inj-ribbon-veil:color-mix(in srgb,var(--theme-canvas,var(--bg)) 38%,transparent);
+ --inj-ribbon-layer:linear-gradient(var(--inj-ribbon-veil),var(--inj-ribbon-veil));
+}
+html[data-theme="arctic"],
+html[data-theme="titanium"] {--inj-ribbon-veil:color-mix(in srgb,var(--theme-canvas,var(--bg)) 50%,transparent)}
+html[data-theme][data-inj-page],
+html[data-theme][data-inj-market],
+html[data-theme]:not([data-inj-page]):not([data-inj-market]) {
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--inj-ribbon-layer),var(--inj-theme-art),var(--page-gradient)!important;
+ background-repeat:no-repeat,repeat-x,no-repeat!important;
+ background-size:100% 100%,100vw 100%,100% 100%!important;
+ background-position:0 0,0 50%,center center!important;
+ background-attachment:fixed,fixed,fixed!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate,
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate.visible {
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--inj-ribbon-layer),var(--inj-theme-art),var(--page-gradient)!important;
+ background-repeat:no-repeat,repeat-x,no-repeat!important;
+ background-size:100% 100%,100vw 100%,100% 100%!important;
+ background-position:0 0,0 50%,center center!important;
+ background-attachment:scroll,scroll,scroll!important;
+}
+/* The main wallet, sliding wallet previews and market data cards never
+   contain the animated ribbon art; keep all numbers and charts legible. */
+html[data-inj-page="index"][data-theme] body #entryGate :is(
+ #entryOverview.entry-overview,.entry-wallet-card-slide,#entryInsights,
+ .entry-market-card,.entry-chart-card,.entry-price-card
+) {
+ background-color:var(--surface)!important;
+ background-image:var(--card-gradient)!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate :is(
+ #entryOverview.entry-overview,.entry-wallet-card-slide
+)::before,
+html[data-inj-page="index"][data-theme] body #entryGate :is(
+ #entryOverview.entry-overview,.entry-wallet-card-slide
+)::after {content:none!important;display:none!important}
+/* Unified right-to-left travel. Repeat-X makes the final frame identical
+   to the first; unlike "alternate" there is no reversal or visible reset. */
+@keyframes inj-six-seamless-flow {
+ from {background-position:0 0,0 50%,center center}
+ to   {background-position:0 0,-100vw 50%,center center}
+}
+html[data-theme][data-inj-theme-motion="dynamic"][data-inj-page],
+html[data-theme][data-inj-theme-motion="dynamic"][data-inj-market],
+html[data-theme][data-inj-theme-motion="dynamic"]:not([data-inj-page]):not([data-inj-market]) {
+ animation:inj-six-seamless-flow 44s linear infinite!important;
+}
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="dynamic"]
+body #entryGate.entry-gate {
+ animation:inj-six-seamless-flow 44s linear infinite!important;
+}
+html[data-theme][data-inj-theme-motion="static"],
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="static"]
+body #entryGate.entry-gate {
+ animation:none!important;
+ background-position:0 0,0 50%,center center!important;
+}
+@media (prefers-reduced-motion:reduce) {
+ html[data-theme][data-inj-theme-motion="dynamic"],
+ html[data-inj-page="index"][data-theme][data-inj-theme-motion="dynamic"]
+ body #entryGate.entry-gate {
+  animation:none!important;
+  background-position:0 0,0 50%,center center!important;
+ }
+}
+/* Fullscreen panels receive a low-contrast static canvas rather than the
+   earlier oversized foreground ribbons. */
+html[data-theme][data-inj-page="index"] body
+:is(#injMarketEventsOverlay.inj-events-overlay,#performanceTimelineView.open,#converterView.open) {
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--page-gradient)!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+}
