@@ -175,10 +175,11 @@ function chart(coin,now=Date.now()){
  const path=data.map((p,i)=>(i?'L':'M')+px(p.t).toFixed(2)+' '+py(p.v).toFixed(2)).join(' ');
  const pct=percentFrom(coin,now);
  const up=Number.isFinite(pct)?pct>=0:data.at(-1).v>=data[0].v;
- const label=(document.documentElement.lang==='en'?'Verified price history':'Storico prezzi verificato')+
+ const aspect=window.matchMedia('(min-width:741px)').matches?'xMidYMid meet':'none';
+  const label=(document.documentElement.lang==='en'?'Verified price history':'Storico prezzi verificato')+
   ' · '+frame.toUpperCase()+
   (state?.stale?(document.documentElement.lang==='en'?' · last verified snapshot, not live':' · ultimo storico verificato, non live'):'');
- return '<svg class="inj-1d-chart '+(up?'up':'down')+(state?.stale?' is-verified-snapshot':'')+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+label+'"><title>'+label+'</title><path d="'+path+'"/></svg>';
+ return '<svg class="inj-1d-chart '+(up?'up':'down')+(state?.stale?' is-verified-snapshot':'')+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="'+aspect+'" role="img" aria-label="'+label+'"><title>'+label+'</title><path d="'+path+'"/></svg>';
 }
 function render(coin,now=Date.now()){return chart(coin,now)}
 function selectedChange(coin){return percentFrom(coin)}
