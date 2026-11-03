@@ -8,7 +8,7 @@
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
     grid-template-rows:none!important;
     grid-auto-flow:row!important;
-    grid-auto-rows:minmax(98px,auto)!important;
+    grid-auto-rows:104px!important;
     gap:clamp(11px,1vw,18px)!important;
     align-items:stretch!important;
     align-content:start!important;
@@ -27,9 +27,9 @@
     width:100%!important;
     max-width:100%!important;
     min-width:0!important;
-    min-height:98px!important;
-    height:100%!important;
-    max-height:none!important;
+    min-height:104px!important;
+    height:104px!important;
+    max-height:104px!important;
     margin:0!important;
     padding:16px clamp(62px,6vw,94px) 16px clamp(16px,1.4vw,24px)!important;
     border-radius:16px!important;
