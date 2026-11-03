@@ -8252,7 +8252,31 @@ function applyTheme(theme, notify = false) {
     orbit: { label: 'Deep Orbit', color: '#15152e' },
     emerald: { label: 'Emerald Flux', color: '#10251e' },
     ember: { label: 'Ember Gold', color: '#24141d' },
-    titanium: { label: 'Liquid Titanium', color: '#2b363f' }
+    titanium: { label: 'Liquid Titanium', color: '#2b363f' },
+    'pure-black': { label: 'Pure Black', color: '#020305' },
+    'graphite': { label: 'Graphite', color: '#101419' },
+    'frost-white': { label: 'Frost White', color: '#f6f9fc' },
+    'warm-ivory': { label: 'Warm Ivory', color: '#f9f4e9' },
+    'midnight-blue': { label: 'Midnight Blue', color: '#081426' },
+    'slate-grey': { label: 'Slate Grey', color: '#1e272e' },
+    'liquid-silver': { label: 'Liquid Silver', color: '#0d141d' },
+    'chrome-blue': { label: 'Chrome Blue', color: '#061324' },
+    'pearl-glass': { label: 'Pearl Glass', color: '#edf4f7' },
+    'rose-copper': { label: 'Rose Copper', color: '#21151c' },
+    'sapphire-glass': { label: 'Sapphire Glass', color: '#0a0f2c' },
+    'golden-satin': { label: 'Golden Satin', color: '#21180f' },
+    'neon-grid': { label: 'Neon Grid', color: '#040b16' },
+    'cyber-cyan': { label: 'Cyber Cyan', color: '#03151b' },
+    'quantum-purple': { label: 'Quantum Purple', color: '#0e0820' },
+    'matrix-green': { label: 'Matrix Green', color: '#05120c' },
+    'solar-circuit': { label: 'Solar Circuit', color: '#1a0f10' },
+    'red-horizon': { label: 'Red Horizon', color: '#190b14' },
+    'classic-black': { label: 'Nero', color: '#050505' },
+    'classic-white': { label: 'Bianco', color: '#ffffff' },
+    'classic-navy': { label: 'Navy Classico', color: '#0a1625' },
+    'classic-ivory': { label: 'Avorio', color: '#f8f3e9' },
+    'classic-stone': { label: 'Stone Grey', color: '#30383d' },
+    'classic-champagne': { label: 'Champagne', color: '#e8dcc9' }
   };
   const selected = themes[theme] ? theme : 'obsidian';
   document.documentElement.dataset.theme = selected;
