@@ -8,6 +8,20 @@
  function get(k){try{return localStorage.getItem(k)}catch(_){return null}}
  function put(k,v){try{localStorage.setItem(k,v)}catch(_){}}
  function normalize(v){return Object.prototype.hasOwnProperty.call(tones,v)?v:(legacy[v]||'obsidian')}
+ var names={obsidian:'Obsidian Pulse',arctic:'Arctic Glass',orbit:'Deep Orbit',emerald:'Emerald Flux',ember:'Ember Gold',titanium:'Liquid Titanium'};
+ function updateThemeControls(theme){
+  document.querySelectorAll('[data-theme-choice]').forEach(function(button){
+   var active=button.dataset.themeChoice===theme;
+   button.classList.toggle('active',active);
+   button.setAttribute('aria-pressed',active?'true':'false');
+  });
+  var button=document.getElementById('themeButton');
+  if(button){
+   button.dataset.theme=theme;
+   button.title='Tema: '+names[theme];
+   button.setAttribute('aria-label','Tema attuale '+names[theme]+'. Cambia tema');
+  }
+ }
  function currentMotion(){return get(motionKey)==='static'?'static':'dynamic'}
  function refreshTone(){
   var value=tones[normalize(root.dataset.theme)];
@@ -16,9 +30,12 @@
  }
  function setTheme(value,save){
   var theme=normalize(value);
-  if(root.dataset.theme!==theme)root.dataset.theme=theme;
+  // Save before changing the DOM. This prevents observers from restoring a
+  // stale theme during an iOS tap or after an embedded page wakes up.
   if(save)put(key,theme);
+  if(root.dataset.theme!==theme)root.dataset.theme=theme;
   refreshTone();
+  updateThemeControls(theme);
  }
  function setMotion(mode,save){
   var selected=mode==='static'?'static':'dynamic';
@@ -58,23 +75,46 @@
   });
   setMotion(currentMotion(),false);updateLabels();
  }
+ /* An independent compositor layer makes the 20-second animation obvious on
+    iOS Safari. It stays underneath the Home shell and never touches data. */
+ function mountHomeAtmosphere(){
+  if(root.dataset.injPage!=='index')return;
+  var gate=document.getElementById('entryGate');
+  if(!gate||gate.querySelector('.inj-theme-flow-layer'))return;
+  var layer=document.createElement('div');
+  layer.className='inj-theme-flow-layer';
+  layer.setAttribute('aria-hidden','true');
+  var track=document.createElement('div');
+  track.className='inj-theme-flow-track';
+  layer.appendChild(track);
+  gate.insertBefore(layer,gate.firstChild);
+ }
+ // Capture choice before other scripts and deferred iPhone handlers can
+ // close/rebuild the menu. The regular app click handler remains unchanged.
+ document.addEventListener('click',function(event){
+  var choice=event.target&&event.target.closest&&event.target.closest('[data-theme-choice]');
+  if(!choice||!Object.prototype.hasOwnProperty.call(tones,choice.dataset.themeChoice))return;
+  setTheme(choice.dataset.themeChoice,true);
+ },true);
  // Apply before the deferred app initializer; legacy palettes migrate safely.
  setTheme(get(key)||root.dataset.theme,true);
  setMotion(currentMotion(),false);
  var observer=new MutationObserver(function(records){
-  var changed=records.some(function(r){return r.attributeName==='data-theme'});
-  if(!changed)return;
-  var theme=normalize(root.dataset.theme);
-  if(root.dataset.theme!==theme){root.dataset.theme=theme;return}
-  put(key,theme);refreshTone();
+  if(!records.some(function(r){return r.attributeName==='data-theme'}))return;
+  // Never treat a legacy script's DOM reset as a user preference. The value
+  // saved by the last explicit selection always wins, on every page.
+  var selected=normalize(get(key)||root.dataset.theme);
+  if(root.dataset.theme!==selected){setTheme(selected,false);return}
+  refreshTone();updateThemeControls(selected);
   document.querySelectorAll('iframe').forEach(function(frame){
    try{if(frame.contentWindow&&frame.contentWindow.location.origin===location.origin)
-    frame.contentWindow.postMessage({type:'injnode:theme:sync',theme:theme,motion:currentMotion()},location.origin)}catch(_){}
+    frame.contentWindow.postMessage({type:'injnode:theme:sync',theme:selected,motion:currentMotion()},location.origin)}catch(_){}
   });
  });
  observer.observe(root,{attributes:true,attributeFilter:['data-theme']});
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountControl,{once:true});
- else mountControl();
+ function initialize(){mountControl();mountHomeAtmosphere();updateThemeControls(normalize(get(key)||root.dataset.theme));}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});
+ else initialize();
  window.addEventListener('injnode:languagechange',updateLabels);
  window.addEventListener('storage',function(event){
   if(event.key===key)setTheme(get(key),false);
@@ -86,6 +126,6 @@
   setTheme(event.data.theme,false);setMotion(event.data.motion,false);
  });
  window.addEventListener('pageshow',function(){
-  setTheme(get(key)||root.dataset.theme,false);setMotion(currentMotion(),false);updateLabels();
+  setTheme(get(key)||root.dataset.theme,false);setMotion(currentMotion(),false);updateLabels();mountHomeAtmosphere();
  });
 })();
