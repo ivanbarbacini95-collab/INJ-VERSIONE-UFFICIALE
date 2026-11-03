@@ -109,3 +109,180 @@ html[data-inj-page="index"] body.privacy-on :is(#entryPrivacyButton.active,#priv
   border-color:color-mix(in srgb,var(--accent,#92d9c7) 35%,var(--line,#495862))!important;
   background:color-mix(in srgb,var(--accent,#92d9c7) 7%,var(--surface,#14242c))!important;
 }
+
+/* Privacy layout v3 — dense, intentional, never looks like loading.
+   Masking remains visual only. Do not expose wallet totals via allocations,
+   P/L, comparisons or wallet address while privacy is active. */
+html[data-inj-page="index"] body.privacy-on #worthCard .worth-performance-stack,
+html[data-inj-page="index"] body.privacy-on #worthCard .allocation,
+html[data-inj-page="index"] body.privacy-on #worthCard .allocation-labels,
+html[data-inj-page="index"] body.privacy-on .metrics-grid :is(
+  .owned-total-difference,.native-usdc-row,.reward-runway
+),
+html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card > small.private,
+html[data-inj-page="index"] body.privacy-on .metrics-grid .reward-value-line.private {
+  display:none!important;
+}
+
+/* Replace the selected-wallet address with a deliberate privacy indicator. */
+html[data-inj-page="index"] body.privacy-on #walletState {
+  visibility:hidden!important;
+  position:relative!important;
+  overflow:visible!important;
+}
+html[data-inj-page="index"] body.privacy-on #walletState::after {
+  content:"VALORI NASCOSTI";
+  visibility:visible!important;
+  position:absolute!important;
+  top:50%!important;
+  right:0!important;
+  transform:translateY(-50%)!important;
+  white-space:nowrap!important;
+  color:var(--muted,#a0aeb1)!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  letter-spacing:.08em!important;
+}
+html[lang="en"][data-inj-page="index"] body.privacy-on #walletState::after {
+  content:"VALUES HIDDEN";
+}
+
+/* Single larger, left-aligned privacy readout in each metric.
+   No secondary row of tiny dots or orphaned + symbol. */
+html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card .metric-value.private {
+  display:block!important;
+  position:relative!important;
+  line-height:1.25!important;
+  min-height:32px!important;
+  max-width:100%!important;
+  text-align:left!important;
+}
+html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card .metric-value.private::after {
+  content:"••••••"!important;
+  left:0!important;
+  transform:translateY(-50%)!important;
+  justify-content:flex-start!important;
+  font-size:clamp(17px,4.6vw,22px)!important;
+  font-weight:600!important;
+  letter-spacing:.12em!important;
+  color:var(--text,#e5eded)!important;
+  opacity:.86!important;
+}
+
+/* Compact account preview. Preserve headings, but don't show a misleading
+   100% allocation bar or reveal the size of the wallet in the mask width. */
+html[data-inj-page="index"] body.privacy-on #worthCard :is(#netWorthUsd,#netWorthInj) {
+  position:relative!important;
+  text-align:left!important;
+  max-width:100%!important;
+  min-height:30px!important;
+  line-height:1.2!important;
+}
+html[data-inj-page="index"] body.privacy-on #worthCard #netWorthUsd::after {
+  content:"••••••"!important;
+  left:0!important;
+  transform:translateY(-50%)!important;
+  font-size:clamp(24px,6vw,33px)!important;
+  letter-spacing:.1em!important;
+  font-weight:600!important;
+  color:var(--text,#e5eded)!important;
+  opacity:.94!important;
+}
+html[data-inj-page="index"] body.privacy-on #worthCard #netWorthInj::after {
+  content:"•••• INJ"!important;
+  left:0!important;
+  transform:translateY(-50%)!important;
+  font-size:clamp(14px,3.4vw,17px)!important;
+  letter-spacing:.09em!important;
+  font-weight:500!important;
+  color:var(--muted,#9daeb2)!important;
+  opacity:.82!important;
+}
+@media (max-width:650px) {
+  html[data-inj-page="index"] body.privacy-on #worthCard {
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:18px 18px 20px!important;
+  }
+  html[data-inj-page="index"] body.privacy-on #worthCard .card-label-row {
+    display:flex!important;
+    justify-content:space-between!important;
+    align-items:center!important;
+    gap:12px!important;
+    min-width:0!important;
+    margin-bottom:8px!important;
+  }
+  html[data-inj-page="index"] body.privacy-on #worthCard #netWorthUsd {
+    min-height:38px!important;
+    margin:0!important;
+  }
+  html[data-inj-page="index"] body.privacy-on #worthCard #netWorthInj {
+    min-height:23px!important;
+    margin:0!important;
+  }
+
+  html[data-inj-page="index"] body.privacy-on .metrics-grid {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+    align-items:stretch!important;
+  }
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card {
+    grid-column:auto!important;
+    grid-row:auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:space-between!important;
+    gap:12px!important;
+    min-width:0!important;
+    width:auto!important;
+    height:auto!important;
+    min-height:113px!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:16px 15px!important;
+    overflow:hidden!important;
+  }
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card .card-label {
+    display:block!important;
+    max-width:100%!important;
+    font-size:clamp(10px,2.8vw,12px)!important;
+    line-height:1.35!important;
+    overflow-wrap:break-word!important;
+  }
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card .reward-value-runway,
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card .owned-total-main {
+    display:contents!important;
+  }
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card.apr-card {
+    grid-column:1 / -1!important;
+    min-height:74px!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:16px!important;
+    padding:16px 19px!important;
+  }
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card.apr-card .metric-value {
+    font-size:clamp(23px,6vw,30px)!important;
+    line-height:1.12!important;
+    white-space:nowrap!important;
+  }
+}
+@media (max-width:340px) {
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card {
+    padding:14px 11px!important;
+    min-height:103px!important;
+  }
+  html[data-inj-page="index"] body.privacy-on .metrics-grid .metric-card .metric-value.private::after {
+    font-size:17px!important;
+    letter-spacing:.08em!important;
+  }
+}
