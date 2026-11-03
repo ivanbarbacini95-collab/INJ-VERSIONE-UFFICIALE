@@ -28,13 +28,13 @@ html[data-inj-font]{
  font-family:var(--inj-chosen-face)!important;
  font-variant-numeric:tabular-nums lining-nums;
 }
+html[data-inj-font] body{font-weight:var(--inj-chosen-weight)!important;}
 html[data-inj-font] :is(body,button,input,textarea,select,option){
  font-family:var(--inj-chosen-face)!important;
 }
 /* These specificity anchors out-prioritize legacy font/weight !important rules,
    without changing font sizes, spacing, chart geometry or color themes. */
-html[data-inj-font] body :is(*,#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual)
-:not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp)
+html[data-inj-font] body :is(*,#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp)
 :not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
  font-family:var(--inj-chosen-face)!important;
  font-weight:var(--inj-chosen-weight)!important;
