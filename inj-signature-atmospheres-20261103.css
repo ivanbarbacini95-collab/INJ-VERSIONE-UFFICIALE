@@ -183,3 +183,33 @@ html[data-theme] #themePicker .theme-list-unified > button .theme-swatch{
   will-change:auto;
  }
 }
+
+/* Override legacy mini-swatch rules using their exact menu specificity.
+   A true artwork thumbnail should be recognizable before opening the theme. */
+html[data-inj-page="index"][data-theme] body #headerMenuPanel
+#themePicker > .theme-list-unified > button {
+ min-height:72px!important;
+ gap:12px!important;
+}
+html[data-inj-page="index"][data-theme] body #headerMenuPanel
+#themePicker > .theme-list-unified > button .theme-swatch {
+ flex:0 0 88px!important;
+ width:88px!important;
+ height:58px!important;
+ border-radius:12px!important;
+ background-position:center!important;
+ background-size:cover!important;
+ background-repeat:no-repeat!important;
+}
+html[data-inj-page="index"][data-theme] body #headerMenuPanel
+#themePicker > .theme-list-unified > button > span {
+ font-size:12px!important;
+ font-weight:600!important;
+ line-height:1.25!important;
+}
+@media(max-width:370px){
+ html[data-inj-page="index"][data-theme] body #headerMenuPanel
+ #themePicker > .theme-list-unified > button .theme-swatch {
+  flex-basis:72px!important;width:72px!important;height:52px!important;
+ }
+}
