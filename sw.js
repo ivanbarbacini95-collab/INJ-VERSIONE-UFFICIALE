@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v20261103-six-curated-themes-motion-official2';
+const CACHE_NAME = 'inj-node-v20261103-six-theme-crisp-contour-v1';
 const APP_SHELL = [
   './inj-six-themes-20261103.css?v=official-6themes1',
   './inj-six-themes-20261103.js?v=official-6themes1',
