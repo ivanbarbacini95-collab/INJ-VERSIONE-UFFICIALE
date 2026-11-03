@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<title>Obsidian Pulse • INJ Node</title>
+<defs>
+ <linearGradient id="sheetA" x1="0%" y1="12%" x2="100%" y2="85%">
+  <stop offset="0%" stop-color="#2392b8" stop-opacity="0"/>
+  <stop offset="19%" stop-color="#2392b8" stop-opacity=".13"/>
+  <stop offset="39%" stop-color="#69e6f6" stop-opacity=".37"/>
+  <stop offset="53%" stop-color="#346e92" stop-opacity=".15"/>
+  <stop offset="72%" stop-color="#69e6f6" stop-opacity=".29"/>
+  <stop offset="100%" stop-color="#2392b8" stop-opacity="0"/>
+ </linearGradient>
+ <linearGradient id="sheetB" x1="5%" y1="90%" x2="100%" y2="9%">
+  <stop offset="0%" stop-color="#346e92" stop-opacity="0"/>
+  <stop offset="23%" stop-color="#346e92" stop-opacity=".16"/>
+  <stop offset="53%" stop-color="#69e6f6" stop-opacity=".25"/>
+  <stop offset="83%" stop-color="#2392b8" stop-opacity=".12"/>
+  <stop offset="100%" stop-color="#69e6f6" stop-opacity="0"/>
+ </linearGradient>
+ <linearGradient id="silk" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#a6f6ff" stop-opacity="0"/>
+  <stop offset="38%" stop-color="#a6f6ff" stop-opacity=".20"/>
+  <stop offset="54%" stop-color="#a6f6ff" stop-opacity=".50"/>
+  <stop offset="67%" stop-color="#a6f6ff" stop-opacity=".16"/>
+  <stop offset="100%" stop-color="#a6f6ff" stop-opacity="0"/>
+ </linearGradient>
+ <linearGradient id="lineGrad" x1="0%" y1="12%" x2="100%" y2="88%">
+  <stop offset="0%" stop-color="#2392b8" stop-opacity=".10"/>
+  <stop offset="21%" stop-color="#69e6f6" stop-opacity=".55"/>
+  <stop offset="48%" stop-color="#a6f6ff" stop-opacity="1"/>
+  <stop offset="74%" stop-color="#69e6f6" stop-opacity=".72"/>
+  <stop offset="100%" stop-color="#2392b8" stop-opacity=".12"/>
+ </linearGradient>
+ <linearGradient id="lineAlt" x1="0%" y1="0%" x2="100%" y2="90%">
+  <stop offset="0%" stop-color="#346e92" stop-opacity="0"/>
+  <stop offset="55%" stop-color="#346e92" stop-opacity=".78"/>
+  <stop offset="100%" stop-color="#69e6f6" stop-opacity="0"/>
+ </linearGradient>
+</defs>
+<g stroke-linejoin="round" stroke-linecap="round">
+<path d="M 500 -80 C 445 144 603 328 772 375 C 952 426 1023 711 1520 750" stroke="url(#lineAlt)" fill="none" stroke-width="1.5" opacity=".64"/>
+<path d="M -90 213 C 200 90 440 310 660 251 C 860 200 1030 50 1550 225 L 1550 302 C 1060 128 870 301 672 335 C 412 392 212 189 -90 290 Z" fill="url(#sheetB)"/>
+<path d="M -140 810 C 130 690 225 400 510 455 C 755 505 827 745 1064 622 C 1232 534 1258 288 1570 217 L 1570 303 C 1300 389 1250 656 1064 704 C 830 830 738 575 499 542 C 262 515 145 769 -140 901 Z" fill="url(#sheetA)"/>
+<path d="M -140 810 C 130 690 225 400 510 455 C 755 505 827 745 1064 622 C 1232 534 1258 288 1570 217 L 1570 234 C 1258 316 1236 557 1064 642 C 834 767 753 524 506 476 C 235 427 147 704 -140 839 Z" fill="url(#silk)" opacity=".76"/>
+<g><path d="M -90 254 C 200 143 431 347 668 297 C 876 248 1030 112 1530 255" transform="translate(0 -15)" stroke="url(#lineAlt)" stroke-width="1.25" opacity="0.25" fill="none"/>
+<path d="M -90 254 C 200 143 431 347 668 297 C 876 248 1030 112 1530 255" transform="translate(0 -3)" stroke="url(#lineGrad)" stroke-width="1.8" opacity="0.7" fill="none"/>
+<path d="M -90 254 C 200 143 431 347 668 297 C 876 248 1030 112 1530 255" transform="translate(0 11)" stroke="url(#lineAlt)" stroke-width="1.25" opacity="0.49" fill="none"/>
+<path d="M -90 254 C 200 143 431 347 668 297 C 876 248 1030 112 1530 255" transform="translate(0 23)" stroke="url(#lineAlt)" stroke-width="1.25" opacity="0.24" fill="none"/></g>
+<g><path d="M -120 854 C 145 735 235 459 502 502 C 762 542 845 787 1062 668 C 1278 554 1258 339 1550 258" transform="translate(0 -19)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.26" fill="none"/>
+<path d="M -120 854 C 145 735 235 459 502 502 C 762 542 845 787 1062 668 C 1278 554 1258 339 1550 258" transform="translate(0 -10)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.45" fill="none"/>
+<path d="M -120 854 C 145 735 235 459 502 502 C 762 542 845 787 1062 668 C 1278 554 1258 339 1550 258" transform="translate(0 -3)" stroke="url(#lineGrad)" stroke-width="2.25" opacity="0.82" fill="none"/>
+<path d="M -120 854 C 145 735 235 459 502 502 C 762 542 845 787 1062 668 C 1278 554 1258 339 1550 258" transform="translate(0 7)" stroke="url(#lineGrad)" stroke-width="1.65" opacity="0.71" fill="none"/>
+<path d="M -120 854 C 145 735 235 459 502 502 C 762 542 845 787 1062 668 C 1278 554 1258 339 1550 258" transform="translate(0 17)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.4" fill="none"/>
+<path d="M -120 854 C 145 735 235 459 502 502 C 762 542 845 787 1062 668 C 1278 554 1258 339 1550 258" transform="translate(0 27)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.22" fill="none"/></g>
+<path d="M -120 854 C 145 735 235 459 502 502 C 762 542 845 787 1062 668 C 1278 554 1258 339 1550 258" stroke="url(#lineGrad)" fill="none" stroke-width="2.8" opacity=".90"/>
+<path d="M -90 254 C 200 143 431 347 668 297 C 876 248 1030 112 1530 255" stroke="url(#lineAlt)" fill="none" stroke-width="1.9" opacity=".76"/>
+</g>
+</svg>
