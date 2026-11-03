@@ -193,7 +193,73 @@ html[data-theme][data-inj-page="index"] body
  background-size:116% 116%,100% 100%!important;
  background-attachment:fixed,fixed!important;
 }
-/* Avoid a different gradient appearing behind the address entry shell. */
-html[data-theme][data-inj-page="index"] body > #entryGate.entry-gate {
- background:transparent!important;
+/* Official Home is a fullscreen scroll surface over the root canvas.
+   Previously that surface masked the SVG artwork completely on iPhone.
+   Paint the ribbon artwork DIRECTLY on the visible Home scrollport. */
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate,
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate.visible {
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--inj-theme-art),var(--page-gradient)!important;
+ background-repeat:no-repeat,no-repeat!important;
+ background-size:125% 117%,100% 100%!important;
+ background-position:50% 50%,center!important;
+ background-attachment:scroll,scroll!important;
 }
+/* No second dark canvas may cover the artwork inside the Home surface. */
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate > .entry-gate-shell:not(.first-access) {
+ background:transparent!important;
+ background-image:none!important;
+ background-color:transparent!important;
+}
+/* Paint a restrained reflection in the main wallet card, instead of giant
+   circles. It uses the exact same silk motif chosen for the whole page. */
+html[data-inj-page="index"][data-theme] body #entryGate #entryOverview.entry-overview {
+ background-color:var(--surface)!important;
+ background-image:var(--inj-theme-art),var(--card-gradient)!important;
+ background-position:55% 51%,center!important;
+ background-size:122% 128%,cover!important;
+ background-repeat:no-repeat,no-repeat!important;
+ border-color:var(--line-strong,var(--line))!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate #entryOverview.entry-overview::before,
+html[data-inj-page="index"][data-theme] body #entryGate #entryOverview.entry-overview::after {
+ content:none!important;
+ display:none!important;
+}
+/* Actual flowing ribbon backdrop, without a pulsing blur layer. */
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="dynamic"] body #entryGate.entry-gate {
+ animation:inj-six-home-ribbon-motion 27s ease-in-out infinite alternate!important;
+}
+@keyframes inj-six-home-ribbon-motion {
+ 0%   {background-position:22% 39%,center}
+ 50%  {background-position:64% 54%,center}
+ 100% {background-position:80% 68%,center}
+}
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="static"] body #entryGate.entry-gate {
+ animation:none!important;
+ background-position:50% 50%,center!important;
+}
+@media (prefers-reduced-motion:reduce) {
+ html[data-inj-page="index"][data-theme][data-inj-theme-motion="dynamic"] body #entryGate.entry-gate {
+  animation:none!important;
+  background-position:50% 50%,center!important;
+ }
+}
+/* Theme choices use the real artwork, not generic monochrome squares. */
+html[data-inj-page="index"][data-theme] body #headerMenuPanel #themePicker > .theme-list-unified > button .theme-swatch {
+ flex:0 0 66px!important;
+ width:66px!important;
+ height:38px!important;
+ border-radius:9px!important;
+ background-color:var(--surface)!important;
+ background-position:center!important;
+ background-size:cover!important;
+ background-repeat:no-repeat!important;
+}
+#themePicker .theme-swatch.obsidian{background-image:url("./assets/inj-theme-obsidian-ribbons-20261103.svg"),linear-gradient(145deg,#0b1825,#050a12)!important}
+#themePicker .theme-swatch.arctic{background-image:url("./assets/inj-theme-arctic-ribbons-20261103.svg"),linear-gradient(145deg,#ffffff,#e5f0f7)!important}
+#themePicker .theme-swatch.orbit{background-image:url("./assets/inj-theme-orbit-ribbons-20261103.svg"),linear-gradient(145deg,#11152c,#080b1a)!important}
+#themePicker .theme-swatch.emerald{background-image:url("./assets/inj-theme-emerald-ribbons-20261103.svg"),linear-gradient(145deg,#13251d,#06110f)!important}
+#themePicker .theme-swatch.ember{background-image:url("./assets/inj-theme-ember-ribbons-20261103.svg"),linear-gradient(145deg,#29151d,#150c12)!important}
+#themePicker .theme-swatch.titanium{background-image:url("./assets/inj-theme-titanium-ribbons-20261103.svg"),linear-gradient(145deg,#2e3b45,#151b21)!important}
+
