@@ -178,7 +178,7 @@ function chart(coin,now=Date.now()){
  const label=(document.documentElement.lang==='en'?'Verified price history':'Storico prezzi verificato')+
   ' · '+frame.toUpperCase()+
   (state?.stale?(document.documentElement.lang==='en'?' · last verified snapshot, not live':' · ultimo storico verificato, non live'):'');
- return '<svg class="inj-1d-chart '+(up?'up':'down')+(state?.stale?' is-verified-snapshot':'')+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="'+label+'"><title>'+label+'</title><path d="'+path+'"/></svg>';
+ return '<svg class="inj-1d-chart '+(up?'up':'down')+(state?.stale?' is-verified-snapshot':'')+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+label+'"><title>'+label+'</title><path d="'+path+'"/></svg>';
 }
 function render(coin,now=Date.now()){return chart(coin,now)}
 function selectedChange(coin){return percentFrom(coin)}
