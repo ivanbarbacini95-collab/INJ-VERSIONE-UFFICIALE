@@ -1,5 +1,7 @@
-const CACHE_NAME = 'inj-node-v20261102-lite-week-candles1-privacy-layout3-lite-week-line1-tools104-crypto-readable-settings-readable-desktop-fonts-global1-sf-dual2';
+const CACHE_NAME = 'inj-node-v20261103-six-curated-themes-motion-official1';
 const APP_SHELL = [
+  './inj-six-themes-20261103.css?v=official-6themes1',
+  './inj-six-themes-20261103.js?v=official-6themes1',
   './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
   './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
   './inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1',
