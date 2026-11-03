@@ -8783,7 +8783,9 @@ async function init() {
   registerPwa();
   document.body.classList.add('market-data-loading');
   if (state.address && !state.walletSummaries[state.address]?.updated) setWalletSkeleton(true);
-  applyTheme(document.documentElement.dataset.theme);
+  // The saved explicit theme is authoritative; older page scripts may still
+  // have written a fallback value to data-theme before initialization.
+  applyTheme(localStorage.getItem('inj_monitor_theme') || document.documentElement.dataset.theme);
   applyUiStyle(document.documentElement.dataset.uiStyle || localStorage.getItem('inj_monitor_ui_style') || 'elegant');
   setTimeframeCollapsed('market', timeframeCollapsedPreference('market'), false);
   setTrackerCollapsed('reward', trackerCollapsedPreference('reward'), false);
