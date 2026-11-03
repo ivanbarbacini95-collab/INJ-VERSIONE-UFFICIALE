@@ -80,6 +80,17 @@ html[data-theme="titanium"] {
  --inj-native-status-tone:#2b363f;--inj-native-top-tone:#2b363f;
 }
 
+/* Semantic aliases for pages with their own local CSS (Live Charts, Market,
+   Workspace, Comparison) instead of relying on the Home-only theme rules. */
+html[data-theme] {
+ --canvas:var(--bg);--panel:var(--surface);--panel-strong:var(--surface-strong);
+ --surface2:var(--surface-strong);--surface-2:var(--surface-strong);
+ --surface-3:var(--surface-soft);--muted2:var(--muted-strong);
+ --muted-2:var(--muted-strong);--positive:var(--up);--negative:var(--down);
+ --ws-bg:var(--theme-canvas);--ws-panel:var(--surface-strong);
+ --ws-fg:var(--text);--ws-muted:var(--muted);--ws-accent:var(--accent);
+ --ws-line:var(--line);--theme-browser:var(--bg);
+}
 /* Keep the page canvas continuous behind fixed headers, not an extra top bar. */
 html[data-theme][data-inj-page],
 html[data-theme][data-inj-market] {
