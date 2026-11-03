@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html data-inj-screen="boot" data-inj-page="index" data-inj-viewport="80" data-theme="navy" lang="it">
+<html data-inj-screen="boot" data-inj-page="index" data-inj-viewport="80" data-theme="obsidian" lang="it">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<meta content="#10272a" name="theme-color"/>
-<style id="inj-prepaint-canvas">html,body{background-color:#020708;color-scheme:dark}html[data-theme="black"],html[data-theme="black"] body{background-color:#000}html[data-theme="light"],html[data-theme="light"] body{background-color:#eef5ff;color-scheme:light}html[data-theme="amber"],html[data-theme="amber"] body{background-color:#05080d}html[data-theme="velvet"],html[data-theme="velvet"] body{background-color:#0a1024}html[data-theme="ocean-x-solar"],html[data-theme="ocean-x-solar"] body{background-color:#1b122c}</style>
+<meta content="#0b1722" name="theme-color"/>
+<style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="emerald"],html[data-theme="emerald"] body{background-color:#06110f}html[data-theme="ember"],html[data-theme="ember"] body{background-color:#150c12}html[data-theme="titanium"],html[data-theme="titanium"] body{background-color:#151b21}</style>
 
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="INJ Node" name="apple-mobile-web-app-title"/>
@@ -19,10 +19,12 @@
 
 <script>
     try {
-      const savedTheme = (localStorage.getItem('inj_monitor_theme') === 'dynamic' ? 'navy' : localStorage.getItem('inj_monitor_theme'));
-      document.documentElement.dataset.theme = ['navy', 'black', 'light', 'amber', 'velvet', 'ocean-x-solar'].includes(savedTheme) ? savedTheme : 'navy';
-      const initialTone = {navy:'#10272a',black:'#000000',light:'#f3f8ff',amber:'#181923',velvet:'#322942','ocean-x-solar':'#51334f'};
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.navy);
+      const savedTheme = localStorage.getItem('inj_monitor_theme');
+      const oldThemes = { navy:'obsidian', black:'obsidian', light:'arctic', amber:'ember', velvet:'orbit', 'ocean-x-solar':'ember', ocean:'emerald', chromatic:'orbit', aqua:'arctic', dynamic:'obsidian' };
+      const initialTone = {obsidian:'#0b1722',arctic:'#f3f9fc',orbit:'#15152e',emerald:'#10251e',ember:'#24141d',titanium:'#2b363f'};
+      document.documentElement.dataset.theme = initialTone[savedTheme] ? savedTheme : (oldThemes[savedTheme] || 'obsidian');
+      document.documentElement.dataset.injThemeMotion = localStorage.getItem('inj_node_theme_motion_v1')==='static'?'static':'dynamic';
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.obsidian);
       const savedUiStyle = localStorage.getItem('inj_monitor_ui_style');
       document.documentElement.dataset.uiStyle = ['elegant', 'futuristic', 'ultra'].includes(savedUiStyle) ? savedUiStyle : 'elegant';
       if (sessionStorage.getItem('inj_node_return_home') === '1') {
@@ -416,6 +418,8 @@
 <link rel="stylesheet" href="./tools-desktop-equal-height-20261103.css?v=20261103-tools104a">
 <link rel="stylesheet" href="./settings-desktop-readable-20261103.css?v=20261103-controlcenter1">
 <link rel="stylesheet" href="./inj-font-platform-unified-20261103.css?v=sf-dual-20261103a">
+<link rel="stylesheet" href="./inj-six-themes-20261103.css?v=official-6themes1">
+<script defer src="./inj-six-themes-20261103.js?v=official-6themes1"></script>
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
@@ -566,12 +570,12 @@
 </button>
 <div aria-label="Theme" class="theme-picker" id="themePicker" role="group">
 <div class="theme-category-options theme-list-unified">
-<button data-theme-choice="black" type="button"><i class="theme-swatch black"></i><span data-it="Nero" data-en="Black">Nero</span></button>
-<button data-theme-choice="light" type="button"><i class="theme-swatch light"></i><span data-it="Chiaro" data-en="Light">Chiaro</span></button>
-<button data-theme-choice="amber" type="button"><i class="theme-swatch amber"></i><span>Midnight Ember</span></button>
-<button data-theme-choice="navy" type="button"><i class="theme-swatch navy"></i><span>Aurora</span></button>
-<button data-theme-choice="velvet" type="button"><i class="theme-swatch velvet"></i><span>Velvet Nebula</span></button>
-<button data-theme-choice="ocean-x-solar" type="button"><i class="theme-swatch ocean-x-solar"></i><span>Solar Surge</span></button>
+<button data-theme-choice="obsidian" type="button"><i class="theme-swatch obsidian"></i><span>Obsidian Pulse</span></button>
+<button data-theme-choice="arctic" type="button"><i class="theme-swatch arctic"></i><span>Arctic Glass</span></button>
+<button data-theme-choice="orbit" type="button"><i class="theme-swatch orbit"></i><span>Deep Orbit</span></button>
+<button data-theme-choice="emerald" type="button"><i class="theme-swatch emerald"></i><span>Emerald Flux</span></button>
+<button data-theme-choice="ember" type="button"><i class="theme-swatch ember"></i><span>Ember Gold</span></button>
+<button data-theme-choice="titanium" type="button"><i class="theme-swatch titanium"></i><span>Liquid Titanium</span></button>
 </div>
 </div>
 </div>
