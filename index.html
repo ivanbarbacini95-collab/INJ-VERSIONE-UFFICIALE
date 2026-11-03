@@ -21,7 +21,7 @@
     try {
       const savedTheme = localStorage.getItem('inj_monitor_theme');
       const oldThemes = { navy:'obsidian', black:'obsidian', light:'arctic', amber:'ember', velvet:'orbit', 'ocean-x-solar':'ember', ocean:'emerald', chromatic:'orbit', aqua:'arctic', dynamic:'obsidian' };
-      const initialTone = {obsidian:'#0b1722',arctic:'#f3f9fc',orbit:'#15152e',emerald:'#10251e',ember:'#24141d',titanium:'#2b363f'};
+      const initialTone = {obsidian:'#0b1722',arctic:'#f3f9fc',orbit:'#15152e',emerald:'#10251e',ember:'#24141d',titanium:'#2b363f','pure-black':'#020305','graphite':'#101419','frost-white':'#f6f9fc','warm-ivory':'#f9f4e9','midnight-blue':'#081426','slate-grey':'#1e272e','liquid-silver':'#0d141d','chrome-blue':'#061324','pearl-glass':'#edf4f7','rose-copper':'#21151c','sapphire-glass':'#0a0f2c','golden-satin':'#21180f','neon-grid':'#040b16','cyber-cyan':'#03151b','quantum-purple':'#0e0820','matrix-green':'#05120c','solar-circuit':'#1a0f10','red-horizon':'#190b14','classic-black':'#050505','classic-white':'#ffffff','classic-navy':'#0a1625','classic-ivory':'#f8f3e9','classic-stone':'#30383d','classic-champagne':'#e8dcc9'};
       document.documentElement.dataset.theme = initialTone[savedTheme] ? savedTheme : (oldThemes[savedTheme] || 'obsidian');
       document.documentElement.dataset.injThemeMotion = localStorage.getItem('inj_node_theme_motion_v1')==='static'?'static':'dynamic';
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.obsidian);
@@ -571,7 +571,7 @@
 <svg aria-hidden="true" class="menu-action-chevron" viewbox="0 0 24 24"><path d="m8 10 4 4 4-4"></path></svg>
 </button>
 <div aria-label="Theme" class="theme-picker" id="themePicker" role="group">
-<details class="inj-theme-family" data-family="signature" open>
+<details class="inj-theme-family" data-family="signature">
 <summary><span class="inj-family-illustration" aria-hidden="true">◈</span><span class="inj-family-title"><strong>Signature Atmospheres</strong><small data-it="I temi originali · Nastri fluidi" data-en="Original themes · Flowing ribbons">I temi originali · Nastri fluidi</small></span><span class="inj-family-count">6</span><span class="inj-family-chevron" aria-hidden="true"></span></summary>
 <div class="theme-category-options theme-list-unified">
 <button data-theme-choice="obsidian" type="button"><i class="theme-swatch obsidian" aria-hidden="true"></i><span>Obsidian Pulse</span></button>
