@@ -78,7 +78,7 @@ html[data-theme="classic-champagne"]{--bg:#e8dcc9;--theme-canvas:#e8dcc9;--surfa
 @media(prefers-reduced-motion:reduce){#themePicker .inj-family-chevron{transition:none!important}}
 
 /* Daylight collections require matching system controls and dark text. */
-html:is([data-theme="frost-white"],[data-theme="warm-ivory"],[data-theme="pearl-glass"],[data-theme="classic-white"],[data-theme="classic-ivory"],[data-theme="classic-champagne"]){color-scheme:light!important}
+html[data-theme]:is([data-theme="frost-white"],[data-theme="warm-ivory"],[data-theme="pearl-glass"],[data-theme="classic-white"],[data-theme="classic-ivory"],[data-theme="classic-champagne"]){color-scheme:light!important}
 html:is([data-theme="frost-white"],[data-theme="warm-ivory"],[data-theme="pearl-glass"],[data-theme="classic-white"],[data-theme="classic-ivory"],[data-theme="classic-champagne"]) body{color:var(--text)}
 /* Do not extend the settings panel indefinitely when a category expands. */
 html[data-inj-page="index"] #themePicker{max-height:min(62dvh,700px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
@@ -87,3 +87,10 @@ html[data-inj-page="index"] #themePicker{max-height:min(62dvh,700px);overflow-y:
    presentation carries the very faint passing sheen. */
 html[data-inj-page="index"][data-inj-theme-motion="static"][data-theme^="classic-"] body #entryGate .inj-theme-flow-track{opacity:0!important}
 html[data-theme^="classic-"]{--inj-signature-opacity:.20;--inj-signature-duration:90s}
+
+/* Classic Nero and Bianco are genuinely neutral when Static is selected. */
+html[data-theme="classic-black"]{--bg:#000000;--theme-canvas:#000000;--page-gradient:linear-gradient(#000000,#000000);--inj-native-status-tone:#000000;--inj-native-top-tone:#000000}
+html[data-theme="classic-white"]{--bg:#ffffff;--theme-canvas:#ffffff;--page-gradient:linear-gradient(#ffffff,#ffffff);--inj-native-status-tone:#ffffff;--inj-native-top-tone:#ffffff}
+html[data-theme^="classic-"][data-inj-theme-motion="static"]:not([data-inj-page="index"]){
+ background-image:var(--page-gradient)!important;animation:none!important;
+}
