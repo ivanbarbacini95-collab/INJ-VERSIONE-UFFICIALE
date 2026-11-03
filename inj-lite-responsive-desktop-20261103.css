@@ -1,0 +1,217 @@
+/* INJ Node Lite — native desktop and portrait monitor layout, 03 Nov 2026.
+   Presentation-only: the existing seven-day OHLC feed, live price source,
+   interaction/inspection, wallet selector and Lite/Pro switching are untouched. */
+
+/* Medium-width windows and tablet landscape: let the single-column layout
+   breathe instead of keeping the original 760px smartphone cap. */
+@media screen and (min-width:760px) and (max-width:1199px) {
+  html[data-inj-page="index"] body #injLightHome .inj-light-screen {
+    width:min(94vw,1080px)!important;
+    max-width:min(94vw,1080px)!important;
+    justify-content:flex-start!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-chart-plot {
+    height:clamp(240px,35vh,480px)!important;
+  }
+}
+
+/* PC landscape / UHD / 4K / ultrawide. The previous fixed 760/1180px
+   maximum left Lite looking like a tiny phone in the center of a big screen.
+   Use a deliberately wide two-column dashboard with the chart as the hero. */
+@media screen and (min-width:1200px) and (orientation:landscape) {
+  html[data-inj-page="index"][data-inj-light-active="true"] body > #injLightHome:not([hidden]),
+  html[data-inj-page="index"][data-inj-mode-transition="leaving"] body > #injLightHome:not([hidden]) {
+    background:
+      radial-gradient(ellipse 70% 75% at 76% -8%,
+        color-mix(in srgb,var(--accent,#78d3b8) 10%,transparent),
+        transparent 82%),
+      linear-gradient(145deg,
+        color-mix(in srgb,var(--theme-canvas,var(--bg,#07131a)) 95%,var(--accent,#78d3b8) 5%),
+        var(--theme-canvas,var(--bg,#07131a)) 76%)!important;
+  }
+
+  html[data-inj-page="index"] body #injLightHome .inj-light-screen {
+    box-sizing:border-box!important;
+    display:grid!important;
+    grid-template-areas:
+      "header header"
+      "wallet wallet"
+      "chart values"
+      "chart reward"
+      "footer footer"!important;
+    grid-template-columns:minmax(0,1.65fr) minmax(330px,.87fr)!important;
+    grid-template-rows:auto auto minmax(0,1fr) auto auto!important;
+    column-gap:clamp(30px,3.3vw,116px)!important;
+    row-gap:clamp(18px,2.1vh,44px)!important;
+    align-content:center!important;
+    justify-content:stretch!important;
+    align-items:stretch!important;
+    width:min(94vw,3200px)!important;
+    max-width:min(94vw,3200px)!important;
+    min-height:100dvh!important;
+    height:auto!important;
+    margin:0 auto!important;
+    padding:clamp(26px,3.2vh,82px) clamp(26px,2.6vw,92px) clamp(26px,3.2vh,82px)!important;
+    background:transparent!important;
+  }
+
+  html[data-inj-page="index"] body #injLightHome .inj-light-header {
+    grid-area:header!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-walletbar {
+    grid-area:wallet!important;
+    min-width:0!important;
+    margin-top:0!important;
+    padding-bottom:clamp(13px,1.4vh,30px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-values {
+    grid-area:values!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    gap:clamp(22px,3.5vh,85px)!important;
+    width:100%!important;
+    min-width:0!important;
+    margin-top:0!important;
+    align-self:center!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-values > div {
+    min-width:0!important;
+    padding:0!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-values > div + div {
+    border-left:0!important;
+    padding-left:0!important;
+    padding-top:clamp(20px,2.6vh,60px)!important;
+    border-top:1px solid color-mix(in srgb,var(--line,#658384) 44%,transparent)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-chart {
+    grid-area:chart!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-self:stretch!important;
+    justify-content:center!important;
+    min-width:0!important;
+    width:100%!important;
+    margin-top:0!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-chart-plot {
+    flex:0 0 auto!important;
+    height:clamp(320px,44vh,920px)!important;
+    min-width:0!important;
+    --inj-light-axis-width:clamp(74px,5vw,150px);
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-reward {
+    grid-area:reward!important;
+    align-self:end!important;
+    min-width:0!important;
+    width:100%!important;
+    margin-top:0!important;
+    padding:clamp(20px,1.8vw,56px)!important;
+    border-radius:clamp(16px,1.1vw,28px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-footer {
+    grid-area:footer!important;
+    margin:0!important;
+    padding-top:clamp(6px,1vh,20px)!important;
+  }
+
+  /* 1080p through 4K: typography grows with viewport, not with a
+     fixed 760px component and not through browser zoom/transform. */
+  html[data-inj-page="index"] body #injLightHome .inj-light-brand {
+    font-size:clamp(31px,2.05vw,78px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-kicker {
+    font-size:clamp(11px,.69vw,23px)!important;
+    margin-top:clamp(7px,.8vh,18px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome #injLightModeToggle {
+    min-height:clamp(38px,3.4vh,72px)!important;
+    padding:clamp(8px,.65vw,20px) clamp(12px,1vw,32px)!important;
+    font-size:clamp(11px,.65vw,21px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome #injLightModeToggle svg {
+    width:clamp(15px,.9vw,30px)!important;
+    height:clamp(15px,.9vw,30px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-eyebrow {
+    font-size:clamp(11px,.72vw,24px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-address {
+    font-size:clamp(14px,.98vw,31px)!important;
+    margin-top:clamp(8px,.9vh,18px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-value {
+    font-size:clamp(29px,2.05vw,78px)!important;
+    margin-top:clamp(8px,1.3vh,25px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-value small {
+    font-size:clamp(13px,.82vw,28px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-meta {
+    margin-top:clamp(7px,1vh,22px)!important;
+    font-size:clamp(12px,.82vw,26px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-chart-head h2 {
+    font-size:clamp(17px,1.16vw,38px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome #injLightPerf6h,
+  html[data-inj-page="index"] body #injLightHome .inj-light-live {
+    font-size:clamp(12px,.75vw,23px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-chart-sub {
+    font-size:clamp(11px,.68vw,22px)!important;
+    margin-top:clamp(9px,.9vh,20px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome :is(.inj-light-price-tick,.inj-light-price-now) {
+    font-size:clamp(11px,.72vw,22px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-axis {
+    font-size:clamp(11px,.69vw,21px)!important;
+    margin-top:clamp(10px,1vh,24px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-reward-head > span:last-child,
+  html[data-inj-page="index"] body #injLightHome .inj-light-reward-note {
+    font-size:clamp(11px,.68vw,22px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-reward-values {
+    gap:clamp(10px,1vw,30px)!important;
+    margin-top:clamp(12px,1.5vh,30px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome #injLightReward {
+    font-size:clamp(27px,1.9vw,70px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome #injLightReward small {
+    font-size:clamp(12px,.8vw,27px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome #injLightRewardFiat {
+    font-size:clamp(17px,1.15vw,44px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-footer {
+    font-size:clamp(10px,.6vw,19px)!important;
+  }
+}
+
+/* Portrait PC / rotated UHD monitor: keep the natural mobile reading order,
+   but do not confine it to a tiny 760px strip on a 2K/4K portrait display. */
+@media screen and (min-width:900px) and (orientation:portrait) {
+  html[data-inj-page="index"] body #injLightHome .inj-light-screen {
+    display:flex!important;
+    flex-direction:column!important;
+    width:min(92vw,1780px)!important;
+    max-width:min(92vw,1780px)!important;
+    justify-content:flex-start!important;
+    min-height:100dvh!important;
+    padding:clamp(32px,3.5vh,100px) clamp(26px,3.5vw,92px) clamp(32px,4vh,120px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-brand {
+    font-size:clamp(29px,2.1vw,65px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome .inj-light-value {
+    font-size:clamp(29px,2.7vw,66px)!important;
+  }
+  html[data-inj-page="index"] body #injLightHome #injLightChartPlot {
+    height:clamp(290px,32vh,940px)!important;
+  }
+}
