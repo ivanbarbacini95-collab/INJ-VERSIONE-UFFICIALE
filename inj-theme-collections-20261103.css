@@ -85,7 +85,7 @@ html[data-inj-page="index"] #themePicker{max-height:min(62dvh,700px);overflow-y:
 #themePicker .inj-theme-family[data-selected="true"]>summary .inj-family-illustration{box-shadow:inset 0 0 0 1px var(--accent);border-color:var(--accent)}
 /* A Classic shade stays truly solid at rest; only its optional dynamic
    presentation carries the very faint passing sheen. */
-html[data-inj-page="index"][data-inj-theme-motion="static"][data-theme^="classic-"] body #entryGate .inj-theme-flow-track{opacity:0!important}
+html[data-inj-page="index"][data-inj-theme-motion="static"][data-theme^="classic-"] body #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track{opacity:0!important}
 html[data-theme^="classic-"]{--inj-signature-opacity:.20;--inj-signature-duration:90s}
 
 /* Classic Nero and Bianco are genuinely neutral when Static is selected. */
