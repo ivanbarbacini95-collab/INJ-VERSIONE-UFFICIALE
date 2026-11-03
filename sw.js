@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v20261102-lite-week-candles1-privacy-layout3';
+const CACHE_NAME = 'inj-node-v20261102-lite-week-candles1-privacy-layout3-lite-week-line1';
 const APP_SHELL = [
   './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
   './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
