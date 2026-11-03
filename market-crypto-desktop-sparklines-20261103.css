@@ -1,0 +1,84 @@
+/* INJ Node · Global Crypto and Favorites · desktop mini-chart geometry
+   The source SVG uses a 320x76 price domain. Respect that aspect ratio
+   rather than stretching the chart over the full 4th grid track.
+   Scope to desktop, preserve mobile watchlist and swipe interactions. */
+@media (min-width: 900px) {
+  html:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+  #injGlobalMarket #marketProRows .market-favorite-row > .mp-row {
+    grid-template-columns:
+      minmax(160px,1.15fr)
+      minmax(130px,.87fr)
+      minmax(95px,.60fr)
+      minmax(182px,240px)!important;
+    column-gap:clamp(12px,2.2vw,26px)!important;
+    min-height:88px!important;
+    padding:13px clamp(8px,1.25vw,20px)!important;
+    align-items:center!important;
+  }
+
+  html:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+  #injGlobalMarket #marketProRows .market-favorite-row > .mp-row .mp-chart {
+    width:100%!important;
+    max-width:240px!important;
+    min-width:0!important;
+    align-items:flex-end!important;
+    justify-self:end!important;
+    margin-left:auto!important;
+  }
+
+  html:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+  #injGlobalMarket #marketProRows .market-favorite-row > .mp-row .mp-chart > svg.inj-1d-chart {
+    display:block!important;
+    width:100%!important;
+    max-width:240px!important;
+    height:auto!important;
+    aspect-ratio:320 / 76!important;
+    max-height:57px!important;
+    flex:0 1 auto!important;
+    overflow:hidden!important;
+  }
+}
+@media (min-width:741px) and (max-width:899px) {
+  html:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+  #injGlobalMarket #marketProRows .market-favorite-row > .mp-row {
+    grid-template-columns:
+      minmax(116px,1fr)
+      minmax(108px,.8fr)
+      minmax(80px,.58fr)
+      minmax(150px,205px)!important;
+    column-gap:10px!important;
+    align-items:center!important;
+    min-height:82px!important;
+  }
+  html:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+  #injGlobalMarket #marketProRows .market-favorite-row > .mp-row .mp-chart {
+    width:100%!important;
+    max-width:205px!important;
+    min-width:0!important;
+    justify-self:end!important;
+    align-items:flex-end!important;
+    margin-left:auto!important;
+  }
+  html:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+  #injGlobalMarket #marketProRows .market-favorite-row > .mp-row .mp-chart > svg.inj-1d-chart {
+    display:block!important;
+    width:100%!important;
+    max-width:205px!important;
+    height:auto!important;
+    aspect-ratio:320 / 76!important;
+    max-height:49px!important;
+    overflow:hidden!important;
+  }
+}
+
+/* The plot retains proper geometry in wide embedded Market panels too;
+   compact mobile layout is intentionally not changed. */
+@media (min-width:741px) {
+  html:is([data-inj-market-entry="crypto"],[data-inj-market-entry="favorites"])
+  #injGlobalMarket #marketProRows .mp-chart .inj-1d-chart path {
+    stroke-width:1.85px!important;
+    vector-effect:non-scaling-stroke!important;
+    stroke-linejoin:round!important;
+    stroke-linecap:round!important;
+  }
+}
