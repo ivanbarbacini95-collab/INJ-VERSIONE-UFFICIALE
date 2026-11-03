@@ -3,17 +3,20 @@
  'use strict';
  var root=document.documentElement;
  var key='inj_monitor_theme',motionKey='inj_node_theme_motion_v1';
- var tones={obsidian:'#0b1722',arctic:'#f3f9fc',orbit:'#15152e',emerald:'#10251e',ember:'#24141d',titanium:'#2b363f'};
+ var tones={obsidian:'#0b1722',arctic:'#f3f9fc',orbit:'#15152e',emerald:'#10251e',ember:'#24141d',titanium:'#2b363f', 'pure-black':'#020305', 'graphite':'#101419', 'frost-white':'#f6f9fc', 'warm-ivory':'#f9f4e9', 'midnight-blue':'#081426', 'slate-grey':'#1e272e', 'liquid-silver':'#0d141d', 'chrome-blue':'#061324', 'pearl-glass':'#edf4f7', 'rose-copper':'#21151c', 'sapphire-glass':'#0a0f2c', 'golden-satin':'#21180f', 'neon-grid':'#040b16', 'cyber-cyan':'#03151b', 'quantum-purple':'#0e0820', 'matrix-green':'#05120c', 'solar-circuit':'#1a0f10', 'red-horizon':'#190b14', 'classic-black':'#050505', 'classic-white':'#ffffff', 'classic-navy':'#0a1625', 'classic-ivory':'#f8f3e9', 'classic-stone':'#30383d', 'classic-champagne':'#e8dcc9'};
  var legacy={navy:'obsidian',black:'obsidian',light:'arctic',amber:'ember',velvet:'orbit','ocean-x-solar':'ember',ocean:'emerald',chromatic:'orbit',aqua:'arctic','ocean-x-electric':'orbit','ocean-x-ion':'orbit','ocean-x-toxic':'emerald',dynamic:'obsidian'};
  function get(k){try{return localStorage.getItem(k)}catch(_){return null}}
  function put(k,v){try{localStorage.setItem(k,v)}catch(_){}}
  function normalize(v){return Object.prototype.hasOwnProperty.call(tones,v)?v:(legacy[v]||'obsidian')}
- var names={obsidian:'Obsidian Pulse',arctic:'Arctic Glass',orbit:'Deep Orbit',emerald:'Emerald Flux',ember:'Ember Gold',titanium:'Liquid Titanium'};
+ var names={obsidian:'Obsidian Pulse',arctic:'Arctic Glass',orbit:'Deep Orbit',emerald:'Emerald Flux',ember:'Ember Gold',titanium:'Liquid Titanium', 'pure-black':'Pure Black', 'graphite':'Graphite', 'frost-white':'Frost White', 'warm-ivory':'Warm Ivory', 'midnight-blue':'Midnight Blue', 'slate-grey':'Slate Grey', 'liquid-silver':'Liquid Silver', 'chrome-blue':'Chrome Blue', 'pearl-glass':'Pearl Glass', 'rose-copper':'Rose Copper', 'sapphire-glass':'Sapphire Glass', 'golden-satin':'Golden Satin', 'neon-grid':'Neon Grid', 'cyber-cyan':'Cyber Cyan', 'quantum-purple':'Quantum Purple', 'matrix-green':'Matrix Green', 'solar-circuit':'Solar Circuit', 'red-horizon':'Red Horizon', 'classic-black':'Nero', 'classic-white':'Bianco', 'classic-navy':'Navy Classico', 'classic-ivory':'Avorio', 'classic-stone':'Stone Grey', 'classic-champagne':'Champagne'};
  function updateThemeControls(theme){
   document.querySelectorAll('[data-theme-choice]').forEach(function(button){
    var active=button.dataset.themeChoice===theme;
    button.classList.toggle('active',active);
    button.setAttribute('aria-pressed',active?'true':'false');
+  });
+  document.querySelectorAll('#themePicker .inj-theme-family').forEach(function(group){
+   group.dataset.selected=group.querySelector('[data-theme-choice="'+theme+'"]')?'true':'false';
   });
   var button=document.getElementById('themeButton');
   if(button){
@@ -58,6 +61,20 @@
   if(staticButton)staticButton.textContent=en?'Static':'Statico';
   if(dynamicButton)dynamicButton.textContent=en?'Dynamic':'Dinamico';
  }
+ function bindThemeFamilies(picker){
+  var groups=Array.from(picker.querySelectorAll('details.inj-theme-family'));
+  if(!groups.length)return;
+  groups.forEach(function(group){
+   if(group.dataset.injFamilyBound)return;
+   group.dataset.injFamilyBound='1';
+   group.addEventListener('toggle',function(){
+    if(!group.open)return;
+    groups.forEach(function(other){if(other!==group&&other.open)other.open=false;});
+   });
+  });
+  // Keep the menu compact until the user explicitly opens a family.
+  groups.forEach(function(group){group.open=false});
+ }
  function mountControl(){
   var picker=document.getElementById('themePicker');
   if(!picker||document.getElementById('injThemeMotionSwitch'))return;
@@ -67,6 +84,7 @@
    '<button type="button" data-theme-motion-choice="static" aria-pressed="false">Statico</button>'+
    '<button type="button" data-theme-motion-choice="dynamic" aria-pressed="true">Dinamico</button></span>';
   picker.appendChild(row);
+  bindThemeFamilies(picker);
   row.querySelectorAll('[data-theme-motion-choice]').forEach(function(button){
    button.addEventListener('pointerdown',function(event){event.stopPropagation()},{passive:true});
    button.addEventListener('click',function(event){
