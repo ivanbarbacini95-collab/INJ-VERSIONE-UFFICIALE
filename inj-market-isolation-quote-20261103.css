@@ -127,3 +127,6 @@ html[data-inj-market-embedded="true"] body {
   background:var(--theme-canvas,var(--bg,#09191a))!important;
   background-color:var(--bg,#09191a)!important;
 }
+
+/* Keep the original stale-feed warning visible, even with larger digits. */
+#injMarketTabHead .inj-market-persistent-quote[data-stale="true"]{opacity:.63!important}
