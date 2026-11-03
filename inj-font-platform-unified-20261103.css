@@ -1,26 +1,77 @@
-/* INJ Node Official: one selected typeface on every screen, with Rubik Bold retained.
-   Loaded last to out-prioritize legacy typography but not modify layout or data. */
+/* INJ Node 2026-11-03 — SF-like typography, two clearly different weights.
+   Geist is a local variable font; results stay consistent on iOS, Android and PC.
+   The selected style is applied to all sections, embedded views and charts. */
+html[data-inj-font="slim"],html[data-inj-font="bold"]{
+ --inj-chosen-face:"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+html[data-inj-font="slim"]{
+ --inj-chosen-weight:300;
+ --inj-chosen-detail:300;
+ --inj-chosen-emphasis:400;
+ --inj-chosen-heading:400;
+}
+html[data-inj-font="bold"]{
+ --inj-chosen-weight:650;
+ --inj-chosen-detail:600;
+ --inj-chosen-emphasis:750;
+ --inj-chosen-heading:800;
+}
 html[data-inj-font]{
-  --inj-ui-font:var(--inj-chosen-face);
-  --inj-minimal-font:var(--inj-chosen-face);
-  --inj-minimal-mono:var(--inj-chosen-face);
-  --inj-inter-light-font:var(--inj-chosen-face);
-  --inj-node-terminal-font:var(--inj-chosen-face);
-  --inj-home-title-face:var(--inj-chosen-face);
-  --inj-home-description-face:var(--inj-chosen-face);
-  --inj-editorial-face:var(--inj-chosen-face);
-  font-family:var(--inj-chosen-face)!important;
+ --inj-ui-font:var(--inj-chosen-face);
+ --inj-minimal-font:var(--inj-chosen-face);
+ --inj-minimal-mono:var(--inj-chosen-face);
+ --inj-inter-light-font:var(--inj-chosen-face);
+ --inj-node-terminal-font:var(--inj-chosen-face);
+ --inj-home-title-face:var(--inj-chosen-face);
+ --inj-home-description-face:var(--inj-chosen-face);
+ --inj-editorial-face:var(--inj-chosen-face);
+ font-family:var(--inj-chosen-face)!important;
+ font-variant-numeric:tabular-nums lining-nums;
 }
 html[data-inj-font] :is(body,button,input,textarea,select,option){
-  font-family:var(--inj-chosen-face)!important;
+ font-family:var(--inj-chosen-face)!important;
 }
-/* Override old hardcoded Market, Treasury, Workspace and Lite/Pro font families.
-   Exclude icon glyphs; preserve all existing font sizes and weight hierarchy. */
-html[data-inj-font] body :is(*,#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
-  font-family:var(--inj-chosen-face)!important;
-  font-variant-numeric:tabular-nums lining-nums;
+/* These specificity anchors out-prioritize legacy font/weight !important rules,
+   without changing font sizes, spacing, chart geometry or color themes. */
+html[data-inj-font] body :is(*,#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual)
+:not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp)
+:not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-weight)!important;
+ font-synthesis-weight:none;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+/* Prices, large financial totals and primary headings retain hierarchy,
+   but the difference from Slim to Bold stays obvious everywhere. */
+html[data-inj-font] body :is(*,#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual):is(
+ h1,h2,h3,h4,h5,h6,[role="heading"],strong,b,th,.metric-value,.hero-number,.hero-secondary,
+ .market-price,.market-asset-price,.inj-wm-symbol,.inj-wm-price,.inj-wm-change,
+ .ws-main-price,.ws-price-main,.ws-price-value,.ws-section-value,.ws-data-value,
+ .treasury-total-display,.rewards-total-value,.number-roll-text,.number-roll-digit,
+ .number-roll-static-digit,.number-roll-digit-layer,.entry-gate-title,.inj-home-tile-title,
+ .reward-estimate-number,.reward-estimate-unit,[id$="Price"],[id$="Worth"],[id$="Value"]
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-emphasis)!important;
+}
+html[data-inj-font] body :is(*,#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual):is(
+ h1,h2,h3,h4,h5,h6,[role="heading"],.entry-gate-title,.inj-home-tile-title
+){
+ font-weight:var(--inj-chosen-heading)!important;
+}
+html[data-inj-font] body :is(*,#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual#__injFontDual):is(
+ button,input,textarea,select,option,label,small,.caption,.subtitle,.description,.hint,.note,
+ .menu-font-description,.card-label,.metric-label,.section-label,.inj-tile-description
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-detail)!important;
+}
+html[data-inj-font] body :is(input,textarea)::placeholder{
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-detail)!important;
 }
 html[data-inj-font] body svg :is(text,tspan,textPath){
-  font-family:var(--inj-chosen-face)!important;
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-detail)!important;
 }
-/* The picker previews retain their explicit inline fonts. */
+/* Font-picker sample faces and their weights use inline important declarations. */

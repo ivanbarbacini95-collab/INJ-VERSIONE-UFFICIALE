@@ -1,27 +1,23 @@
-/* INJ Node · 8 typefaces, including Geist Bold and the official edition. */
+/* INJ Node · two visible weights of one SF Pro-like, locally hosted sans-serif. */
 (function(){
 'use strict';
 const STORE='inj_node_font_v1',root=document.documentElement;
 const fonts=[
- {id:'rubik-bold',name:'Rubik Bold',font:'"INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',subtitleIt:'Bold moderno per tutte le sezioni',subtitleEn:'Modern bold throughout INJ Node',weight:700},
- {id:'official',name:'Versione Ufficiale',font:'"Supply Mono","PP Supply Mono","IBM Plex Mono","INJ IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace',subtitleIt:'Il carattere corposo della Versione ufficiale',subtitleEn:'Bold typography from the official edition',weight:700},
- {id:'original',name:'INJ Original',font:'"Supply Mono","PP Supply Mono","INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace',subtitleIt:'Tipografia storica di INJ Node',subtitleEn:'Original INJ Node typography',weight:400},
- {id:'inter-light',name:'Inter Light · Classico',font:'"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif',subtitleIt:'Alternativa essenziale a tratto sottile',subtitleEn:'Lightweight minimalist alternative',weight:300},
- {id:'geist',name:'Geist',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,sans-serif',subtitleIt:'Minimal premium',subtitleEn:'Minimal premium',weight:400},
- {id:'geist-bold',name:'Geist Bold',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,sans-serif',subtitleIt:'Bold moderno per tutta INJ Node',subtitleEn:'Modern bold throughout INJ Node',weight:700},
- {id:'space',name:'Space Grotesk',font:'"INJ Space Grotesk","Space Grotesk",-apple-system,BlinkMacSystemFont,sans-serif',subtitleIt:'Tech luxury',subtitleEn:'Tech luxury',weight:500},
- {id:'plex',name:'IBM Plex Mono',font:'"INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,monospace',subtitleIt:'Terminale finanziario',subtitleEn:'Financial terminal',weight:400},
- {id:'oxanium',name:'Oxanium',font:'"INJ Oxanium","Oxanium",sans-serif',subtitleIt:'Future terminal',subtitleEn:'Future terminal',weight:500}
+ {id:'slim',name:'Slim',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Sottile, essenziale · peso 300',subtitleEn:'Light, minimal · weight 300',weight:300},
+ {id:'bold',name:'Bold',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Marcato, definito · peso 750',subtitleEn:'Distinct, strong · weight 750',weight:750}
 ];
 const byId=Object.fromEntries(fonts.map(f=>[f.id,f]));
-let active='rubik-bold';
+let active='bold';
 function current(){
  try{
-  // Preserve the selected face on every release: never force a migration font.
-  let id=localStorage.getItem(STORE);
-  if(id==='inter')id='inter-light';
-  return byId[id]?id:'rubik-bold';
- }catch(_){return 'rubik-bold'}
+  const id=localStorage.getItem(STORE);
+  if(id==='slim'||id==='bold')return id;
+  // Upgrade legacy nine-font choices without silently restoring an old font.
+  const slim=['inter','inter-light','original','geist','space','plex','oxanium'].includes(id);
+  const choice=slim?'slim':'bold';
+  if(id!==choice&&id!==null)localStorage.setItem(STORE,choice);
+  return choice;
+ }catch(_){return 'bold'}
 }
 function notifyFrames(){
  document.querySelectorAll('iframe').forEach(frame=>{
@@ -34,7 +30,7 @@ function notifyFrames(){
 }
 function english(){try{return localStorage.getItem('inj_node_language_v1')==='en'||root.lang==='en'}catch(_){return root.lang==='en'}}
 function change(id,save){
- active=byId[id]?id:'rubik-bold';
+ active=byId[id]?id:'bold';
  root.setAttribute('data-inj-font',active);
  if(save){try{localStorage.setItem(STORE,active)}catch(_){}}
  refresh();
@@ -48,8 +44,8 @@ function refresh(){
  if(caption)caption.textContent=(en?'Selected: ':'Selezionato: ')+byId[active].name;
  const note=holder.querySelector('.menu-font-note');
  if(note)note.textContent=en?
-  'Nine selectable fonts, including Rubik Bold. Your selection is saved on this device.':
-  'Nove font selezionabili, incluso Rubik Bold. La scelta viene salvata sul dispositivo.';
+  'Two distinct styles: Slim (300) and Bold (750). Your choice is saved on this device.':
+  'Solo due stili ben distinti: Slim (300) e Bold (750). La scelta viene salvata sul dispositivo.';
  holder.setAttribute('aria-label',en?'Interface font':'Font interfaccia');
  holder.querySelectorAll('[data-inj-font-choice]').forEach(button=>{
   const f=byId[button.getAttribute('data-inj-font-choice')];
@@ -72,7 +68,7 @@ function setup(){
  holder.innerHTML=
   '<summary class="menu-action menu-setting menu-font-trigger">'+
    '<span class="menu-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 7V5h16v2M12 5v14M8 19h8M7 14l5-9 5 9"/></svg></span>'+
-   '<span class="menu-action-copy"><strong class="menu-font-title">Font</strong><small class="menu-font-current">Rubik Bold</small></span>'+
+   '<span class="menu-action-copy"><strong class="menu-font-title">Font</strong><small class="menu-font-current">Bold</small></span>'+
    '<svg class="menu-font-chevron" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>'+
   '</summary><div class="menu-font-options" role="group" aria-label="Font"></div><p class="menu-font-note"></p>';
  const options=holder.querySelector('.menu-font-options');
@@ -83,7 +79,7 @@ function setup(){
   const label=document.createElement('span');label.textContent=f.name;
   const check=document.createElement('span');check.className='menu-font-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
   top.append(label,check);
-  const sample=document.createElement('span');sample.className='menu-font-sample';sample.textContent='INJ  1,248.60';
+  const sample=document.createElement('span');sample.className='menu-font-sample';sample.textContent='BTCUSD  77.333';
   const subtitle=document.createElement('small');subtitle.className='menu-font-description';
   label.style.setProperty('font-family',f.font,'important');label.style.setProperty('font-weight',String(f.weight),'important');
   sample.style.setProperty('font-family',f.font,'important');sample.style.setProperty('font-weight',String(f.weight),'important');
