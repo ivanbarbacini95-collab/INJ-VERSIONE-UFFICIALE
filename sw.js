@@ -1,6 +1,8 @@
-const CACHE_NAME = 'inj-node-v20261103-five-families-thirty-themes-release1';
+const CACHE_NAME = 'inj-node-v20261103-five-families-thirty-themes-release2';
 const APP_SHELL = [
-  './inj-theme-collections-20261103.css?v=families30-classic-v2',
+  './app.js?v=families30-classic-v2',
+  './navigation.js?v=families30-classic-v2',
+  './inj-theme-collections-20261103.css?v=families30-classic-v3',
   './assets/inj-theme-pure-black-collection-20261103.svg?v=families1',
   './assets/inj-theme-graphite-collection-20261103.svg?v=families1',
   './assets/inj-theme-frost-white-collection-20261103.svg?v=families1',
