@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<title>Emerald Flux • INJ Node</title>
+<defs>
+ <linearGradient id="sheetA" x1="0%" y1="12%" x2="100%" y2="85%">
+  <stop offset="0%" stop-color="#1d9b73" stop-opacity="0"/>
+  <stop offset="19%" stop-color="#1d9b73" stop-opacity=".13"/>
+  <stop offset="39%" stop-color="#74f6b8" stop-opacity=".37"/>
+  <stop offset="53%" stop-color="#3ad5aa" stop-opacity=".15"/>
+  <stop offset="72%" stop-color="#74f6b8" stop-opacity=".29"/>
+  <stop offset="100%" stop-color="#1d9b73" stop-opacity="0"/>
+ </linearGradient>
+ <linearGradient id="sheetB" x1="5%" y1="90%" x2="100%" y2="9%">
+  <stop offset="0%" stop-color="#3ad5aa" stop-opacity="0"/>
+  <stop offset="23%" stop-color="#3ad5aa" stop-opacity=".16"/>
+  <stop offset="53%" stop-color="#74f6b8" stop-opacity=".25"/>
+  <stop offset="83%" stop-color="#1d9b73" stop-opacity=".12"/>
+  <stop offset="100%" stop-color="#74f6b8" stop-opacity="0"/>
+ </linearGradient>
+ <linearGradient id="silk" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#c8ffe1" stop-opacity="0"/>
+  <stop offset="38%" stop-color="#c8ffe1" stop-opacity=".20"/>
+  <stop offset="54%" stop-color="#c8ffe1" stop-opacity=".50"/>
+  <stop offset="67%" stop-color="#c8ffe1" stop-opacity=".16"/>
+  <stop offset="100%" stop-color="#c8ffe1" stop-opacity="0"/>
+ </linearGradient>
+ <linearGradient id="lineGrad" x1="0%" y1="12%" x2="100%" y2="88%">
+  <stop offset="0%" stop-color="#1d9b73" stop-opacity=".10"/>
+  <stop offset="21%" stop-color="#74f6b8" stop-opacity=".55"/>
+  <stop offset="48%" stop-color="#c8ffe1" stop-opacity="1"/>
+  <stop offset="74%" stop-color="#74f6b8" stop-opacity=".72"/>
+  <stop offset="100%" stop-color="#1d9b73" stop-opacity=".12"/>
+ </linearGradient>
+ <linearGradient id="lineAlt" x1="0%" y1="0%" x2="100%" y2="90%">
+  <stop offset="0%" stop-color="#3ad5aa" stop-opacity="0"/>
+  <stop offset="55%" stop-color="#3ad5aa" stop-opacity=".78"/>
+  <stop offset="100%" stop-color="#74f6b8" stop-opacity="0"/>
+ </linearGradient>
+</defs>
+<g stroke-linejoin="round" stroke-linecap="round">
+<path d="M -90 320 C 206 281 395 390 588 293 C 776 196 1062 404 1510 319" stroke="url(#lineAlt)" fill="none" stroke-width="1.5" opacity=".64"/>
+<path d="M 190 -110 C 172 205 427 276 595 416 C 769 561 715 792 1014 1080 L 1110 1060 C 781 726 846 519 653 356 C 489 215 259 163 270 -110 Z" fill="url(#sheetB)"/>
+<path d="M -120 855 C 219 783 341 541 534 537 C 710 535 820 227 989 257 C 1210 292 1282 135 1540 82 L1540 171 C 1272 246 1208 382 992 336 C 845 296 729 632 549 616 C 357 600 221 882 -120 938 Z" fill="url(#sheetA)"/>
+<path d="M -120 855 C 219 783 341 541 534 537 C 710 535 820 227 989 257 C 1210 292 1282 135 1540 82 L1540 104 C 1282 155 1198 314 992 272 C 811 247 719 556 539 553 C 338 549 217 802 -120 873 Z" fill="url(#silk)" opacity=".76"/>
+<g><path d="M 230 -95 C 211 190 450 254 621 386 C 808 535 766 776 1055 1040" transform="translate(0 -15)" stroke="url(#lineAlt)" stroke-width="1.25" opacity="0.25" fill="none"/>
+<path d="M 230 -95 C 211 190 450 254 621 386 C 808 535 766 776 1055 1040" transform="translate(0 -3)" stroke="url(#lineGrad)" stroke-width="1.8" opacity="0.7" fill="none"/>
+<path d="M 230 -95 C 211 190 450 254 621 386 C 808 535 766 776 1055 1040" transform="translate(0 11)" stroke="url(#lineAlt)" stroke-width="1.25" opacity="0.49" fill="none"/>
+<path d="M 230 -95 C 211 190 450 254 621 386 C 808 535 766 776 1055 1040" transform="translate(0 23)" stroke="url(#lineAlt)" stroke-width="1.25" opacity="0.24" fill="none"/></g>
+<g><path d="M -110 894 C 225 816 340 575 546 574 C 732 574 830 259 986 291 C 1213 329 1272 172 1530 125" transform="translate(0 -19)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.26" fill="none"/>
+<path d="M -110 894 C 225 816 340 575 546 574 C 732 574 830 259 986 291 C 1213 329 1272 172 1530 125" transform="translate(0 -10)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.45" fill="none"/>
+<path d="M -110 894 C 225 816 340 575 546 574 C 732 574 830 259 986 291 C 1213 329 1272 172 1530 125" transform="translate(0 -3)" stroke="url(#lineGrad)" stroke-width="2.25" opacity="0.82" fill="none"/>
+<path d="M -110 894 C 225 816 340 575 546 574 C 732 574 830 259 986 291 C 1213 329 1272 172 1530 125" transform="translate(0 7)" stroke="url(#lineGrad)" stroke-width="1.65" opacity="0.71" fill="none"/>
+<path d="M -110 894 C 225 816 340 575 546 574 C 732 574 830 259 986 291 C 1213 329 1272 172 1530 125" transform="translate(0 17)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.4" fill="none"/>
+<path d="M -110 894 C 225 816 340 575 546 574 C 732 574 830 259 986 291 C 1213 329 1272 172 1530 125" transform="translate(0 27)" stroke="url(#lineGrad)" stroke-width="1.05" opacity="0.22" fill="none"/></g>
+<path d="M -110 894 C 225 816 340 575 546 574 C 732 574 830 259 986 291 C 1213 329 1272 172 1530 125" stroke="url(#lineGrad)" fill="none" stroke-width="2.8" opacity=".90"/>
+<path d="M 230 -95 C 211 190 450 254 621 386 C 808 535 766 776 1055 1040" stroke="url(#lineAlt)" fill="none" stroke-width="1.9" opacity=".76"/>
+</g>
+</svg>
