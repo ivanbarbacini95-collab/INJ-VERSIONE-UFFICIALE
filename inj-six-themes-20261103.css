@@ -99,7 +99,9 @@ html[data-theme] {
 }
 /* Defined SVG vector strokes instead of hazy radial glows.
    Both layers are attached to the viewport: no seams at top/safe area. */
-html[data-theme] {
+html[data-theme][data-inj-page],
+html[data-theme][data-inj-market],
+html[data-theme]:not([data-inj-page]):not([data-inj-market]) {
  background-color:var(--theme-canvas,var(--bg))!important;
  background-image:var(--inj-theme-lines),var(--page-gradient)!important;
  background-repeat:no-repeat,no-repeat!important;
