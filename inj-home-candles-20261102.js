@@ -1,14 +1,14 @@
-/* INJ Node · Home charts: native intraday Pro line + rolling 1W Lite candles.
+/* INJ Node · Home charts: native intraday Pro line + rolling 1W Lite price line.
    Pro's existing app.js renderer is untouched (00:00–24:00 UTC).
-   Lite draws verified 4H OHLC bars over a continuously moving seven-day
-   window; only the open candle incorporates the latest live INJ quote. */
+   Lite traces real hourly closes over a moving seven-day
+   window; the open hour follows the streaming INJ quote. */
 (()=>{
  'use strict';
  if(document.documentElement.dataset.injPage!=='index')return;
  const root=document.documentElement;
  const get=id=>document.getElementById(id);
  const SVG='http://www.w3.org/2000/svg';
- const FOUR_HOURS=14400000,DAY=86400000,WEEK=7*DAY;
+ const HOUR=3600000,DAY=86400000,WEEK=7*DAY;
  const source={rows:[],updatedAt:0,lastAttempt:0,loading:false};
  let lastPrice=NaN,lastGlow=0,lightSvg=null,proSvg=null,lastQuoteRead=NaN;
  let candleHalo=null,candleDot=null,markerSvg=null;
@@ -45,8 +45,8 @@
    source.lastAttempt=now;
    source.loading=true;
    try{
-     const earliest=now-WEEK-FOUR_HOURS;
-     const url='https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=4h&startTime='+earliest+'&endTime='+now+'&limit=64';
+     const earliest=now-WEEK-HOUR;
+     const url='https://api.binance.com/api/v3/klines?symbol=INJUSDT&interval=1h&startTime='+earliest+'&endTime='+now+'&limit=200';
      const response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(10500)});
      if(!response.ok)throw new Error('OHLC '+response.status);
      const data=await response.json();
@@ -58,7 +58,7 @@
        .sort((a,b)=>a.t-b.t);
      if(rows.length>=2){source.rows=rows;source.updatedAt=Date.now();}
    }catch(error){
-     if(!source.rows.length)console.warn('INJ Node candles unavailable:',error);
+     if(!source.rows.length)console.warn('INJ Node weekly line history unavailable:',error);
    }finally{
      source.loading=false;
      schedule();
@@ -80,13 +80,13 @@
  function getCandles(now){
    if(!source.rows.length)return[];
    const start=now-WEEK;
-   const bars=source.rows.filter(c=>c.t+FOUR_HOURS>start&&c.t<=now)
+   const bars=source.rows.filter(c=>c.t+HOUR>start&&c.t<=now)
      .map(c=>({...c}));
    if(!bars.length)return[];
-   // A live quote can update the still-open 4H candle only.
-   // Closed OHLC bars always retain their exchange-provided values.
+   // Only the open hourly point is updated from the live price.
+   // Historical closes always retain their exchange-provided values.
    const quote=realPrice();
-   const currentStart=Math.floor(now/FOUR_HOURS)*FOUR_HOURS;
+   const currentStart=Math.floor(now/HOUR)*HOUR;
    const last=bars[bars.length-1];
    if(last.t===currentStart&&Number.isFinite(quote)){
      last.c=quote;
@@ -106,41 +106,42 @@
    const top=10,bottom=140;
    const y=price=>bottom-((price-min)/(max-min))*(bottom-top);
    // The 7-day time domain continuously moves with the clock.
-   // Keep historical candles at their genuine timestamps; the live candle
-   // follows the clock until its 4H period has completed.
+   // Keep past hourly samples at their genuine timestamps; the live point
+   // follows the clock until the current hour has completed.
    const center=bar=>{
-     const at=Math.min(bar.t+FOUR_HOURS/2,now);
+     const at=Math.min(bar.t+HOUR,now);
      return x0+(at-from)/(to-from)*(x1-x0);
    };
    return{min,max,top,bottom,x0,x1,from,to,y,center};
  }
  function svgContent(svg,bars,geo){
    if(!svg)return;
+   const pts=bars.map(bar=>({
+     x:Math.min(geo.x1,Math.max(geo.x0,geo.center(bar))),
+     y:Math.max(geo.top,Math.min(geo.bottom,geo.y(bar.c))),
+     t:bar.t
+   })).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));
    const frag=document.createDocumentFragment();
-   const width=Math.max(2.1,Math.min(5.2,(geo.x1-geo.x0)/Math.max(1,bars.length)*.70));
-   for(const c of bars){
-     const x=Math.min(geo.x1,Math.max(geo.x0,geo.center(c)));
-     const high=geo.y(c.h),low=geo.y(c.l);
-     const open=geo.y(c.o),close=geo.y(c.c);
-     const group=node('g',{class:c.c>=c.o?'inj-candle-up':'inj-candle-down'});
-     group.appendChild(node('line',{
-       x1:x.toFixed(3),y1:high.toFixed(3),
-       x2:x.toFixed(3),y2:low.toFixed(3),
-       class:'inj-candle-wick'
-     }));
-     group.appendChild(node('rect',{
-       x:(x-width/2).toFixed(3),
-       y:Math.min(open,close).toFixed(3),
-       width:width.toFixed(3),
-       height:Math.max(1.3,Math.abs(open-close)).toFixed(3),
-       rx:.5,class:'inj-candle-body'
-     }));
-     frag.appendChild(group);
-   }
+   let segment=[];
+   const flush=()=>{
+     if(segment.length<2){segment=[];return;}
+     const first=segment[0],last=segment[segment.length-1];
+     const line='M'+segment.map(p=>p.x.toFixed(3)+','+p.y.toFixed(3)).join(' L');
+     const area=line+' L'+last.x.toFixed(3)+','+geo.bottom+
+       ' L'+first.x.toFixed(3)+','+geo.bottom+' Z';
+     frag.appendChild(node('path',{d:area,class:'inj-six-hour-line-area'}));
+     frag.appendChild(node('path',{d:line,class:'inj-six-hour-line-path'}));
+     segment=[];
+   };
+   pts.forEach((point,i)=>{
+     if(i>0&&point.t-pts[i-1].t>HOUR*1.5)flush();
+     segment.push(point);
+   });
+   flush();
    svg.replaceChildren(frag);
-   svg.setAttribute('data-inj-bars',String(bars.length));
+   svg.setAttribute('data-inj-points',String(pts.length));
  }
-  function paintPriceAxis(geo,price,last){
+ function paintPriceAxis(geo,price,last){
    const plot=get('injLightChartPlot');
    if(!plot)return;
    const labels=[
@@ -165,11 +166,11 @@
      });
    }
    const graphic=lightSvg;
-   if(graphic)graphic.setAttribute('aria-label','INJ/USDT 1W · '+format(price,4));
+   if(graphic)graphic.setAttribute('aria-label','INJ/USDT · rolling 1W line · '+format(price,4));
  }
 
  // Keep interactive inspection independent of the automatically refreshed
- // candles. Pointer/touch events are bound once and never to candle DOM nodes.
+ // line. Pointer/touch events are bound once to the overlay.
  const views={light:{active:false,bars:[],geo:null,selected:-1,hideTimer:0,layer:null},
               pro:{active:false,bars:[],geo:null,selected:-1,hideTimer:0,layer:null}};
  function dayLabel(timestamp){
@@ -244,7 +245,7 @@
    dot.style.left=percent+'%';
    dot.style.top=(y/150*100)+'%';
    tip.style.left=Math.max(21,Math.min(79,percent))+'%';
-   // Read only the real close price of the candle under the cursor.
+   // Read only the real price at the selected point.
    // Keep the tooltip compact: no time, no OHLC labels.
    tip.textContent=format(c.c,4)+' USDT';
    v.selected=safe;
@@ -277,7 +278,7 @@
      layer.className='inj-candle-interaction inj-candle-interaction-'+mode;
      layer.setAttribute('role','group');
      layer.setAttribute('tabindex','0');
-     layer.setAttribute('aria-label','Esplora il grafico: tocca, trascina o usa le frecce per leggere il prezzo della candela selezionata');
+     layer.setAttribute('aria-label','Esplora il grafico: tocca, trascina o usa le frecce per leggere il prezzo selezionato');
      layer.innerHTML=selectionMarkup();
      stage.appendChild(layer);
      v.layer=layer;
@@ -323,7 +324,7 @@
  }
  function clearChart(light){
    const stage=get(light?'injLightChartPlot':'entrySparkStage');
-   if(stage)delete stage.dataset.injCandlesReady;
+   if(stage){delete stage.dataset.injCandlesReady;delete stage.dataset.injLineReady;}
    if(light){
      ['injLightPriceHigh','injLightPriceMid','injLightPriceLow','injLightPriceNow'].forEach(id=>{const el=get(id);if(el)el.hidden=true;});
      put('injLightPerf6h','— · 1W');
@@ -349,7 +350,7 @@
      proStage.querySelector('#injProPriceAxis')?.remove();
    }
    if(!lightStage||lite.length<2){clearChart(true);return;}
-   lightSvg=ensureChart(lightStage,'injLightCandleSvg');
+   lightSvg=ensureChart(lightStage,'injLightLineSvg');
    const geo=geometry(lite,now);
    svgContent(lightSvg,lite,geo);
    updateLightTimeline(now,geo);
@@ -357,7 +358,7 @@
    updateInspection('light',lite,geo);
    // Keep the live-dot SVG outside the repeatedly redrawn candle scene.
    // Animations finish naturally even if the quote updates several times.
-   markerSvg=ensureChart(lightStage,'injLightCandleMarkerSvg');
+   markerSvg=ensureChart(lightStage,'injLightLineMarkerSvg');
    if(!candleHalo || candleHalo.ownerSVGElement!==markerSvg){
      // The marker SVG stretches to the chart size (preserveAspectRatio:none).
      // Its circles previously became ovals on tall mobile screens. Ellipses
@@ -391,8 +392,8 @@
    const perf=first.o>0?(latest.c/first.o-1)*100:0;
    const direction=perf>1e-10?'positive':perf< -1e-10?'negative':'neutral';
    lightStage.dataset.performance=direction;
-   // Signal that real 4H OHLC candles on the rolling 1W window are ready.
-   lightStage.dataset.injCandlesReady='true';
+   // Signal that the real hourly 1W price line is ready.
+   lightStage.dataset.injLineReady='true';
    const change=get('injLightPerf6h');
    if(change){
      const label=(perf>0?'+':'')+perf.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+'% · 1W';
