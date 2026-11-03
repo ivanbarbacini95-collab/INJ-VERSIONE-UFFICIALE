@@ -352,3 +352,95 @@ html[data-theme][data-inj-page="index"] body
  background-position:center!important;
  background-repeat:no-repeat!important;
 }
+
+/* 2026-11-03 · iPhone persistence + continuous premium motion.
+   Home has an actual two-tile compositor track rather than scrolling a
+   background image (which can appear frozen in standalone Mobile Safari).
+   Its half-width movement is exactly one repeating seamless SVG tile. */
+html[data-inj-page="index"][data-theme] {
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--page-gradient)!important;
+ background-repeat:no-repeat!important;
+ background-size:100% 100%!important;
+ background-position:center!important;
+ animation:none!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate,
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate.visible {
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--page-gradient)!important;
+ background-size:100% 100%!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ animation:none!important;
+ isolation:isolate;
+}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate > .inj-theme-flow-layer {
+ position:fixed!important;
+ inset:0!important;
+ width:100vw;
+ height:100dvh;
+ overflow:hidden!important;
+ pointer-events:none!important;
+ z-index:0!important;
+ background:transparent!important;
+ opacity:1;
+}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track {
+ position:absolute;
+ inset:0 auto 0 0;
+ height:100%;
+ width:200vw;
+ pointer-events:none;
+ background-color:transparent;
+ background-image:var(--inj-theme-art);
+ background-repeat:repeat-x;
+ background-position:0 50%;
+ background-size:50% 100%;
+ opacity:.51;
+ filter:blur(1.35px);
+ -webkit-filter:blur(1.35px);
+ transform:translate3d(0,0,0);
+ will-change:transform;
+}
+html[data-inj-page="index"][data-theme="arctic"] body #entryGate .inj-theme-flow-track {opacity:.39}
+html[data-inj-page="index"][data-theme="titanium"] body #entryGate .inj-theme-flow-track {opacity:.42}
+html[data-inj-page="index"][data-theme="orbit"] body #entryGate .inj-theme-flow-track {opacity:.48}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate > .entry-gate-shell {
+ position:relative;
+ z-index:1;
+}
+@keyframes inj-theme-track-marquee {
+ from {transform:translate3d(0,0,0)}
+ to {transform:translate3d(-50%,0,0)}
+}
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="dynamic"] body
+#entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track {
+ animation:inj-theme-track-marquee 22s linear infinite!important;
+}
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="static"] body
+#entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track {
+ animation:none!important;
+ transform:translate3d(0,0,0)!important;
+}
+/* Independent pages still use the same periodic 3-layer background.
+   Shorter linear traversal makes their ambient change easier to perceive. */
+html[data-theme][data-inj-theme-motion="dynamic"]:not([data-inj-page="index"]) {
+ animation-duration:26s!important;
+ animation-timing-function:linear!important;
+}
+html[data-theme] {
+ --inj-ribbon-veil:color-mix(in srgb,var(--theme-canvas,var(--bg)) 53%,transparent);
+}
+html[data-theme="arctic"],
+html[data-theme="titanium"] {
+ --inj-ribbon-veil:color-mix(in srgb,var(--theme-canvas,var(--bg)) 62%,transparent);
+}
+@media(prefers-reduced-motion:reduce) {
+ html[data-inj-page="index"][data-theme] body
+ #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track {
+  animation:none!important;
+  transform:translate3d(0,0,0)!important;
+  will-change:auto;
+ }
+}
