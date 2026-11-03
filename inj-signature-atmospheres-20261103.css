@@ -1,0 +1,185 @@
+/* INJ Node · Signature atmospheres v1 · 2026-11-03
+   Faithfully inspired by the six illustrated Theme previews.
+   All visual effects live BEHIND solid/readable data surfaces.
+   Artwork is horizontally periodic: the transform resets to an identical
+   pixel layout every cycle, with no reversal or visual seam. */
+html[data-theme="obsidian"]{
+ --inj-theme-art:url("./assets/inj-theme-obsidian-signature-20261103.svg?v=sig1");
+ --inj-signature-opacity:.91;
+ --inj-signature-duration:29s;
+ --theme-canvas:#061019;
+ --page-gradient:linear-gradient(180deg,#091721,#050c14 50%,#070f17);
+}
+html[data-theme="arctic"]{
+ --inj-theme-art:url("./assets/inj-theme-arctic-signature-20261103.svg?v=sig1");
+ --inj-signature-opacity:.96;
+ --inj-signature-duration:36s;
+ --theme-canvas:#f3f7fa;
+ --page-gradient:linear-gradient(160deg,#fcfdff,#ecf3f8 55%,#f9fbff);
+}
+html[data-theme="orbit"]{
+ --inj-theme-art:url("./assets/inj-theme-orbit-signature-20261103.svg?v=sig1");
+ --inj-signature-opacity:.98;
+ --inj-signature-duration:44s;
+ --theme-canvas:#0c0c20;
+ --page-gradient:linear-gradient(168deg,#13102a,#090b20 55%,#101328);
+}
+html[data-theme="emerald"]{
+ --inj-theme-art:url("./assets/inj-theme-emerald-signature-20261103.svg?v=sig1");
+ --inj-signature-opacity:.94;
+ --inj-signature-duration:27s;
+ --theme-canvas:#050d0f;
+ --page-gradient:linear-gradient(180deg,#091818,#050a10 55%,#081212);
+}
+html[data-theme="ember"]{
+ --inj-theme-art:url("./assets/inj-theme-ember-signature-20261103.svg?v=sig1");
+ --inj-signature-opacity:.95;
+ --inj-signature-duration:38s;
+ --theme-canvas:#1a100a;
+ --page-gradient:linear-gradient(150deg,#28160b,#170d0b 56%,#22100c);
+}
+html[data-theme="titanium"]{
+ --inj-theme-art:url("./assets/inj-theme-titanium-signature-20261103.svg?v=sig1");
+ --inj-signature-opacity:.94;
+ --inj-signature-duration:33s;
+ --theme-canvas:#0c1016;
+ --page-gradient:linear-gradient(150deg,#171b23,#0b0e14 53%,#151923);
+}
+
+/* Never reintroduce a second oversized radial halo. */
+html[data-theme]{
+ --inj-ribbon-layer:linear-gradient(transparent,transparent);
+}
+/* Continuous root canvas on every standalone section. */
+html[data-theme]:not([data-inj-page="index"]){
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--inj-theme-art),var(--page-gradient)!important;
+ background-position:0 50%,center center!important;
+ background-repeat:repeat-x,no-repeat!important;
+ background-size:100vw 100%,100% 100%!important;
+ background-attachment:fixed,fixed!important;
+}
+@keyframes inj-signature-root-flow{
+ from{background-position:0 50%,center center}
+ to{background-position:-100vw 50%,center center}
+}
+html[data-theme][data-inj-theme-motion="dynamic"]:not([data-inj-page="index"]){
+ animation:inj-signature-root-flow var(--inj-signature-duration,34s) linear infinite!important;
+}
+html[data-theme][data-inj-theme-motion="static"]:not([data-inj-page="index"]){
+ animation:none!important;
+ background-position:0 50%,center center!important;
+}
+
+/* Home uses the existing two-tile GPU-composited field. Hide the same
+   image on root/entry-gate so there is only one visible artwork layer. */
+html[data-inj-page="index"][data-theme]{
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--page-gradient)!important;
+ background-position:center!important;
+ background-size:100% 100%!important;
+ background-repeat:no-repeat!important;
+ animation:none!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate,
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate.visible{
+ isolation:isolate;
+ background-color:var(--theme-canvas,var(--bg))!important;
+ background-image:var(--page-gradient)!important;
+ background-position:center!important;
+ background-size:100% 100%!important;
+ background-repeat:no-repeat!important;
+ animation:none!important;
+}
+/* The image is never rendered on top of UI; only the detached ambient track. */
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate >
+.inj-theme-flow-layer{
+ position:fixed!important;
+ inset:0!important;
+ height:100dvh!important;
+ width:100vw!important;
+ pointer-events:none!important;
+ z-index:0!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate >
+.inj-theme-flow-layer > .inj-theme-flow-track{
+ position:absolute!important;
+ left:0!important;
+ top:0!important;
+ width:200vw!important;
+ height:100%!important;
+ background-color:transparent!important;
+ background-image:var(--inj-theme-art)!important;
+ background-size:50% 100%!important;
+ background-position:0 50%!important;
+ background-repeat:repeat-x!important;
+ opacity:var(--inj-signature-opacity,.92)!important;
+ filter:none!important;
+ -webkit-filter:none!important;
+ transform:translate3d(0,0,0);
+ backface-visibility:hidden;
+ -webkit-backface-visibility:hidden;
+ will-change:transform;
+}
+@keyframes inj-signature-silk-flow{
+ from{transform:translate3d(0,0,0)}
+ to{transform:translate3d(-50%,0,0)}
+}
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="dynamic"]
+body #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track{
+ animation:inj-signature-silk-flow var(--inj-signature-duration,34s) linear infinite!important;
+}
+html[data-inj-page="index"][data-theme][data-inj-theme-motion="static"]
+body #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track{
+ animation:none!important;transform:translate3d(0,0,0)!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate.entry-gate > .entry-gate-shell{
+ position:relative;
+ z-index:1;
+}
+/* Strongly opaque glass preserves legibility, while a small amount of
+   underlying silk remains visible on rounded card edges. */
+html[data-inj-page="index"][data-theme] body #entryGate
+:is(#entryOverview.entry-overview,.entry-wallet-card-slide,#entryInsights,
+.entry-market-card,.entry-chart-card,.entry-price-card){
+ background-image:var(--card-gradient)!important;
+ background-color:var(--surface)!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate
+:is(#entryOverview.entry-overview,.entry-wallet-card-slide)::before,
+html[data-inj-page="index"][data-theme] body #entryGate
+:is(#entryOverview.entry-overview,.entry-wallet-card-slide)::after{
+ content:none!important;display:none!important;
+}
+/* The six preview thumbnails now show the corresponding artwork,
+   rather than generic gradients or last week's abstract wireframes. */
+html[data-theme] #themePicker .theme-list-unified > button .theme-swatch{
+ width:86px!important;flex:0 0 86px!important;height:57px!important;
+ border-radius:12px!important;
+ border:1px solid color-mix(in srgb,var(--text) 19%,transparent)!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)!important;
+}
+#themePicker .theme-swatch.obsidian{background:url("./assets/inj-theme-obsidian-signature-20261103.svg?v=sig1") center/cover no-repeat!important}
+#themePicker .theme-swatch.arctic{background:url("./assets/inj-theme-arctic-signature-20261103.svg?v=sig1") center/cover no-repeat!important}
+#themePicker .theme-swatch.orbit{background:url("./assets/inj-theme-orbit-signature-20261103.svg?v=sig1") center/cover no-repeat!important}
+#themePicker .theme-swatch.emerald{background:url("./assets/inj-theme-emerald-signature-20261103.svg?v=sig1") center/cover no-repeat!important}
+#themePicker .theme-swatch.ember{background:url("./assets/inj-theme-ember-signature-20261103.svg?v=sig1") center/cover no-repeat!important}
+#themePicker .theme-swatch.titanium{background:url("./assets/inj-theme-titanium-signature-20261103.svg?v=sig1") center/cover no-repeat!important}
+
+@media (prefers-reduced-motion:reduce){
+ html[data-theme][data-inj-theme-motion="dynamic"]:not([data-inj-page="index"]){
+  animation:none!important;
+ }
+ html[data-inj-page="index"][data-theme][data-inj-theme-motion="dynamic"]
+ body #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track{
+  animation:none!important;transform:translate3d(0,0,0)!important;
+  will-change:auto;
+ }
+}
