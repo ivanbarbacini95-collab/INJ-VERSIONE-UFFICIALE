@@ -1,0 +1,71 @@
+/* INJ Node / Tools desktop — equal-height six-card grid.
+   Only the Tools tab; Home, My Reward and mobile cards are unchanged. */
+@media (min-width: 800px) {
+  html[data-inj-page="index"][data-inj-home-tab="altro"] body
+  #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access)
+  > .entry-actions.entry-flat-v44 {
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:none!important;
+    grid-auto-flow:row!important;
+    grid-auto-rows:minmax(98px,auto)!important;
+    gap:clamp(11px,1vw,18px)!important;
+    align-items:stretch!important;
+    align-content:start!important;
+    justify-items:stretch!important;
+    width:100%!important;
+  }
+
+  html[data-inj-page="index"][data-inj-home-tab="altro"] body
+  #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access)
+  > .entry-actions.entry-flat-v44 > .entry-action {
+    box-sizing:border-box!important;
+    grid-column:auto!important;
+    grid-row:auto!important;
+    align-self:stretch!important;
+    justify-self:stretch!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:98px!important;
+    height:100%!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:16px clamp(62px,6vw,94px) 16px clamp(16px,1.4vw,24px)!important;
+    border-radius:16px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    text-align:left!important;
+  }
+
+  html[data-inj-page="index"][data-inj-home-tab="altro"] body
+  #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44 > .entry-action
+  > span:not(.entry-action-icon):not(.inj-tile-scene) {
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  html[data-inj-page="index"][data-inj-home-tab="altro"] body
+  #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+  .inj-home-tile-title {
+    font-size:clamp(13px,.94vw,16px)!important;
+    line-height:1.25!important;
+    overflow-wrap:break-word!important;
+  }
+
+  html[data-inj-page="index"][data-inj-home-tab="altro"] body
+  #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+  .inj-tile-description {
+    font-size:clamp(11px,.76vw,13px)!important;
+    line-height:1.35!important;
+    overflow-wrap:break-word!important;
+  }
+}
+@media (min-width:800px) and (max-width:1080px) {
+  html[data-inj-page="index"][data-inj-home-tab="altro"] body
+  #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access)
+  > .entry-actions.entry-flat-v44 {grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
