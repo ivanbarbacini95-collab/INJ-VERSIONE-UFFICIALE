@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v20261103-loop-soft-oneway-release1';
+const CACHE_NAME = 'inj-node-v20261103-six-theme-persist-flow-release1';
 const APP_SHELL = [
   './assets/inj-theme-obsidian-seamless-20261103.svg?v=loop1',
   './assets/inj-theme-arctic-seamless-20261103.svg?v=loop1',
@@ -12,8 +12,8 @@ const APP_SHELL = [
   './assets/inj-theme-emerald-ribbons-20261103.svg?v=visible-iphone2',
   './assets/inj-theme-ember-ribbons-20261103.svg?v=visible-iphone2',
   './assets/inj-theme-titanium-ribbons-20261103.svg?v=visible-iphone2',
-  './inj-six-themes-20261103.css?v=loop-soft-oneway-20261103b',
-  './inj-six-themes-20261103.js?v=official-6themes1',
+  './inj-six-themes-20261103.css?v=theme-persist-flow-20261103c',
+  './inj-six-themes-20261103.js?v=theme-persist-flow-20261103c',
   './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
   './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
   './inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1',
