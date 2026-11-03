@@ -1,5 +1,11 @@
-const CACHE_NAME = 'inj-node-v20261103-six-theme-crisp-contour-v1';
+const CACHE_NAME = 'inj-node-v20261103-six-theme-silk-ribbons-official1';
 const APP_SHELL = [
+  './assets/inj-theme-obsidian-ribbons-20261103.svg',
+  './assets/inj-theme-arctic-ribbons-20261103.svg',
+  './assets/inj-theme-orbit-ribbons-20261103.svg',
+  './assets/inj-theme-emerald-ribbons-20261103.svg',
+  './assets/inj-theme-ember-ribbons-20261103.svg',
+  './assets/inj-theme-titanium-ribbons-20261103.svg',
   './inj-six-themes-20261103.css?v=official-6themes1',
   './inj-six-themes-20261103.js?v=official-6themes1',
   './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
