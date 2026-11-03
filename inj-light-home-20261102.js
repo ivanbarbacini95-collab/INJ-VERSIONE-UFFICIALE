@@ -42,7 +42,7 @@
        '<span class="inj-light-live"><i aria-hidden="true"></i><span id="injLightLive">SYNC</span></span></div>'+
        '<p class="inj-light-chart-sub" data-light-it="INJ / USDT · ULTIMI 7 GIORNI" data-light-en="INJ / USDT · ROLLING 7 DAYS">INJ / USDT · ULTIMI 7 GIORNI</p>'+
        '<div id="injLightChartPlot" class="inj-light-chart-plot">'+
-          '<svg viewBox="0 0 320 150" preserveAspectRatio="none" role="img" aria-label="Grafico INJ durante la giornata UTC">'+
+          '<svg viewBox="0 0 320 150" preserveAspectRatio="none" role="img" aria-label="Grafico settimanale a linee del prezzo INJ">'+
           '<g class="inj-light-grid"><path d="M0 24H320M0 72H320M0 120H320"/></g>'+
           '<path id="injLightGraphArea" d=""/><path id="injLightGraphLine" d=""/>'+
           '<circle id="injLightGraphHalo" cx="0" cy="0" r="9" visibility="hidden"/>'+ 
@@ -420,7 +420,7 @@
      if(Math.abs(y-item.y)<14)item.el.hidden=true;
    }
    const svg=plot.querySelector('svg');
-   if(svg)svg.setAttribute('aria-label',(english()?'INJ daily chart. Current price ':'Grafico giornaliero INJ. Prezzo corrente ')+format(current,4)+' USDT');
+   if(svg)svg.setAttribute('aria-label',(english()?'INJ rolling seven-day price line. Current price ':'Grafico settimanale INJ. Prezzo corrente ')+format(current,4)+' USDT');
  }
  let frame=0;
  function scheduleSync(){
@@ -490,7 +490,7 @@
    const fiat=Number.isFinite(rewards)&&Number.isFinite(displayPrice)&&displayPrice>0?
      new Intl.NumberFormat(locale(),{style:'currency',currency,minimumFractionDigits:2,maximumFractionDigits:2}).format(rewards*displayPrice):'—';
    output('injLightRewardFiat',fiat==='—'?'—':'≈ '+fiat);
-   // Rolling 1W OHLC view is rendered by inj-home-candles-20261102.js.
+   // Rolling 1W hourly line is rendered by inj-home-candles-20261102.js.
    // Never draw the old UTC-day curve, scale or tick colors over it.
    if(!$('injLightWalletSheet').hidden)updateWalletOptions();
  }
