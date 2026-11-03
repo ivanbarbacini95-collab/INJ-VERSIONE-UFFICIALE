@@ -1,7 +1,7 @@
 /* INJ Node · 8 typefaces, including Geist Bold and the official edition. */
 (function(){
 'use strict';
-const STORE='inj_node_font_v1',MIGRATION='inj_node_official_font_rollout_v1',RUBIK_ROLLOUT='inj_node_rubik_bold_rollout_v1',root=document.documentElement;
+const STORE='inj_node_font_v1',root=document.documentElement;
 const fonts=[
  {id:'rubik-bold',name:'Rubik Bold',font:'"INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',subtitleIt:'Bold moderno per tutte le sezioni',subtitleEn:'Modern bold throughout INJ Node',weight:700},
  {id:'official',name:'Versione Ufficiale',font:'"Supply Mono","PP Supply Mono","IBM Plex Mono","INJ IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace',subtitleIt:'Il carattere corposo della Versione ufficiale',subtitleEn:'Bold typography from the official edition',weight:700},
@@ -17,23 +17,20 @@ const byId=Object.fromEntries(fonts.map(f=>[f.id,f]));
 let active='rubik-bold';
 function current(){
  try{
+  // Preserve the selected face on every release: never force a migration font.
   let id=localStorage.getItem(STORE);
-  if(!localStorage.getItem(MIGRATION)){
-   localStorage.setItem(MIGRATION,'1');
-   // Restore the official typography for users trying Inter Light/INJ Original.
-   // Preserve explicitly selected alternative faces, and let users reselect any face later.
-   if(id===null||id==='inter-light'||id==='inter'||id==='original'){
-    id='official';localStorage.setItem(STORE,id);
-   }
-  }
-  if(!localStorage.getItem(RUBIK_ROLLOUT)){
-   id='rubik-bold';
-   localStorage.setItem(RUBIK_ROLLOUT,'1');
-   localStorage.setItem(STORE,id);
-  }
   if(id==='inter')id='inter-light';
   return byId[id]?id:'rubik-bold';
  }catch(_){return 'rubik-bold'}
+}
+function notifyFrames(){
+ document.querySelectorAll('iframe').forEach(frame=>{
+  try{
+   const child=frame.contentWindow;
+   if(child && child.location.origin===location.origin)
+    child.postMessage({type:'injnode:font:sync',font:active},location.origin);
+  }catch(_){}
+ });
 }
 function english(){try{return localStorage.getItem('inj_node_language_v1')==='en'||root.lang==='en'}catch(_){return root.lang==='en'}}
 function change(id,save){
@@ -41,6 +38,7 @@ function change(id,save){
  root.setAttribute('data-inj-font',active);
  if(save){try{localStorage.setItem(STORE,active)}catch(_){}}
  refresh();
+ notifyFrames();
  try{window.dispatchEvent(new CustomEvent('injnode:fontchange',{detail:{font:active}}))}catch(_){}
  if(save && window.requestAnimationFrame)requestAnimationFrame(()=>window.dispatchEvent(new Event('resize')));
 }
@@ -100,6 +98,18 @@ function setup(){
 change(current(),false); // Runs inside <head> on every INJ Node page.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(setup,0));
 else setTimeout(setup,0);
+window.addEventListener('message',event=>{
+ if(event.origin!==location.origin || event.data?.type!=='injnode:font:sync')return;
+ const id=event.data.font;
+ if(byId[id] && (active!==id || root.getAttribute('data-inj-font')!==id))change(id,false);
+});
+window.addEventListener('pageshow',()=>{
+ const id=current();
+ if(active!==id || root.getAttribute('data-inj-font')!==id)change(id,false);
+});
+window.addEventListener('load',event=>{
+ if(event.target?.tagName==='IFRAME')notifyFrames();
+},true);
 window.addEventListener('storage',event=>{
  if(event.key===STORE)change(current(),false);
  if(event.key==='inj_node_language_v1')refresh();

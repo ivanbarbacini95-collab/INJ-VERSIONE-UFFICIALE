@@ -1,0 +1,26 @@
+/* INJ Node Official: one selected typeface on every screen, with Rubik Bold retained.
+   Loaded last to out-prioritize legacy typography but not modify layout or data. */
+html[data-inj-font]{
+  --inj-ui-font:var(--inj-chosen-face);
+  --inj-minimal-font:var(--inj-chosen-face);
+  --inj-minimal-mono:var(--inj-chosen-face);
+  --inj-inter-light-font:var(--inj-chosen-face);
+  --inj-node-terminal-font:var(--inj-chosen-face);
+  --inj-home-title-face:var(--inj-chosen-face);
+  --inj-home-description-face:var(--inj-chosen-face);
+  --inj-editorial-face:var(--inj-chosen-face);
+  font-family:var(--inj-chosen-face)!important;
+}
+html[data-inj-font] :is(body,button,input,textarea,select,option){
+  font-family:var(--inj-chosen-face)!important;
+}
+/* Override old hardcoded Market, Treasury, Workspace and Lite/Pro font families.
+   Exclude icon glyphs; preserve all existing font sizes and weight hierarchy. */
+html[data-inj-font] body :is(*,#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform#__injFontPlatform):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
+  font-family:var(--inj-chosen-face)!important;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-font] body svg :is(text,tspan,textPath){
+  font-family:var(--inj-chosen-face)!important;
+}
+/* The picker previews retain their explicit inline fonts. */

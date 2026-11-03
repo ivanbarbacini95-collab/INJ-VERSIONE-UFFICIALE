@@ -52,7 +52,7 @@ html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-
 /* The general font switcher uses a six-ID priority selector. Match it and
    scope our exception to market cards: Geist is installed locally already. */
 html[data-inj-market][data-market-section="world"] body #injWorldMarket .inj-wm-tile :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace#__injFace):is(.inj-wm-symbol,.inj-wm-change,.inj-wm-price){
-  font-family:"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+  font-family:var(--inj-chosen-face,"INJ Geist","Geist",system-ui,sans-serif)!important;
   font-style:normal!important;
   font-feature-settings:"tnum" 1,"lnum" 1!important;
 }
