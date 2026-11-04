@@ -1,0 +1,120 @@
+/* INJ Workspace · 2026-11-04
+   Mobile config sheet: the form is the only vertical scroller; the header and
+   Apply action remain visible. No changes to card drag/resize interactions. */
+
+html[data-inj-page="workspace"] #wsConfig .ws-config-actions{
+  display:flex;
+  flex:0 0 auto;
+  padding-top:12px;
+  margin-top:12px;
+  border-top:1px solid var(--ws-line);
+  background:var(--ws-bg);
+}
+
+html[data-inj-page="workspace"] #wsConfig .ws-config-actions #wsApply{
+  display:block;
+  width:100%;
+  min-height:48px;
+  flex:1 1 auto;
+  font-size:15px;
+  font-weight:700;
+}
+
+@media (max-width:820px) {
+  html[data-inj-page="workspace"] #wsConfig[open]{
+    position:fixed!important;
+    inset:max(8px,env(safe-area-inset-top,0px))
+          max(8px,env(safe-area-inset-right,0px))
+          max(8px,env(safe-area-inset-bottom,0px))
+          max(8px,env(safe-area-inset-left,0px))!important;
+    margin:0!important;
+    padding:16px 14px 12px!important;
+    width:auto!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:none!important;
+    display:flex!important;
+    flex-direction:column!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    touch-action:auto!important;
+    z-index:10000;
+  }
+
+  html[data-inj-page="workspace"] #wsConfig > header{
+    flex:0 0 auto;
+    min-height:42px;
+    margin:0 0 10px!important;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--ws-line);
+  }
+
+  html[data-inj-page="workspace"] #wsConfig > header button[data-close]{
+    flex:0 0 44px;
+    min-width:44px;
+    min-height:44px;
+  }
+
+  html[data-inj-page="workspace"] #wsConfigForm{
+    flex:1 1 0%!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain;
+    touch-action:pan-y!important;
+    -webkit-overflow-scrolling:touch;
+    scroll-padding-block:12px 28px;
+    padding:4px 4px 24px 0;
+    align-content:start;
+  }
+
+  html[data-inj-page="workspace"] #wsConfigForm > :last-child{
+    margin-bottom:8px;
+  }
+
+  html[data-inj-page="workspace"] #wsConfigForm label,
+  html[data-inj-page="workspace"] #wsConfigForm .ws-form-row{
+    min-width:0;
+  }
+
+  html[data-inj-page="workspace"] #wsConfigForm input:not([type="checkbox"]),
+  html[data-inj-page="workspace"] #wsConfigForm select{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    font-size:16px;
+    min-height:44px;
+  }
+
+  html[data-inj-page="workspace"] #wsConfigForm .ws-layer-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+
+  html[data-inj-page="workspace"] #wsConfigForm .ws-layer-actions button{
+    min-width:0;
+    min-height:44px;
+  }
+
+  html[data-inj-page="workspace"] #wsConfig .ws-config-actions{
+    margin:0;
+    padding:12px 0 0;
+    padding-bottom:max(0px,env(safe-area-inset-bottom,0px) - 8px);
+    flex:0 0 auto;
+    position:relative;
+    z-index:1;
+  }
+}
+
+@media(max-width:480px) and (orientation:landscape){
+  html[data-inj-page="workspace"] #wsConfig[open]{
+    padding-top:8px!important;
+    padding-bottom:8px!important;
+  }
+  html[data-inj-page="workspace"] #wsConfig > header{
+    min-height:36px;
+    margin-bottom:6px!important;
+  }
+}

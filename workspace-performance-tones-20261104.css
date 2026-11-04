@@ -1,0 +1,59 @@
+/* INJ Node Workspace · 2026-11-04 · Performance direction colors.
+   Signed changes use theme-aware up/down tones in normal, preview, immersive,
+   and mobile views. No glow; price itself remains neutral. */
+
+html[data-inj-page="workspace"] {
+ --ws-performance-up:var(--up,var(--positive,#28c98d));
+ --ws-performance-down:var(--down,var(--negative,#f26879));
+}
+
+/* Explicitly override the old immersive fallback that forced price 24H to grey. */
+html[data-inj-page="workspace"] #wsGrid .ws-card .ws-card-body > .ws-price-change[data-trend="up"],
+html[data-inj-page="workspace"] body.ws-immersive #wsGrid .ws-card .ws-card-body > .ws-price-change[data-trend="up"],
+html[data-inj-page="workspace"] .ws-preview .ws-price-change[data-trend="up"] {
+ color:var(--ws-performance-up)!important;
+}
+html[data-inj-page="workspace"] #wsGrid .ws-card .ws-card-body > .ws-price-change[data-trend="down"],
+html[data-inj-page="workspace"] body.ws-immersive #wsGrid .ws-card .ws-card-body > .ws-price-change[data-trend="down"],
+html[data-inj-page="workspace"] .ws-preview .ws-price-change[data-trend="down"] {
+ color:var(--ws-performance-down)!important;
+}
+html[data-inj-page="workspace"] #wsGrid .ws-card .ws-card-body > .ws-price-change[data-trend="neutral"],
+html[data-inj-page="workspace"] body.ws-immersive #wsGrid .ws-card .ws-card-body > .ws-price-change[data-trend="neutral"],
+html[data-inj-page="workspace"] .ws-preview .ws-price-change[data-trend="neutral"] {
+ color:var(--ws-muted)!important;
+}
+
+/* 24H change, signed P/L values, and wallet/treasury performance rows. */
+html[data-inj-page="workspace"] .ws-section-row[data-tone="up"] > .ws-section-value,
+html[data-inj-page="workspace"] .ws-section-row[data-tone="up"] > .ws-metric-fiat {
+ color:var(--ws-performance-up)!important;
+}
+html[data-inj-page="workspace"] .ws-section-row[data-tone="down"] > .ws-section-value,
+html[data-inj-page="workspace"] .ws-section-row[data-tone="down"] > .ws-metric-fiat {
+ color:var(--ws-performance-down)!important;
+}
+html[data-inj-page="workspace"] .ws-section-row[data-tone="neutral"] > .ws-section-value,
+html[data-inj-page="workspace"] .ws-section-row[data-tone="neutral"] > .ws-metric-fiat {
+ color:var(--ws-muted)!important;
+}
+/* Each treasury percentage can have a different direction from INJ production. */
+html[data-inj-page="workspace"] .ws-section-row > .ws-metric-fiat[data-trend="up"] {
+ color:var(--ws-performance-up)!important;
+}
+html[data-inj-page="workspace"] .ws-section-row > .ws-metric-fiat[data-trend="down"] {
+ color:var(--ws-performance-down)!important;
+}
+html[data-inj-page="workspace"] .ws-section-row > .ws-metric-fiat[data-trend="neutral"] {
+ color:var(--ws-muted)!important;
+}
+
+/* Global Crypto and spot changes: color only the percentage, not names/prices. */
+html[data-inj-page="workspace"] :is(.ws-coin-list,.ws-mini-heatmap) small.ws-up,
+html[data-inj-page="workspace"] .ws-spot-tile.ws-up .ws-spot-change {
+ color:var(--ws-performance-up)!important;
+}
+html[data-inj-page="workspace"] :is(.ws-coin-list,.ws-mini-heatmap) small.ws-down,
+html[data-inj-page="workspace"] .ws-spot-tile.ws-down .ws-spot-change {
+ color:var(--ws-performance-down)!important;
+}

@@ -1,0 +1,44 @@
+/* INJ Node · 2026-11-04 · Global Crypto viewport-stable theme canvas.
+   Prevent signature/gradient artwork from stretching to the document height
+   while the long crypto list or heatmap is scrolled on iOS/Android/desktop.
+   The visual layer follows the viewport; real market content scrolls normally. */
+html[data-inj-market][data-theme] {
+  background-color:var(--theme-canvas,var(--bg))!important;
+  background-image:none!important;
+  background-attachment:scroll!important;
+  animation:none!important;
+}
+html[data-inj-market][data-theme] body {
+  position:relative;
+  isolation:isolate;
+  min-height:100dvh;
+  background-color:transparent!important;
+  background-image:none!important;
+}
+html[data-inj-market][data-theme] body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100vh;
+  height:100dvh;
+  z-index:-1;
+  pointer-events:none!important;
+  background-color:var(--theme-canvas,var(--bg));
+  background-image:var(--inj-theme-art),var(--page-gradient);
+  background-position:center center,center center;
+  background-repeat:no-repeat,no-repeat;
+  background-size:cover,cover;
+  animation:none!important;
+}
+/* Keep the premium monochrome themes genuinely solid. */
+html[data-inj-market][data-theme="classic-black"] body::before {
+  background-image:none!important;
+  background-color:#030304!important;
+}
+html[data-inj-market][data-theme="classic-white"] body::before {
+  background-image:none!important;
+  background-color:#fff!important;
+}
+/* High-stacking controls, modal dialogs, tiles and charts remain untouched. */

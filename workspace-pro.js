@@ -264,13 +264,14 @@ function updateStatus(force){
   }
   const feed=A.feedInfo(i);if(feed){at=feed.at;source=feed.source;state=at?'snapshot':'offline';}
   if(navigator.onLine===false)state='offline';
-  const words={live:'LIVE',snapshot:'SNAPSHOT',estimate:T('STIMA','ESTIMATE'),offline:'OFFLINE'};
-  const head=node.querySelector('.ws-card-heading');if(!head)continue;
-  let badge=head.querySelector('.ws-pro-data');
-  if(!badge){badge=document.createElement('button');badge.type='button';badge.className='ws-pro-data';badge.addEventListener('click',()=>notice(badge.title));head.append(badge);}
-  badge.dataset.state=state;badge.textContent=words[state];
-  badge.title=source+' · '+(at?new Date(at).toLocaleTimeString():'—');badge.setAttribute('aria-label',words[state]+' · '+badge.title);
+  // Keep the title alone in every card header. Data freshness remains
+  // available to diagnostics as metadata, without yellow SNAPSHOT badges.
+  const head=node.querySelector('.ws-card-heading');
+  head?.querySelector('.ws-pro-data')?.remove();
   node.dataset.proStatus=state;
+  node.dataset.proSource=source;
+  if(at)node.dataset.proUpdated=String(at);
+  else delete node.dataset.proUpdated;
  }
 }
 const monitorBtn=control('◉ PRO','monitor','ws-pro-monitor-button');

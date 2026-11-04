@@ -284,16 +284,31 @@ function create(api){
   const periods=[['1d','24H'],['7d','7D'],['30d','30D'],['all','ALL']];
   controls(i,host,[{key:'historyRange',label:t('Periodo P&L','P&L period'),options:periods}]);
   const history=d.period,observed=history.length,amount=observed?history.reduce((n,r)=>n+r.value,0):null;
-  const tone=amount===null?'accent':amount<0?'down':'up';
+  const tone=amount===null?'neutral':amount>0?'up':amount<0?'down':'neutral';
   metric(host,i,'recorded',t('P/L registrato','Recorded P/L'),amount,money,tone);
-  if(i.historyRange==='1d')metric(host,i,'price24',t('Variazione prezzo 24H · stima','24H price movement · estimate'),v.pnl24,money,v.pnl24<0?'down':'up');
+  if(i.historyRange==='1d')metric(host,i,'price24',t('Variazione prezzo 24H · stima','24H price movement · estimate'),v.pnl24,money,v.pnl24===null?'neutral':v.pnl24>0?'up':v.pnl24<0?'down':'neutral');
   if(observed>1)pathChart(host,history,t('Storico P/L','P/L history'));
   note(host,t('Fonte: storico giornaliero salvato da INJ Node. I giorni mancanti non sono stimati. Il P/L da prezzo non include i flussi di capitale.','Source: daily history saved by INJ Node. Missing days are not estimated. Price-based P/L excludes capital flows.'));
   if(amount===null)empty(host);
  }else if(type==='treasuryproduction'){render({...i,type:'production'},host);metric(host,i,'apr','APR',v.apr,x=>num(x,3)+'%','staking');
  }else if(type==='treasurymilestone'){render({...i,type:'milestone'},host);
  }else if(type==='treasuryperformance'){
-  const rows=nativeHistory(i),now=rows.at(-1),first=rows[0];for(const [label,span]of [['24H',864e5],['7D',7*864e5],['30D',30*864e5],['ALL',Infinity]]){const base=performanceBaseline(rows,span),x=now&&base?now.total-base.total:null;const row=metric(host,i,label,label,x,quantity,x<0?'down':'up');if(x!==null){row.append(el('small','ws-metric-fiat',num(base.total>0?x/base.total*100:0,2)+'%'));const worthNow=rows.filter(r=>Number.isFinite(r.worth)),worthBase=performanceBaseline(worthNow,span),delta=worthBase&&worthNow.length?worthNow.at(-1).worth-worthBase.worth:null;row.append(el('small','ws-metric-fiat',money(delta)+(delta!==null?' · '+num(worthBase.worth>0?delta/worthBase.worth*100:0,2)+'%':'')));}}
+  const rows=nativeHistory(i),now=rows.at(-1),first=rows[0];for(const [label,span]of [['24H',864e5],['7D',7*864e5],['30D',30*864e5],['ALL',Infinity]]){
+   const base=performanceBaseline(rows,span),x=now&&base?now.total-base.total:null;
+   const direction=n=>n===null?'neutral':n>0?'up':n<0?'down':'neutral';
+   const row=metric(host,i,label,label,x,quantity,direction(x));
+   if(x!==null){
+    const pct=base.total>0?x/base.total*100:null;
+    const percentNote=el('small','ws-metric-fiat',pct===null?'—':num(pct,2)+'%');
+    percentNote.dataset.trend=direction(pct);
+    row.append(percentNote);
+    const worthNow=rows.filter(r=>Number.isFinite(r.worth)),worthBase=performanceBaseline(worthNow,span),delta=worthBase&&worthNow.length?worthNow.at(-1).worth-worthBase.worth:null;
+    const worthPct=worthBase?.worth>0&&delta!==null?delta/worthBase.worth*100:null;
+    const worthNote=el('small','ws-metric-fiat',money(delta)+(worthPct!==null?' · '+num(worthPct,2)+'%':''));
+    worthNote.dataset.trend=direction(worthPct);
+    row.append(worthNote);
+   }
+  }
 
   const closes=new Map();for(const r of rows){const date=new Date(r.t),day=date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();closes.set(day,r);}const days=new Map(),closed=[...closes.values()];for(let j=1;j<closed.length;j++)days.set(j,closed[j].total-closed[j-1].total);const dd=[...days.values()];metric(host,i,'best',t('Miglior giorno','Best day'),dd.length?Math.max(...dd):null,quantity,'up');metric(host,i,'worst',t('Peggior giorno','Worst day'),dd.length?Math.min(...dd):null,quantity,'down');metric(host,i,'ath','ATH Treasury',rows.length?Math.max(...rows.map(r=>r.total)):null);note(host,t('Differenza INJ da storico registrato; include depositi e prelievi.','INJ change from recorded history; includes deposits and withdrawals.'));
  }else if(type==='priceposition'){metric(host,i,'price',t('Prezzo attuale','Current price'),p,money);progress(host,Number.isFinite(p)&&v.high24>v.low24?boundedPercent(p-v.low24,v.high24-v.low24):null);metric(host,i,'low','LOW 24h',v.low24,money,'available');metric(host,i,'high','HIGH 24h',v.high24,money,'staking');
@@ -340,7 +355,10 @@ function create(api){
  if(extra.includes(i.type)&&i.type!=='favoritesheatmap'){renderExtra(i,host,d);
  }else if(simple.includes(i.type)){
   const x=safe(v[i.type]),text=i.type==='walletcount'?String(v.walletcount):percents.has(i.type)?num(x,3)+'%':quantities.has(i.type)?quantity(x):money(x,['bid','ask','spread'].includes(i.type)?5:2);
-  value(host,i,'main','',text,x);if(i.type==='walletcount')note(host,rowsFor(i).filter(Boolean).length+'/'+addresses(i).length+' '+t('wallet con dati','wallets with data'));else if(x===null)empty(host);else if(quantities.has(i.type)&&p!==null&&i.type!=='circulating')note(host,money(x*p));if(i.type==='pnl24')note(host,t('Variazione da prezzo, a quantità costante','Price change at constant holdings'));if(i.type==='apr')note(host,t('APR netto ponderato per lo staking','Net APR weighted by stake'));if(['periodpnl','bestday','worstday'].includes(i.type))historyControls(i,host);
+  const mainRow=value(host,i,'main','',text,x);
+  if(['change24','pnl','pnl24','periodpnl','bestday','worstday'].includes(i.type))
+    mainRow.dataset.tone=x===null?'neutral':x>0?'up':x<0?'down':'neutral';
+  if(i.type==='walletcount')note(host,rowsFor(i).filter(Boolean).length+'/'+addresses(i).length+' '+t('wallet con dati','wallets with data'));else if(x===null)empty(host);else if(quantities.has(i.type)&&p!==null&&i.type!=='circulating')note(host,money(x*p));if(i.type==='pnl24')note(host,t('Variazione da prezzo, a quantità costante','Price change at constant holdings'));if(i.type==='apr')note(host,t('APR netto ponderato per lo staking','Net APR weighted by stake'));if(['periodpnl','bestday','worstday'].includes(i.type))historyControls(i,host);
  }else if(i.type==='session'){
   value(host,i,'market',t('Ultimo prezzo','Last price'),age(api.priceAt()),null);value(host,i,'wallets','Wallet',String(wallets().length),wallets().length);
  }else if(i.type==='levels'){

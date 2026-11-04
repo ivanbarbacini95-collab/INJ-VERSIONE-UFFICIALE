@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07121b"><title>INJ Node · Workspace</title>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('inj_monitor_theme')||'navy'}catch(_){}</script>
-<link rel="stylesheet" href="./navigation.css?v=160090"><link rel="stylesheet" href="./workspace.css?v=160746">
-<script defer src="./navigation.js?v=families30-classic-v2"></script><script defer src="./workspace-catalog.js?v=1610247"></script><script defer src="./workspace-model.js?v=16102412"></script><script defer src="./workspace-values.js?v=160744"></script><script defer src="./workspace-live.js?v=160746"></script><script defer src="./workspace-charts.js?v=160746"></script><script defer src="./workspace-sections.js?v=20261027-live2"></script><script defer src="./workspace.js?v=16102413"></script><script defer src="./workspace-pro.js?v=20261028screenfit1"></script>
+<link rel="stylesheet" href="./navigation.css?v=160090"><link rel="stylesheet" href="./workspace.css?v=fullscreen-amounts-20261103r2">
+<script defer src="./navigation.js?v=families30-classic-v2"></script><script defer src="./workspace-catalog.js?v=1610247"></script><script defer src="./workspace-model.js?v=16102412"></script><script defer src="./workspace-values.js?v=160744"></script><script defer src="./workspace-live.js?v=160746"></script><script defer src="./workspace-charts.js?v=160746"></script><script defer src="./workspace-sections.js?v=20261104-performance-tones1"></script><script defer src="./workspace.js?v=fullscreen-amounts-20261103r2"></script><script defer src="./workspace-pro.js?v=fullscreen-amounts-20261103r2"></script>
 <link rel="stylesheet" href="./workspace-premium.css?v=160747">
 <link rel="stylesheet" href="./workspace-widgets.css?v=1610245">
 <link rel="stylesheet" href="./workspace-layout.css?v=160749">
-<link rel="stylesheet" href="./workspace-pro.css?v=20261028screenfit1"><link rel="stylesheet" href="./workspace-orderbook-adaptive.css?v=1610247">
+<link rel="stylesheet" href="./workspace-pro.css?v=fullscreen-amounts-20261103r2"><link rel="stylesheet" href="./workspace-orderbook-adaptive.css?v=1610247">
 <!-- Global INJ Node terminal typography -->
 <link rel="stylesheet" href="./supply-mono.css?v=20261024">
 <link rel="stylesheet" href="./card-titles-uppercase.css?v=20261024">
@@ -38,8 +38,39 @@
 <link rel="stylesheet" href="./inj-font-platform-unified-20261103.css?v=sf-dual-20261103a">
 <link rel="stylesheet" href="./inj-six-themes-20261103.css?v=theme-persist-flow-20261103c">
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
-<link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-classic-v3">
+<link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
+<link rel="stylesheet" href="./workspace-fullscreen-data-20261103.css?v=fullscreen-amounts-20261103r2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
+<style id="ws-fullscreen-hardfix-20261103">
+/* Core fallback for iPhone/desktop PWA regardless of cached legacy styles. */
+#wsGrid .ws-card .ws-card-heading > small,
+#wsGrid .ws-card .ws-card-heading > .ws-pro-data{display:none!important}
+body.ws-immersive #wsGrid .ws-card .ws-card-body>.ws-sub,
+body.ws-immersive #wsGrid .ws-card .ws-card-body>.ws-price-change{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ color:var(--ws-muted);font-size:clamp(12px,1.5vw,20px);
+ overflow-wrap:anywhere;flex-shrink:0
+}
+body.ws-immersive #wsGrid .ws-card .ws-card-body .ws-metric-fiat,
+body.ws-immersive #wsGrid .ws-card .ws-section-note{
+ display:block!important;visibility:visible!important;opacity:1!important
+}
+body.ws-immersive #wsGrid .ws-card .ws-card-body{overflow-y:auto!important}
+</style>
+<script id="ws-legacy-badge-cleaner-20261103">
+document.addEventListener('DOMContentLoaded',function(){
+ var grid=document.getElementById('wsGrid');if(!grid)return;
+ var clean=function(){
+  grid.querySelectorAll('.ws-card-heading>.ws-pro-data,.ws-card-heading>small')
+   .forEach(function(node){node.remove();});
+ };
+ clean();
+ new MutationObserver(clean).observe(grid,{childList:true,subtree:true});
+},{once:true});
+</script>
+<link rel="stylesheet" href="./workspace-mobile-config-20261104.css?v=20261104-scroll-apply1">
+<link rel="stylesheet" href="./workspace-clean-card-headers-20261104.css?v=remove-dividers1">
+<link rel="stylesheet" href="./workspace-performance-tones-20261104.css?v=20261104-tone-fix1">
 </head>
 <body>
 <header class="ws-header"><a href="./index.html" id="workspaceBack" class="ws-home" aria-label="Home">⌂</a><div class="ws-brand"><small>INJ NODE</small><strong>Workspace</strong></div><span id="wsConnection" class="ws-connection">SYNC</span></header>
@@ -48,7 +79,7 @@
 <main><div id="wsGrid" class="ws-grid"></div><div id="wsEmpty" class="ws-empty"><span>＋</span><h1></h1><p></p><button id="wsEmptyAdd" class="ws-primary"></button></div></main>
 <div class="ws-status" id="wsStatus" role="status" aria-live="polite"></div>
 <dialog id="wsCatalog" class="ws-dialog"><header><div><small>INJ NODE / WORKSPACE</small><h2 id="wsCatalogTitle"></h2></div><button data-close aria-label="Close">×</button></header><div class="ws-catalog-controls"><input id="wsSearch" type="search"><label id="wsSourceLabel" for="wsSource"></label><div class="ws-source-modes" id="wsSourceModes" role="group" aria-label="Sorgente wallet"><button type="button" data-source-mode="all" aria-pressed="false">Tutti i wallet</button><button type="button" data-source-mode="selected" aria-pressed="true">Wallet della Home</button><button type="button" data-source-mode="single" aria-pressed="false">Wallet specifico</button></div><select id="wsSource" hidden></select><select id="wsSpecificWallet" aria-label="Scegli il wallet specifico" hidden></select><p id="wsSourceSummary" class="ws-source-summary" aria-live="polite"></p></div><nav id="wsCatalogNav" class="ws-catalog-nav" aria-label="Sezioni INJ Node"></nav><div class="ws-catalog-filter"><select id="wsKind" aria-label="Tipo di elemento"></select><span id="wsCatalogCount" role="status"></span></div><div id="wsCatalogList"></div></dialog>
-<dialog id="wsConfig" class="ws-dialog ws-small"><header><h2 id="wsConfigTitle"></h2><button data-close aria-label="Close">×</button></header><form id="wsConfigForm" class="ws-form"><label><span data-text="title"></span><input name="title" maxlength="60"></label><label><span data-text="source"></span><select name="source"></select></label><div class="ws-form-row"><label><span data-text="width"></span><input name="width" type="number" min="0" step="1" required></label><label><span data-text="height"></span><input name="height" type="number" min="0" step="1" required></label></div><div class="ws-form-row"><label><span data-text="column"></span><input name="column" type="number" min="0" step="1" required></label><label><span data-text="row"></span><input name="row" type="number" min="0" step="1" required></label></div><label><span data-text="appearance"></span><select name="style"><option value="solid">Solid</option><option value="glass">Glass</option><option value="bare">Minimal</option></select></label><label><span data-text="chartStyle"></span><select name="chartStyle"><option value="line">Linee</option><option value="candles">Candele</option></select></label><label><span data-text="timeframe"></span><select name="timeframe"><option>5m</option><option>15m</option><option>1h</option><option>4h</option><option>24h</option><option>7d</option><option>30d</option></select></label><label><span data-text="goal"></span><select name="goal"><option>0.5</option><option>1</option><option>3</option><option>5</option><option>10</option><option>15</option><option>20</option><option>30</option><option>50</option></select></label><label class="ws-check"><input name="border" type="checkbox"><span data-text="border"></span></label><label class="ws-check"><input name="details" type="checkbox"><span data-text="details"></span></label><div class="ws-layer-actions"><button type="button" data-config-action="front">Porta davanti</button><button type="button" data-config-action="back">Porta dietro</button><button type="button" data-config-action="duplicate">Duplica</button><button type="button" data-config-action="remove">Rimuovi</button></div><button type="submit" class="ws-primary" id="wsApply"></button></form></dialog>
+<dialog id="wsConfig" class="ws-dialog ws-small"><header><h2 id="wsConfigTitle"></h2><button data-close aria-label="Close">×</button></header><form id="wsConfigForm" class="ws-form"><label><span data-text="title"></span><input name="title" maxlength="60"></label><label><span data-text="source"></span><select name="source"></select></label><div class="ws-form-row"><label><span data-text="width"></span><input name="width" type="number" min="0" step="1" required></label><label><span data-text="height"></span><input name="height" type="number" min="0" step="1" required></label></div><div class="ws-form-row"><label><span data-text="column"></span><input name="column" type="number" min="0" step="1" required></label><label><span data-text="row"></span><input name="row" type="number" min="0" step="1" required></label></div><label><span data-text="appearance"></span><select name="style"><option value="solid">Solid</option><option value="glass">Glass</option><option value="bare">Minimal</option></select></label><label><span data-text="chartStyle"></span><select name="chartStyle"><option value="line">Linee</option><option value="candles">Candele</option></select></label><label><span data-text="timeframe"></span><select name="timeframe"><option>5m</option><option>15m</option><option>1h</option><option>4h</option><option>24h</option><option>7d</option><option>30d</option></select></label><label><span data-text="goal"></span><select name="goal"><option>0.5</option><option>1</option><option>3</option><option>5</option><option>10</option><option>15</option><option>20</option><option>30</option><option>50</option></select></label><label class="ws-check"><input name="border" type="checkbox"><span data-text="border"></span></label><label class="ws-check"><input name="details" type="checkbox"><span data-text="details"></span></label><div class="ws-layer-actions"><button type="button" data-config-action="front">Porta davanti</button><button type="button" data-config-action="back">Porta dietro</button><button type="button" data-config-action="duplicate">Duplica</button><button type="button" data-config-action="remove">Rimuovi</button></div></form><div class="ws-config-actions"><button type="submit" form="wsConfigForm" class="ws-primary" id="wsApply"></button></div></dialog>
 <dialog id="wsPresetDialog" class="ws-dialog ws-small"><header><h2 id="wsPresetTitle">Preset</h2><button data-close aria-label="Close">×</button></header><div id="wsPresetList"></div><div class="ws-preset-actions"><button id="wsNew"></button><button id="wsDuplicatePreset"></button><button id="wsExport"></button><button id="wsImport"></button><input type="file" id="wsFile" accept="application/json,.json" hidden></div><p id="wsStorageNote"></p></dialog>
 <dialog id="wsPrompt" class="ws-dialog ws-small"><form id="wsPromptForm" class="ws-form"><header><h2 id="wsPromptTitle"></h2><button type="button" data-close aria-label="Close">×</button></header><input id="wsPromptValue" maxlength="50" required><button type="submit" class="ws-primary" id="wsPromptOK">OK</button></form></dialog>
 </body></html>

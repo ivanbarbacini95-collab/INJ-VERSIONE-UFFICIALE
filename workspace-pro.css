@@ -328,3 +328,13 @@ body.ws-immersive .ws-screen-fit-button{
 @media(prefers-reduced-motion:reduce){
  .ws-screen-boundary{transition:none!important}
 }
+
+/* v20261103 · Presentation title only. Never allow legacy feed badges
+   (yellow SNAPSHOT, LIVE, ESTIMATE) or wallet-source subtitles to reappear. */
+#wsGrid .ws-card .ws-card-heading>.ws-pro-data,
+#wsGrid .ws-card .ws-card-heading>small{
+ display:none!important;
+}
+body.ws-immersive #wsGrid .ws-card .ws-card-body>.ws-sub{
+ display:block!important;
+}

@@ -1,0 +1,84 @@
+/* Keep widget headers title-only, as requested. Wallet/value details remain
+   available inside the card body rather than a noisy header status. */
+#wsGrid .ws-card .ws-card-heading small{display:none!important}
+#wsGrid .ws-card .ws-card-heading>.ws-pro-data{display:none!important}
+/* INJ Workspace · Show exactly the saved widget information in immersive
+   monitor mode. Presentation changes geometry only, never data visibility. */
+.ws-card .ws-card-heading>.ws-pro-data,
+.ws-preview .ws-card-heading>.ws-pro-data {display:none!important}
+body.ws-immersive #wsGrid .ws-card .ws-card-body>.ws-sub,
+body.ws-immersive #wsGrid .ws-card .ws-price-change,
+body.ws-immersive #wsGrid .ws-card .ws-section-note,
+body.ws-immersive #wsGrid .ws-card .ws-metric-fiat,
+body.ws-immersive #wsGrid .ws-card .ws-section-value,
+body.ws-immersive #wsGrid .ws-card .ws-section-label {
+ display:initial!important;
+ visibility:visible!important;
+ opacity:1!important;
+}
+body.ws-immersive #wsGrid .ws-card .ws-card-body>.ws-sub {
+ display:block!important;
+ flex:0 0 auto;
+ font-size:clamp(11px,1.3vw,18px);
+ line-height:1.4;
+ color:var(--ws-muted);
+ min-width:0;max-width:100%;
+ white-space:normal;overflow-wrap:anywhere;
+}
+body.ws-immersive #wsGrid .ws-card .ws-section-note{
+ display:block!important;
+ font-size:clamp(10px,1vw,14px);
+ line-height:1.4;
+ overflow-wrap:anywhere;
+}
+body.ws-immersive #wsGrid .ws-card .ws-metric-fiat{
+ display:block!important;
+ flex:0 0 auto;
+ font-size:clamp(11px,1.2vw,17px);
+ line-height:1.35;
+ color:var(--ws-muted);
+ overflow-wrap:anywhere;
+}
+body.ws-immersive #wsGrid .ws-card .ws-card-body{
+ min-height:0;
+ overflow:auto!important;
+ scrollbar-width:thin;
+ overscroll-behavior:contain;
+ -webkit-overflow-scrolling:touch;
+ gap:clamp(5px,0.9cqh,12px);
+}
+body.ws-immersive #wsGrid .ws-card .ws-section-body{
+ min-width:0;
+ min-height:0;
+ overflow-x:hidden;
+ overflow-y:auto;
+ scrollbar-width:thin;
+}
+body.ws-immersive #wsGrid .ws-card .ws-section-row{
+ min-width:0;
+ gap:5px 10px;
+ flex-wrap:wrap;
+}
+body.ws-immersive #wsGrid .ws-card .ws-section-value {
+ font-size:clamp(12px,min(3.8cqw,3.5cqh),30px);
+ line-height:1.2;
+ overflow-wrap:anywhere;
+}
+body.ws-immersive #wsGrid .ws-card .ws-section-label{
+ font-size:clamp(10px,1.2cqw,15px);
+}
+/* In graph/price cards the secondary monetary amount is still data, even
+   when chart tools and editor handles disappear in clean fullscreen mode. */
+body.ws-immersive #wsGrid .ws-card[data-type="price"] .ws-price-change{
+ display:inline-flex!important;
+}
+body.ws-immersive #wsGrid .ws-card .ws-card-heading>.ws-pro-data{display:none!important}
+body.ws-immersive #wsGrid .ws-card .ws-card-head{
+ flex-shrink:0;position:relative;z-index:2;
+}
+body.ws-immersive #wsGrid .ws-card .ws-card-heading strong{
+ display:block!important;
+ white-space:normal;
+ overflow-wrap:anywhere;
+}
+/* Users can still reduce motion; no forced animations in the data view. */

@@ -1,0 +1,21 @@
+/* Workspace: minimal card headers without horizontal separators.
+   Only the card title bar changes; chart gridlines and table dividers remain intact. */
+html[data-inj-page="workspace"] #wsGrid .ws-card > .ws-card-head,
+html[data-inj-page="workspace"] body.ws-immersive #wsGrid .ws-card > .ws-card-head {
+  border-bottom:0!important;
+  border-bottom-width:0!important;
+  box-shadow:none!important;
+  padding-bottom:3px;
+  margin-bottom:5px;
+}
+html[data-inj-page="workspace"] #wsGrid .ws-card > .ws-card-head::after,
+html[data-inj-page="workspace"] #wsGrid .ws-card > .ws-card-head::before {
+  border:0!important;
+  box-shadow:none!important;
+}
+@container (max-height:180px) {
+  html[data-inj-page="workspace"] #wsGrid .ws-card > .ws-card-head {
+    padding-bottom:1px;
+    margin-bottom:2px;
+  }
+}
