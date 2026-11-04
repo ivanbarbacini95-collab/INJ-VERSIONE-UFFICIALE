@@ -20,14 +20,20 @@
   let motionAvailable = false;
   let permissionRejected = false;
   let upsideDown = false;
-  let manual = false;
   let rendered = false;
   let lastCandidate = null;
   let candidates = 0;
   let lastSample = 0;
   let lastMotionSample = 0;
+  // Activation establishes a reference position: it must never rotate the UI.
+  let referencePose = null;
+  let gravityZ = null;
+  let flatReferenceHeading = null;
+  let flatReferenceInverted = false;
+  let flatCandidate = null;
+  let flatHits = 0;
+  let lastFlatSample = 0;
   let autoButton = null;
-  let manualButton = null;
 
   const style = document.createElement('style');
   style.id = 'inj-reverse-portrait-css';
@@ -40,8 +46,7 @@
     'transform-origin:50% 50%!important;-webkit-transform-origin:50% 50%!important;',
     '-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;}',
     '@supports not (height:100dvh){html[data-inj-reverse-portrait="1"] body{height:100vh!important;}}',
-    '#injReverseAutoButton[aria-pressed="true"] .menu-action-value{color:var(--up,#32bd83);}',
-    '#injReverseManualButton[aria-pressed="true"] .menu-action-value{color:var(--up,#32bd83);}'
+    '#injReverseAutoButton[aria-pressed="true"] .menu-action-value{color:var(--up,#32bd83);}'
   ].join('');
   document.head.appendChild(style);
 
@@ -55,7 +60,7 @@
   }
   function updateLayout() {
     const shouldRotate = portrait() && !browserAlreadyReversed() &&
-      (manual || (enabled && upsideDown));
+      enabled && upsideDown;
     if (shouldRotate === rendered) return;
     const previousScroll = rendered ? document.body.scrollTop : window.scrollY;
     rendered = shouldRotate;
@@ -69,19 +74,65 @@
     window.dispatchEvent(new Event('resize'));
     updateControls();
   }
+  function resetReference() {
+    upsideDown = false;
+    referencePose = null;
+    lastCandidate = null;
+    candidates = 0;
+    lastSample = 0;
+    flatReferenceHeading = null;
+    flatReferenceInverted = false;
+    flatCandidate = null;
+    flatHits = 0;
+    lastFlatSample = 0;
+    updateLayout();
+  }
+
   function sample(candidate) {
-    if (!enabled || document.hidden) return;
+    if (!enabled || document.hidden || !portrait()) return;
     const now = performance.now();
-    if (now - lastSample < 100) return;
+    if (now - lastSample < 105) return;
     lastSample = now;
     if (candidate === lastCandidate) candidates++;
     else { lastCandidate = candidate; candidates = 1; }
-    // Three consistent readings prevent jitter while the handset is moving.
-    if (candidates >= 3 && upsideDown !== candidate) {
-      upsideDown = candidate;
+    // Require stable readings before recording the starting phone position.
+    if (candidates < 4) return;
+    if (referencePose === null) {
+      referencePose = candidate;
+      return; // No rotation merely because the user enabled the feature.
+    }
+    const desired = candidate !== referencePose;
+    if (desired !== upsideDown) {
+      upsideDown = desired;
       updateLayout();
     }
   }
+
+  function sampleFlat(heading) {
+    // When lying flat on a desk, gravity cannot detect a 180° turn in the
+    // plane of the screen. Use relative device heading instead, if available.
+    if (!enabled || document.hidden || !portrait() ||
+        !Number.isFinite(gravityZ) || Math.abs(gravityZ) < 7.2) return;
+    const now = performance.now();
+    if (now - lastFlatSample < 105) return;
+    lastFlatSample = now;
+    if (flatReferenceHeading === null) {
+      flatReferenceHeading = heading;
+      flatReferenceInverted = upsideDown;
+      return;
+    }
+    const diff = Math.abs(((heading - flatReferenceHeading + 540) % 360) - 180);
+    const desired = diff > 140 ? !flatReferenceInverted :
+      diff < 45 ? flatReferenceInverted : null;
+    if (desired === null) { flatCandidate = null; flatHits = 0; return; }
+    if (flatCandidate === desired) flatHits++;
+    else { flatCandidate = desired; flatHits = 1; }
+    if (flatHits >= 4 && desired !== upsideDown) {
+      upsideDown = desired;
+      updateLayout();
+    }
+  }
+
   window.addEventListener('devicemotion', event => {
     const g = event.accelerationIncludingGravity;
     if (!g || !Number.isFinite(g.y)) return;
@@ -89,20 +140,29 @@
     motionAvailable = true;
     lastMotionSample = performance.now();
     if (firstReading) updateControls();
-    // W3C device axes: +Y is towards the TOP of the phone; a phone held
-    // upright reads about +9.8 m/s², inverted about -9.8 m/s².
-    if (g.y < -5.8) sample(true);
-    else if (g.y > 5.8) sample(false);
+    gravityZ = Number.isFinite(g.z) ? g.z : null;
+    // Only use gravity while the screen is approximately vertical. When
+    // flat, wait for the heading rotation; avoid accidental switches.
+    if (Math.abs(g.y) > 5.7 &&
+        Math.abs(g.y) > Math.abs(g.x || 0) * 1.15 &&
+        Math.abs(g.y) > Math.abs(g.z || 0) * 0.95) {
+      sample(g.y < 0);
+    }
   }, { passive: true });
 
   window.addEventListener('deviceorientation', event => {
-    // Fallback only when acceleration data are unavailable.
+    const firstReading = !motionAvailable;
+    if (Number.isFinite(event.alpha) ||
+        Number.isFinite(event.webkitCompassHeading)) {
+      if (firstReading) motionAvailable = true;
+      const heading = Number.isFinite(event.webkitCompassHeading) ?
+        event.webkitCompassHeading : event.alpha;
+      sampleFlat(heading);
+    }
     if (performance.now() - lastMotionSample < 1200 ||
       !Number.isFinite(event.beta) || !Number.isFinite(event.gamma) ||
       Math.abs(event.gamma) > 40) return;
-    const firstReading = !motionAvailable;
-    motionAvailable = true;
-    if (firstReading) updateControls();
+    if (firstReading) { motionAvailable = true; updateControls(); }
     if (event.beta < -48) sample(true);
     else if (event.beta > 48) sample(false);
   }, { passive: true });
@@ -117,17 +177,11 @@
     const autoValue = autoButton.querySelector('.menu-action-value');
     const autoTitle = autoButton.querySelector('strong');
     const autoSub = autoButton.querySelector('small');
-    const manualTitle = manualButton.querySelector('strong');
-    const manualSub = manualButton.querySelector('small');
     autoTitle.textContent = en ? 'Upside-down rotation' : 'Rotazione capovolta';
     autoSub.textContent = en ? 'Rotate 180° automatically' : 'Ruota automaticamente di 180°';
     autoButton.setAttribute('aria-pressed', String(enabled));
     autoValue.textContent = permissionRejected ? (en ? 'BLOCKED' : 'BLOCCATO') :
       !enabled ? 'OFF' : needsPermission && !motionAvailable ? (en ? 'ENABLE' : 'ATTIVA') : 'ON';
-    manualTitle.textContent = en ? 'Rotate manually' : 'Ruota manualmente';
-    manualSub.textContent = en ? 'Fallback if motion is unavailable' : 'Se il sensore non è disponibile';
-    manualButton.setAttribute('aria-pressed', String(manual));
-    manualButton.querySelector('.menu-action-value').textContent = manual ? '180°' : '0°';
   }
   function makeButton(id, icon, value) {
     const button = document.createElement('button');
@@ -142,9 +196,10 @@
   async function toggleAutomatic() {
     if (enabled && (!needsPermission || motionAvailable)) {
       enabled = false;
-      upsideDown = false;
+      resetReference();
     } else {
       enabled = true;
+      resetReference();
       permissionRejected = false;
       if (needsPermission && !motionAvailable) {
         // Call every permission API synchronously during this click gesture.
@@ -172,18 +227,11 @@
     const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">' +
       '<rect x="8" y="2" width="8" height="20" rx="2"/><path d="m4 8 2-2 2 2M6 6v6m14 4-2 2-2-2m2 2v-6"/></svg>';
     autoButton = makeButton('injReverseAutoButton', icon, '');
-    manualButton = makeButton('injReverseManualButton', icon, '');
     const anchor = grid.querySelector('#themeControl') || grid.querySelector('#languageControl');
     if (anchor) {
       grid.insertBefore(autoButton, anchor);
-      grid.insertBefore(manualButton, anchor);
-    } else grid.append(autoButton, manualButton);
+    } else grid.append(autoButton);
     autoButton.addEventListener('click', toggleAutomatic);
-    manualButton.addEventListener('click', () => {
-      manual = !manual;
-      updateLayout();
-      updateControls();
-    });
     updateControls();
   }
 
