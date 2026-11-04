@@ -1,10 +1,10 @@
-const CACHE_NAME = 'inj-node-v20261104-official-reverse-fullbleed5';
+const CACHE_NAME = 'inj-node-v20261104-official-fixed180-v1';
 const APP_SHELL = [
   './inj-fullbleed-theme-20261104.css?v=20261104-top-fix5',
-  './inj-upside-down-20261104.js?v=20261104e-reverse-fix5',
+  './inj-upside-down-20261104.js?v=20261104f-fixed180-v1',
   './workspace.html?v=workspace-20261104-rotation-immersive3',
   './workspace.js?v=20261104-rotation-immersive3',
-  './navigation.js?v=20261104-reverse-fix5',
+  './navigation.js?v=20261104-fixed180-v1',
   './workspace.css?v=fullscreen-amounts-20261103r2',
   './workspace.js?v=fullscreen-amounts-20261103r2',
   './workspace-pro.css?v=fullscreen-amounts-20261103r2',
@@ -376,7 +376,7 @@ self.addEventListener('install', (event) => {
     // actual boot path first; runtime requests populate the rest on demand.
     const essential=new Set([
       './inj-fullbleed-theme-20261104.css?v=20261104-top-fix5',
-      './inj-upside-down-20261104.js?v=20261104e-reverse-fix5',
+      './inj-upside-down-20261104.js?v=20261104f-fixed180-v1',
       './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
       './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
       './inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1',
@@ -404,7 +404,7 @@ self.addEventListener('install', (event) => {
   './cloud-sync-qr-20261101.js?v=1',
   './vendor/qrcode.min.js?v=1',
       './','./index.html','./manifest.webmanifest?v=20261102litepro1',
-      './inj-upside-down-20261104.js?v=20261104e-reverse-fix5',
+      './inj-upside-down-20261104.js?v=20261104f-fixed180-v1',
       './app.js?v=20261102-home-lcd-resilience2',
       './style.css?v=16.01.44','./viewport.css?v=16.00.74',
       './viewport.js?v=20261102litepro-native1',
