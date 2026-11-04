@@ -14,7 +14,6 @@
 
   const root = document.documentElement;
   const key = 'inj-node-reverse-portrait-enabled';
-  const referenceKey = 'inj-node-reverse-portrait-gravity-reference';
   let enabled = false;
   try { enabled = localStorage.getItem(key) === 'on'; } catch (_) {}
   // The user choice is shared across all INJ Node routes. Do not treat a
@@ -29,21 +28,6 @@
   let candidates = 0;
   let lastSample = 0;
   let lastMotionSample = 0;
-  // Activation establishes a reference position: it must never rotate the UI.
-  let referencePose = null;
-  if (enabled) {
-    try {
-      const stored = localStorage.getItem(referenceKey);
-      if (stored === 'positive' || stored === 'negative')
-        referencePose = stored === 'negative';
-    } catch (_) {}
-  }
-  let gravityZ = null;
-  let flatReferenceHeading = null;
-  let flatReferenceInverted = false;
-  let flatCandidate = null;
-  let flatHits = 0;
-  let lastFlatSample = 0;
   let autoButton = null;
 
   const style = document.createElement('style');
@@ -128,99 +112,47 @@
     window.dispatchEvent(new Event('resize'));
     updateControls();
   }
-  function resetReference() {
+  function resetDetection() {
     upsideDown = false;
-    referencePose = null;
     lastCandidate = null;
     candidates = 0;
     lastSample = 0;
-    flatReferenceHeading = null;
-    flatReferenceInverted = false;
-    flatCandidate = null;
-    flatHits = 0;
-    lastFlatSample = 0;
     updateLayout();
   }
-
-  function sample(candidate) {
+  function sampleAbsolute(chargingPortUp) {
     if (!enabled || document.hidden || !portrait()) return;
     const now = performance.now();
     if (now - lastSample < 105) return;
     lastSample = now;
-    if (candidate === lastCandidate) candidates++;
-    else { lastCandidate = candidate; candidates = 1; }
-    // Require stable readings before recording the starting phone position.
-    if (candidates < 4) return;
-    if (referencePose === null) {
-      referencePose = candidate;
-      try { localStorage.setItem(referenceKey, candidate ? 'negative' : 'positive'); }
-      catch (_) {}
-      return; // Enabling calibrates the phone without rotating its screen.
-    }
-    const desired = candidate !== referencePose;
-    if (desired !== upsideDown) {
-      upsideDown = desired;
+    if (chargingPortUp === lastCandidate) ++candidates;
+    else { lastCandidate = chargingPortUp; candidates = 1; }
+    if (candidates >= 4 && upsideDown !== chargingPortUp) {
+      upsideDown = chargingPortUp;
       updateLayout();
     }
   }
-
-  function sampleFlat(heading) {
-    // When lying flat on a desk, gravity cannot detect a 180° turn in the
-    // plane of the screen. Use relative device heading instead, if available.
-    if (!enabled || document.hidden || !portrait() ||
-        !Number.isFinite(gravityZ) || Math.abs(gravityZ) < 7.2) return;
-    const now = performance.now();
-    if (now - lastFlatSample < 105) return;
-    lastFlatSample = now;
-    if (flatReferenceHeading === null) {
-      flatReferenceHeading = heading;
-      flatReferenceInverted = upsideDown;
-      return;
-    }
-    const diff = Math.abs(((heading - flatReferenceHeading + 540) % 360) - 180);
-    const desired = diff > 140 ? !flatReferenceInverted :
-      diff < 45 ? flatReferenceInverted : null;
-    if (desired === null) { flatCandidate = null; flatHits = 0; return; }
-    if (flatCandidate === desired) flatHits++;
-    else { flatCandidate = desired; flatHits = 1; }
-    if (flatHits >= 4 && desired !== upsideDown) {
-      upsideDown = desired;
-      updateLayout();
-    }
-  }
-
   window.addEventListener('devicemotion', event => {
     const g = event.accelerationIncludingGravity;
     if (!g || !Number.isFinite(g.y)) return;
-    const firstReading = !motionAvailable;
+    const first = !motionAvailable;
     motionAvailable = true;
     lastMotionSample = performance.now();
-    if (firstReading) updateControls();
-    gravityZ = Number.isFinite(g.z) ? g.z : null;
-    // Only use gravity while the screen is approximately vertical. When
-    // flat, wait for the heading rotation; avoid accidental switches.
-    if (Math.abs(g.y) > 5.7 &&
-        Math.abs(g.y) > Math.abs(g.x || 0) * 1.15 &&
-        Math.abs(g.y) > Math.abs(g.z || 0) * 0.95) {
-      sample(g.y < 0);
-    }
+    if (first) updateControls();
+    // Natural portrait (+Y): connector DOWN; reverse portrait (-Y): UP.
+    // Ignore sideways, flat, or transitional positions.
+    if (Math.abs(g.y) >= 6.5 &&
+        Math.abs(g.y) >= Math.abs(g.x || 0) * 1.25 &&
+        Math.abs(g.y) >= Math.abs(g.z || 0) * 1.15) sampleAbsolute(g.y < 0);
   }, { passive: true });
-
   window.addEventListener('deviceorientation', event => {
-    const firstReading = !motionAvailable;
-    if (Number.isFinite(event.alpha) ||
-        Number.isFinite(event.webkitCompassHeading)) {
-      if (firstReading) motionAvailable = true;
-      const heading = Number.isFinite(event.webkitCompassHeading) ?
-        event.webkitCompassHeading : event.alpha;
-      sampleFlat(heading);
-    }
-    if (performance.now() - lastMotionSample < 1200 ||
-      !Number.isFinite(event.beta) || !Number.isFinite(event.gamma) ||
-      Math.abs(event.gamma) > 40) return;
-    if (firstReading) { motionAvailable = true; updateControls(); }
-    if (event.beta < -48) sample(true);
-    else if (event.beta > 48) sample(false);
+    if (performance.now() - lastMotionSample < 1500 ||
+        !Number.isFinite(event.beta) || !Number.isFinite(event.gamma) ||
+        Math.abs(event.gamma) > 30) return;
+    const first = !motionAvailable;
+    motionAvailable = true;
+    if (first) updateControls();
+    if (event.beta < -55) sampleAbsolute(true);
+    else if (event.beta > 55) sampleAbsolute(false);
   }, { passive: true });
 
   function localeEN() {
@@ -254,12 +186,11 @@
     if (enabled && !recoverPermission) {
       enabled = false;
       permissionRejected = false;
-      resetReference();
+      resetDetection();
     } else {
       if (!enabled) {
         enabled = true;
-        try { localStorage.removeItem(referenceKey); } catch (_) {}
-        resetReference();
+        resetDetection();
       }
       permissionRejected = false;
       if (needsPermission && !motionAvailable) {
