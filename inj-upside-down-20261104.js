@@ -27,7 +27,6 @@
   let lastCandidate = null;
   let candidates = 0;
   let lastSample = 0;
-  let lastMotionSample = 0;
   let autoButton = null;
 
   const style = document.createElement('style');
@@ -48,9 +47,6 @@
     'html[data-inj-reverse-portrait="1"] :fullscreen:not(html):not(iframe){',
     'transform:rotate(180deg)!important;-webkit-transform:rotate(180deg)!important;',
     'transform-origin:center center!important;}',
-    'html[data-inj-reverse-child="1"]:fullscreen,html[data-inj-reverse-child="1"] :fullscreen{',
-    'transform:rotate(180deg)!important;-webkit-transform:rotate(180deg)!important;',
-    'transform-origin:center center!important;}'
   ].join('');
   document.head.appendChild(style);
 
@@ -92,8 +88,11 @@
       window.innerHeight > window.innerWidth * 1.05;
   }
   function browserAlreadyReversed() {
-    const angle = Number(screen.orientation?.angle ?? window.orientation ?? 0);
-    return Math.abs(angle) === 180;
+    // If the OS already rotated the viewport, do not rotate CSS a second time.
+    const orientation = screen.orientation;
+    const nativeAngle = Number.isFinite(orientation?.angle) ? orientation.angle : null;
+    const legacyAngle = Number.isFinite(window.orientation) ? window.orientation : null;
+    return Math.abs(nativeAngle ?? legacyAngle ?? 0) === 180;
   }
   function updateLayout() {
     const shouldRotate = portrait() && !browserAlreadyReversed() &&
@@ -136,24 +135,17 @@
     if (!g || !Number.isFinite(g.y)) return;
     const first = !motionAvailable;
     motionAvailable = true;
-    lastMotionSample = performance.now();
     if (first) updateControls();
-    // Natural portrait (+Y): connector DOWN; reverse portrait (-Y): UP.
+    // W3C device-gravity axis: +Y = top of handset UP (port DOWN).
+    // -Y = top of handset DOWN (charging port UP).
     // Ignore sideways, flat, or transitional positions.
     if (Math.abs(g.y) >= 6.5 &&
         Math.abs(g.y) >= Math.abs(g.x || 0) * 1.25 &&
         Math.abs(g.y) >= Math.abs(g.z || 0) * 1.15) sampleAbsolute(g.y < 0);
   }, { passive: true });
-  window.addEventListener('deviceorientation', event => {
-    if (performance.now() - lastMotionSample < 1500 ||
-        !Number.isFinite(event.beta) || !Number.isFinite(event.gamma) ||
-        Math.abs(event.gamma) > 30) return;
-    const first = !motionAvailable;
-    motionAvailable = true;
-    if (first) updateControls();
-    if (event.beta < -55) sampleAbsolute(true);
-    else if (event.beta > 55) sampleAbsolute(false);
-  }, { passive: true });
+  // Do not interpret deviceorientation.beta as absolute portrait direction:
+  // WebKit's orientation origin can vary by session, producing an inverted
+  // image when the phone is physically turned. Gravity is authoritative.
 
   function localeEN() {
     try { return localStorage.getItem('inj_node_language_v1') === 'en' || root.lang === 'en'; }
