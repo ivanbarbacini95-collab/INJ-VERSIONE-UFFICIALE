@@ -225,7 +225,7 @@ $('wsAdd').onclick=$('wsEmptyAdd').onclick=openCatalog;$('wsSearch').oninput=()=
  layout();
 }
 async function exitImmersive(){setImmersive(false);try{if(document.fullscreenElement)await document.exitFullscreen()}catch(_){}$('wsFull').focus();}
-$('wsFull').onclick=async()=>{if(immersive)return exitImmersive();persist();setImmersive(true);try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){/* Keep the clean presentation view on browsers without native fullscreen. */}};
+$('wsFull').onclick=async()=>{if(immersive)return exitImmersive();persist();setImmersive(true);try{if(!/iPhone|iPod|Android.*Mobile/i.test(navigator.userAgent||'')&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){/* On phones keep CSS immersive fullscreen inside the PWA so the entire section follows parent rotation. */}};
 $('wsExitFull').onclick=exitImmersive;
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&immersive)setImmersive(false);else if(document.fullscreenElement&&!immersive)setImmersive(true)});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&immersive){e.preventDefault();e.stopImmediatePropagation();exitImmersive();}},true);
