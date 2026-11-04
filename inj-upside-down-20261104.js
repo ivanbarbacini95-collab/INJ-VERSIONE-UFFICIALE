@@ -14,6 +14,7 @@
 
   const root = document.documentElement;
   const key = 'inj-node-reverse-portrait-enabled';
+  const referenceKey = 'inj-node-reverse-portrait-gravity-reference';
   let enabled = false;
   try { enabled = localStorage.getItem(key) === 'on'; } catch (_) {}
   // The user choice is shared across all INJ Node routes. Do not treat a
@@ -29,7 +30,14 @@
   let lastSample = 0;
   let lastMotionSample = 0;
   // Activation establishes a reference position: it must never rotate the UI.
-  let referencePose = enabled ? false : null;
+  let referencePose = null;
+  if (enabled) {
+    try {
+      const stored = localStorage.getItem(referenceKey);
+      if (stored === 'positive' || stored === 'negative')
+        referencePose = stored === 'negative';
+    } catch (_) {}
+  }
   let gravityZ = null;
   let flatReferenceHeading = null;
   let flatReferenceInverted = false;
@@ -145,7 +153,9 @@
     if (candidates < 4) return;
     if (referencePose === null) {
       referencePose = candidate;
-      return; // No rotation merely because the user enabled the feature.
+      try { localStorage.setItem(referenceKey, candidate ? 'negative' : 'positive'); }
+      catch (_) {}
+      return; // Enabling calibrates the phone without rotating its screen.
     }
     const desired = candidate !== referencePose;
     if (desired !== upsideDown) {
@@ -248,6 +258,7 @@
     } else {
       if (!enabled) {
         enabled = true;
+        try { localStorage.removeItem(referenceKey); } catch (_) {}
         resetReference();
       }
       permissionRejected = false;
