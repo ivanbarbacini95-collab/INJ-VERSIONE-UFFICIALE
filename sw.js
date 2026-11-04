@@ -1,9 +1,9 @@
-const CACHE_NAME = 'inj-node-v20261104-official-rotation-all-pages3';
+const CACHE_NAME = 'inj-node-v20261104-official-charger-up-4';
 const APP_SHELL = [
-  './inj-upside-down-20261104.js?v=20261104c',
+  './inj-upside-down-20261104.js?v=20261104d-port-up',
   './workspace.html?v=workspace-20261104-rotation-immersive3',
   './workspace.js?v=20261104-rotation-immersive3',
-  './navigation.js?v=20261104-rotation-all-pages3',
+  './navigation.js?v=20261104-port-up4',
   './workspace.css?v=fullscreen-amounts-20261103r2',
   './workspace.js?v=fullscreen-amounts-20261103r2',
   './workspace-pro.css?v=fullscreen-amounts-20261103r2',
@@ -374,7 +374,7 @@ self.addEventListener('install', (event) => {
     // legacy CSS/JS downloads before the worker can activate. Cache the
     // actual boot path first; runtime requests populate the rest on demand.
     const essential=new Set([
-      './inj-upside-down-20261104.js?v=20261104c',
+      './inj-upside-down-20261104.js?v=20261104d-port-up',
       './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
       './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
       './inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1',
@@ -402,7 +402,7 @@ self.addEventListener('install', (event) => {
   './cloud-sync-qr-20261101.js?v=1',
   './vendor/qrcode.min.js?v=1',
       './','./index.html','./manifest.webmanifest?v=20261102litepro1',
-      './inj-upside-down-20261104.js?v=20261104c',
+      './inj-upside-down-20261104.js?v=20261104d-port-up',
       './app.js?v=20261102-home-lcd-resilience2',
       './style.css?v=16.01.44','./viewport.css?v=16.00.74',
       './viewport.js?v=20261102litepro-native1',
