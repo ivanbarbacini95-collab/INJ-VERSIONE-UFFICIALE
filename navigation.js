@@ -224,7 +224,7 @@ window.addEventListener('injnode:languagechange',event=>{
 // The common i18n observer owns live text translation (no competing observer).
 })();
 
-/* Reverse portrait is loaded only by the top-level PWA, not inside its sections. */
+/* The fixed 180-degree module runs once per document. Embedded pages inherit the parent transform. */
 ;(() => {
   if (document.querySelector('script[data-inj-reverse-loader]')) return;
   const script = document.createElement('script');
