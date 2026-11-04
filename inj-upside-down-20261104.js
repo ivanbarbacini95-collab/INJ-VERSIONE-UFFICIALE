@@ -116,7 +116,8 @@
       // Preserve the actual scroll surface when turning the entire document.
       const scroll = painted ? document.body.scrollTop : window.scrollY;
       painted = enabled;
-      root.toggleAttribute('data-inj-reverse-portrait', enabled);
+      if (enabled) root.setAttribute('data-inj-reverse-portrait', '1');
+      else root.removeAttribute('data-inj-reverse-portrait');
       if (enabled) {
         document.body.scrollTop = Math.max(0, scroll);
       } else if (scroll > 0) {
