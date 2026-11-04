@@ -27,7 +27,10 @@
  }
  function currentMotion(){return 'static'}
  function refreshTone(){
-  var value=tones[normalize(root.dataset.theme)];
+  // Use the actual rendered canvas for the selected palette. The former
+  // hard-coded colors differed from current Signature themes on iOS.
+  var value=getComputedStyle(root).getPropertyValue('--theme-canvas').trim()||
+    tones[normalize(root.dataset.theme)];
   var tag=document.querySelector('meta[name="theme-color"]');
   if(tag)tag.setAttribute('content',value);
  }
