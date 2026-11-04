@@ -64,7 +64,7 @@
     'html[data-inj-reverse-portrait="1"] :fullscreen:not(html):not(iframe){',
     'transform:rotate(180deg)!important;-webkit-transform:rotate(180deg)!important;',
     'transform-origin:center center!important;}',
-    'html[data-inj-reverse-child="1"] :fullscreen{',
+    'html[data-inj-reverse-child="1"]:fullscreen,html[data-inj-reverse-child="1"] :fullscreen{',
     'transform:rotate(180deg)!important;-webkit-transform:rotate(180deg)!important;',
     'transform-origin:center center!important;}'
   ].join('');
