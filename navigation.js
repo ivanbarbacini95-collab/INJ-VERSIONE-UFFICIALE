@@ -229,6 +229,6 @@ window.addEventListener('injnode:languagechange',event=>{
   if (document.querySelector('script[data-inj-reverse-loader]')) return;
   const script = document.createElement('script');
   script.dataset.injReverseLoader = '1';
-  script.src = './inj-upside-down-20261104.js?v=20261104e-reverse-fix5';
+  script.src = './inj-upside-down-20261104.js?v=20261104f-fixed180-v1';
   document.head.appendChild(script);
 })();
