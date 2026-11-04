@@ -223,3 +223,12 @@ window.addEventListener('injnode:languagechange',event=>{
 });window.addEventListener('storage',language);language();
 // The common i18n observer owns live text translation (no competing observer).
 })();
+
+/* Reverse portrait is loaded only by the top-level PWA, not inside its sections. */
+;(() => {
+  if (window !== window.top || document.querySelector('script[data-inj-reverse-loader]')) return;
+  const script = document.createElement('script');
+  script.dataset.injReverseLoader = '1';
+  script.src = './inj-upside-down-20261104.js?v=20261104a';
+  document.head.appendChild(script);
+})();
