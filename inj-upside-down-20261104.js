@@ -4,8 +4,9 @@
    Motion permission on iOS must be requested from a real user gesture. */
 (() => {
   'use strict';
-  if (window !== window.top || window.__injReversePortraitInstalled) return;
+  if (window.__injReversePortraitInstalled) return;
   window.__injReversePortraitInstalled = true;
+  const isEmbedded = window !== window.top;
 
   const ua = navigator.userAgent || '';
   const isPhone = /iPhone|iPod|Android.*Mobile/i.test(ua);
@@ -13,8 +14,10 @@
 
   const root = document.documentElement;
   const key = 'inj-node-reverse-portrait-enabled';
-  let enabled = true;
-  try { enabled = localStorage.getItem(key) !== 'off'; } catch (_) {}
+  let enabled = false;
+  try { enabled = localStorage.getItem(key) === 'on'; } catch (_) {}
+  // The user choice is shared across all INJ Node routes. Do not treat a
+  // persisted choice as permission to prompt again on every page load.
   const needsPermission = typeof DeviceMotionEvent !== 'undefined' &&
     typeof DeviceMotionEvent.requestPermission === 'function';
   let motionAvailable = false;
@@ -26,7 +29,7 @@
   let lastSample = 0;
   let lastMotionSample = 0;
   // Activation establishes a reference position: it must never rotate the UI.
-  let referencePose = null;
+  let referencePose = enabled ? false : null;
   let gravityZ = null;
   let flatReferenceHeading = null;
   let flatReferenceInverted = false;
@@ -46,9 +49,51 @@
     'transform-origin:50% 50%!important;-webkit-transform-origin:50% 50%!important;',
     '-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;}',
     '@supports not (height:100dvh){html[data-inj-reverse-portrait="1"] body{height:100vh!important;}}',
-    '#injReverseAutoButton[aria-pressed="true"] .menu-action-value{color:var(--up,#32bd83);}'
+    '#injReverseAutoButton[aria-pressed="true"] .menu-action-value{color:var(--up,#32bd83);}',
+    'html[data-inj-reverse-portrait="1"] body.inj-section-open{overflow:hidden!important;}',
+    'html[data-inj-reverse-portrait="1"] dialog:modal,',
+    'html[data-inj-reverse-portrait="1"] [popover]:popover-open,',
+    'html[data-inj-reverse-portrait="1"] :fullscreen:not(html):not(iframe){',
+    'transform:rotate(180deg)!important;-webkit-transform:rotate(180deg)!important;',
+    'transform-origin:center center!important;}',
+    'html[data-inj-reverse-child="1"] :fullscreen{',
+    'transform:rotate(180deg)!important;-webkit-transform:rotate(180deg)!important;',
+    'transform-origin:center center!important;}'
   ].join('');
   document.head.appendChild(style);
+
+  // Pages shown inside Home are separate documents. Inherit the rotation
+  // decision from the one top-level sensor owner; never ask for sensor
+  // permissions inside Workspace or other embedded pages.
+  if (isEmbedded) {
+    window.addEventListener('message', event => {
+      if (event.origin !== location.origin ||
+          event.source !== window.parent ||
+          event.data?.type !== 'injnode:reverse-portrait') return;
+      root.dataset.injReverseChild = event.data.active ? '1' : '0';
+    });
+    try {
+      window.parent.postMessage({type:'injnode:reverse:ready'}, location.origin);
+    } catch (_) {}
+    return;
+  }
+
+  function informEmbedded(active) {
+    const message = {type:'injnode:reverse-portrait', active};
+    document.querySelectorAll('iframe').forEach(frame => {
+      try { frame.contentWindow?.postMessage(message, location.origin); }
+      catch (_) {}
+    });
+  }
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin ||
+        event.data?.type !== 'injnode:reverse:ready') return;
+    try { event.source?.postMessage({type:'injnode:reverse-portrait', active:rendered}, location.origin); }
+    catch (_) {}
+  });
+  document.addEventListener('load', event => {
+    if (event.target?.tagName === 'IFRAME') informEmbedded(rendered);
+  }, true);
 
   function portrait() {
     return window.matchMedia('(orientation: portrait)').matches &&
@@ -71,6 +116,7 @@
       root.removeAttribute('data-inj-reverse-portrait');
       if (previousScroll > 0) requestAnimationFrame(() => window.scrollTo(0, previousScroll));
     }
+    informEmbedded(shouldRotate);
     window.dispatchEvent(new Event('resize'));
     updateControls();
   }
@@ -194,25 +240,33 @@
     return button;
   }
   async function toggleAutomatic() {
-    if (enabled && (!needsPermission || motionAvailable)) {
+    const recoverPermission = enabled && needsPermission && !motionAvailable;
+    if (enabled && !recoverPermission) {
       enabled = false;
+      permissionRejected = false;
       resetReference();
     } else {
-      enabled = true;
-      resetReference();
+      if (!enabled) {
+        enabled = true;
+        resetReference();
+      }
       permissionRejected = false;
       if (needsPermission && !motionAvailable) {
-        // Call every permission API synchronously during this click gesture.
+        // A native iOS permission is only requested on this explicit tap.
+        // A stored preference never invokes the OS permission prompt on
+        // navigation, Workspace launch, fullscreen or PWA reopening.
         const requests = [];
-        try { requests.push(DeviceMotionEvent.requestPermission()); } catch (_) {}
+        try { requests.push(DeviceMotionEvent.requestPermission()); }
+        catch (err) { requests.push(Promise.reject(err)); }
         if (typeof DeviceOrientationEvent !== 'undefined' &&
             typeof DeviceOrientationEvent.requestPermission === 'function') {
-          try { requests.push(DeviceOrientationEvent.requestPermission()); } catch (_) {}
+          try { requests.push(DeviceOrientationEvent.requestPermission()); }
+          catch (err) { requests.push(Promise.reject(err)); }
         }
         const answers = await Promise.allSettled(requests);
         if (answers.length && answers.every(x => x.status !== 'fulfilled' || x.value !== 'granted')) {
-          enabled = false;
           permissionRejected = true;
+          // Keep the user's ON choice even when iOS revokes motion access.
         }
       }
     }
@@ -220,6 +274,7 @@
     updateLayout();
     updateControls();
   }
+
   function installControls() {
     if (autoButton) return;
     const grid = document.querySelector('#menuPreferencesAccordion .menu-settings-grid');
@@ -241,10 +296,12 @@
   }, { passive: true });
   window.addEventListener('resize', updateLayout, { passive: true });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) updateLayout(); });
-  window.addEventListener('pageshow', updateLayout);
+  window.addEventListener('pageshow', () => { updateLayout(); informEmbedded(rendered); });
   window.addEventListener('injnode:languagechange', updateControls);
   window.addEventListener('storage', updateControls);
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { installControls(); updateLayout(); }, { once: true });
-  } else { installControls(); updateLayout(); }
+    document.addEventListener('DOMContentLoaded', () => {
+      installControls(); updateLayout(); informEmbedded(rendered);
+    }, { once: true });
+  } else { installControls(); updateLayout(); informEmbedded(rendered); }
 })();
