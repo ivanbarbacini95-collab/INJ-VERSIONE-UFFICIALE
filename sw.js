@@ -1,6 +1,6 @@
-const CACHE_NAME = 'inj-node-v20261104-official-reverse-portrait-1';
+const CACHE_NAME = 'inj-node-v20261104-official-reverse-portrait-motion-2';
 const APP_SHELL = [
-  './inj-upside-down-20261104.js?v=20261104a',
+  './inj-upside-down-20261104.js?v=20261104b',
   './workspace.html?v=workspace-20261103-fullscreen-r2',
   './workspace.css?v=fullscreen-amounts-20261103r2',
   './workspace.js?v=fullscreen-amounts-20261103r2',
@@ -372,7 +372,7 @@ self.addEventListener('install', (event) => {
     // legacy CSS/JS downloads before the worker can activate. Cache the
     // actual boot path first; runtime requests populate the rest on demand.
     const essential=new Set([
-      './inj-upside-down-20261104.js?v=20261104a',
+      './inj-upside-down-20261104.js?v=20261104b',
       './inj-view-mode-20261102.css?v=20261102-litepro-ohlc-official1',
       './inj-view-mode-20261102.js?v=20261102-litepro-ohlc-official1',
       './inj-light-home-20261102.css?v=20261102-litepro-ohlc-official1',
