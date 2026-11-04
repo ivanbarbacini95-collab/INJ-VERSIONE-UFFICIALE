@@ -85,13 +85,14 @@
   window.addEventListener('devicemotion', event => {
     const g = event.accelerationIncludingGravity;
     if (!g || !Number.isFinite(g.y)) return;
+    const firstReading = !motionAvailable;
     motionAvailable = true;
     lastMotionSample = performance.now();
+    if (firstReading) updateControls();
     // W3C device axes: +Y is towards the TOP of the phone; a phone held
     // upright reads about +9.8 m/s², inverted about -9.8 m/s².
     if (g.y < -5.8) sample(true);
     else if (g.y > 5.8) sample(false);
-    updateControls();
   }, { passive: true });
 
   window.addEventListener('deviceorientation', event => {
@@ -99,10 +100,11 @@
     if (performance.now() - lastMotionSample < 1200 ||
       !Number.isFinite(event.beta) || !Number.isFinite(event.gamma) ||
       Math.abs(event.gamma) > 40) return;
+    const firstReading = !motionAvailable;
     motionAvailable = true;
+    if (firstReading) updateControls();
     if (event.beta < -48) sample(true);
     else if (event.beta > 48) sample(false);
-    updateControls();
   }, { passive: true });
 
   function localeEN() {
