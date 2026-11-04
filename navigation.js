@@ -226,9 +226,9 @@ window.addEventListener('injnode:languagechange',event=>{
 
 /* Reverse portrait is loaded only by the top-level PWA, not inside its sections. */
 ;(() => {
-  if (window !== window.top || document.querySelector('script[data-inj-reverse-loader]')) return;
+  if (document.querySelector('script[data-inj-reverse-loader]')) return;
   const script = document.createElement('script');
   script.dataset.injReverseLoader = '1';
-  script.src = './inj-upside-down-20261104.js?v=20261104b';
+  script.src = './inj-upside-down-20261104.js?v=20261104c';
   document.head.appendChild(script);
 })();
