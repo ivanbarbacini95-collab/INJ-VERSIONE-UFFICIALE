@@ -11,7 +11,11 @@
  const gate=()=>document.getElementById('entryGate');
  function isHomeVisible(){
   const g=gate();
-  return !!(g&&g.classList.contains('visible')&&g.getAttribute('aria-hidden')!=='true');
+  // Category tabs use the same #entryGate scroller, but their scroll offsets
+  // belong to Market/ETF/Reward/Tools, never to the actual Home.
+  return !!(g&&document.documentElement.dataset.injHomeTab==='home'
+    &&g.classList.contains('visible')&&g.getAttribute('aria-hidden')!=='true'
+    &&document.body.classList.contains('entry-gate-open'));
  }
  function snapshot(){
   const r=root(),g=gate();
@@ -41,12 +45,16 @@
   const pos=known(),g=gate();
   if(!pos||!g||!isHomeVisible())return;
   const r=root();
-  const documentY=Math.max(0,Number(pos.doc)||0);
-  // Use direct scrollTop (no smooth scroll/animations); Safari must not
-  // jump via scrollIntoView while selected wallet rail is rebuilt.
+  // Once the Home fits one screen, any persisted Y value is obsolete.
+  // Otherwise clamp to the *current* scroll capacity, not a previous tab.
+  const fitted=document.documentElement.dataset.injHomeFit==='true';
+  const maxDocument=Math.max(0,(r?.scrollHeight||0)-(r?.clientHeight||window.innerHeight));
+  const maxGate=Math.max(0,g.scrollHeight-g.clientHeight);
+  const documentY=fitted?0:Math.min(maxDocument,Math.max(0,Number(pos.doc)||0));
+  // Use direct scrollTop; avoid smooth animation and scrollIntoView.
   if(r&&Math.abs((r.scrollTop||0)-documentY)>1)r.scrollTop=documentY;
   if(Math.abs((window.scrollY||0)-documentY)>1)window.scrollTo(0,documentY);
-  const gateY=Math.max(0,Number(pos.gate)||0);
+  const gateY=fitted?0:Math.min(maxGate,Math.max(0,Number(pos.gate)||0));
   if(Math.abs((g.scrollTop||0)-gateY)>1)g.scrollTop=gateY;
  }
  function restore(){
