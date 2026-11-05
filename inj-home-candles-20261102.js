@@ -134,9 +134,9 @@
    })).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));
    const frag=document.createDocumentFragment();
    if(chartType==='candles'){
-     const centers=bars.map(bar=>geo.center(bar));
-      const gaps=centers.slice(1).map((x,i)=>x-centers[i]).filter(g=>g>0.1);
-      const slot=gaps.length?Math.min(...gaps):(geo.x1-geo.x0)/Math.max(1,bars.length);
+     // Consistent candle slot based on exchange interval, not on a
+      // partially formed last bar whose timestamp hugs the prior close.
+      const slot=(geo.x1-geo.x0)*PERIODS[period].step/PERIODS[period].span;
       const width=Math.min(8.5,Math.max(2.3,slot*.72));
      for(const bar of bars){
        const x=Math.max(geo.x0,Math.min(geo.x1,geo.center(bar)));
