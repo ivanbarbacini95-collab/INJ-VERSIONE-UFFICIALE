@@ -574,7 +574,7 @@
    const frag=document.createDocumentFragment();
    for(const key of dateKeys){
      const row=byDate.get(key),label=key.slice(8)+'/'+key.slice(5,7);
-     const group=document.createElement('div');group.className='injc-flow-day';group.dataset.day=key;
+     const group=document.createElement('div');group.className='injc-flow-day';group.dataset.day=key;group.classList.toggle('is-current',key===today);
      group.setAttribute('aria-label',key+' · '+(row?'Inflow '+shortUsd(row.inflowUsd)+'; Outflow '+shortUsd(row.outflowUsd):tr('flussi non disponibili','fund flows unavailable')));
      group.title=group.getAttribute('aria-label');
      const bars=document.createElement('div');bars.className='injc-flow-columns';
@@ -584,7 +584,7 @@
          const value=side==='inflow'?row.inflowUsd:row.outflowUsd;
          bar.style.height=(value===0?'3px':Math.max(6,Math.min(100,value/max*100)).toFixed(1)+'%');
          bar.classList.toggle('is-zero',value===0);
-       }else{bar.style.height='11px';bar.classList.add('is-pending');}
+       }else{bar.style.height='64px';bar.classList.add('is-pending');}
        bars.appendChild(bar);
      }
      group.appendChild(bars);
