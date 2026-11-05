@@ -1,0 +1,67 @@
+name: INJ Node · INJC Nasdaq quotes
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Cron uses UTC; include DST range, script checks America/New_York.
+    - cron: '*/5 8-23 * * 1-5'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/injc-market-quotes.yml'
+      - 'scripts/update-injc-market-quotes.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: injnode-injc-market-snapshot
+  cancel-in-progress: false
+
+jobs:
+  quote-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch traded Nasdaq INJC shares
+        run: node scripts/update-injc-market-quotes.mjs
+      - name: Publish fallback JSON without overwriting app edits
+        run: |
+          set -eu
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          snapshot="$(mktemp)"
+          previous="$(mktemp)"
+          trap 'rm -f "$snapshot" "$previous"' EXIT
+          cp market-data/injc-etf-quotes.json "$snapshot"
+          for attempt in 1 2 3 4 5 6; do
+            git fetch --quiet origin main
+            if git show origin/main:market-data/injc-etf-quotes.json > "$previous" 2>/dev/null; then
+              if node -e '
+                const fs=require("node:fs");
+                const a=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+                const b=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
+                if(!a.quote||!a.generatedAt)process.exit(0);
+                if(b.generatedAt&&Date.parse(b.generatedAt)>=Date.parse(a.generatedAt))process.exit(0);
+                process.exit(1);
+              ' "$snapshot" "$previous"; then
+                echo "No new verified quote or newer snapshot already present."
+                exit 0
+              fi
+            fi
+            git reset --hard origin/main
+            cp "$snapshot" market-data/injc-etf-quotes.json
+            git add market-data/injc-etf-quotes.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "data(injc): refresh Nasdaq INJC market snapshot"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep "$attempt"
+          done
+          echo "::error::Unable to publish INJC quote after retries"
+          exit 1
