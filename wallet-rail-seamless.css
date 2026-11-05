@@ -153,3 +153,25 @@ html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-w
   transition:none!important;
  }
 }
+
+
+/* 2026-11-05 · Dashboard wallet border safe-space.
+   iOS scroll containers crop borders and selected-card shadows when the
+   horizontally scrolling row is flush to its own top/bottom padding edge.
+   Add internal breathing room, without changing wallet card dimensions,
+   click areas, horizontal swipes or the native Dashboard scroller. */
+@media (max-width: 900px), (hover:none) and (pointer:coarse) {
+  html[data-inj-page="index"][data-theme] body .app-shell main#top
+  > .wallet-dock .saved-wallets > #walletCards.wallet-mini-strip {
+    box-sizing:border-box!important;
+    padding:8px 5px 9px!important;
+    scroll-padding-inline:5px;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+  }
+  html[data-inj-page="index"][data-theme] body .app-shell main#top
+  > .wallet-dock .saved-wallets > #walletCards.wallet-mini-strip > .wallet-mini {
+    flex-shrink:0!important;
+    margin-block:0!important;
+  }
+}
