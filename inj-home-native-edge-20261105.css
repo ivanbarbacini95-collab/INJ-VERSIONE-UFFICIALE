@@ -1,0 +1,45 @@
+/* INJ NODE · iPhone native edge / seamless Home · 2026-11-05.
+   The existing status palette CSS added a dark, opaque 185px top fade.
+   Use one continuous, actual theme canvas. Do not make an extra status
+   slab or move the native Home header into the iPhone sensor cutout. */
+@media (max-width:900px), (hover:none) and (pointer:coarse) {
+  html[data-inj-page="index"][data-theme] {
+    --inj-native-status-tone:var(--theme-canvas,var(--bg,#060b11))!important;
+    --inj-native-top-tone:var(--theme-canvas,var(--bg,#060b11))!important;
+    background-color:var(--theme-canvas,var(--bg,#060b11))!important;
+    background-image:var(--page-gradient,none)!important;
+    background-repeat:no-repeat!important;
+    background-position:center top!important;
+    background-size:100% 100%!important;
+    background-attachment:fixed!important;
+  }
+  html[data-inj-page="index"][data-theme] body {
+    background-color:transparent!important;
+    background-image:none!important;
+  }
+  /* Old edge sampling used a z-index above every screen surface.
+     Native iOS draws its own status icons; never cover them with a
+     synthetic strip, even a 7px strip. */
+  html[data-inj-page="index"] #injNativeChromeEdgeSample {
+    display:none!important;
+    visibility:hidden!important;
+  }
+  html[data-inj-page="index"][data-theme] body > #entryGate.entry-gate,
+  html[data-inj-page="index"][data-theme] body > #entryGate.entry-gate.visible,
+  html[data-inj-page="index"][data-theme] body > #entryGate.entry-gate > .entry-gate-shell:not(.first-access) {
+    background-color:transparent!important;
+    background-image:none!important;
+  }
+  html[data-inj-page="index"][data-theme] body #entryGate
+  :is(.entry-home-top,.home-safe-heading.inj-terminal-hero-arranged) {
+    background:transparent!important;
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+  }
+  /* Keep the genuine iPhone safe-area inset in the content layout.
+     Do not overlay the hamburger, title or Pro mode button. */
+  html[data-inj-page="index"][data-theme] body.entry-gate-open
+  #entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) {
+    padding-top:max(6px,env(safe-area-inset-top,0px))!important;
+  }
+}
