@@ -1,6 +1,7 @@
 /* INJ Node · INJC market terminal · 2026-11-05
    No fabricated quotes or fund flows. All quote fields belong to ETF shares, not INJ spot.
-   Yahoo v8 chart quotes can be delayed/limited; a GitHub Actions snapshot is fallback.
+   Public Nasdaq.com last-sale snapshot first when available; Yahoo bars and timestamped backup are fallbacks.
+   Public endpoints are not licensed exchange streaming. Always display the actual trade time.
 */
 (() => {
  'use strict';
@@ -200,6 +201,77 @@
      open:dayRegular[0]?.open??null,high:dayHigh,low:dayLow,volume,points,
      session:dayPre.length&&!dayRegular.length?'pre':'regular',currency:meta.currency||'USD',isDelayed:true,updatedAt:Date.now()};
  }
+
+ // Nasdaq.com exposes a public last-sale snapshot. It is distinct from the licensed Nasdaq Data Link stream.
+ // Never treat a response timestamp or browser fetch time as the exchange trade timestamp.
+ function parseEtTimestamp(value){
+   if(typeof value==='number')return value>1e12?value:value>1e9?value*1000:NaN;
+   if(typeof value!=='string')return NaN;
+   const s=value.trim(),native=/\d{4}-\d\d-\d\dT\d\d:\d\d/.test(s)?Date.parse(s):NaN;
+   if(Number.isFinite(native))return native;
+   const m=s.match(/([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)\s*(ET|EST|EDT)/i);
+   if(!m)return NaN;
+   const month=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[1].slice(0,3).toLowerCase());
+   if(month<0)return NaN;
+   let hour=Number(m[4])%12;if(m[7].toUpperCase()==='PM')hour+=12;
+   const naive=Date.UTC(Number(m[3]),month,Number(m[2]),hour,Number(m[5]),Number(m[6]||0));
+   const tz=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'shortOffset'}).formatToParts(new Date(naive)).find(x=>x.type==='timeZoneName')?.value||'GMT-5';
+   const offset=tz.match(/GMT([+-])(\d{1,2})(?::(\d\d))?/);
+   const minutes=offset?(offset[1]==='-'?-1:1)*(Number(offset[2])*60+Number(offset[3]||0)):-300;
+   return naive-minutes*60000;
+ }
+ const quoteNumber=value=>{
+   if(typeof value==='number')return Number.isFinite(value)?value:null;
+   if(typeof value!=='string')return null;
+   const cleaned=value.trim().replace(/[,$%\s]/g,'').replace(/^\((.+)\)$/,'-$1');
+   return /^[-+]?\d+(\.\d+)?$/.test(cleaned)?Number(cleaned):null;
+ };
+ function parseNasdaq(payload){
+   const d=payload?.data,primary=d?.primaryData,secondary=d?.secondaryData;
+   if(!d||!primary||payload?.status?.rCode>=400)throw Error('Nasdaq quote unavailable');
+   if(d.symbol&&String(d.symbol).toUpperCase()!=='INJC')throw Error('Nasdaq symbol mismatch');
+   const entries=[primary,secondary].filter(Boolean);
+   const rows=entries.map(v=>({
+     price:quoteNumber(v.lastSalePrice),
+     time:parseEtTimestamp(v.lastTradeTimestamp??v.lastTradeTime??v.lastTradeDateTime??v.timestamp),
+     change:quoteNumber(v.netChange),
+     pct:quoteNumber(v.percentageChange),
+     realTime:v.isRealTime===true
+   })).filter(x=>x.price>0&&Number.isFinite(x.time)&&x.time<=Date.now()+120000&&x.time>Date.UTC(2026,10,4));
+   if(!rows.length)throw Error('Nasdaq quote without verifiable trade timestamp');
+   rows.sort((a,b)=>b.time-a.time);
+   const last=rows[0],previous=Number.isFinite(last.change)?last.price-last.change:null;
+   return {
+     price:last.price,quoteTime:last.time,previous,
+     change:Number.isFinite(last.pct)?last.pct:Number.isFinite(previous)&&previous>0?(last.price-previous)/previous*100:null,
+     open:null,high:null,low:null,volume:null,points:[],session:pointSession(last.time),
+     isDelayed:!last.realTime,providerRealTime:last.realTime,updatedAt:Date.now()
+   };
+ }
+ function nasdaqUrl(viaProxy=false){
+   const direct='https://api.nasdaq.com/api/quote/INJC/info?assetclass=etf';
+   return viaProxy?'https://proxy.cors.dev/'+direct:direct;
+ }
+ async function getNasdaq(){
+   for(const url of [nasdaqUrl(),nasdaqUrl(true)]){
+     try{return parseNasdaq(await getJson(url,6500));}catch(_){}
+   }
+   return null;
+ }
+ function withChart(quote,reference){
+   if(!reference)return quote;
+   const sameDay=nyKey(new Date(quote.quoteTime))===nyKey(new Date(reference.quoteTime));
+   const points=reference.points.slice();
+   if(sameDay&&timeframe==='1d'&&quote.quoteTime>(points.at(-1)?.time||0)
+     &&points.length&&quote.quoteTime-(points.at(-1)?.time||0)<1800000){
+     points.push({time:quote.quoteTime,close:quote.price,open:null,high:null,low:null,volume:null,session:pointSession(quote.quoteTime)});
+   }
+   return {...quote,points,
+     open:sameDay?reference.open:null,high:sameDay?reference.high:null,
+     low:sameDay?reference.low:null,volume:sameDay?reference.volume:null,
+     previous:Number.isFinite(quote.previous)?quote.previous:reference.previous};
+ }
+
  function parseSnapshot(data){
    if(data?.schemaVersion!==1||data?.ticker!=='INJC'||!data?.quote)throw Error('No valid backup');
    const q=data.quote,price=numeric(q.price),quoteTime=Date.parse(q.quoteTime);
@@ -210,16 +282,34 @@
  }
  async function getQuote(){
    const [range,interval]=ranges[timeframe];
-   const urls=[yahooUrl(range,interval),yahooUrl(range,interval,'query2.finance.yahoo.com')];
-   let lastError;
-   for(const url of urls){
-     try{return {data:parseYahoo(await getJson(url)),source:'Yahoo Finance · '+tr('dato potenzialmente ritardato','potentially delayed')}}catch(e){lastError=e}
+   // Check Nasdaq public last-sale concurrently with intraday bars to avoid unnecessary waiting.
+   const primary=getNasdaq();
+   const chart=(async()=>{
+     for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
+       try{return parseYahoo(await getJson(yahooUrl(range,interval,host),7000));}catch(_){}
+     }
+     return null;
+   })();
+   const backup=(async()=>{
+     try{
+       const snap=await getJson('./market-data/injc-etf-quotes.json?t='+Date.now(),5000);
+       return {data:parseSnapshot(snap),source:snap.source||'Market snapshot'};
+     }catch(_){return null;}
+   })();
+   const [nasdaq,yahoo,snapshot]=await Promise.all([primary,chart,backup]);
+   const bestOther=[yahoo?{data:yahoo,source:'Yahoo Finance · '+tr('possibile ritardo','potential delay')}:null,snapshot]
+     .filter(Boolean).sort((a,b)=>b.data.quoteTime-a.data.quoteTime)[0]||null;
+   // A stale Nasdaq page must not displace a newer actual trade from another provider.
+   if(nasdaq&&(!bestOther||nasdaq.quoteTime>=bestOther.data.quoteTime-60000)){
+     return {
+       data:withChart(nasdaq,yahoo||snapshot?.data),
+       source:nasdaq.providerRealTime?'Nasdaq.com · '+tr('quotazione dichiarata real-time','provider marks real-time'):
+         'Nasdaq.com · '+tr('ultima quotazione pubblicata','last published quote')
+     };
    }
-   try{
-     // Static same-origin fallback, updated by GitHub Actions when the quote is available.
-     const snap=await getJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000);
-     return {data:parseSnapshot(snap),source:tr('Backup mercato · dato ritardato','Market backup · delayed')};
-   }catch(e){throw lastError||e}
+   if(bestOther)return bestOther;
+   if(nasdaq)return {data:nasdaq,source:'Nasdaq.com · '+tr('ultima quotazione pubblicata','last published quote')};
+   throw Error('No timestamped market quote available');
  }
  function marketRangePoints(raw,period){
    const now=Date.now(),start=now-(priceRangeConfig[period].maxDays*86400000+60000);
@@ -383,7 +473,7 @@
      if(regularIndices.length)labels+='<circle cx="145" cy="15" r="4" fill="'+normalColor+'"/><text x="156" y="19" fill="currentColor" opacity=".75" font-size="12">NASDAQ</text>';
    }
    wrap.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="'+tr('Grafico delle transazioni INJC: pre-market giallo, sessione rosso o verde','INJC traded chart: yellow pre-market, red or green regular session')+'"><defs><linearGradient id="injcPreFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+preColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+preColor+'" stop-opacity="0"/></linearGradient><linearGradient id="injcNormalFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+normalColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+normalColor+'" stop-opacity="0"/></linearGradient></defs>'+grid+shapes+labels+dates+'</svg>';
-   setText('etfChartDataLabel',tr('INJC · '+points.length+' transazioni campionate · feed potenzialmente ritardato','INJC · '+points.length+' sampled points · potentially delayed feed'));
+   setText('etfChartDataLabel',tr('INJC · '+points.length+' punti intraday · storico Yahoo/backup, ultima quota da fonte indicata in alto','INJC · '+points.length+' intraday points · Yahoo/backup history, latest quote source shown above'));
  }
  function displayQuote(data,source){
    const prevTime=lastQuote?.quoteTime||0;
@@ -398,7 +488,9 @@
    }
    changeClass('etfQuoteChange',pre?null:data.change);
    changeClass('etfQuoteDelta',pre?null:data.price-data.previous);
-   setText('etfQuoteFreshness',source+' · '+(pre?tr('PRE-MARKET','PRE-MARKET'):tr('ultima transazione','last trade'))+' '+fmtTime(data.quoteTime)+' NY');
+   const ageM=Math.max(0,Math.floor((Date.now()-data.quoteTime)/60000));
+   const age=ageM>=15?' · '+tr('RITARDO ≥15 MIN','DELAY ≥15 MIN'):ageM>=3?' · '+tr('dato '+ageM+' min fa','quote '+ageM+' min old'):'';
+   setText('etfQuoteFreshness',source+' · '+(pre?tr('PRE-MARKET','PRE-MARKET'):tr('ultimo scambio','last trade'))+' '+fmtTime(data.quoteTime)+' NY'+age);
    setText('etfVolume',count(data.volume));
    setText('etfNotional',Number.isFinite(data.volume)?shortUsd(data.volume*data.price):'—');
    setText('etfDayHigh',usd(data.high));setText('etfDayLow',usd(data.low));
@@ -416,7 +508,8 @@
    try{
      const incoming=await getQuote();
      displayQuote(incoming.data,incoming.source);
-     setText('etfSyncLabel',tr('AGGIORNATO','UPDATED'));
+     const stale=Date.now()-incoming.data.quoteTime>15*60000;
+     setText('etfSyncLabel',stale?tr('DATO RITARDATO','DELAYED QUOTE'):tr('QUOTAZIONE AGGIORNATA','QUOTE UPDATED'));
    }catch(err){
      // Never erase a last-known real quote, but clearly identify a failed live update.
      if(lastQuote){
@@ -534,7 +627,7 @@
    window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data?.type==='injnode:etf:language')location.reload()});
    renderStatus();renderFlows();drawGraph();renderPriceRange();
    refreshMarket();refreshFlows();refreshPriceRange();
-   refreshTimer=setInterval(()=>{if(!document.hidden)refreshMarket()},30000);
+   refreshTimer=setInterval(()=>{if(!document.hidden)refreshMarket()},20000);
    marketPulseTimer=setInterval(()=>{if(!document.hidden){renderStatus();if(flowDayKey!==nyKey(new Date()))renderFlows()}},1000);
    setInterval(()=>{if(!document.hidden)refreshFlows()},300000);
    setInterval(()=>{if(!document.hidden)refreshPriceRange()},60000);
