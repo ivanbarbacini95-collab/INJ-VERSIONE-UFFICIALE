@@ -68,7 +68,8 @@ function parseNasdaqEt(s){
  return naive-offset*60000;
 }
 const quoteValue=s=>{
- const n=typeof s==='number'?s:Number(String(s||'').trim().replace(/[,$%\s]/g,''));
+ if(s===null||s===undefined||s==='')return null;
+ const n=typeof s==='number'?s:Number(String(s).trim().replace(/[,$%\s]/g,''));
  return Number.isFinite(n)?n:null;
 };
 try{
