@@ -1,7 +1,18 @@
 {
   "schemaVersion": 1,
   "ticker": "INJC",
-  "generatedAt": null,
-  "quote": null,
+  "generatedAt": "2026-11-05T15:40:00.000Z",
+  "source": "Nasdaq.com · riferimento del 05/11 10:40 ET (screenshot, non live)",
+  "quote": {
+    "price": 25.7,
+    "quoteTime": "2026-11-05T15:40:00.000Z",
+    "session": "regular",
+    "previous": 25,
+    "change": 2.8,
+    "open": null,
+    "high": null,
+    "low": null,
+    "volume": null
+  },
   "points": []
 }
