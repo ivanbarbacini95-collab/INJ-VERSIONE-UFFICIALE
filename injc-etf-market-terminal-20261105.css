@@ -131,3 +131,112 @@ body.injc-chart-modal-open{overflow:hidden!important;touch-action:none}
  #etfChartPanel.injc-chart-expanded #etfSvgWrap{height:calc(100dvh - 265px)}
 }
 @media(prefers-reduced-motion:reduce){.injc-flow-column{transition:none}}
+
+
+/* INJC ETF · precision price-range rail (2026-11-05)
+   Actual traded LOW, OPEN and HIGH by selected period.
+   Two distinct markers: opening (hairline) and current/latest price (dot). */
+.injc-price-range{
+  padding:16px 20px 14px;
+  border-top:1px solid var(--etf-line);
+  background:color-mix(in srgb,var(--etf-card) 77%,transparent);
+  min-width:0;
+}
+.injc-price-range-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  flex-wrap:wrap;margin-bottom:17px;
+}
+.injc-price-range-eyebrow{
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+  font-size:10px;line-height:1.3;font-weight:750;
+  letter-spacing:.11em;color:var(--etf-muted);
+}
+.injc-price-range-eyebrow .injc-range-period{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:5px 8px;border-radius:7px;color:var(--etf-ink);
+  background:color-mix(in srgb,var(--etf-accent) 9%,var(--etf-card));
+  letter-spacing:.06em;
+}
+.injc-price-range-tabs{display:flex;gap:3px;align-items:center;flex-wrap:nowrap}
+.injc-price-range-tabs button{
+  appearance:none;min-width:36px;min-height:32px;padding:5px 9px;
+  background:transparent;color:var(--etf-muted);border:1px solid transparent;
+  border-radius:8px;cursor:pointer;font-size:10px;font-weight:740;
+}
+.injc-price-range-tabs button.active{
+  color:var(--etf-ink);
+  border-color:color-mix(in srgb,var(--etf-accent) 29%,var(--etf-line));
+  background:color-mix(in srgb,var(--etf-accent) 12%,transparent);
+}
+.injc-price-range-tabs button:focus-visible{outline:2px solid var(--etf-accent);outline-offset:2px}
+.injc-price-range-values{
+  display:grid;grid-template-columns:1fr minmax(100px,1fr) 1fr;
+  align-items:end;column-gap:7px;margin-bottom:15px;
+  font-variant-numeric:tabular-nums;
+}
+.injc-price-range-values>div{min-width:0}
+.injc-price-range-values>div small{
+  display:block;color:var(--etf-muted);font-size:9px;
+  letter-spacing:.14em;font-weight:720;margin-bottom:7px;
+}
+.injc-price-range-values>div strong{
+  display:block;color:var(--etf-ink);font-size:clamp(15px,2.7vw,22px);
+  font-weight:730;letter-spacing:-.035em;overflow-wrap:anywhere;
+}
+.injc-range-open{text-align:center}
+.injc-price-range-values .injc-range-open strong{color:var(--etf-accent)}
+.injc-range-high{text-align:right}
+.injc-price-range-track{
+  display:block;position:relative;height:6px;margin:0 6px;
+  background:color-mix(in srgb,var(--etf-ink) 12%,transparent);
+  border-radius:999px;overflow:visible;
+}
+.injc-price-range-fill{
+  position:absolute;left:0;top:0;bottom:0;
+  border-radius:inherit;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--etf-accent) 42%,var(--etf-card)),var(--etf-accent));
+  transition:width .3s ease;
+}
+.injc-price-range-track.is-premarket .injc-price-range-fill{
+  background:linear-gradient(90deg,color-mix(in srgb,var(--injc-pre) 32%,var(--etf-card)),var(--injc-pre));
+}
+.injc-price-range-open-marker{
+  position:absolute;top:-6px;height:18px;width:1px;
+  background:var(--etf-ink);opacity:.8;
+  transform:translateX(-50%);pointer-events:none;z-index:2;
+}
+.injc-price-range-last-marker{
+  position:absolute;top:50%;width:13px;height:13px;
+  background:var(--etf-accent);
+  box-shadow:0 0 0 3px var(--etf-card);
+  border:2px solid var(--etf-ink);
+  border-radius:50%;transform:translate(-50%,-50%);
+  pointer-events:none;z-index:3;transition:left .3s ease;
+}
+.injc-price-range-track.is-premarket .injc-price-range-last-marker{background:var(--injc-pre)}
+.injc-price-range-track.is-empty{opacity:.52}
+.injc-price-range-track [hidden]{display:none!important}
+.injc-price-range-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-top:15px;color:var(--etf-muted);
+}
+.injc-price-range-footer small{font-size:10px;line-height:1.5;min-width:0}
+.injc-price-range-footer .injc-range-last{
+  display:flex;align-items:baseline;gap:6px;white-space:nowrap;
+  color:var(--etf-muted);font-weight:690;
+}
+.injc-price-range-footer .injc-range-last strong{
+  color:var(--etf-ink);font-size:12px;font-weight:750;
+}
+@media(max-width:530px){
+ .injc-price-range{padding:13px 12px}
+ .injc-price-range-head{gap:9px;margin-bottom:15px}
+ .injc-price-range-eyebrow{font-size:9px;gap:5px;letter-spacing:.07em}
+ .injc-price-range-tabs button{min-width:32px;min-height:30px;padding:5px 7px}
+ .injc-price-range-values{grid-template-columns:minmax(0,1fr) minmax(90px,1fr) minmax(0,1fr)}
+ .injc-price-range-values>div strong{font-size:clamp(15px,4.5vw,20px)}
+ .injc-price-range-footer small{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .injc-price-range-fill,.injc-price-range-last-marker{transition:none}
+}
