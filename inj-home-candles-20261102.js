@@ -106,6 +106,31 @@
    }
    return bars;
  }
+  // Responsive Lite rendering: aggregate only the visible candlestick bars,
+  // preserving actual opening, high, low and closing prices of every interval.
+  // Line-mode data and the Pro chart remain unchanged.
+  function liteViewportCandles(bars,svg,now){
+    const rect=svg?.getBoundingClientRect();
+    const width=rect?.width>0?rect.width:Math.max(180,(get('injLightChartPlot')?.clientWidth||320)-67);
+    const plotWidth=width*(279/320);
+    const maxBars=Math.max(12,Math.min(110,Math.floor(plotWidth/10.5)));
+    const grouping=Math.max(1,Math.ceil(bars.length/maxBars));
+    const bucketMs=PERIODS[period].step*grouping;
+    const result=[];
+    for(const c of bars){
+      const bucket=Math.floor(c.t/bucketMs)*bucketMs;
+      const last=result[result.length-1];
+      if(last&&last.bucket===bucket){
+        last.h=Math.max(last.h,c.h);
+        last.l=Math.min(last.l,c.l);
+        last.c=c.c;
+      }else result.push({t:c.t,o:c.o,h:c.h,l:c.l,c:c.c,bucket});
+    }
+    // A stable timeline prevents the current incomplete bar jumping over
+    // its neighbor when the timestamp moves during a live price update.
+    return result.map(c=>({t:c.t,o:c.o,h:c.h,l:c.l,c:c.c,
+      centerTime:Math.min(c.bucket+bucketMs/2,now)}));
+  }
   function geometry(bars,now){
    const config=PERIODS[period],x0=5,x1=284,from=now-config.span,to=now;
    const highs=bars.map(c=>c.h),lows=bars.map(c=>c.l);
@@ -120,9 +145,9 @@
    // Keep past hourly samples at their genuine timestamps; the live point
    // follows the clock until the current hour has completed.
    const center=bar=>{
-     const at=Math.min(bar.t+config.step,now);
-     return x0+(at-from)/(to-from)*(x1-x0);
-   };
+      const at=Number.isFinite(bar.centerTime)?bar.centerTime:Math.min(bar.t+config.step,now);
+      return x0+(at-from)/(to-from)*(x1-x0);
+    };
    return{min,max,top,bottom,x0,x1,from,to,y,center};
  }
  function svgContent(svg,bars,geo){
@@ -134,29 +159,40 @@
    })).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));
    const frag=document.createDocumentFragment();
    if(chartType==='candles'){
-     // Consistent candle slot based on exchange interval, not on a
-      // partially formed last bar whose timestamp hugs the prior close.
-      const slot=(geo.x1-geo.x0)*PERIODS[period].step/PERIODS[period].span;
-      const width=Math.min(8.5,Math.max(2.3,slot*.72));
-     for(const bar of bars){
-       const x=Math.max(geo.x0,Math.min(geo.x1,geo.center(bar)));
-       const cls=bar.c>=bar.o?'inj-candle-up':'inj-candle-down';
-       const yo=geo.y(bar.o),yc=geo.y(bar.c);
-       frag.appendChild(node('line',{
-         x1:x.toFixed(3),x2:x.toFixed(3),
-         y1:geo.y(bar.h).toFixed(3),y2:geo.y(bar.l).toFixed(3),
-         class:'inj-candle-wick '+cls
-       }));
-       frag.appendChild(node('rect',{
-         x:(x-width/2).toFixed(3),y:Math.min(yo,yc).toFixed(3),
-         width:width.toFixed(3),height:Math.max(1.15,Math.abs(yc-yo)).toFixed(3),rx:'.35',
-         class:'inj-candle-body '+cls
-       }));
-     }
-     svg.replaceChildren(frag);
-     svg.setAttribute('data-inj-points',String(bars.length));
-     return;
-   }
+      // Compute body dimensions in physical CSS pixels, not in fixed viewBox
+      // units. On mobile this maintains wick clarity and visible gaps.
+      const bounds=svg.getBoundingClientRect();
+      const pxToX=320/Math.max(1,bounds.width||260);
+      const pxToY=150/Math.max(1,bounds.height||200);
+      const centers=bars.map(b=>Math.max(geo.x0,Math.min(geo.x1,geo.center(b))));
+      for(let i=0;i<bars.length;i++){
+        const bar=bars[i],x=centers[i],cls=bar.c>=bar.o?'inj-candle-up':'inj-candle-down';
+        const left=i>0?Math.abs(x-centers[i-1]):Infinity;
+        const right=i<bars.length-1?Math.abs(centers[i+1]-x):Infinity;
+        const nearest=Math.min(left,right);
+        // Keep 30% empty space between adjacent candle bodies.
+        const spacingPx=Number.isFinite(nearest)?nearest/pxToX:12;
+        const widthPx=Math.min(15,Math.max(.75,spacingPx*.70));
+        const width=widthPx*pxToX;
+        const yo=geo.y(bar.o),yc=geo.y(bar.c);
+        const bodyHeight=Math.max(2.8*pxToY,Math.abs(yc-yo));
+        const y=Math.max(geo.top,Math.min(geo.bottom-bodyHeight,(yo+yc-bodyHeight)/2));
+        frag.appendChild(node('line',{
+          x1:x.toFixed(3),x2:x.toFixed(3),
+          y1:geo.y(bar.h).toFixed(3),y2:geo.y(bar.l).toFixed(3),
+          class:'inj-candle-wick '+cls
+        }));
+        frag.appendChild(node('rect',{
+          x:(x-width/2).toFixed(3),y:y.toFixed(3),
+          width:width.toFixed(3),height:bodyHeight.toFixed(3),rx:'.55',
+          class:'inj-candle-body '+cls
+        }));
+      }
+      svg.replaceChildren(frag);
+      svg.setAttribute('data-inj-points',String(bars.length));
+      svg.setAttribute('data-inj-candle-density','responsive');
+      return;
+    }
    let segment=[];
    const flush=()=>{
      if(segment.length<2){segment=[];return;}
@@ -390,11 +426,12 @@
    }
    if(!lightStage||lite.length<2){clearChart(true);return;}
    lightSvg=ensureChart(lightStage,'injLightLineSvg');
-   const geo=geometry(lite,now);
-   svgContent(lightSvg,lite,geo);
-   updateLightTimeline(now,geo);
-   bindCandleInteraction(lightStage,'light');
-   updateInspection('light',lite,geo);
+   const displayBars=chartType==='candles'?liteViewportCandles(lite,lightSvg,now):lite;
+    const geo=geometry(displayBars,now);
+    svgContent(lightSvg,displayBars,geo);
+    updateLightTimeline(now,geo);
+    bindCandleInteraction(lightStage,'light');
+    updateInspection('light',displayBars,geo);
    // Keep the live-dot SVG outside the repeatedly redrawn candle scene.
    // Animations finish naturally even if the quote updates several times.
    markerSvg=ensureChart(lightStage,'injLightLineMarkerSvg');
