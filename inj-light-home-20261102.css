@@ -523,3 +523,83 @@ html[data-inj-page="index"] body #injLightHome .inj-lite-chart-option-row button
   html[data-inj-page="index"] body #injLightHome #injLiteChartOptions svg{width:12px!important;height:12px!important;}
   html[data-inj-page="index"] body #injLightHome .inj-light-chart-head{column-gap:6px!important;}
 }
+
+/* INJ Lite chart control row + price guide · 2026-11-05 */
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-head{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex-wrap:nowrap!important;gap:8px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-light-chart-head h2{
+  flex:0 1 auto!important;min-width:0!important;font-size:clamp(13px,3.45vw,17px)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-state{
+  display:inline-flex!important;align-items:center!important;justify-content:flex-end!important;
+  gap:8px!important;flex:0 0 auto!important;white-space:nowrap!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-state #injLightPerf6h{
+  margin-left:0!important;font-size:clamp(10px,2.45vw,12px)!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-controls{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex-wrap:wrap!important;gap:7px!important;
+  width:100%!important;min-width:0!important;margin-top:13px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-segment{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex:0 0 auto!important;min-width:0!important;gap:2px!important;
+  padding:3px!important;border-radius:12px!important;
+  border:1px solid color-mix(in srgb,var(--accent,#76c9b3) 19%,var(--line,#344448))!important;
+  background:color-mix(in srgb,var(--accent,#76c9b3) 4%,var(--surface,#11191d))!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-types{flex:0 0 auto!important}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-periods{
+  flex:1 1 auto!important;min-width:max-content!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-segment button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex:1 1 auto!important;white-space:nowrap!important;min-width:0!important;
+  padding:7px 8px!important;min-height:30px!important;
+  background:transparent!important;border:1px solid transparent!important;
+  border-radius:9px!important;color:var(--muted-strong,var(--muted,#9baeb0))!important;
+  box-shadow:none!important;font-size:clamp(10px,2.4vw,11px)!important;
+  font-weight:600!important;line-height:1.15!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-periods button{
+  padding:7px 6px!important;min-width:27px!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-segment button[aria-pressed="true"]{
+  color:var(--text,#f2faf8)!important;
+  border-color:color-mix(in srgb,var(--accent,#76c9b3) 30%,var(--line,#344448))!important;
+  background:color-mix(in srgb,var(--accent,#76c9b3) 15%,var(--surface,#151b20))!important;
+}
+html[data-inj-page="index"] body #injLightHome .inj-lite-chart-segment button:focus-visible{
+  outline:2px solid var(--accent,#76c9b3)!important;outline-offset:1px!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-chart-type="candles"]{
+  height:clamp(184px,29vh,255px)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLiteCurrentPriceGuide{
+  position:absolute!important;left:0!important;
+  right:var(--inj-light-axis-width,67px)!important;top:50%;
+  z-index:3!important;pointer-events:none!important;
+  height:1px!important;min-height:0!important;border:0!important;
+  background:repeating-linear-gradient(to right,
+    color-mix(in srgb,var(--accent,#76c9b3) 33%,transparent) 0 4px,
+    transparent 4px 10px)!important;
+  opacity:.55!important;transition:top .14s linear!important;
+  transform:translateY(-.5px)!important;
+}
+html[data-inj-page="index"] body #injLightHome #injLiteCurrentPriceGuide[hidden]{
+  display:none!important;
+}
+@media(max-width:380px){
+ html[data-inj-page="index"] body #injLightHome .inj-lite-chart-controls{
+   gap:6px!important;
+ }
+ html[data-inj-page="index"] body #injLightHome .inj-lite-chart-segment button{padding:6px!important}
+ html[data-inj-page="index"] body #injLightHome .inj-lite-chart-periods{flex:1 1 100%!important}
+ html[data-inj-page="index"] body #injLightHome .inj-lite-chart-state{gap:6px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #injLightHome #injLiteCurrentPriceGuide{transition:none!important}
+}
