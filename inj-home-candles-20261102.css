@@ -295,3 +295,9 @@ html[data-inj-page="index"] body #injLightHome #injLightLineSvg .inj-six-hour-li
 }
 html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-inj-line-ready="true"]
   > #injLightLineMarkerSvg{z-index:2!important;}
+
+/* Lite candle mode uses each OHLC bar's red/green body and wick without a
+   line-chart endpoint dot. The marker returns automatically for LINE mode. */
+html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-chart-type="candles"] > #injLightLineMarkerSvg{
+  display:none!important;
+}
