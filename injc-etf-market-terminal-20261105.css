@@ -111,7 +111,10 @@ body.injc-chart-modal-open{overflow:hidden!important;touch-action:none}
 .injc-flow-column{display:block;flex:0 0 13px;max-height:100%;min-height:0;align-self:flex-end;border-radius:4px 4px 0 0;transition:height .5s ease}
 .injc-flow-column.inflow{background:var(--injc-up)}.injc-flow-column.outflow{background:var(--injc-down)}
 .injc-flow-column.is-zero{opacity:.4}
-.injc-flow-column.is-pending{background:transparent;border:1px dashed color-mix(in srgb,var(--etf-muted) 36%,transparent);border-radius:3px;opacity:.46}
+.injc-flow-column.is-pending{background:color-mix(in srgb,var(--etf-muted) 11%,transparent);border:1.5px dashed color-mix(in srgb,var(--etf-muted) 78%,transparent);border-radius:4px 4px 0 0;opacity:1;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--etf-card) 20%,transparent)}
+.injc-flow-day.is-current .injc-flow-date{color:var(--etf-ink);font-weight:750}
+.injc-flow-day.is-current .injc-flow-day-state{color:var(--etf-accent);font-weight:750;opacity:1}
+.injc-legend-dot.pending{background:color-mix(in srgb,var(--etf-muted) 11%,transparent);border:1px dashed color-mix(in srgb,var(--etf-muted) 78%,transparent)}
 .injc-flow-date{font-size:9px;color:var(--etf-muted);white-space:nowrap;letter-spacing:0;line-height:1.25}
 .injc-flow-day-state{display:block;color:var(--etf-muted);font-size:10px;min-height:12px;line-height:1}
 .injc-flow-day[data-day] .injc-flow-day-state{opacity:.75}
