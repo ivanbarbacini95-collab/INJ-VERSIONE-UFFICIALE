@@ -8,6 +8,7 @@
 <style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}</style>
 
 <meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="INJ Node" name="apple-mobile-web-app-title"/>
 <meta content="INJ Node — dashboard essenziale per wallet, staking e mercato Injective." name="description"/>
 <title>INJ Node</title>
@@ -25,6 +26,7 @@
       document.documentElement.dataset.theme = initialTone[savedTheme] ? savedTheme : (oldThemes[savedTheme] || 'obsidian');
       document.documentElement.dataset.injThemeMotion = 'static';
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.obsidian);
+      document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')?.setAttribute('content',(['classic-white','arctic'].includes(document.documentElement.dataset.theme)?'default':'black-translucent'));
       const savedUiStyle = localStorage.getItem('inj_monitor_ui_style');
       document.documentElement.dataset.uiStyle = ['elegant', 'futuristic', 'ultra'].includes(savedUiStyle) ? savedUiStyle : 'elegant';
       if (sessionStorage.getItem('inj_node_return_home') === '1') {
@@ -342,7 +344,7 @@
 <script defer src="./control-center-more-20261029.js?v=20261029macro4"></script>
 
 <link rel="stylesheet" href="./inj-top-seamless.css?v=20261029continuity5"/>
-<script defer src="./inj-top-seamless.js?v=20261105-ios-edge-sample2"></script>
+<script defer src="./inj-top-seamless.js?v=20261105-native-status-no-overlay3"></script>
 <link rel="stylesheet" href="./home-compact-value-bars.css?v=20261028compactbars2"/>
 <link rel="stylesheet" href="./home-market-events.css?v=20261029borderless1"/>
 <script defer src="./home-market-events.js?v=20261029macro4"></script>
@@ -432,6 +434,7 @@
 <script defer src="./inj-six-themes-20261103.js?v=20261105-theme-canvas1"></script>
 <link rel="stylesheet" href="./nav-precision-dock-20261105.css?v=precision-dock1">
 <link rel="stylesheet" href="./inj-theme-canvas-sync-20261105.css?v=theme-continuity1">
+<link rel="stylesheet" href="./inj-home-native-edge-20261105.css?v=fullbleed-native-edge1">
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
