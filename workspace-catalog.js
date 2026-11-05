@@ -5,7 +5,7 @@ const rows=[
  ['worth','Dashboard','Patrimonio','Net worth'],['total','Dashboard','Totale INJ','Total INJ'],['staked','Dashboard','In staking','Staked INJ'],['available','Dashboard','Disponibile','Available'],['rewards','Dashboard','Reward maturati','Unclaimed rewards'],['apr','Dashboard','APR netto','Net APR'],['unbonding','Dashboard','In sblocco','Unbonding'],['validators','Dashboard','Delegazioni e validatori','Delegations and validators',null,6,5],['milestone','Dashboard','Prossimo livello INJ','Next INJ level'],
  ['liveview','Live View','Prezzo e grafico live','Live price and chart','market',8,5],
  ['chart','Live Charts','Grafico INJ','INJ chart','market',8,5],['price','Live Charts','Prezzo INJ','INJ price','market'],['low24','Live Charts','Minimo 24h','24h low','market'],['high24','Live Charts','Massimo 24h','24h high','market'],['change24','Live Charts','Variazione 24h','24h change','market'],
- ['orderbook','Order Book','Order Book completo','Full Order Book','market',8,8],
+ ['orderbook','Order Book','Order Book','Order Book','market',8,8],
  ['timeline','Performance Timeline','Cronologia P/L giornaliero','Daily P/L history',null,8,5],['periodpnl','Performance Timeline','P/L periodo','Period P/L'],['bestday','Performance Timeline','Miglior giorno','Best day'],['worstday','Performance Timeline','Peggior giorno','Worst day'],
  ['converter','INJ Converter','Convertitore INJ / fiat','INJ / fiat converter','market',4,4],
  ['walletpnl','Performance Timeline','Wallet P&L · singolo o totale','Wallet P&L · single or all',null,6,4],

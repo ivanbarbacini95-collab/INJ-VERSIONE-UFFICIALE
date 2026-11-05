@@ -67,3 +67,61 @@ body.ws-immersive #wsGrid .ws-card .ws-section-note{
  display:block!important;
  visibility:visible!important;
 }
+
+/* Optional edge-to-edge fullscreen composition; editor geometry is untouched. */
+.ws-pack-full{
+ position:fixed;
+ top:max(8px,env(safe-area-inset-top,0px));
+ right:calc(max(8px,env(safe-area-inset-right,0px)) + 54px);
+ z-index:120;
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ min-height:42px;
+ max-width:calc(100vw - 100px);
+ padding:7px 11px;
+ border:1px solid color-mix(in srgb,var(--ws-accent) 35%,var(--ws-line));
+ border-radius:11px;
+ background:color-mix(in srgb,var(--ws-bg) 88%,transparent);
+ color:var(--ws-fg);
+ font-size:12px;
+ font-weight:650;
+ letter-spacing:.005em;
+ white-space:nowrap;
+ opacity:.86;
+ backdrop-filter:blur(12px);
+ -webkit-backdrop-filter:blur(12px);
+}
+.ws-pack-full:hover,.ws-pack-full:focus-visible,.ws-pack-full[aria-pressed="true"]{
+ opacity:1;
+ border-color:var(--ws-accent);
+ background:var(--ws-panel);
+}
+.ws-pack-full[hidden],body:not(.ws-immersive) .ws-pack-full{display:none!important}
+body.ws-packed-full .ws-card{transition:left .2s ease,top .2s ease,width .2s ease,height .2s ease}
+@media (prefers-reduced-motion:reduce){body.ws-packed-full .ws-card{transition:none}}
+@media(max-width:400px){.ws-pack-full{font-size:11px;padding:7px 8px;max-width:calc(100vw - 84px)}}
+
+/* Fullscreen alignment action: conspicuous, notch-safe and independent of old
+   hidden attributes from cached PWA markup. */
+body:not(.ws-immersive) #wsPackFull{display:none!important}
+body.ws-immersive #wsPackFull{
+ display:inline-flex!important;
+ position:fixed!important;
+ top:max(10px,env(safe-area-inset-top,0px))!important;
+ right:calc(max(10px,env(safe-area-inset-right,0px)) + 52px)!important;
+ bottom:auto!important;left:auto!important;
+ z-index:2147483646!important;
+ align-items:center;justify-content:center;
+ width:auto;max-width:calc(100vw - 105px);
+ min-height:44px;padding:9px 12px;
+ background:var(--ws-panel,#111b27)!important;
+ color:var(--ws-fg,#fff)!important;
+ border:1px solid var(--ws-accent,#74edbd)!important;
+ box-shadow:0 3px 18px rgba(0,0,0,.3)!important;
+ border-radius:11px;font-size:12px;line-height:1.3;
+ font-weight:750;white-space:nowrap;letter-spacing:.02em;
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+}
+body.ws-immersive #wsPackFull:focus-visible{outline:2px solid var(--ws-accent);outline-offset:3px}
+@media(max-width:360px){body.ws-immersive #wsPackFull{font-size:10px;padding:8px 9px;min-height:42px}}

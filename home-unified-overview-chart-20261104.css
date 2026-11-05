@@ -1,0 +1,106 @@
+/* INJ Node · Home card join fix.
+   ONLY CSS: the native sibling overview and chart sections remain untouched,
+   so live chart rendering, PWA, wallet carousel and gestures still work. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview {
+ box-sizing:border-box!important;
+ width:100%!important;
+ max-width:100%!important;
+ margin-bottom:0!important;
+ border:1px solid var(--line,rgba(145,162,178,.17))!important;
+ border-bottom:0!important;
+ border-radius:21px 21px 0 0!important;
+ background:var(--surface,#111820)!important;
+ background-image:none!important;
+ box-shadow:none!important;
+}
+/* Pull the second native card over the former spacing between cards.
+   Both remain direct children of .entry-gate-shell, as original code expects. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview + #entryInsights.entry-insights {
+ box-sizing:border-box!important;
+ width:100%!important;
+ max-width:100%!important;
+ margin-top:-10px!important;
+ border:1px solid var(--line,rgba(145,162,178,.17))!important;
+ border-top:1px solid color-mix(in srgb,var(--line,rgba(145,162,178,.17)) 75%,transparent)!important;
+ border-radius:0 0 21px 21px!important;
+ background:var(--surface,#111820)!important;
+ background-image:none!important;
+ box-shadow:0 9px 24px rgba(0,0,0,.065)!important;
+}
+/* Staking, Reward and Updated are omitted visually ONLY in the opening
+   Home wallet card (also in its swipe clones); the live data IDs stay intact. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ #entryOverview .entry-overview-stats,
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-wallet-card-slide .entry-overview-stats{
+ display:none!important;
+ visibility:hidden!important;
+ height:0!important;
+ min-height:0!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+}
+/* Never change chart containers, canvas geometry, display modes, heights,
+   their interactive listeners, the PRICE/LIVE header, or the P/L row. */
+html[data-theme="classic-black"][data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview,
+html[data-theme="classic-black"][data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview + #entryInsights.entry-insights{
+ border-left-color:var(--mono-edge,rgba(255,255,255,.075))!important;
+ border-right-color:var(--mono-edge,rgba(255,255,255,.075))!important;
+}
+html[data-theme="classic-white"][data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview,
+html[data-theme="classic-white"][data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview + #entryInsights.entry-insights{
+ border-left-color:var(--mono-edge,rgba(27,31,39,.075))!important;
+ border-right-color:var(--mono-edge,rgba(27,31,39,.075))!important;
+}
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview + #entryInsights.entry-insights{
+  margin-top:-14px!important;
+ }
+}
+@media(max-width:560px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview{border-radius:17px 17px 0 0!important}
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell > #entryOverview.entry-overview + #entryInsights.entry-insights{
+  border-radius:0 0 17px 17px!important;
+ }
+}
+
+
+/* 2026-11-04 · More breathing room for the existing interactive graph.
+   The original chart's height is locked to the overview by older CSS.
+   Increase its parent flex budget modestly, instead of changing SVG sizing
+   or touching the renderer and gestures. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card {
+ height:calc(var(--inj-home-overview-card-height,210px) + 50px)!important;
+ max-height:calc(var(--inj-home-overview-card-height,210px) + 50px)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ #entryInsights > .entry-sparkline.entry-price-chart{
+ box-sizing:border-box!important;
+ padding:9px 0 8px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ #entryInsights .entry-price-timebar{
+ padding-top:5px!important;
+}
+@media(max-width:560px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card {
+  height:calc(var(--inj-home-overview-card-height,210px) + 46px)!important;
+  max-height:calc(var(--inj-home-overview-card-height,210px) + 46px)!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+  #entryInsights > .entry-sparkline.entry-price-chart{
+  padding:8px 0 7px!important;
+ }
+}

@@ -1,0 +1,66 @@
+name: INJ Node · INJC ETF SEC status
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */4 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/injc-etf-status.yml'
+      - 'scripts/update-injc-etf-status.mjs'
+permissions:
+  contents: write
+concurrency:
+  group: injnode-injc-sec-status
+  cancel-in-progress: false
+jobs:
+  sec-status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read current Canary INJC SEC filings
+        run: node scripts/update-injc-etf-status.mjs
+      - name: Publish dated snapshot without overwriting other work
+        run: |
+          set -eu
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          snapshot="$(mktemp)"
+          previous="$(mktemp)"
+          trap 'rm -f "$snapshot" "$previous"' EXIT
+          cp market-data/injc-etf-status.json "$snapshot"
+          for attempt in 1 2 3 4 5 6; do
+            git fetch --quiet origin main
+            if git show origin/main:market-data/injc-etf-status.json > "$previous" 2>/dev/null; then
+              if node -e '
+                const fs=require("node:fs");
+                const incoming=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+                const current=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
+                const a=Date.parse(incoming.checkedAt);
+                const b=Date.parse(current.checkedAt);
+                process.exit(Number.isFinite(a)&&Number.isFinite(b)&&b>=a?0:1);
+              ' "$snapshot" "$previous"; then
+                echo "Newer SEC verification is already published."
+                exit 0
+              fi
+            fi
+            git reset --hard origin/main
+            mkdir -p market-data
+            cp "$snapshot" market-data/injc-etf-status.json
+            git add market-data/injc-etf-status.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "data(etf): verify Canary INJC filings with SEC"
+            if git push origin HEAD:main; then
+              echo "INJC SEC snapshot committed."
+              exit 0
+            fi
+            sleep "$attempt"
+          done
+          echo "::error::Unable to publish INJC ETF SEC status after retries."
+          exit 1

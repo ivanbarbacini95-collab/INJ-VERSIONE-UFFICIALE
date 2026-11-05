@@ -1,37 +1,38 @@
-/* INJ Node · feathered chromatic comet v12.
-   Three overlapping full-length/native-animated strokes per color soften
-   the former abrupt cutoffs into progressive blends along the entire dock.
-   No Canvas, timers, frame loops or static menu frame. */
+/* INJ Node · theme-aware monochrome comet v13.
+   The feathered SVG orbit follows the live CSS --accent palette when a theme changes.
+   Keep the moving border, native animation, and soft continuous tail. */
 (()=>{
 'use strict';
 const NS='http://www.w3.org/2000/svg';
 const FEATHER_STEPS=3;
+ const TAIL_COLOR='var(--accent, #67daee)';
+ const HEAD_COLOR='color-mix(in srgb, var(--accent, #67daee) 82%, var(--text, #ffffff) 18%)';
 const layers=[
- [.94,'#66dbe7',.16],
- [.91,'#61d3ee',.16],
- [.88,'#5ccaf4',.17],
- [.84,'#5dbaf8',.17],
- [.80,'#67a8fb',.17],
- [.76,'#7597fb',.18],
- [.72,'#8787fa',.18],
- [.68,'#9a7cf8',.19],
- [.64,'#ac78f4',.19],
- [.60,'#bd78ef',.19],
- [.56,'#cd7de8',.20],
- [.52,'#db84df',.20],
- [.48,'#e88dd3',.21],
- [.44,'#f396c5',.21],
- [.40,'#fb9fb5',.22],
- [.36,'#ffa8a5',.22],
- [.32,'#ffb394',.23],
- [.28,'#ffbf8f',.23],
- [.24,'#ffcb95',.24],
- [.20,'#ffd79f',.25],
- [.16,'#ffe0ac',.27],
- [.12,'#ffe8bb',.29],
- [.08,'#fff0cc',.32],
- [.045,'#fff6de',.36],
- [.02,'#fffbf0',.42]
+ [.94,TAIL_COLOR,.16],
+ [.91,TAIL_COLOR,.16],
+ [.88,TAIL_COLOR,.17],
+ [.84,TAIL_COLOR,.17],
+ [.80,TAIL_COLOR,.17],
+ [.76,TAIL_COLOR,.18],
+ [.72,TAIL_COLOR,.18],
+ [.68,TAIL_COLOR,.19],
+ [.64,TAIL_COLOR,.19],
+ [.60,TAIL_COLOR,.19],
+ [.56,TAIL_COLOR,.20],
+ [.52,TAIL_COLOR,.20],
+ [.48,TAIL_COLOR,.21],
+ [.44,TAIL_COLOR,.21],
+ [.40,TAIL_COLOR,.22],
+ [.36,TAIL_COLOR,.22],
+ [.32,TAIL_COLOR,.23],
+ [.28,TAIL_COLOR,.23],
+ [.24,TAIL_COLOR,.24],
+ [.20,TAIL_COLOR,.25],
+ [.16,TAIL_COLOR,.27],
+ [.12,TAIL_COLOR,.29],
+ [.08,TAIL_COLOR,.32],
+ [.045,TAIL_COLOR,.36],
+ [.02,TAIL_COLOR,.42]
 ];
 function init(){
  const nav=document.getElementById('injPrimaryBottomNav');
@@ -48,7 +49,7 @@ function init(){
   const r=document.createElementNS(NS,'rect');
   r.setAttribute('class',cls);
   r.setAttribute('fill','none');
-  r.setAttribute('stroke',color);
+  r.style.setProperty('stroke',color); // CSS variables re-evaluate automatically on theme switch.
   r.setAttribute('stroke-opacity',String(opacity));
   r.setAttribute('vector-effect','non-scaling-stroke');
   svg.append(r);
@@ -63,8 +64,8 @@ function init(){
    shape('inj-comet-layer',color,subAlpha,coverage,0,i);
   }
  }
- shape('inj-comet-head-halo','#fff1cb',.27,0,26);
- shape('inj-comet-head-core','#fffdf1',1,0,5.6);
+ shape('inj-comet-head-halo',TAIL_COLOR,.27,0,26);
+ shape('inj-comet-head-core',HEAD_COLOR,1,0,5.6);
  nav.prepend(svg);
  let oldW=0,oldH=0,oldR=0;
  function resize(){

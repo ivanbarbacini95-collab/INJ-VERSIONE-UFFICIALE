@@ -25,7 +25,7 @@
     if (!root) return;
     for (const [id, artwork] of Object.entries(scene)) {
       const tile = document.getElementById(id);
-      if (!tile || !root.contains(tile) || tile.querySelector('.inj-tile-scene')) continue;
+      if (!tile || !root.contains(tile) || tile.querySelector(':scope > .inj-pro-launcher-symbol') || tile.querySelector('.inj-tile-scene')) continue;
       const decoration = document.createElement('span');
       decoration.className = 'inj-tile-scene';
       decoration.setAttribute('aria-hidden', 'true');

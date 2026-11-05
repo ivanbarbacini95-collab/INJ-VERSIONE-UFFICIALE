@@ -1,0 +1,147 @@
+/* INJ Node · Monochrome Pro refinement.
+   Scope exclusively to Black and White, preserving every other theme,
+   live chart colour, Home's intentionally frameless shortcuts and Workspace geometry. */
+html[data-theme="classic-black"] {
+  --mono-edge:rgba(255,255,255,.075);
+  --mono-edge-strong:rgba(255,255,255,.13);
+  --mono-inner:rgba(255,255,255,.043);
+  --mono-card:#101012;
+  --mono-card-top:#161619;
+  --mono-shadow:0 14px 35px rgba(0,0,0,.20),0 3px 9px rgba(0,0,0,.12);
+  --mono-card-shadow:inset 0 1px 0 var(--mono-inner),var(--mono-shadow);
+  --mono-panel-shadow:0 24px 64px rgba(0,0,0,.38),0 5px 18px rgba(0,0,0,.13);
+  --mono-divider:rgba(255,255,255,.075);
+  --bg:#030304;
+  --theme-canvas:#030304;
+  --surface:#101012;
+  --surface-strong:#151517;
+  --surface-soft:#1a1a1d;
+  --line:var(--mono-edge);
+  --line-strong:var(--mono-edge-strong);
+  --page-gradient:linear-gradient(#030304,#030304);
+  --card-gradient:linear-gradient(153deg,#151518 0%,#101012 52%,#0c0c0e 100%);
+  --market-gradient:linear-gradient(153deg,#161619,#0d0d10);
+  --floating-surface:#141416;
+}
+html[data-theme="classic-white"] {
+  --mono-edge:rgba(27,31,39,.075);
+  --mono-edge-strong:rgba(27,31,39,.14);
+  --mono-inner:rgba(255,255,255,.88);
+  --mono-card:#ffffff;
+  --mono-card-top:#ffffff;
+  --mono-shadow:0 13px 34px rgba(24,32,46,.045),0 2px 8px rgba(24,32,46,.025);
+  --mono-card-shadow:inset 0 1px 0 var(--mono-inner),var(--mono-shadow);
+  --mono-panel-shadow:0 28px 66px rgba(23,32,48,.095),0 6px 20px rgba(23,32,48,.045);
+  --mono-divider:rgba(30,36,45,.085);
+  --bg:#f9f9fa;
+  --theme-canvas:#f9f9fa;
+  --surface:#ffffff;
+  --surface-strong:#f5f6f7;
+  --surface-soft:#eeeff1;
+  --line:var(--mono-edge);
+  --line-strong:var(--mono-edge-strong);
+  --page-gradient:linear-gradient(#f9f9fa,#f9f9fa);
+  --card-gradient:linear-gradient(158deg,#ffffff 0%,#ffffff 68%,#fcfcfd 100%);
+  --market-gradient:linear-gradient(160deg,#ffffff,#fdfdfe);
+  --floating-surface:#ffffff;
+  --inj-native-status-tone:#f9f9fa;
+  --inj-native-top-tone:#f9f9fa;
+}
+/* One edge language: a true hairline, gentle interior reflection and
+   shadow depth tuned separately for light and OLED dark surfaces. */
+html:is([data-theme="classic-black"],[data-theme="classic-white"]) body
+:is(.data-card,.market-card,.treasury-card,.rewards-card,.cc-card,.entry-desktop-metric) {
+  border:1px solid var(--mono-edge)!important;
+  border-radius:16px;
+  box-shadow:var(--mono-card-shadow)!important;
+  background-image:var(--card-gradient);
+}
+/* On Home, frame only the wallet/price content and Treasury card.
+   Small navigation destinations deliberately remain borderless. */
+html[data-inj-page="index"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body #entryGate#entryGate :is(#entryOverview.entry-overview,.entry-wallet-card-slide,#entryInsights.entry-insights) {
+  border:1px solid var(--mono-edge)!important;
+  border-radius:19px!important;
+  box-shadow:var(--mono-card-shadow)!important;
+  background-color:var(--mono-card)!important;
+  background-image:var(--card-gradient)!important;
+}
+html[data-inj-page="index"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44 > #entryTreasuryButton {
+  border:1px solid var(--mono-edge)!important;
+  border-radius:18px!important;
+  box-shadow:var(--mono-card-shadow)!important;
+  background-image:var(--card-gradient)!important;
+}
+html[data-inj-page="index"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44 > .entry-action:not(#entryTreasuryButton) {
+  border:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+/* Remove the harsh horizontal line at the edges of Home navigation while
+   preserving the frameless visual structure users are accustomed to. */
+html[data-inj-page="index"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body #entryGate#entryGate{
+  --inj-home-hairline:var(--mono-divider);
+}
+/* Workspace: respect Bare/no-border, chart containers, draggable geometry,
+   fullscreen 2px packing, and the vivid red/green candle and P/L palette. */
+html[data-inj-page="workspace"]:is([data-theme="classic-black"],[data-theme="classic-white"]){
+  --ws-line:var(--mono-edge);
+  --ws-panel:var(--mono-card);
+}
+html[data-inj-page="workspace"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body #wsGrid .ws-card:not([data-style="bare"]):not(.no-border){
+  border:1px solid var(--mono-edge)!important;
+  border-radius:15px!important;
+  background:var(--card-gradient) padding-box!important;
+  box-shadow:var(--mono-card-shadow)!important;
+}
+html[data-inj-page="workspace"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body #wsGrid .ws-card:is([data-style="bare"],.no-border) {
+  box-shadow:none!important;
+}
+html[data-inj-page="workspace"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body.ws-immersive #wsGrid .ws-card:not([data-style="bare"]):not(.no-border){
+  border:1px solid var(--mono-edge)!important;
+  border-radius:12px!important;
+  background:var(--card-gradient) padding-box!important;
+  box-shadow:inset 0 1px 0 var(--mono-inner)!important;
+}
+html[data-inj-page="workspace"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body.ws-immersive #wsGrid .ws-card:not([data-style="bare"]):not(.no-border)[data-type="price"]{
+  border-color:var(--mono-edge-strong)!important;
+}
+/* Keep chart grids, divider strokes and widget text subtle, not faded. */
+html[data-inj-page="workspace"]:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body #wsGrid :is(.ws-card-head,.ws-section-row,.ws-price-scale,.ws-time-scale){
+  border-color:var(--mono-divider);
+}
+/* Settings/dialogs and tabs: no coarse double outlines or milky glow. */
+html:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body :is(.header-menu-panel,.ws-dialog,.ws-pro-monitor-options,#themePicker,.theme-picker){
+  border-color:var(--mono-edge-strong);
+  box-shadow:var(--mono-panel-shadow);
+}
+html:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body :is(.menu-action,.menu-setting,.inj-theme-family,.ws-toolbar > button){
+  border-color:var(--mono-edge);
+}
+html:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body :is(.menu-action,.menu-setting,.ws-toolbar > button):is(:hover,:focus-visible){
+  border-color:var(--mono-edge-strong);
+}
+/* Keep compact controls tappable and their keyboard focus obvious. */
+html:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body :is(.entry-action,.menu-action,.ws-card button):focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:2px;
+}
+/* Never blur data or introduce battery-expensive backdrop filters. */
+@media(prefers-reduced-motion:reduce){
+ html:is([data-theme="classic-black"],[data-theme="classic-white"])
+ body :is(.ws-card,.data-card,.entry-overview,.entry-insights,.menu-action){transition:none!important}
+}

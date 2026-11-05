@@ -76,8 +76,8 @@
     // iOS 27 Home Screen apps select native status-bar appearance at install.
     // Do not force a separate, outdated solid colour for the Home.
     // Other platforms can still use the palette's page canvas metadata.
-    const color = css.getPropertyValue('--theme-canvas').trim() ||
-      css.getPropertyValue('--inj-native-status-tone').trim() ||
+    const color = css.getPropertyValue('--inj-native-status-tone').trim() ||
+      css.getPropertyValue('--theme-canvas').trim() ||
       css.getPropertyValue('--bg').trim() ||
       css.getPropertyValue('--canvas').trim();
     if (color) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);

@@ -18,7 +18,8 @@ const layoutLocked=()=>immersive||(mode()==='mobile'?!mobileEditing:!!active().l
 const mode=()=>matchMedia('(max-width:600px)').matches?'mobile':'desktop';
 const cols=()=>mode()==='mobile'?4:12;
 const ROW=56,GAP=8;
-let immersive=false,mobileEditing=false,lastPresetId=active().id;
+let immersive=false,mobileEditing=false,lastPresetId=active().id,packedFullscreen=false;
+let packedRects=null,packedHeight=0;
 const Live=window.INJWorkspaceLive;
 const data={lastTradeAt:0,rows:{},supplements:{},price:null,priceAt:0,priceSource:'Binance',change:null,charts:{},loading:false,chartBusy:new Set(),lastWallet:0,marketBusy:false};
 let drag=null,editingCard=null,lastMode=mode(),timer=0,networkTimer=0,statusTimer=0;
@@ -117,15 +118,66 @@ function renderChart(i,host,status){
 
 function createCard(i){const node=el('article','ws-card');node.dataset.uid=i.uid;node.dataset.type=i.type;const head=el('div','ws-card-head'),heading=el('div','ws-card-heading');heading.append(el('strong','',title(i)));const controls=el('div','ws-card-controls');for(const [action,label,glyph]of [['move',t('Trascina','Drag'),'⠿'],['config',t('Configura','Configure'),'⚙'],['duplicate',t('Duplica','Duplicate'),'⧉'],['front',t('Porta davanti','Bring forward'),'▣'],['back',t('Porta dietro','Send back'),'▢'],['remove',t('Rimuovi','Remove'),'×']]){const b=el('button',action==='move'?'ws-drag':'',glyph);b.dataset.action=action;b.title=label;b.setAttribute('aria-label',label);controls.append(b)}head.append(heading,controls);const body=el('div','ws-card-body');node.append(head,body);for(const edge of ['n','ne','e','se','s','sw','w','nw']){const resize=el('button','ws-resize ws-resize-'+edge,edge==='se'?'◢':'');resize.dataset.action='resize';resize.dataset.edge=edge;resize.setAttribute('aria-label',t('Ridimensiona ','Resize ')+edge.toUpperCase());node.append(resize);}return node;}
 const canvasUnit=()=>($('wsGrid').clientWidth+GAP)/cols();
-function geometry(node,i){const r=i.layouts[mode()],unit=($('wsGrid').clientWidth+GAP)/cols();node.style.zIndex=String(drag?.item===i?100:active().items.indexOf(i)+1);Object.assign(node.style,{left:(r.x*unit)+'px',top:(r.y*ROW)+'px',width:(r.w*unit-GAP)+'px',height:(r.h*ROW-GAP)+'px'});}
-function layout(){const preset=active();if(lastPresetId!==preset.id){lastPresetId=preset.id;mobileEditing=false;window.INJWorkspaceProHooks?.editModeChange?.(false);}const mobile=mode()==='mobile';document.body.classList.toggle('ws-view-only',mobile&&!mobileEditing);document.body.classList.toggle('ws-mobile-editing',mobile&&mobileEditing);$('wsName').textContent=preset.name;$('wsEdit').textContent=mobile?(mobileEditing?t('✓ Fine','✓ Done'):t('✎ Modifica','✎ Edit')):(preset.locked?t('Modifica','Edit'):t('Blocca layout','Lock layout'));$('wsEdit').setAttribute('aria-pressed',String(!layoutLocked()));$('wsGrid').classList.toggle('editing',!layoutLocked()&&!!preset.snap);$('wsSnap').textContent=preset.snap?t('Griglia: ON','Grid: ON'):t('Posizione libera','Free positioning');$('wsSnap').setAttribute('aria-pressed',String(!!preset.snap));$('wsSnap').disabled=layoutLocked();const nodes=new Map([...$('wsGrid').children].map(n=>[n.dataset.uid,n]));let end=0;for(const i of preset.items){let node=nodes.get(i.uid);if(!node){node=createCard(i);$('wsGrid').append(node)}nodes.delete(i.uid);node.classList.toggle('editable',!layoutLocked());node.classList.toggle('no-border',!i.border);node.dataset.style=i.style;node.dataset.view=i.view||'standard';node.classList.toggle('pro-card-locked',!!i.cardLocked);node.querySelector('.ws-card-heading strong').textContent=title(i);geometry(node,i);bodyFor(i,node.querySelector('.ws-card-body'));end=Math.max(end,i.layouts[mode()].y+i.layouts[mode()].h)}nodes.forEach(n=>n.remove());$('wsGrid').style.height=(end*ROW)+'px';$('wsEmpty').hidden=!!preset.items.length;window.INJWorkspaceProHooks?.afterLayout?.();}
+// Dense layouts keep the chosen visual order, close holes and retain each card's size.
+function compactLayouts(keys=[mode()]){for(const key of keys)M.compact(active().items,key,key==='mobile'?4:12);}
+// The fullscreen packing view never modifies the editor's stored rectangles.
+// Complete rows have exactly 2px between tiles; all remaining width is shared.
+function fullscreenPack(items,width,viewportHeight){
+ const space=2,columnCount=cols(),key=mode(),minWidth=width<=600?138:175;
+ const ordered=items.map((item,index)=>({item,index,r:item.layouts[key]}))
+   .sort((a,b)=>a.r.y-b.r.y||a.r.x-b.r.x||a.index-b.index);
+ const rows=[];let row=[],used=0;
+ for(const entry of ordered){
+  const span=Math.min(columnCount,Math.max(entry.r.w,minWidth*columnCount/Math.max(1,width)));
+  if(row.length&&used+span>columnCount+0.00001){rows.push(row);row=[];used=0;}
+  row.push({...entry,span});used+=span;
+ }
+ if(row.length)rows.push(row);
+ const heightFor=entry=>{
+  const type=entry.item.type;
+  const minimum=type==='orderbook'?350:C.isChart(type)?300:/heatmap/i.test(type)?250:110;
+  return Math.max(minimum,entry.r.h*ROW-space);
+ };
+ const rowHeights=rows.map(r=>Math.max(...r.map(heightFor)));
+ const natural=rowHeights.reduce((sum,v)=>sum+v,0)+space*Math.max(0,rows.length-1);
+ const fill=Math.max(0,viewportHeight-natural);
+ const weight=rowHeights.reduce((sum,h)=>sum+h,0)||1;
+ const positions=new Map();let y=0;
+ rows.forEach((entries,index)=>{
+  const rowHeight=rowHeights[index]+fill*rowHeights[index]/weight;
+  const sum=entries.reduce((total,e)=>total+e.span,0);
+  const usable=Math.max(1,width-space*(entries.length-1));
+  let x=0;
+  entries.forEach((entry,j)=>{
+   const tileWidth=j===entries.length-1?width-x:usable*entry.span/sum;
+   positions.set(entry.item.uid,{left:x,top:y,width:Math.max(1,tileWidth),height:rowHeight});
+   x+=tileWidth+space;
+  });
+  y+=rowHeight+space;
+ });
+ return{positions,height:Math.max(0,y-(rows.length?space:0))};
+}
+function geometry(node,i){
+ const tight=immersive&&packedFullscreen?packedRects?.get(i.uid):null;
+ const r=i.layouts[mode()],unit=($('wsGrid').clientWidth+GAP)/cols();
+ node.style.zIndex=String(drag?.item===i?100:active().items.indexOf(i)+1);
+ Object.assign(node.style,tight?
+   {left:tight.left+'px',top:tight.top+'px',width:tight.width+'px',height:tight.height+'px'}:
+   {left:(r.x*unit)+'px',top:(r.y*ROW)+'px',width:(r.w*unit-GAP)+'px',height:(r.h*ROW-GAP)+'px'});
+}
+function layout(){const preset=active();if(lastPresetId!==preset.id){lastPresetId=preset.id;mobileEditing=false;window.INJWorkspaceProHooks?.editModeChange?.(false);}const mobile=mode()==='mobile';document.body.classList.toggle('ws-view-only',mobile&&!mobileEditing);document.body.classList.toggle('ws-mobile-editing',mobile&&mobileEditing);$('wsName').textContent=preset.name;$('wsEdit').textContent=mobile?(mobileEditing?t('✓ Fine','✓ Done'):t('✎ Modifica','✎ Edit')):(preset.locked?t('Modifica','Edit'):t('Blocca layout','Lock layout'));$('wsEdit').setAttribute('aria-pressed',String(!layoutLocked()));$('wsGrid').classList.toggle('editing',!layoutLocked()&&!!preset.snap);$('wsSnap').textContent=preset.snap?t('Griglia: ON','Grid: ON'):t('Posizione libera','Free positioning');$('wsSnap').setAttribute('aria-pressed',String(!!preset.snap));$('wsSnap').disabled=layoutLocked();const nodes=new Map([...$('wsGrid').children].map(n=>[n.dataset.uid,n]));let end=0;
+ if(immersive&&packedFullscreen){
+  const viewport=window.visualViewport?.height||window.innerHeight;
+  const pack=fullscreenPack(preset.items,$('wsGrid').clientWidth,Math.max(1,viewport-16));
+  packedRects=pack.positions;packedHeight=pack.height;
+ }else{packedRects=null;packedHeight=0;}for(const i of preset.items){let node=nodes.get(i.uid);if(!node){node=createCard(i);$('wsGrid').append(node)}nodes.delete(i.uid);node.classList.toggle('editable',!layoutLocked());node.classList.toggle('no-border',!i.border);node.dataset.style=i.style;node.dataset.view=i.view||'standard';node.classList.toggle('pro-card-locked',!!i.cardLocked);node.querySelector('.ws-card-heading strong').textContent=title(i);geometry(node,i);bodyFor(i,node.querySelector('.ws-card-body'));end=Math.max(end,i.layouts[mode()].y+i.layouts[mode()].h)}nodes.forEach(n=>n.remove());$('wsGrid').style.height=(immersive&&packedFullscreen?packedHeight:end*ROW)+'px';$('wsEmpty').hidden=!!preset.items.length;window.INJWorkspaceProHooks?.afterLayout?.();}
 function updateValues(){if(document.hidden||drag)return;useSharedMarket();document.body.classList.toggle('ws-private',localStorage.getItem('inj_monitor_privacy')==='1');for(const i of active().items){const node=[...$('wsGrid').children].find(n=>n.dataset.uid===i.uid);if(node){if(!node.querySelector('.ws-section-controls')?.contains(document.activeElement)&&!node.querySelector('.ws-plot[data-inspecting]'))bodyFor(i,node.querySelector('.ws-card-body'));}}if($('wsCatalog').open)document.querySelectorAll('.ws-preview').forEach(n=>{if(n._item&&!n.querySelector('.ws-section-controls')?.contains(document.activeElement)&&!n.querySelector('.ws-plot[data-inspecting]'))bodyFor(n._item,n.querySelector('.ws-card-body'))});$('wsConnection').textContent=data.priceSource.endsWith('snapshot')?'SNAPSHOT':Date.now()-data.priceAt<60000?t('MERCATO LIVE','MARKET LIVE'):t('MERCATO IN ATTESA','WAITING FOR MARKET');window.INJWorkspaceProHooks?.refreshStatus?.();}
 function add(type,source,options={}){
  window.INJWorkspaceProHooks?.beforeChange?.();
  if(active().items.length>=80)return notice(t('Massimo 80 card per preset','Maximum 80 cards per preset'));
  const item={...C.defaults(type),...options,uid:uid(),type,source:marketType(type)?'market':source,title:'',style:'solid',border:true,details:true,layouts:{}};
  const spec=C.byType[type];for(const [key,c]of [['desktop',12],['mobile',4]])item.layouts[key]=M.firstFree(active().items,key,c,spec.w,spec.h);
- active().items.push(item);active().locked=false;persist();layout();if($('wsCatalog').open)$('wsCatalog').close();refresh();notice(t('Card aggiunta','Card added'));requestAnimationFrame(()=>{const node=[...$('wsGrid').children].find(n=>n.dataset.uid===item.uid);if(node){node.tabIndex=-1;node.scrollIntoView({block:'nearest',behavior:'auto'});node.focus({preventScroll:true})}});
+ active().items.push(item);active().locked=false;compactLayouts(['desktop','mobile']);persist();layout();if($('wsCatalog').open)$('wsCatalog').close();refresh();notice(t('Card aggiunta','Card added'));requestAnimationFrame(()=>{const node=[...$('wsGrid').children].find(n=>n.dataset.uid===item.uid);if(node){node.tabIndex=-1;node.scrollIntoView({block:'nearest',behavior:'auto'});node.focus({preventScroll:true})}});
 }
 function previewChartControls(item,preview,body){
  const tools=el('div','ws-preview-controls');
@@ -158,7 +210,7 @@ function openCatalog(){
 $('wsSourceModes').addEventListener('click',e=>{const b=e.target.closest('[data-source-mode]');if(!b||b.disabled)return;chooseCatalogSource(b.dataset.sourceMode==='single'?$('wsSpecificWallet').value:b.dataset.sourceMode)});
 $('wsSpecificWallet').addEventListener('change',()=>chooseCatalogSource($('wsSpecificWallet').value));
 function configure(i){if(immersive)return;editingCard=i;$('wsConfigTitle').textContent=title(i);const form=$('wsConfigForm');for(const k of ['title','style','timeframe','chartStyle','goal'])form.elements[k].value=i[k];for(const k of ['border','details'])form.elements[k].checked=i[k];sources(form.elements.source,i.source,marketType(i.type));const r=i.layouts[mode()];const unit=canvasUnit();for(const key of ['width','height','column','row'])form.elements[key].max=key==='height'?48*ROW:key==='row'?10000*ROW:Math.round($('wsGrid').clientWidth);form.elements.width.min=Math.min(100,Math.round(r.w*unit-GAP));form.elements.height.min=90;form.elements.width.value=Math.round(r.w*unit-GAP);form.elements.height.value=Math.round(r.h*ROW-GAP);form.elements.column.value=Math.round(r.x*unit);form.elements.row.value=Math.round(r.y*ROW);form.elements.timeframe.closest('label').hidden=!C.isChart(i.type);form.elements.chartStyle.closest('label').hidden=!C.isChart(i.type);form.elements.goal.closest('label').hidden=i.type!=='ladder';$('wsConfig').show();}
-$('wsConfigForm').addEventListener('submit',e=>{e.preventDefault();if(!editingCard)return;const f=e.currentTarget,i=editingCard;if(i.cardLocked||immersive)return;window.INJWorkspaceProHooks?.beforeChange?.();for(const k of ['title','style','timeframe','chartStyle','source'])i[k]=f.elements[k].value;i.goal=Number(f.elements.goal.value);i.border=f.elements.border.checked;i.details=f.elements.details.checked;i.layouts[mode()]=M.normalize({x:Number(f.elements.column.value)/canvasUnit(),y:Number(f.elements.row.value)/ROW,w:(Number(f.elements.width.value)+GAP)/canvasUnit(),h:(Number(f.elements.height.value)+GAP)/ROW},cols());if(active().snap)M.settle(active().items,mode(),cols(),i.uid);persist();layout();$('wsConfig').close();refresh();});
+$('wsConfigForm').addEventListener('submit',e=>{e.preventDefault();if(!editingCard)return;const f=e.currentTarget,i=editingCard;if(i.cardLocked||immersive)return;window.INJWorkspaceProHooks?.beforeChange?.();for(const k of ['title','style','timeframe','chartStyle','source'])i[k]=f.elements[k].value;i.goal=Number(f.elements.goal.value);i.border=f.elements.border.checked;i.details=f.elements.details.checked;i.layouts[mode()]=M.normalize({x:Number(f.elements.column.value)/canvasUnit(),y:Number(f.elements.row.value)/ROW,w:(Number(f.elements.width.value)+GAP)/canvasUnit(),h:(Number(f.elements.height.value)+GAP)/ROW},cols());if(active().snap)M.settle(active().items,mode(),cols(),i.uid);compactLayouts();persist();layout();$('wsConfig').close();refresh();});
 $('wsGrid').addEventListener('change',e=>{const option=e.target.dataset.chartOption,node=e.target.closest('.ws-card'),i=active().items.find(i=>i.uid===node?.dataset.uid);if(!i||!['chartStyle','timeframe'].includes(option))return;i[option]=e.target.value;persist();bodyFor(i,node.querySelector('.ws-card-body'));refresh();});
 // Clone any card (including custom selections, chart range and data source).
 // The duplicated instance is independent and starts its feeds immediately.
@@ -174,7 +226,7 @@ function duplicateCards(sources){
   if(i.group){if(!groups.has(i.group))groups.set(i.group,uid());copy.group=groups.get(i.group)}
   active().items.push(copy);created.push(copy);
  }
- persist();layout();
+ compactLayouts(['desktop','mobile']);persist();layout();
  refresh();updateValues();
  requestAnimationFrame(()=>{
   const node=[...$('wsGrid').children].find(n=>n.dataset.uid===created[0]?.uid);
@@ -182,7 +234,7 @@ function duplicateCards(sources){
  });
  return created;
 }
-$('wsGrid').addEventListener('click',e=>{const action=e.target.closest('[data-action]')?.dataset.action,node=e.target.closest('.ws-card'),i=active().items.find(i=>i.uid===node?.dataset.uid);if(!i||layoutLocked()||i.cardLocked)return;if(['front','back','remove'].includes(action))window.INJWorkspaceProHooks?.beforeChange?.();if(action==='front'||action==='back'){active().items=active().items.filter(x=>x!==i);if(action==='front')active().items.push(i);else active().items.unshift(i);persist();layout();}if(action==='config')configure(i);if(action==='remove'){active().items=active().items.filter(x=>x!==i);persist();layout()}if(action==='duplicate')duplicateCards([i]);});
+$('wsGrid').addEventListener('click',e=>{const action=e.target.closest('[data-action]')?.dataset.action,node=e.target.closest('.ws-card'),i=active().items.find(i=>i.uid===node?.dataset.uid);if(!i||layoutLocked()||i.cardLocked)return;if(['front','back','remove'].includes(action))window.INJWorkspaceProHooks?.beforeChange?.();if(action==='front'||action==='back'){active().items=active().items.filter(x=>x!==i);if(action==='front')active().items.push(i);else active().items.unshift(i);persist();layout();}if(action==='config')configure(i);if(action==='remove'){active().items=active().items.filter(x=>x!==i);compactLayouts(['desktop','mobile']);persist();layout()}if(action==='duplicate')duplicateCards([i]);});
 document.querySelectorAll('[data-config-action]').forEach(b=>b.onclick=()=>{const node=[...$('wsGrid').children].find(n=>n.dataset.uid===editingCard?.uid);if(node){node.querySelector('[data-action='+b.dataset.configAction+']')?.click();$('wsConfig').close();}});
 $('wsGrid').addEventListener('pointerdown',e=>{
  if(immersive)return; // Touch and mouse never start layout edits in fullscreen.
@@ -204,35 +256,112 @@ function moveDrag(clientX,clientY){if(!drag||immersive)return;const d=drag,dx=(c
 let dragFrame=0;
 function scrollDrag(){if(!drag||immersive)return;const y=drag.pointerY,dy=y>innerHeight-55?Math.min(18,(y-innerHeight+55)/3):y<55?-Math.min(18,(55-y)/3):0;if(dy){window.scrollBy(0,dy);moveDrag(drag.pointerX,drag.pointerY);}dragFrame=requestAnimationFrame(scrollDrag);}
 $('wsGrid').addEventListener('pointermove',e=>{if(!drag||immersive)return;drag.pointerX=e.clientX;drag.pointerY=e.clientY;moveDrag(e.clientX,e.clientY);if(!dragFrame)dragFrame=requestAnimationFrame(scrollDrag);});
-function endDrag(cancel=false){if(!drag)return;if(immersive)cancel=true;const d=drag;if(cancel)active().items=d.snapshot;else if(d.moved&&!active().snap){active().items=active().items.filter(i=>i!==d.item);active().items.push(d.item);}window.INJWorkspaceProHooks?.dragEnd?.(d,cancel);d.node.classList.remove('is-moving');drag=null;cancelAnimationFrame(dragFrame);dragFrame=0;persist();layout();}
+function endDrag(cancel=false){if(!drag)return;if(immersive)cancel=true;const d=drag;if(cancel)active().items=d.snapshot;else if(d.moved&&!active().snap){active().items=active().items.filter(i=>i!==d.item);active().items.push(d.item);}window.INJWorkspaceProHooks?.dragEnd?.(d,cancel);if(!cancel&&d.moved)compactLayouts([d.key]);d.node.classList.remove('is-moving');drag=null;cancelAnimationFrame(dragFrame);dragFrame=0;persist();layout();}
 $('wsGrid').addEventListener('pointerup',()=>endDrag());$('wsGrid').addEventListener('pointercancel',()=>endDrag(true));$('wsGrid').addEventListener('lostpointercapture',()=>endDrag());
-$('wsGrid').addEventListener('keydown',e=>{const handle=e.target.closest('.ws-drag,.ws-resize'),node=handle?.closest('.ws-card'),i=active().items.find(i=>i.uid===node?.dataset.uid);if(!i||layoutLocked()||i.cardLocked||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();window.INJWorkspaceProHooks?.beforeChange?.();const px=e.shiftKey?10:1,dx=(e.key==='ArrowRight'?px:e.key==='ArrowLeft'?-px:0)/canvasUnit(),dy=(e.key==='ArrowDown'?px:e.key==='ArrowUp'?-px:0)/ROW;i.layouts[mode()]=M.transform(i.layouts[mode()],handle.classList.contains('ws-drag')?'move':handle.dataset.edge,dx,dy,cols(),{snap:false,minW:108/canvasUnit(),minH:98/ROW});if(active().snap)M.settle(active().items,mode(),cols(),i.uid);persist();layout();});
-$('wsSnap').onclick=()=>{window.INJWorkspaceProHooks?.beforeChange?.();active().snap=!active().snap;persist();layout();};
+$('wsGrid').addEventListener('keydown',e=>{const handle=e.target.closest('.ws-drag,.ws-resize'),node=handle?.closest('.ws-card'),i=active().items.find(i=>i.uid===node?.dataset.uid);if(!i||layoutLocked()||i.cardLocked||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();window.INJWorkspaceProHooks?.beforeChange?.();const px=e.shiftKey?10:1,dx=(e.key==='ArrowRight'?px:e.key==='ArrowLeft'?-px:0)/canvasUnit(),dy=(e.key==='ArrowDown'?px:e.key==='ArrowUp'?-px:0)/ROW;i.layouts[mode()]=M.transform(i.layouts[mode()],handle.classList.contains('ws-drag')?'move':handle.dataset.edge,dx,dy,cols(),{snap:false,minW:108/canvasUnit(),minH:98/ROW});if(active().snap)M.settle(active().items,mode(),cols(),i.uid);compactLayouts();persist();layout();});
+$('wsSnap').onclick=()=>{window.INJWorkspaceProHooks?.beforeChange?.();active().snap=!active().snap;compactLayouts(['desktop','mobile']);persist();layout();};
 function ask(label,value,callback){$('wsPromptTitle').textContent=label;$('wsPromptValue').value=value;$('wsPrompt').showModal();$('wsPromptValue').focus();$('wsPromptForm').onsubmit=e=>{e.preventDefault();const v=$('wsPromptValue').value.trim();if(!v)return;$('wsPrompt').close();callback(v)};}
-function presetList(){const list=$('wsPresetList');list.replaceChildren();for(const p of db.presets){const row=el('div','ws-preset-row');row.dataset.presetId=p.id;row.append(el('strong','',p.name+(p.id===db.active?' ✓':'')+(p.id===db.defaultId?' ★':'')));const controls=el('div');const button=(label,fn)=>{const b=el('button','',label);b.onclick=fn;controls.append(b)};button(t('Apri','Open'),()=>{db.active=p.id;persist();layout();$('wsPresetDialog').close();refresh()});button(t('Rinomina','Rename'),()=>ask(t('Nome preset','Preset name'),p.name,name=>{window.INJWorkspaceProHooks?.beforeChange?.();p.name=name;persist();presetList();layout()}));button(p.id===db.defaultId?t('Rimuovi predefinito','Unset default'):t('Predefinito','Default'),()=>{window.INJWorkspaceProHooks?.beforeChange?.();db.defaultId=db.defaultId===p.id?null:p.id;persist();presetList()});button(t('Elimina','Delete'),()=>{if(db.presets.length===1)return notice(t('Mantieni almeno un preset','Keep at least one preset'));if(!confirm(t('Eliminare il preset ','Delete preset ')+p.name+'?'))return;window.INJWorkspaceProHooks?.beforeChange?.();db.presets=db.presets.filter(x=>x!==p);if(db.active===p.id)db.active=db.presets[0].id;if(db.defaultId===p.id)db.defaultId=null;persist();presetList();layout()});row.append(controls);list.append(row)}}
+function presetList(){const list=$('wsPresetList');list.replaceChildren();for(const p of db.presets){const row=el('div','ws-preset-row');row.dataset.presetId=p.id;row.append(el('strong','',p.name+(p.id===db.active?' ✓':'')+(p.id===db.defaultId?' ★':'')));const controls=el('div');const button=(label,fn)=>{const b=el('button','',label);b.onclick=fn;controls.append(b)};button(t('Apri','Open'),()=>{db.active=p.id;persist();layout();$('wsPresetDialog').close();refresh()});button(t('Copia codice','Copy code'),()=>showTransfer(p));button(t('Rinomina','Rename'),()=>ask(t('Nome preset','Preset name'),p.name,name=>{window.INJWorkspaceProHooks?.beforeChange?.();p.name=name;persist();presetList();layout()}));button(p.id===db.defaultId?t('Rimuovi predefinito','Unset default'):t('Predefinito','Default'),()=>{window.INJWorkspaceProHooks?.beforeChange?.();db.defaultId=db.defaultId===p.id?null:p.id;persist();presetList()});button(t('Elimina','Delete'),()=>{if(db.presets.length===1)return notice(t('Mantieni almeno un preset','Keep at least one preset'));if(!confirm(t('Eliminare il preset ','Delete preset ')+p.name+'?'))return;window.INJWorkspaceProHooks?.beforeChange?.();db.presets=db.presets.filter(x=>x!==p);if(db.active===p.id)db.active=db.presets[0].id;if(db.defaultId===p.id)db.defaultId=null;persist();presetList();layout()});row.append(controls);list.append(row)}}
 function newPreset(duplicate){if(db.presets.length>=50)return notice(t('Massimo 50 preset','Maximum 50 presets'));ask(t('Nome preset','Preset name'),duplicate?active().name+' copy':'Workspace '+(db.presets.length+1),name=>{window.INJWorkspaceProHooks?.beforeChange?.();const p=duplicate?structuredClone(active()):{items:[],locked:false};p.id=uid();p.name=name;p.items.forEach(i=>i.uid=uid());db.presets.push(p);db.active=p.id;persist();layout();$('wsPresetDialog').close();refresh()})}
+/* Portable transfer between INJ Node installs: share only the preset settings,
+   including configured public wallet sources, never stored balances or credentials. */
+function portablePreset(p){
+ const copy=structuredClone(p);
+ return JSON.stringify({version:1,presets:[copy],active:copy.id,defaultId:null},null,2);
+}
+function showTransfer(p){
+ $('wsTransferTitle').textContent=t('Copia preset: ','Copy preset: ')+p.name;
+ $('wsTransferHelp').textContent=t('Copia il codice e incollalo su un altro INJ Node. Può contenere indirizzi pubblici dei wallet usati dalle card; non contiene chiavi private né saldi.','Copy this code and paste it into another INJ Node. It may contain public wallet addresses configured in cards, but no private keys or balances.');
+ $('wsTransferCode').value=portablePreset(p);$('wsTransferCode').readOnly=true;$('wsTransferMessage').textContent='';
+ $('wsTransferCopy').hidden=false;$('wsTransferApply').hidden=true;
+ $('wsTransfer').showModal();$('wsTransferCode').focus();$('wsTransferCode').select();
+}
+function showPaste(){
+ $('wsTransferTitle').textContent=t('Importa da un altro INJ Node','Import from another INJ Node');
+ $('wsTransferHelp').textContent=t('Incolla il codice di un preset o di un file Workspace esportato. I preset esistenti non saranno sostituiti.','Paste a preset code or exported Workspace JSON. Your existing presets will not be replaced.');
+ $('wsTransferCode').value='';$('wsTransferCode').readOnly=false;$('wsTransferMessage').textContent='';
+ $('wsTransferCopy').hidden=true;$('wsTransferApply').hidden=false;
+ $('wsTransfer').showModal();$('wsTransferCode').focus();
+}
+async function copyTransfer(){
+ const input=$('wsTransferCode');input.focus();input.select();
+ try{
+  if(!navigator.clipboard?.writeText)throw Error('Clipboard unavailable');
+  await navigator.clipboard.writeText(input.value);
+  $('wsTransferMessage').textContent=t('Codice copiato. Ora puoi condividerlo con l’altro dispositivo.','Code copied. You can now share it with your other device.');notice(t('Codice preset copiato','Preset code copied'));
+ }catch(_){$('wsTransferMessage').textContent=t('Seleziona il testo e usa Copia.','Select the text and choose Copy.');notice(t('Seleziona il testo e usa Copia','Select the text and choose Copy'))}
+}
+function importWorkspace(raw){
+ const imported=M.sanitize(raw);
+ if(db.presets.length+imported.presets.length>50)throw Error('Maximum 50 presets');
+ window.INJWorkspaceProHooks?.beforeChange?.();
+ const names=new Set(db.presets.map(p=>p.name.toLocaleLowerCase()));
+ for(const p of imported.presets){
+  let name=p.name.trim()||'Workspace',n=2;
+  const original=name;
+  while(names.has(name.toLocaleLowerCase())){
+   const suffix=' ('+(n++)+')';name=original.slice(0,Math.max(1,50-suffix.length)).trimEnd()+suffix;
+  }
+  names.add(name.toLocaleLowerCase());
+  p.name=name;p.id=uid();p.items.forEach(i=>i.uid=uid());db.presets.push(p);
+ }
+ db.active=db.presets.at(-1).id;
+ persist();presetList();layout();refresh();
+ notice(imported.presets.length+' '+t('preset importati','presets imported'));
+}
 $('wsNew').onclick=()=>newPreset(false);$('wsDuplicatePreset').onclick=()=>newPreset(true);
+$('wsCopyPreset').onclick=()=>showTransfer(active());
+$('wsPastePreset').onclick=showPaste;
+$('wsTransferCopy').onclick=copyTransfer;
+$('wsTransferApply').onclick=()=>{
+ const input=$('wsTransferCode').value;
+ try{if(input.length>2000000)throw Error('Too large');importWorkspace(JSON.parse(input));$('wsTransfer').close()}
+ catch(_){$('wsTransferMessage').textContent=t('Codice non valido o limite di 50 preset superato.','Invalid code or 50 preset limit exceeded.');notice(t('Codice non valido o limite di 50 preset superato','Invalid code or 50 preset limit exceeded'))}
+};
+
 $('wsExport').onclick=()=>{const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='INJ-Workspace-presets.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
-$('wsImport').onclick=()=>$('wsFile').click();$('wsFile').onchange=async e=>{const file=e.target.files[0];try{if(!file||file.size>2_000_000)throw Error();const imported=M.sanitize(JSON.parse(await file.text()));if(db.presets.length+imported.presets.length>50)throw Error();window.INJWorkspaceProHooks?.beforeChange?.();for(const p of imported.presets){p.id=uid();p.items.forEach(i=>i.uid=uid());db.presets.push(p)}db.active=db.presets.at(-1).id;persist();presetList();layout();refresh();notice(t('Preset importati','Presets imported'))}catch(_){notice(t('File non valido o limite di 50 preset superato','Invalid file or 50 preset limit exceeded'))}e.target.value='';};
+$('wsImport').onclick=()=>$('wsFile').click();$('wsFile').onchange=async e=>{const file=e.target.files[0];try{if(!file||file.size>2_000_000)throw Error();importWorkspace(JSON.parse(await file.text()))}catch(_){notice(t('File non valido o limite di 50 preset superato','Invalid file or 50 preset limit exceeded'))}e.target.value='';};
 $('wsAdd').onclick=$('wsEmptyAdd').onclick=openCatalog;$('wsSearch').oninput=()=>{renderCatalog();refresh()};$('wsKind').onchange=()=>{renderCatalog();refresh()};$('wsSource').onchange=()=>{renderCatalog();refresh()};$('wsPresets').onclick=()=>{presetList();$('wsPresetDialog').showModal()};$('wsEdit').onclick=()=>{if(mode()==='mobile'){if(drag)endDrag(true);mobileEditing=!mobileEditing;window.INJWorkspaceProHooks?.editModeChange?.(mobileEditing);layout();return;}window.INJWorkspaceProHooks?.beforeChange?.();active().locked=!active().locked;persist();layout()};$('wsSave').onclick=()=>persist(true);function setImmersive(on){
  if(on&&drag)endDrag(true);
  if(on&&mobileEditing){mobileEditing=false;window.INJWorkspaceProHooks?.editModeChange?.(false);}
  immersive=on;
+ if(!on)packedFullscreen=false;
  document.body.classList.toggle('ws-immersive',on);
+ document.body.classList.toggle('ws-packed-full',on&&packedFullscreen);
  window.INJWorkspaceProHooks?.immersiveChange?.(on);
  $('wsExitFull').hidden=!on;
+ // Visibility is determined by the fullscreen state, not a stale [hidden] attribute.
+ $('wsPackFull').hidden=false;
+ updatePackButton();
  $('wsFull').setAttribute('aria-pressed',String(on));
  layout();
 }
+function updatePackButton(){
+ const button=$('wsPackFull');
+ button.textContent=packedFullscreen?t('↩ RIPRISTINA LAYOUT','↩ RESTORE LAYOUT'):t('▦ ALLINEA TUTTO · 2 PX','▦ ALIGN ALL · 2 PX');
+ button.title=packedFullscreen?t('Ripristina la disposizione originale','Restore the original arrangement'):t('Elimina gli spazi tra le card: distanza 2 px','Remove gaps between cards: 2px spacing');
+ button.setAttribute('aria-label',button.title);
+ button.setAttribute('aria-pressed',String(packedFullscreen));
+ button.disabled=!active().items.length;
+}
+$('wsPackFull').onclick=()=>{
+ if(!immersive)return;
+ packedFullscreen=!packedFullscreen;
+ document.body.classList.toggle('ws-packed-full',packedFullscreen);
+ updatePackButton();
+ layout();
+};
 async function exitImmersive(){setImmersive(false);try{if(document.fullscreenElement)await document.exitFullscreen()}catch(_){}$('wsFull').focus();}
-$('wsFull').onclick=async()=>{if(immersive)return exitImmersive();persist();setImmersive(true);try{if(!/iPhone|iPod|Android.*Mobile/i.test(navigator.userAgent||'')&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){/* On phones keep CSS immersive fullscreen inside the PWA so the entire section follows parent rotation. */}};
+$('wsFull').onclick=async()=>{if(immersive)return exitImmersive();persist();setImmersive(true);try{if(!/iPhone|iPod|iPad|Android/i.test(navigator.userAgent||'')&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){/* On mobile, stay in CSS immersive mode within rotated PWA. */}};
 $('wsExitFull').onclick=exitImmersive;
-document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&immersive)setImmersive(false);else if(document.fullscreenElement&&!immersive)setImmersive(true)});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&immersive)setImmersive(false);else if(document.fullscreenElement&&!immersive)setImmersive(true);else if(document.fullscreenElement&&immersive)layout()});
+let packResizeFrame=0;
+window.visualViewport?.addEventListener('resize',()=>{if(!immersive||!packedFullscreen||packResizeFrame)return;packResizeFrame=requestAnimationFrame(()=>{packResizeFrame=0;if(immersive&&packedFullscreen)layout()});},{passive:true});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&immersive){e.preventDefault();e.stopImmediatePropagation();exitImmersive();}},true);
 
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 const labels={chartStyle:['Tipo di grafico','Chart type'],title:['Titolo personalizzato','Custom title'],source:['Sorgente wallet','Wallet source'],width:['Larghezza (px)','Width (px)'],height:['Altezza (px)','Height (px)'],column:['Posizione X (px)','X position (px)'],row:['Posizione Y (px)','Y position (px)'],appearance:['Aspetto','Appearance'],timeframe:['Timeframe','Timeframe'],goal:['Traguardo (USD)','Goal (USD)'],border:['Mostra bordo','Show border'],details:['Mostra dettagli','Show details']};
-function language(){document.documentElement.lang=t('it','en');for(const [id,it,en]of [['wsAdd','＋ Aggiungi','＋ Add'],['wsPresets','Preset','Presets'],['wsSave','Salva','Save'],['wsCatalogTitle','Aggiungi una card','Add a card'],['wsSourceLabel','Sorgente per le nuove card','Source for new cards'],['wsEmptyAdd','＋ Aggiungi la prima card','＋ Add your first card'],['wsApply','Applica','Apply'],['wsNew','＋ Nuovo vuoto','＋ New blank'],['wsDuplicatePreset','Duplica attuale','Duplicate current'],['wsExport','Esporta','Export'],['wsImport','Importa','Import']])$(id).textContent=t(it,en);$('wsSearch').placeholder=t('Cerca una card…','Search cards…');$('wsEmpty').querySelector('h1').textContent=t('Il tuo spazio, i tuoi dati','Your space, your data');$('wsEmpty').querySelector('p').textContent=t('Scegli le card, collega i wallet e componi il tuo setup. Parti da uno spazio completamente vuoto.','Choose cards, connect wallets and compose your setup. Start with a completely blank space.');$('wsStorageNote').textContent=t('Salvataggio automatico su questo dispositivo. Esporta i preset per trasferirli: il file contiene i riferimenti agli indirizzi pubblici. Nessuna sincronizzazione cloud.','Autosaved on this device. Export presets to transfer them: the file includes references to public addresses. No cloud sync.');$('wsConfigForm').elements.chartStyle.options[0].textContent=t('Linee','Line');$('wsConfigForm').elements.chartStyle.options[1].textContent=t('Candele','Candles');$('wsExitFull').title=t('Esci da schermo intero','Exit fullscreen');$('wsExitFull').setAttribute('aria-label',$('wsExitFull').title);document.querySelectorAll('[data-config-action]').forEach(b=>b.textContent=({front:t('Porta davanti','Bring forward'),back:t('Porta dietro','Send back'),duplicate:t('Duplica','Duplicate'),remove:t('Rimuovi','Remove')})[b.dataset.configAction]);document.querySelectorAll('[data-text]').forEach(n=>n.textContent=t(...labels[n.dataset.text]));layout();}
+function language(){document.documentElement.lang=t('it','en');updatePackButton();for(const [id,it,en]of [['wsAdd','＋ Aggiungi','＋ Add'],['wsPresets','Preset','Presets'],['wsSave','Salva','Save'],['wsCatalogTitle','Aggiungi una card','Add a card'],['wsSourceLabel','Sorgente per le nuove card','Source for new cards'],['wsEmptyAdd','＋ Aggiungi la prima card','＋ Add your first card'],['wsApply','Applica','Apply'],['wsNew','＋ Nuovo vuoto','＋ New blank'],['wsDuplicatePreset','Duplica attuale','Duplicate current'],['wsExport','Esporta','Export'],['wsImport','Importa','Import'],['wsCopyPreset','Copia attuale','Copy current'],['wsPastePreset','Incolla codice','Paste code'],['wsTransferCopy','Copia codice','Copy code'],['wsTransferApply','Importa preset','Import preset']])$(id).textContent=t(it,en);$('wsSearch').placeholder=t('Cerca una card…','Search cards…');$('wsEmpty').querySelector('h1').textContent=t('Il tuo spazio, i tuoi dati','Your space, your data');$('wsEmpty').querySelector('p').textContent=t('Scegli le card, collega i wallet e componi il tuo setup. Parti da uno spazio completamente vuoto.','Choose cards, connect wallets and compose your setup. Start with a completely blank space.');$('wsStorageNote').textContent=t('Salvataggio automatico su questo dispositivo. Esporta i preset per trasferirli: il file contiene i riferimenti agli indirizzi pubblici. Nessuna sincronizzazione cloud.','Autosaved on this device. Export presets to transfer them: the file includes references to public addresses. No cloud sync.');$('wsConfigForm').elements.chartStyle.options[0].textContent=t('Linee','Line');$('wsConfigForm').elements.chartStyle.options[1].textContent=t('Candele','Candles');$('wsExitFull').title=t('Esci da schermo intero','Exit fullscreen');$('wsExitFull').setAttribute('aria-label',$('wsExitFull').title);document.querySelectorAll('[data-config-action]').forEach(b=>b.textContent=({front:t('Porta davanti','Bring forward'),back:t('Porta dietro','Send back'),duplicate:t('Duplica','Duplicate'),remove:t('Rimuovi','Remove')})[b.dataset.configAction]);document.querySelectorAll('[data-text]').forEach(n=>n.textContent=t(...labels[n.dataset.text]));layout();}
 async function json(url){const c=new AbortController(),timeout=setTimeout(()=>c.abort(),7000);try{const r=await fetch(url,{signal:c.signal,cache:'no-store'});if(!r.ok)throw Error(r.status);return await r.json()}finally{clearTimeout(timeout)}}
 async function lcd(path){for(const root of ['https://sentry.lcd.injective.network:443','https://lcd.injective.network','https://1rpc.io/inj-lcd'])try{return await json(root+path)}catch(_){}throw Error('LCD unavailable')}
 async function walletData(address){try{const [bank,reward,staking,unbond]=await Promise.all([lcd('/cosmos/bank/v1beta1/balances/'+address+'/by_denom?denom=inj'),lcd('/cosmos/distribution/v1beta1/delegators/'+address+'/rewards'),lcd('/cosmos/staking/v1beta1/delegations/'+address+'?pagination.limit=1000'),lcd('/cosmos/staking/v1beta1/delegators/'+address+'/unbonding_delegations?pagination.limit=1000')]);if(staking.pagination?.next_key||unbond.pagination?.next_key||!Array.isArray(staking.delegation_responses)||!Array.isArray(reward.total)||!Array.isArray(unbond.unbonding_responses)||!bank.balance)throw Error('Incomplete');const fromWei=v=>Number(v||0)/1e18;const staked=staking.delegation_responses.reduce((a,r)=>a+fromWei(r.balance?.amount),0),available=fromWei(bank.balance.amount),rewards=reward.total.filter(c=>c.denom==='inj').reduce((a,r)=>a+fromWei(r.amount),0),unbonding=unbond.unbonding_responses.reduce((a,r)=>a+(r.entries||[]).reduce((s,x)=>s+fromWei(x.balance),0),0);const cache=read('inj_monitor_summaries_v1',{})[address]||{};const validators=staking.delegation_responses.map(r=>({operator:r.delegation?.validator_address,amount:fromWei(r.balance?.amount)}));const row={...cache,validators:cache.validators||validators,staked,available,rewards,unbonding,total:staked+available+rewards+unbonding,updated:Date.now(),verified:true};if(![row.staked,row.available,row.rewards,row.total].every(Number.isFinite))throw Error('Invalid response');data.rows[address]=row;}catch(_){/* Retain last successful snapshot with its timestamp. */}}

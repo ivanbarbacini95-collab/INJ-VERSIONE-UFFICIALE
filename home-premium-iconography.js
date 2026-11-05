@@ -30,7 +30,7 @@
     if (!home) return;
     for (const [id, content] of Object.entries(artwork)) {
       const tile = document.getElementById(id);
-      if (!tile || !home.contains(tile)) continue;
+      if (!tile || !home.contains(tile) || tile.querySelector(':scope > .inj-pro-launcher-symbol')) continue;
       let holder = tile.querySelector(':scope > .inj-tile-scene');
       if (!holder) {
         holder = document.createElement('span');

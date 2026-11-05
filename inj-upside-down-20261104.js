@@ -56,7 +56,47 @@
       'opacity:.9!important;touch-action:manipulation!important;',
       'cursor:pointer!important;pointer-events:auto!important;}',
     'html:not([data-inj-reverse-portrait="1"]) #injFixed180Exit{display:none!important;}',
-    '#injReverseAutoButton[aria-pressed="true"] .menu-action-value{color:var(--up,#32bd83);}'
+    '#injReverseAutoButton[aria-pressed="true"] .menu-action-value{color:var(--up,#32bd83);}',
+    // The Home dock is a native manual popover (browser TOP layer), not
+    // a child of the rotated body for rendering. Position and rotate it in
+    // viewport space so its controls appear at the physical BOTTOM when
+    // the handset is held charging-port-up. Buttons keep normal hit boxes.
+    'html[data-inj-reverse-portrait="1"][data-inj-page="index"]',
+    ' body > #injPrimaryBottomNav:popover-open{',
+    'position:fixed!important;',
+    'inset:max(10px,env(safe-area-inset-top,0px)) auto auto 50%!important;',
+    'top:max(10px,env(safe-area-inset-top,0px))!important;',
+    'bottom:auto!important;left:50%!important;right:auto!important;',
+    'margin:0!important;',
+    'transform:translate(-50%,0) rotate(180deg)!important;',
+    '-webkit-transform:translate(-50%,0) rotate(180deg)!important;',
+    'transform-origin:center center!important;',
+    '}',
+    // For older Safari without the top-layer popover, the dock remains
+    // inside the rotated BODY and must NOT be rotated twice. Move its
+    // logical bottom edge to the opposite end of that body instead.
+    'html[data-inj-reverse-portrait="1"][data-inj-page="index"]',
+    ' body > #injPrimaryBottomNav:not(:popover-open){',
+    'position:fixed!important;',
+    'inset:max(10px,env(safe-area-inset-top,0px)) auto auto 50%!important;',
+    'top:max(10px,env(safe-area-inset-top,0px))!important;',
+    'bottom:auto!important;left:50%!important;right:auto!important;',
+    'transform:translate(-50%,0)!important;',
+    '-webkit-transform:translate(-50%,0)!important;',
+    '}',
+    // Home-only appearance rules can have extremely specific selectors.
+    // Match those exact selectors while in locked mode; visibility and
+    // pointer behavior are still controlled by the Home tab itself.
+    'html[data-inj-reverse-portrait="1"][data-inj-page="index"]',
+    '[data-inj-home-tab="home"][data-inj-home-nav-visible="true"]',
+    ' body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav:popover-open{',
+    'inset:max(10px,env(safe-area-inset-top,0px)) auto auto 50%!important;',
+    'top:max(10px,env(safe-area-inset-top,0px))!important;',
+    'bottom:auto!important;',
+    'transform:translate(-50%,0) rotate(180deg)!important;',
+    '-webkit-transform:translate(-50%,0) rotate(180deg)!important;',
+    '}'
+
   ].join('');
   document.head.appendChild(style);
 

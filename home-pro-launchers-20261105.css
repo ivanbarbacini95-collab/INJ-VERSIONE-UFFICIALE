@@ -1,0 +1,335 @@
+/* INJ Node / premium Home launchers / 2026-11-05.
+   Three original click targets; animated SVG details only.
+   Scaled for iPhone without hiding content behind the floating dock. */
+html[data-inj-page="index"][data-inj-home-tab="home"] {
+  --inj-pro-link-height:124px;
+  --inj-pro-link-icon:55px;
+  --inj-pro-link-font:15px;
+  --inj-pro-link-gap:10px;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:var(--inj-pro-link-height)!important;
+  grid-auto-rows:var(--inj-pro-link-height)!important;
+  grid-auto-flow:row!important;
+  align-items:stretch!important;
+  justify-content:stretch!important;
+  align-content:start!important;
+  gap:var(--inj-pro-link-gap)!important;
+  width:100%!important;
+  height:var(--inj-pro-link-height)!important;
+  min-height:var(--inj-pro-link-height)!important;
+  max-height:var(--inj-pro-link-height)!important;
+  overflow:visible!important;
+  /* Bring the three destinations closer to the bottom dock, while the
+     chart-fit controller protects shorter phone viewports. */
+  margin:clamp(16px,2.75dvh,27px) 0 0!important;
+  padding:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action {
+  display:flex!important;
+  position:relative!important;
+  isolation:isolate!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  justify-self:stretch!important;
+  align-self:stretch!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  height:var(--inj-pro-link-height)!important;
+  min-height:var(--inj-pro-link-height)!important;
+  max-height:var(--inj-pro-link-height)!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  overflow:hidden!important;
+  padding:14px 6px 12px!important;
+  margin:0!important;
+  gap:0!important;
+  border-radius:20px!important;
+  border:1px solid color-mix(in srgb,var(--text,#f1f1fa) 13%,var(--line,#4a4f6b))!important;
+  background:color-mix(in srgb,var(--surface,#12152a) 92%,var(--surface-strong,#20233c) 8%)!important;
+  background-image:none!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 5%,transparent)!important;
+  text-decoration:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+> .entry-action-icon.inj-pro-launcher-symbol {
+  display:grid!important;
+  position:relative!important;
+  inset:auto!important;
+  flex:0 0 auto!important;
+  place-items:center!important;
+  width:var(--inj-pro-link-icon)!important;
+  min-width:0!important;
+  height:var(--inj-pro-link-icon)!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0 auto!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  color:color-mix(in srgb,var(--accent,#b0a3e4) 72%,var(--text,#fff))!important;
+  opacity:1!important;
+  visibility:visible!important;
+  overflow:visible!important;
+  transform:none!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+.inj-pro-launcher-symbol > svg.inj-pro-launcher-art {
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:visible!important;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8px;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  shape-rendering:geometricPrecision;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+> span:has(> .inj-home-tile-title) {
+  display:flex!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:auto!important;
+  max-height:none!important;
+  padding:0!important;
+  margin:0!important;
+  gap:0!important;
+  transform:none!important;
+  text-align:center!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+.inj-home-tile-title {
+  display:block!important;
+  position:static!important;
+  flex:1 1 auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:var(--inj-pro-link-font)!important;
+  line-height:1.18!important;
+  font-weight:650!important;
+  letter-spacing:-.015em!important;
+  color:var(--text,#fff)!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  transform:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+:is(.inj-tile-description,.treasury-entry-details,.entry-action-arrow,.inj-tile-scene,.bcg-treasury-visual) {
+  display:none!important;
+}
+/* SVG micro-motion: one quiet motion in each financial instrument. */
+.inj-pro-icon-frame {opacity:.68;stroke-width:1.65px}
+.inj-pro-icon-muted {opacity:.44}
+.inj-pro-icon-detail {stroke-width:1.75px;opacity:.92}
+.inj-pro-icon-bright {stroke-width:2.3px}
+.inj-pro-icon-accent {fill:currentColor;stroke:none}
+.inj-pro-icon-dashboard .inj-pro-dash-trace {
+  stroke-dasharray:63 8;
+  animation:injProTrace 4.4s ease-in-out infinite;
+}
+.inj-pro-icon-dashboard .inj-pro-dash-point {
+  transform-origin:50px 21px;
+  animation:injProDot 3.2s ease-in-out infinite;
+}
+.inj-pro-icon-live .inj-pro-live-wave {
+  stroke-dasharray:8 6;
+  animation:injProLivePulse 4s linear infinite;
+}
+.inj-pro-icon-live .inj-pro-live-beacon {
+  transform-origin:51px 32px;
+  animation:injProDot 3.1s ease-in-out infinite;
+}
+.inj-pro-icon-live .inj-pro-live-scan {
+  stroke-width:1px;
+  animation:injProScan 4.2s ease-in-out infinite;
+}
+.inj-pro-icon-treasury .inj-pro-vault-rotor {
+  transform-origin:32px 33px;
+  animation:injProVaultTurn 7.5s ease-in-out infinite;
+}
+.inj-pro-icon-treasury .inj-pro-vault-led {
+  animation:injProVaultLED 3.8s ease-in-out infinite;
+}
+@keyframes injProTrace{
+  0%,100%{stroke-dashoffset:0;opacity:.85}
+  50%{stroke-dashoffset:-11;opacity:1}
+}
+@keyframes injProDot{
+  0%,100%{opacity:.55;transform:scale(.76)}
+  50%{opacity:1;transform:scale(1.18)}
+}
+@keyframes injProLivePulse{
+  to{stroke-dashoffset:-28}
+}
+@keyframes injProScan{
+  0%,100%{opacity:.12;transform:translateY(-5px)}
+  48%{opacity:.52;transform:translateY(8px)}
+}
+@keyframes injProVaultTurn{
+  0%,12%{transform:rotate(0)}
+  55%,70%{transform:rotate(50deg)}
+  100%{transform:rotate(0)}
+}
+@keyframes injProVaultLED{
+  0%,100%{opacity:.2}
+  50%{opacity:.92}
+}
+@media (hover:hover) and (pointer:fine){
+  html[data-inj-page="index"][data-inj-home-tab="home"] body
+  #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action:hover {
+    border-color:color-mix(in srgb,var(--accent,#b0a3e4) 32%,var(--line,#4a4f6b))!important;
+  }
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action:focus-visible {
+  outline:2px solid var(--accent,#b0a3e4)!important;
+  outline-offset:2px!important;
+}
+@media(max-width:700px) and (orientation:portrait) {
+  html[data-inj-page="index"][data-inj-home-tab="home"] {
+    --inj-pro-link-height:clamp(72px,9dvh,92px);
+    --inj-pro-link-icon:clamp(32px,4.7dvh,40px);
+    --inj-pro-link-font:clamp(10px,2.65vw,12px);
+    --inj-pro-link-gap:6px;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body
+  #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+    padding:9px 3px 7px!important;
+    border-radius:13px!important;
+  }
+}
+@media(max-height:620px) and (min-width:701px) {
+  html[data-inj-page="index"][data-inj-home-tab="home"] {
+    --inj-pro-link-height:88px;
+    --inj-pro-link-icon:38px;
+    --inj-pro-link-font:13px;
+    --inj-pro-link-gap:8px;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body
+  #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+    padding:9px 4px 8px!important;
+    border-radius:15px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .inj-pro-launcher-symbol * {animation:none!important;transition:none!important}
+}
+
+
+/* Readability lock: decorative scenes from legacy scripts must never
+   enter the three launchers or force their labels out of the card. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+> :not(.inj-pro-launcher-symbol):not(:has(> .inj-home-tile-title)) {
+  display:none!important;
+  visibility:hidden!important;
+  max-height:0!important;
+  max-width:0!important;
+  flex:0 0 0!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+> span:has(> .inj-home-tile-title){
+  box-sizing:border-box!important;
+  display:flex!important;
+  visibility:visible!important;
+  position:relative!important;
+  z-index:2!important;
+  order:2!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:22px!important;
+  min-height:22px!important;
+  max-height:22px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  transform:none!important;
+  inset:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+> .inj-pro-launcher-symbol{
+  order:1!important;
+  z-index:1!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+.entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+> span:has(> .inj-home-tile-title) > .inj-home-tile-title {
+  display:block!important;
+  visibility:visible!important;
+  position:static!important;
+  opacity:1!important;
+  z-index:2!important;
+  color:var(--text,#fff)!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  font-size:var(--inj-pro-link-font)!important;
+  line-height:1.24!important;
+  font-weight:700!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  text-overflow:clip!important;
+  overflow:visible!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  inset:auto!important;
+}

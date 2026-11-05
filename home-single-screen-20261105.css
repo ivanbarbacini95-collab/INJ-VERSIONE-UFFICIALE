@@ -1,0 +1,330 @@
+/* INJ Node · Single-screen responsive Home (2026-11-05).
+   Pro Home on portrait phones ONLY. All panels remain native and interactive.
+   Short screens keep scroll access instead of hiding required controls. */
+@media (max-width:700px) and (orientation:portrait) {
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body
+  #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access){
+    padding-top:max(6px,env(safe-area-inset-top,0px))!important;
+    padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;
+    row-gap:0!important;
+    align-content:start!important;
+  }
+  /* The on-screen layout genuinely fits: remove artificial scroll tail. */
+  html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-fit="true"]:not([data-inj-view-mode="light"]) body
+  #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access){
+    padding-bottom:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-fit="true"]:not([data-inj-view-mode="light"]) body
+  #entryGate#entryGate.entry-gate.visible{
+    overflow-y:hidden!important;
+    overscroll-behavior-y:none!important;
+  }
+  /* Condense the hero without reducing menu/Pro tap targets. */
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .entry-wallet-section{
+    gap:4px!important;
+    margin:0 0 5px!important;
+    padding-block:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .entry-wallet-section > .home-safe-heading.inj-terminal-hero-arranged{
+    min-height:62px!important;
+    height:62px!important;
+    max-height:62px!important;
+    grid-template-rows:min-content min-content!important;
+    row-gap:1px!important;
+    padding:0!important;
+    margin:0 0 3px!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .home-safe-heading.inj-terminal-hero-arranged > h1{
+    font-size:clamp(27px,7.65vw,36px)!important;
+    line-height:1.04!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .home-safe-heading.inj-terminal-hero-arranged > p{
+    font-size:clamp(10px,2.6vw,12px)!important;
+    line-height:1.16!important;
+    margin:0!important;
+  }
+  /* A compact, single-line live ticker and wallet selection header. */
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .entry-wallet-section > #injMarketTicker.inj-market-ticker{
+    height:26px!important;min-height:26px!important;max-height:26px!important;
+    margin:1px 0 3px!important;padding:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .entry-wallet-section > .entry-wallet-heading{
+    min-height:0!important;
+    /* More air below the market ticker: move the entire wallet block
+       and its following Home content down in natural document flow. */
+    margin:12px 0 3px!important;
+    padding:0!important;
+    line-height:1.2!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .entry-wallet-section > #entryWallets.entry-wallets{
+    margin-block:0!important;
+    /* Reserve space inside the clipped horizontal scrollport for the
+       selected card's top outline/glow (especially iOS PWA). */
+    padding-top:8px!important;
+    padding-bottom:4px!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .entry-wallet-section > #entryWalletPagination.entry-wallet-pagination{
+    height:18px!important;min-height:18px!important;
+    margin:2px 0 2px!important;padding:0!important;
+  }
+  /* Keep both original sections and their familiar joined hairline frame.
+     Wallet's live price, eye button, and swipe carousel are not touched. */
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > #entryOverview.entry-overview{
+    height:auto!important;
+    min-height:0!important;
+    margin-top:2px!important;
+    padding:11px 12px 10px!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  #entryOverview .entry-overview-head{
+    margin-bottom:7px!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card{
+    height:var(--inj-home-fit-chart-height,244px)!important;
+    min-height:188px!important;
+    max-height:var(--inj-home-fit-chart-height,244px)!important;
+    margin-top:-9px!important;
+    padding:10px 11px 8px!important;
+    gap:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  #entryInsights > .entry-insights-head{
+    min-height:20px!important;height:auto!important;
+    margin-bottom:3px!important;
+    padding:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  #entryInsights > .entry-sparkline.entry-price-chart{
+    padding:5px 0 5px!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  #entryInsights .entry-price-timebar{
+    min-height:16px!important;
+    margin-top:1px!important;
+    padding-top:2px!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+  #entryInsights .entry-price-pnl{
+    box-sizing:border-box!important;
+    min-height:39px!important;
+    height:39px!important;
+    max-height:39px!important;
+    margin:2px 0 0!important;
+    padding:6px 5px!important;
+    border-radius:0!important;
+  }
+  /* Three truly compact, equal-size quick links: do not allow old tile art,
+     large subtitles or Treasury's brand illustration to occupy the row. */
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:50px!important;
+    grid-auto-flow:row!important;
+    grid-auto-rows:50px!important;
+    gap:6px!important;
+    align-content:start!important;
+    min-height:0!important;
+    height:50px!important;
+    max-height:50px!important;
+    margin:7px 0 0!important;
+    padding:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+    display:flex!important;
+    flex:0 0 auto!important;
+    flex-flow:row nowrap!important;
+    align-items:center!important;
+    justify-content:center!important;
+    grid-column:auto!important;
+    grid-row:auto!important;
+    box-sizing:border-box!important;
+    width:100%!important;min-width:0!important;
+    height:50px!important;min-height:50px!important;max-height:50px!important;
+    padding:0 4px!important;margin:0!important;
+    gap:0!important;
+    border-radius:12px!important;
+    border:1px solid color-mix(in srgb,var(--text,#fff) 12%,var(--line,#374354))!important;
+    background:color-mix(in srgb,var(--surface,#121829) 92%,transparent)!important;
+    background-image:none!important;
+    box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 4%,transparent)!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+  > :not(:has(.inj-home-tile-title)){
+    display:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+  :is(.inj-tile-scene,.bcg-treasury-visual,.entry-action-icon,.entry-action-arrow,.inj-tile-description,.treasury-entry-details){
+    display:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+  > :has(> .inj-home-tile-title){
+    display:flex!important;
+    position:static!important;
+    flex:1 1 auto!important;
+    flex-flow:row nowrap!important;
+    justify-content:center!important;
+    align-items:center!important;
+    width:100%!important;min-width:0!important;
+    height:auto!important;max-height:none!important;
+    margin:0!important;padding:0!important;gap:0!important;
+    transform:none!important;inset:auto!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+  .inj-home-tile-title{
+    display:block!important;
+    position:static!important;
+    flex:1 1 auto!important;
+    font-size:clamp(10px,2.7vw,12px)!important;
+    font-weight:650!important;
+    line-height:1.25!important;
+    letter-spacing:-.01em!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    width:100%!important;
+    margin:0!important;padding:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::before,
+  html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::after{
+    content:none!important;display:none!important;
+  }
+}
+/* If the PWA opens in landscape, one-screen squeezing must not suppress
+   existing app controls. Allow the original responsive scroll behaviour. */
+
+
+/* 2026-11-05 · Mobile clipping safeguard.
+   Never hide quick-link controls behind a fixed-height Home. Keep native
+   vertical scrolling only when the compact Home genuinely cannot fit. */
+@media (max-width:700px) and (orientation:portrait) {
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate.entry-gate.visible {
+    box-sizing:border-box!important;
+    height:100dvh!important;
+    min-height:0!important;
+    max-height:100dvh!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    touch-action:pan-y!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate.entry-gate.visible
+  > .entry-gate-shell:not(.first-access) {
+    box-sizing:border-box!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    align-content:start!important;
+    padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-fit="true"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate.entry-gate.visible
+  > .entry-gate-shell:not(.first-access) {
+    padding-bottom:0!important;
+  }
+  /* Always one complete row, irrespective of older two-column launcher CSS. */
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:50px!important;
+    grid-auto-rows:50px!important;
+    column-gap:6px!important;
+    row-gap:0!important;
+    height:50px!important;
+    min-height:50px!important;
+    max-height:50px!important;
+    overflow:visible!important;
+    margin:7px 0 0!important;
+    padding:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action {
+    grid-column:auto!important;
+    grid-row:auto!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    height:50px!important;
+    min-height:50px!important;
+    max-height:50px!important;
+    padding:0 4px!important;
+    margin:0!important;
+    gap:0!important;
+    border-radius:12px!important;
+    overflow:hidden!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+  > :is(.entry-action-icon,.entry-action-arrow,.inj-tile-scene,.bcg-treasury-visual) {
+    display:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+  > :is(span:not(.entry-action-icon),.treasury-entry-copy) {
+    display:flex!important;
+    flex:1 1 auto!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    padding:0!important;
+    margin:0!important;
+    gap:0!important;
+    position:static!important;
+    transform:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+  :is(.inj-tile-description,.treasury-entry-details) {
+    display:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+  body.entry-gate-open #entryGate#entryGate#entryGate
+  .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+  .inj-home-tile-title {
+    display:block!important;
+    position:static!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:clamp(10px,2.75vw,12.5px)!important;
+    line-height:1.25!important;
+    font-weight:650!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    transform:none!important;
+  }
+}

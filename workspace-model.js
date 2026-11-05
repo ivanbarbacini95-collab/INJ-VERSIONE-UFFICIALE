@@ -25,6 +25,52 @@ function settle(items,key,cols,priority){
  const placed=[];const ordered=priority?[...items.filter(i=>i.uid===priority),...items.filter(i=>i.uid!==priority)]:items;
  ordered.forEach(i=>{let r=normalize(i.layouts[key],cols),hit;while((hit=placed.find(p=>overlaps(r,p))))r.y=hit.y+hit.h;i.layouts[key]=r;placed.push(r);});return items;
 }
+// Pack free space only after a completed edit. Preserve card dimensions,
+// relative positions inside groups and fixed positions of locked cards.
+function compact(items,key,cols){
+ const blocks=[],groups=new Map(),precision=n=>Math.round(n*1e6)/1e6;
+ for(const [index,item] of items.entries()){
+  if(!item.layouts?.[key])continue;
+  const r=normalize(item.layouts[key],cols),id=item.group?'group:'+item.group:'card:'+item.uid;
+  let block=groups.get(id);
+  if(!block){block={members:[],index,locked:false};groups.set(id,block);blocks.push(block);}
+  block.members.push({item,r});block.locked||=!!item.cardLocked;
+ }
+ for(const b of blocks){
+  b.x=Math.min(...b.members.map(m=>m.r.x));
+  b.y=Math.min(...b.members.map(m=>m.r.y));
+  b.w=Math.max(...b.members.map(m=>m.r.x+m.r.w))-b.x;
+  b.h=Math.max(...b.members.map(m=>m.r.y+m.r.h))-b.y;
+ }
+ const placed=blocks.filter(b=>b.locked).map(b=>({x:b.x,y:b.y,w:b.w,h:b.h}));
+ const ordered=blocks.filter(b=>!b.locked).sort((a,b)=>a.y-b.y||a.x-b.x||a.index-b.index);
+ const collides=(x,y,b,p)=>x<p.x+p.w-1e-7&&x+b.w>p.x+1e-7&&y<p.y+p.h-1e-7&&y+b.h>p.y+1e-7;
+ for(const b of ordered){
+  const width=Math.min(cols,b.w);
+  const xs=new Set([0,Math.max(0,cols-width)]);
+  for(const p of placed){
+   xs.add(precision(p.x+p.w));xs.add(precision(p.x-width));
+   xs.add(precision(p.x));xs.add(precision(p.x+p.w-width));
+  }
+  let best=null;
+  for(const candidate of xs){
+   if(candidate< -1e-7||candidate+width>cols+1e-7)continue;
+   const x=Math.max(0,Math.min(cols-width,candidate));
+   let y=0;
+   for(let attempts=0;attempts<=placed.length;attempts++){
+    const hits=placed.filter(p=>collides(x,y,b,p));
+    if(!hits.length)break;
+    y=precision(Math.max(...hits.map(p=>p.y+p.h)));
+   }
+   if(!best||y<best.y-1e-7||(Math.abs(y-best.y)<1e-7&&x<best.x))best={x,y};
+  }
+  if(!best)best={x:0,y:placed.reduce((max,p)=>Math.max(max,p.y+p.h),0)};
+  const dx=best.x-b.x,dy=best.y-b.y;
+  for(const m of b.members)m.item.layouts[key]=normalize({...m.r,x:precision(m.r.x+dx),y:precision(m.r.y+dy)},cols);
+  placed.push({x:best.x,y:best.y,w:b.w,h:b.h});
+ }
+ return items;
+}
 function firstFree(items,key,cols,w,h){
  w=Math.min(w,cols);for(let y=0;y<12000;y++)for(let x=0;x<=cols-w;x++){const r={x,y,w,h};if(!items.some(i=>overlaps(r,i.layouts[key])))return r;}return {x:0,y:12000,w,h};
 }
@@ -65,5 +111,5 @@ function sanitize(input){
  });
  if(!presets.length)throw Error('No presets');return {version:1,presets,active:presets.some(p=>p.id===input.active)?input.active:presets[0].id,defaultId:presets.some(p=>p.id===input.defaultId)?input.defaultId:null};
 }
-const api={timeframes,parseKlines,types,normalize,transform,overlaps,settle,firstFree,cloneCard,aggregate,sanitize};if(typeof module!=='undefined')module.exports=api;root.INJWorkspaceModel=api;
+const api={timeframes,parseKlines,types,normalize,transform,overlaps,settle,compact,firstFree,cloneCard,aggregate,sanitize};if(typeof module!=='undefined')module.exports=api;root.INJWorkspaceModel=api;
 })(globalThis);

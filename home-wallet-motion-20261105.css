@@ -1,0 +1,65 @@
+/* INJ Node / Wallet switch motion (2026-11-05).
+   Retains native rail scrolling and account-card gesture interaction.
+   The header rail and active-card stage now share one animation clock. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryWallets.wallet-programmatic-scroll {
+  scroll-behavior:auto!important;
+  scroll-snap-type:none!important;
+  -webkit-scroll-snap-type:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryOverview.entry-overview-carousel-active
+.entry-wallet-card-track{
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryOverview .entry-wallet-card-slide{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryWallets > .entry-wallet-row > .entry-wallet{
+  transition:border-color .3s ease,box-shadow .3s ease,background-color .3s ease!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryWalletPagination .entry-wallet-dot{
+  transition:background-color .28s ease,opacity .28s ease,transform .3s cubic-bezier(.2,.8,.2,1)!important;
+}
+/* Single-card account switching. Never rescale or move the price.
+   The wallet selector stays swipeable; only wallet-specific fields crossfade. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryOverview {
+  -webkit-text-size-adjust:100%!important;
+  text-size-adjust:100%!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryOverview :is(.entry-overview-head > div,.entry-overview-worth) {
+  transition:opacity 190ms ease!important;
+  will-change:opacity;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryOverview.inj-wallet-changing :is(.entry-overview-head > div,.entry-overview-worth) {
+  opacity:.58!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryOverview.entry-overview-swipe-active:not(.inj-wallet-changing)
+:is(.entry-overview-head > div,.entry-overview-worth) {
+  opacity:var(--inj-wallet-swipe-opacity,1)!important;
+}
+/* Market price is global, not per-wallet. Keep its original pixels
+   and layout throughout wallet switching. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate #entryOverview :is(.entry-market-mini,#entryMarketPrice) {
+  transform:none!important;
+  scale:1!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate #entryOverview :is(.entry-overview-head > div,.entry-overview-worth),
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate #entryWalletPagination .entry-wallet-dot{
+  transition:none!important;
+ }
+}

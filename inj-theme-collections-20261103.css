@@ -180,3 +180,23 @@ html[data-theme="classic-black"],html[data-theme="classic-white"]{
   --inj-theme-art:none;
   --inj-signature-opacity:0;
 }
+
+
+/* 2026-11-04 · Black premium candles: vivid, high-contrast bullish/bearish palette. */
+html[data-theme="classic-black"]{
+  --up:#16e88b;
+  --down:#ff435b;
+  --positive:#16e88b;
+  --negative:#ff435b;
+  --up-soft:rgba(22,232,139,.14);
+  --down-soft:rgba(255,67,91,.14);
+}
+/* Home SVG candlesticks previously had hard-coded muted green and red. */
+html[data-theme="classic-black"][data-inj-page="index"] body
+ :is(#injLightLineSvg,#injProCandleSvg) .inj-candle-up{
+  fill:#16e88b!important;stroke:#16e88b!important;
+}
+html[data-theme="classic-black"][data-inj-page="index"] body
+ :is(#injLightLineSvg,#injProCandleSvg) .inj-candle-down{
+  fill:#ff435b!important;stroke:#ff435b!important;
+}

@@ -1,4 +1,4 @@
-/* INJ Node · comet-tail border, fitted exactly to the dock's rounded outline. */
+/* INJ Node · theme-colored comet-tail border, fitted exactly to the dock's rounded outline. */
 html[data-inj-page="index"] body>#injPrimaryBottomNav{
  isolation:isolate!important;
  overflow:hidden!important;
@@ -32,11 +32,11 @@ html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit rect{
 }
 html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit .inj-comet-head-halo{
  stroke-width:2.9px!important;stroke-linecap:round!important;
- filter:drop-shadow(0 0 1.2px rgba(255,232,190,.32))!important;
+ filter:drop-shadow(0 0 1.2px color-mix(in srgb,var(--accent,#67daee) 32%,transparent))!important;
 }
 html[data-inj-page="index"] body>#injPrimaryBottomNav>.inj-nav-comet-orbit .inj-comet-head-core{
  stroke-width:1.45px!important;stroke-linecap:round!important;
- filter:drop-shadow(0 0 1.7px rgba(255,249,226,.42))!important;
+ filter:drop-shadow(0 0 1.7px color-mix(in srgb,var(--accent,#67daee) 42%,transparent))!important;
 }
 @keyframes inj-native-comet-orbit{
  from{stroke-dashoffset:var(--inj-comet-start,0px)}

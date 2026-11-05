@@ -139,12 +139,18 @@ html[data-inj-etf-embedded="1"] .etf-shell{
 html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
  overscroll-behavior-y:contain;
 }
+
+/* ETF documentary status: clear distinction between exchange approval and trading. */
+.etf-verification{display:block;margin:12px 0 0;color:var(--etf-muted);font-size:10px;line-height:1.6}
+.etf-filing-feed{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--etf-line);padding:12px 17px 15px;font-size:10px;color:var(--etf-muted);line-height:1.5}
+.etf-filing-feed a{color:var(--etf-accent);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:540px){.head-right .refresh{display:grid!important;place-items:center!important;width:32px;height:32px;flex:none;font-size:18px}.status-pill{font-size:8px;padding:7px 8px}.head-right{gap:6px}}
 </style>
 <script defer src="./inj-node-insights-config.js?v=1"></script>
 <script defer src="./inj-node-telemetry.js?v=1"></script>
 
 <link rel="stylesheet" href="./inj-top-seamless.css?v=20261029continuity5"/>
-<script defer src="./inj-top-seamless.js?v=20261104-top-fix5"></script>
+<script defer src="./inj-top-seamless.js?v=20261028seam1"></script>
 <script defer src="./i18n.js?v=20261028allsections1"></script>
 <link rel="stylesheet" href="./inj-fluid-screen-fit.css?v=20261028fullmonitor1"/>
 <link rel="stylesheet" href="./inj-monitor-readability.css?v=20261028readable3"/>
@@ -164,15 +170,14 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <link rel="stylesheet" href="./inj-six-themes-20261103.css?v=theme-persist-flow-20261103c">
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
-<script src="./inj-six-themes-20261103.js?v=20261104-top-fix5"></script>
-<link rel="stylesheet" href="./inj-fullbleed-theme-20261104.css?v=20261104-top-fix5">
+<script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
 </head>
 <body>
 <div class="etf-shell">
 <header class="etf-top">
 <a class="etf-back" href="./index.html" id="injcBack" aria-label="Torna alla Home" title="Home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M7 10v10h10V10M10 20v-6h4v6"/></svg></a>
 <div class="etf-headbrand"><small>INJ NODE / CAPITAL MARKETS</small><strong>INJC ETF TERMINAL</strong></div>
-<div class="head-right"><span class="status-pill" aria-label="Stato: in attesa di quotazione"><i></i><span data-it="PRE-LANCIO" data-en="PRE-LAUNCH">PRE-LANCIO</span></span><button class="refresh" id="etfRefresh" type="button" aria-label="Aggiorna prezzo INJ" title="Aggiorna prezzo INJ">↻</button></div>
+<div class="head-right"><span class="status-pill" id="etfListingPill" aria-label="Nasdaq: domanda di quotazione approvata"><i></i><span id="etfListingBadge" data-it="NASDAQ ✓" data-en="NASDAQ ✓">NASDAQ ✓</span></span><button class="refresh" id="etfRefresh" type="button" aria-label="Aggiorna INJ e stato ETF" title="Aggiorna INJ e stato ETF">↻</button></div>
 </header>
 <main>
 <section class="etf-hero" aria-label="INJC ETF">
@@ -183,14 +188,15 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <div class="hero-meta">
 <span><b>EMITTENTE</b> CANARY CAPITAL</span>
 <span><b>ASSET</b> INJ</span>
-<span><b>BORSA</b> NASDAQ (PREVISTA)</span>
+<span id="etfExchange"><b>BORSA</b> NASDAQ ✓</span>
 </div>
 </div>
 <aside class="hero-side">
 <div class="eyebrow" data-it="STATO DEL FONDO" data-en="FUND STATUS">STATO DEL FONDO</div>
-<strong data-it="Il prossimo capitolo di Injective sui mercati tradizionali." data-en="Injective's next chapter in traditional markets.">Il prossimo capitolo di Injective sui mercati tradizionali.</strong>
-<p data-it="Il prospetto SEC del 23 ottobre 2026 è preliminare. Quotazione e negoziazione non sono ancora confermate." data-en="The October 23, 2026 SEC prospectus is preliminary. Listing and first trading day are not yet confirmed.">Il prospetto SEC del 23 ottobre 2026 è preliminare. Quotazione e negoziazione non sono ancora confermate.</p>
-<a href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126023446/inj-s1a_102326.htm" target="_blank" rel="noopener noreferrer" data-it="LEGGI IL PROSPETTO SEC ↗" data-en="READ SEC PROSPECTUS ↗">LEGGI IL PROSPETTO SEC ↗</a>
+<strong id="etfApprovalHeadline" data-it="Quotazione Nasdaq approvata" data-en="Nasdaq listing approved">Quotazione Nasdaq approvata</strong>
+<p id="etfApprovalSummary" data-it="Il Form 8-A del 3 novembre 2026 conferma l'approvazione della domanda di quotazione INJC sul Nasdaq. Approvazione della quotazione e primo giorno di scambi sono eventi distinti." data-en="The Nov 3, 2026 Form 8-A confirms that Nasdaq approved INJC's listing application. Approval and the first trading day are separate milestones.">Il Form 8-A del 3 novembre 2026 conferma l'approvazione della domanda di quotazione INJC sul Nasdaq. Approvazione della quotazione e primo giorno di scambi sono eventi distinti.</p>
+<small id="etfRegulatoryVerified" class="etf-verification" aria-live="polite" data-it="Fonte SEC · documento 03/11/2026" data-en="SEC source · filing Nov 3, 2026">Fonte SEC · documento 03/11/2026</small>
+<a id="etfApprovalSource" href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126024343/canary-8a12b_110326.htm" target="_blank" rel="noopener noreferrer" data-it="APRI IL FORM 8-A SEC ↗" data-en="OPEN SEC FORM 8-A ↗">APRI IL FORM 8-A SEC ↗</a>
 </aside>
 </section>
 <section aria-label="Dati di mercato">
@@ -212,7 +218,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <div class="chart-empty" id="etfChartEmpty">
 <div class="chart-mark">↗</div>
 <strong id="etfChartTitle">INJC / NASDAQ</strong>
-<p id="etfChartMessage" data-it="Grafico del ticker previsto. Quando il simbolo sarà disponibile su TradingView potrai consultarne prezzi e storico. Nessun dato simulato." data-en="Chart for the proposed ticker. When the symbol becomes available on TradingView you will be able to see its price history. No simulated data.">Grafico del ticker previsto. Quando il simbolo sarà disponibile su TradingView potrai consultarne prezzi e storico. Nessun dato simulato.</p>
+<p id="etfChartMessage" data-it="La quotazione Nasdaq è approvata. Il grafico della quota INJC dipende dalla disponibilità di negoziazioni reali su TradingView. Nessun prezzo simulato." data-en="The Nasdaq listing is approved. The INJC share chart requires real trading data from TradingView. No simulated price.">La quotazione Nasdaq è approvata. Il grafico della quota INJC dipende dalla disponibilità di negoziazioni reali su TradingView. Nessun prezzo simulato.</p>
 <button class="load-chart" id="etfLoadChart" type="button" data-it="CARICA GRAFICO" data-en="LOAD CHART">CARICA GRAFICO</button>
 </div>
 <div class="chart-loaded" id="etfChartLoaded" aria-label="Grafico TradingView"></div>
@@ -220,12 +226,12 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <div class="chart-footer"><span data-it="Fonte grafico: TradingView · provider esterno" data-en="Chart source: TradingView · third-party provider">Fonte grafico: TradingView · provider esterno</span><a href="https://www.tradingview.com/symbols/NASDAQ-INJC/" id="etfTradingViewLink" target="_blank" rel="noopener noreferrer" data-it="APRI SU TRADINGVIEW ↗" data-en="OPEN ON TRADINGVIEW ↗">APRI SU TRADINGVIEW ↗</a></div>
 </div>
 <div class="panel">
-<div class="panel-top"><strong>FUND SNAPSHOT</strong><small>SEC · 23 OCT 2026</small></div>
+<div class="panel-top"><strong>FUND SNAPSHOT</strong><small id="etfFundDocumentDate">SEC · 03 NOV 2026</small></div>
 <div class="fund-body">
 <div class="fund-row"><span data-it="Capitale seed previsto (fino a)" data-en="Proposed seed investment (up to)">Capitale seed previsto (fino a)</span><strong>$15M</strong></div>
 <div class="fund-row"><span data-it="Prezzo quota seed previsto" data-en="Proposed seed share price">Prezzo quota seed previsto</span><strong>$25.00</strong></div>
 <div class="fund-row"><span data-it="Sottostante" data-en="Underlying asset">Sottostante</span><strong>INJ</strong></div>
-<div class="fund-row"><span data-it="Borsa proposta" data-en="Proposed exchange">Borsa proposta</span><strong>NASDAQ</strong></div>
+<div class="fund-row"><span data-it="Borsa approvata" data-en="Approved exchange">Borsa approvata</span><strong>NASDAQ ✓</strong></div>
 <div class="fund-row"><span data-it="Sponsor" data-en="Sponsor">Sponsor</span><strong>CANARY</strong></div>
 </div>
 <p class="fund-note" data-it="I 15 milioni e i 25 dollari sono valori di seed indicati nel prospetto, non flussi già registrati né il prezzo di mercato futuro." data-en="$15 million and $25 are preliminary seed terms, not confirmed inflows or a future trading price.">I 15 milioni e i 25 dollari sono valori di seed indicati nel prospetto, non flussi già registrati né il prezzo di mercato futuro.</p>
@@ -233,14 +239,15 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 </div>
 </section>
 <section aria-label="Percorso quotazione">
-<div class="section-head"><h2 data-it="Listing Roadmap" data-en="Listing Roadmap">Listing Roadmap</h2><small data-it="STATO DOCUMENTALE AL 23 OTT 2026" data-en="FILING STATUS AS OF OCT 23, 2026">STATO DOCUMENTALE AL 23 OTT 2026</small></div>
+<div class="section-head"><h2 data-it="Listing Roadmap" data-en="Listing Roadmap">Listing Roadmap</h2><small id="etfRoadmapAsOf">SEC · 05 NOV 2026</small></div>
 <div class="panel">
 <div class="timeline">
-<div class="stage past"><span class="stage-dot">✓</span><strong>FORM S-1/A</strong><span data-it="Emendamento n. 4 depositato · 23/10/2026" data-en="Amendment No. 4 filed · Oct 23, 2026">Emendamento n. 4 depositato · 23/10/2026</span></div>
-<div class="stage"><span class="stage-dot">2</span><strong>SEC EFFECT</strong><span data-it="Efficacia non confermata" data-en="Effectiveness not confirmed">Efficacia non confermata</span></div>
-<div class="stage"><span class="stage-dot">3</span><strong>NASDAQ LISTING</strong><span data-it="Data ancora da confermare" data-en="Date not yet confirmed">Data ancora da confermare</span></div>
-<div class="stage"><span class="stage-dot">4</span><strong>FIRST TRADE</strong><span data-it="Prezzo e volumi quando disponibili" data-en="Price and volume when available">Prezzo e volumi quando disponibili</span></div>
+<div class="stage past" id="etfStageFiling"><span class="stage-dot">✓</span><strong>FORM S-1/A</strong><span id="etfStageFilingText" data-it="Emendamento n. 5 · 02/11/2026" data-en="Amendment No. 5 · Nov 2, 2026">Emendamento n. 5 · 02/11/2026</span></div>
+<div class="stage past" id="etfStageNasdaq"><span class="stage-dot">✓</span><strong>NASDAQ ✓</strong><span id="etfStageNasdaqText" data-it="Domanda approvata · 03/11/2026" data-en="Listing approved · Nov 3, 2026">Domanda approvata · 03/11/2026</span></div>
+<div class="stage" id="etfStageEffective"><span class="stage-dot">3</span><strong>SEC EFFECT</strong><span id="etfStageEffectiveText" data-it="Efficacia non verificata" data-en="Effectiveness not verified">Efficacia non verificata</span></div>
+<div class="stage" id="etfStageTrading"><span class="stage-dot">4</span><strong>FIRST TRADE</strong><span id="etfStageTradingText" data-it="Avvio scambi non verificato" data-en="Trading start not verified">Avvio scambi non verificato</span></div>
 </div>
+<div class="etf-filing-feed" aria-live="polite"><span id="etfFilingRefresh">SEC · ultimo documento verificato: 03/11/2026</span> <a id="etfLatestFiling" href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126024343/canary-8a12b_110326.htm" target="_blank" rel="noopener noreferrer" data-it="FONTE UFFICIALE ↗" data-en="OFFICIAL FILING ↗">FONTE UFFICIALE ↗</a></div>
 </div>
 </section>
 <section aria-label="Staking ETF">
@@ -250,7 +257,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <div class="staking-copy" data-it="Il piano prevede di destinare parte degli INJ del fondo allo staking. Il 70% indicato riguarda la ripartizione dei reward, non un rendimento annuo del 70%. Struttura soggetta a modifiche." data-en="The fund plans to stake part of its INJ holdings. The 70% represents the share of staking rewards retained by the fund, not a 70% annual yield. Terms may change.">Il piano prevede di destinare parte degli INJ del fondo allo staking. Il 70% indicato riguarda la ripartizione dei reward, non un rendimento annuo del 70%. Struttura soggetta a modifiche.</div>
 </div>
 </section>
-<div class="sources"><p data-it="INJC è un ETF proposto, non INJ spot. Le statistiche ETF restano non disponibili fino all'integrazione di un feed affidabile; il grafico TradingView può visualizzare INJC quando il provider lo indicizza. Stato normativo non verificato automaticamente: consultare l'ultimo filing SEC." data-en="INJC is a proposed ETF, not INJ spot. ETF statistics remain unavailable until a reliable quote feed is integrated; TradingView may show INJC once indexed. Regulatory status is not updated automatically: check the SEC filings.">INJC è un ETF proposto, non INJ spot. Prezzo, AUM, NAV, volumi e flussi del fondo non vengono inventati: saranno mostrati tramite provider affidabili solo quando disponibili. Stato normativo non verificato automaticamente; leggere l'ultimo filing SEC.</p><div class="links"><a class="source-link" href="https://www.sec.gov/edgar/browse/?CIK=2073616" target="_blank" rel="noopener noreferrer">SEC EDGAR ↗</a><a class="source-link" href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126023446/inj-s1a_102326.htm" target="_blank" rel="noopener noreferrer">S-1/A ↗</a></div></div>
+<div class="sources"><p data-it="Stato documentale verificato su SEC EDGAR, con controllo periodico automatico: l'approvazione della domanda Nasdaq non prova l'avvio delle negoziazioni. Prezzo, NAV, volumi e patrimonio del fondo restano non disponibili finché non arriva un feed ETF affidabile. Il prezzo INJ spot non è il prezzo di una quota INJC." data-en="Filing status is checked against SEC EDGAR on a schedule. Nasdaq listing approval does not prove that trading has started. ETF price, NAV, volume and AUM stay unavailable without a reliable ETF feed. INJ spot is not the INJC share price.">Stato documentale verificato su SEC EDGAR, con controllo periodico automatico: l'approvazione della domanda Nasdaq non prova l'avvio delle negoziazioni. Prezzo, NAV, volumi e patrimonio del fondo restano non disponibili finché non arriva un feed ETF affidabile. Il prezzo INJ spot non è il prezzo di una quota INJC.</p><div class="links"><a class="source-link" href="https://www.sec.gov/edgar/browse/?CIK=2073616" target="_blank" rel="noopener noreferrer">SEC EDGAR ↗</a><a class="source-link" id="etfS1Link" href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126024117/inj-s1a_110226.htm" target="_blank" rel="noopener noreferrer">S-1/A ↗</a><a class="source-link" href="https://www.sec.gov/Archives/edgar/data/2073616/000199937126024343/canary-8a12b_110326.htm" target="_blank" rel="noopener noreferrer">NASDAQ 8-A ↗</a><a class="source-link" href="https://canaryetfs.com/injc/" target="_blank" rel="noopener noreferrer">CANARY ↗</a></div></div>
 <footer class="brand-footer"><strong>INJ NODE</strong> / BY B CAPITAL GROUP</footer>
 </main>
 </div>
@@ -303,7 +310,7 @@ async function refreshSpot(force=false){
 }
 let ticker='NASDAQ:INJC';
 const charts={
- 'NASDAQ:INJC':{url:'https://www.tradingview.com/symbols/NASDAQ-INJC/',name:'INJC / NASDAQ',message:['Il ticker è previsto nel prospetto. Il grafico dipende dalla disponibilità dei dati presso TradingView. Nessuna quotazione simulata.','The ticker appears in the prospectus. Chart data depend on availability at TradingView. No simulated quotes.']},
+ 'NASDAQ:INJC':{url:'https://www.tradingview.com/symbols/NASDAQ-INJC/',name:'INJC / NASDAQ',message:['Nasdaq ha approvato la domanda di quotazione. Il grafico sarà disponibile soltanto con dati reali presso TradingView. Nessun prezzo simulato.','Nasdaq approved the listing application. The chart requires real data at TradingView. No simulated price.']},
  'BINANCE:INJUSDT':{url:'https://www.tradingview.com/symbols/INJUSDT/',name:'INJ / SPOT',message:['Grafico del token Injective sul mercato crypto, distinto dalla quota ETF INJC.','Injective spot token chart, separate from the INJC ETF share.']}
 };
 function clearChart(){
@@ -337,5 +344,6 @@ window.addEventListener('message',e=>{if(e.origin!==location.origin||e.data?.typ
 applyLanguage();refreshSpot(true);setInterval(()=>{if(!document.hidden)refreshSpot()},90000);
 })();
 </script>
+<script defer src="./injc-etf-status-live-20261105.js?v=sec-feed2"></script>
 </body>
 </html>

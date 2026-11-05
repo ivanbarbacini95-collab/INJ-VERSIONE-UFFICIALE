@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-11-05",
+  "checkedAt": "2026-11-05T08:20:28.898Z",
+  "sourceStatus": "sec-edgar-checked",
+  "fund": {
+    "name": "Canary Staked INJ ETF",
+    "ticker": "INJC",
+    "sponsor": "Canary Capital Group LLC",
+    "exchange": "Nasdaq",
+    "issuerUrl": "https://canaryetfs.com/injc/",
+    "sourceAsOf": "2026-11-03",
+    "inceptionDate": "2026-11-04"
+  },
+  "listing": {
+    "status": "approved",
+    "date": "2026-11-03",
+    "form": "8-A12B",
+    "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024343/canary-8a12b_110326.htm",
+    "description": "Nasdaq approved the listing application. Not evidence of a first trade."
+  },
+  "registration": {
+    "status": "unconfirmed",
+    "latestForm": "S-1/A",
+    "latestDate": "2026-11-02",
+    "amendment": 5,
+    "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024117/inj-s1a_110226.htm",
+    "effectiveDate": null,
+    "effectiveSource": null
+  },
+  "trading": {
+    "status": "unconfirmed",
+    "date": null,
+    "marketPrice": null,
+    "volume": null,
+    "nav": null,
+    "source": "https://canaryetfs.com/injc/"
+  },
+  "milestones": [
+    {
+      "date": "2026-11-02",
+      "form": "S-1/A",
+      "title": "Amendment No. 5",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024117/inj-s1a_110226.htm"
+    },
+    {
+      "date": "2026-11-03",
+      "form": "8-A12B",
+      "title": "Nasdaq listing application approved",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024343/canary-8a12b_110326.htm"
+    }
+  ],
+  "latestProspectus": {
+    "form": "424B3",
+    "date": "2026-11-04",
+    "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024476/inj-424b3_110426.htm"
+  },
+  "recentSEC": [
+    {
+      "form": "424B3",
+      "date": "2026-11-04",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024476/inj-424b3_110426.htm"
+    },
+    {
+      "form": "8-A12B",
+      "date": "2026-11-03",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024343/canary-8a12b_110326.htm"
+    },
+    {
+      "form": "S-1/A",
+      "date": "2026-11-02",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024117/inj-s1a_110226.htm"
+    },
+    {
+      "form": "S-1/A",
+      "date": "2026-10-23",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126023446/inj-s1a_102326.htm"
+    },
+    {
+      "form": "S-1/A",
+      "date": "2026-09-24",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126021228/canary-s1a_092426.htm"
+    },
+    {
+      "form": "S-1/A",
+      "date": "2026-06-25",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126013516/canarystaked-s1a_062526.htm"
+    },
+    {
+      "form": "S-1/A",
+      "date": "2025-12-17",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937125020561/inj-s1a_121725.htm"
+    },
+    {
+      "form": "S-1",
+      "date": "2025-07-17",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937125009309/canaryinj-s1_071725.htm"
+    }
+  ],
+  "latest8A": {
+    "form": "8-A12B",
+    "date": "2026-11-03",
+    "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024343/canary-8a12b_110326.htm"
+  }
+}

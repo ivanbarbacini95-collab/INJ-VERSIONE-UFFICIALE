@@ -1,0 +1,22 @@
+/* INJ Node · Workspace · fullscreen tool visibility (2026-11-05).
+   The Align All 2px command is available on interaction, then fades out
+   without shifting fullscreen widgets or hiding the exit control. */
+body.ws-immersive #wsPackFull{
+  transition:opacity .24s ease,transform .24s ease,visibility 0s linear .24s!important;
+}
+body.ws-immersive:not(.ws-controls-idle) #wsPackFull{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:translate3d(0,0,0)!important;
+  pointer-events:auto!important;
+  transition:opacity .24s ease,transform .24s ease,visibility 0s!important;
+}
+body.ws-immersive.ws-controls-idle #wsPackFull:not(:focus-visible){
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:translate3d(0,-8px,0)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  body.ws-immersive #wsPackFull{transition:none!important;transform:none!important}
+}

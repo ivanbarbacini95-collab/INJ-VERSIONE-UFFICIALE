@@ -314,6 +314,7 @@ const entryWalletGesture = {
   programmatic: false,
   programmaticIndex: -1,
   programmaticTimer: 0,
+  motionFrame: 0,
   stage: null,
   track: null,
   stageBaseIndex: -1,
@@ -363,36 +364,9 @@ function entryWalletCurrentBaseIndex() {
   return selected >= 0 ? selected : 0;
 }
 
-function fillEntryOverviewClone(clone, address) {
-  if (!clone || !address) return;
-  const wallet = state.wallets.find((item) => item.address === address);
-  if (!wallet) return;
-  const row = state.walletSummaries[wallet.address] || null;
-  const total = number(row?.total);
-  const worth = total * state.price;
-  const q = (id) => clone.querySelector(`#${id}`);
-  if (q('entryOverviewWallet')) q('entryOverviewWallet').textContent = wallet.label;
-  if (q('entryWalletWorth')) {
-    const worthNode = q('entryWalletWorth');
-    worthNode.classList.add('number-roll-host');
-    renderStableNumberText(worthNode, total > 0 && state.price > 0 ? compactMoney(worth) : '—');
-  }
-  if (q('entryWalletTotal')) q('entryWalletTotal').textContent = row ? formatInj(total, 4) : 'Sincronizzazione…';
-  if (q('entryWalletStaked')) q('entryWalletStaked').textContent = row ? formatInj(number(row.staked), 4) : '—';
-  if (q('entryWalletRewards')) q('entryWalletRewards').textContent = row ? formatInj(number(row.rewards), 4) : '—';
-  if (q('entryWalletFreshness')) q('entryWalletFreshness').textContent = row?.updated ? formatFreshAge(row.updated) : '—';
-  if (q('entryMarketPrice')) {
-    const priceNode = q('entryMarketPrice');
-    priceNode.classList.add('number-roll-host');
-    renderStableNumberText(priceNode, state.price > 0 ? money(state.price, state.price < 10 ? 4 : 3) : '—');
-  }
-  const change = q('entryMarketChange');
-  if (change) {
-    const value = Number(state.change);
-    change.textContent = state.price > 0 ? `${value > 0 ? '+' : ''}${value.toFixed(2)}% · 24H` : '— · 24H';
-    change.className = value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral';
-  }
-}
+/* Wallet values now use the one real overview node. There is no duplicate
+   preview card with independent font sizing, so iOS cannot enlarge its text
+   during a gesture and shrink it at the final wallet commit. */
 
 function removeEntryWalletCarouselStage() {
   entryWalletGesture.stage?.remove();
@@ -404,92 +378,62 @@ function removeEntryWalletCarouselStage() {
   $('entryOverview')?.classList.remove('entry-overview-carousel-active');
 }
 
-function createEntryWalletCarouselSlide(address) {
-  const overview = $('entryOverview');
-  if (!overview || !address) return null;
-  const clone = overview.cloneNode(true);
-  clone.querySelector('.entry-wallet-card-viewport')?.remove();
-  clone.classList.remove('entry-overview-carousel-active');
-  fillEntryOverviewClone(clone, address);
-  clone.removeAttribute('id');
-  clone.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
-  clone.querySelectorAll('[aria-live]').forEach((node) => node.removeAttribute('aria-live'));
-  clone.querySelectorAll('button, a, input, select, textarea').forEach((node) => node.setAttribute('tabindex', '-1'));
-  clone.setAttribute('aria-hidden', 'true');
-  clone.classList.add('entry-wallet-card-slide');
-  return clone;
+function ensureEntryWalletCarouselStage() {
+  // Intentionally do not clone #entryOverview. The market price/graph stay
+  // mounted at a fixed size while wallet-specific text fades in place.
+  return null;
 }
 
-function ensureEntryWalletCarouselStage(baseIndex, explicitTargetIndex = -1) {
-  const overview = $('entryOverview');
-  if (!overview || state.wallets.length < 2) return null;
-  const safeBase = Math.max(0, Math.min(state.wallets.length - 1, baseIndex));
-  let prevIndex = safeBase - 1;
-  let nextIndex = safeBase + 1;
-  if (explicitTargetIndex >= 0 && explicitTargetIndex < state.wallets.length) {
-    if (explicitTargetIndex < safeBase) prevIndex = explicitTargetIndex;
-    if (explicitTargetIndex > safeBase) nextIndex = explicitTargetIndex;
-  }
-
-  if (
-    entryWalletGesture.stage &&
-    entryWalletGesture.stageBaseIndex === safeBase &&
-    entryWalletGesture.stagePrevIndex === prevIndex &&
-    entryWalletGesture.stageNextIndex === nextIndex
-  ) return entryWalletGesture.stage;
-
-  removeEntryWalletCarouselStage();
-
-  const viewport = document.createElement('div');
-  viewport.className = 'entry-wallet-card-viewport';
-  viewport.setAttribute('aria-hidden', 'true');
-  const track = document.createElement('div');
-  track.className = 'entry-wallet-card-track';
-
-  [prevIndex, safeBase, nextIndex].forEach((walletIndex) => {
-    const slot = document.createElement('div');
-    slot.className = 'entry-wallet-card-slot';
-    const address = state.wallets[walletIndex]?.address;
-    if (address) {
-      const slide = createEntryWalletCarouselSlide(address);
-      if (slide) slot.appendChild(slide);
-    } else {
-      slot.classList.add('is-empty');
-    }
-    track.appendChild(slot);
-  });
-
-  viewport.appendChild(track);
-  overview.appendChild(viewport);
-  overview.classList.add('entry-overview-carousel-active');
-  entryWalletGesture.stage = viewport;
-  entryWalletGesture.track = track;
-  entryWalletGesture.stageBaseIndex = safeBase;
-  entryWalletGesture.stagePrevIndex = prevIndex;
-  entryWalletGesture.stageNextIndex = nextIndex;
-  setEntryWalletTrackProgress(0, false);
-  return viewport;
+function setEntryWalletTrackProgress() {
+  // The top wallet rail is the single scrolling surface. No oversized
+  // second copy of the main card is ever created or translated.
 }
 
-function setEntryWalletTrackProgress(progress, animate = false) {
-  const track = entryWalletGesture.track;
-  if (!track) return;
-  const clamped = Math.max(-1, Math.min(1, Number(progress) || 0));
+/* One clock drives the top wallet rail and the main-card preview.  Native
+   scroll-snap is temporarily disabled by the wallet-programmatic-scroll CSS;
+   otherwise iOS can settle the two surfaces at different times. */
+function animateEntryWalletRailTo(targetLeft, { duration = 410, direction = 0, onComplete = null } = {}) {
+  const host = $('entryWallets');
+  if (!host) return;
+  if (entryWalletGesture.motionFrame) cancelAnimationFrame(entryWalletGesture.motionFrame);
+  entryWalletGesture.motionFrame = 0;
+  const from = host.scrollLeft;
+  const destination = Math.max(0, Math.min(Math.max(0, host.scrollWidth - host.clientWidth), Number(targetLeft) || 0));
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-  const duration = reduced ? 0 : 320;
-  track.style.transition = animate && duration ? `transform ${duration}ms cubic-bezier(.22,.76,.18,1)` : 'none';
-  track.style.webkitTransition = animate && duration ? `-webkit-transform ${duration}ms cubic-bezier(.22,.76,.18,1)` : 'none';
-  const x = -100 - clamped * 100;
-  track.style.setProperty('transform', `translate3d(${x.toFixed(3)}%,0,0)`, 'important');
-  track.style.setProperty('-webkit-transform', `translate3d(${x.toFixed(3)}%,0,0)`, 'important');
+  const ms = reduced ? 0 : Math.max(0, duration);
+  const expectedIndex = entryWalletGesture.programmaticIndex;
+  const startedAt = performance.now();
+  const advance = (now) => {
+    if (!entryWalletGesture.programmatic || entryWalletGesture.programmaticIndex !== expectedIndex) {
+      entryWalletGesture.motionFrame = 0;
+      return;
+    }
+    const fraction = ms ? Math.max(0, Math.min(1, (now - startedAt) / ms)) : 1;
+    const eased = 1 - Math.pow(1 - fraction, 3);
+    host.scrollLeft = from + (destination - from) * eased;
+    if (direction) setEntryWalletTrackProgress(direction * eased, false);
+    if (fraction < 1) {
+      entryWalletGesture.motionFrame = requestAnimationFrame(advance);
+    } else {
+      entryWalletGesture.motionFrame = 0;
+      host.scrollLeft = destination;
+      onComplete?.();
+    }
+  };
+  entryWalletGesture.motionFrame = requestAnimationFrame(advance);
 }
 
 function resetEntryWalletGestureVisuals({ keepTracking = false } = {}) {
   clearTimeout(entryWalletGesture.settleTimer);
   clearTimeout(entryWalletGesture.programmaticTimer);
+  if (entryWalletGesture.motionFrame) cancelAnimationFrame(entryWalletGesture.motionFrame);
+  entryWalletGesture.motionFrame = 0;
   entryWalletGesture.settleTimer = 0;
   entryWalletGesture.programmaticTimer = 0;
   removeEntryWalletCarouselStage();
+  const overview = $('entryOverview');
+  overview?.classList.remove('inj-wallet-changing', 'entry-overview-swipe-active');
+  overview?.style.removeProperty('--inj-wallet-swipe-opacity');
   const host = $('entryWallets');
   host?.classList.remove('wallet-gesture-active', 'wallet-programmatic-scroll');
   entryWalletGesture.active = false;
@@ -506,14 +450,20 @@ function resetEntryWalletGestureVisuals({ keepTracking = false } = {}) {
 }
 
 function commitEntryWalletCarousel(index) {
+  if (entryWalletGesture.motionFrame) cancelAnimationFrame(entryWalletGesture.motionFrame);
+  entryWalletGesture.motionFrame = 0;
   const host = $('entryWallets');
   const rows = host ? [...host.querySelectorAll('.entry-wallet-row')] : [];
   const safeIndex = Math.max(0, Math.min(state.wallets.length - 1, Number(index) || 0));
   const address = state.wallets[safeIndex]?.address;
+  const overview = $('entryOverview');
   if (address) setEntryWalletSelection(address, { scroll: false });
   if (host && rows[safeIndex]) host.scrollLeft = entryWalletCenteredScrollLeft(host, rows[safeIndex]);
 
   requestAnimationFrame(() => requestAnimationFrame(() => {
+    // Update wallet-only values inside the SINGLE live card. The market
+    // price and its typography never unmount, duplicate or scale.
+    renderEntryOverview();
     removeEntryWalletCarouselStage();
     entryWalletGesture.active = false;
     entryWalletGesture.tracking = false;
@@ -525,7 +475,9 @@ function commitEntryWalletCarousel(index) {
     entryWalletGesture.velocityX = 0;
     host?.classList.remove('wallet-gesture-active', 'wallet-programmatic-scroll');
     updateEntryWalletPagination(safeIndex);
-    renderEntryOverview();
+    overview?.style.removeProperty('--inj-wallet-swipe-opacity');
+    // Resolve the soft wallet-data fade after the new values are painted.
+    requestAnimationFrame(() => overview?.classList.remove('inj-wallet-changing'));
   }));
 }
 
@@ -564,6 +516,7 @@ function selectEntryWalletFromRail(address) {
     return;
   }
 
+  $('entryOverview')?.classList.add('inj-wallet-changing');
   entryWalletGesture.programmatic = true;
   entryWalletGesture.programmaticIndex = index;
   entryWalletGesture.baseIndex = baseIndex;
@@ -573,11 +526,12 @@ function selectEntryWalletFromRail(address) {
   updateEntryWalletPagination(index);
   void entryWalletGesture.stage?.offsetWidth;
   const direction = index > baseIndex ? 1 : -1;
-  requestAnimationFrame(() => {
-    setEntryWalletTrackProgress(direction, true);
-    host.scrollTo({ left: entryWalletCenteredScrollLeft(host, targetRow), behavior: 'smooth' });
+  // Use the same progress curve for both surfaces instead of two unrelated
+  // platform-native "smooth" timelines that can drift apart on iOS.
+  entryWalletGesture.programmaticTimer = window.setTimeout(finishEntryWalletProgrammaticScroll, 590);
+  animateEntryWalletRailTo(entryWalletCenteredScrollLeft(host, targetRow), {
+    duration: 410, direction, onComplete: finishEntryWalletProgrammaticScroll
   });
-  entryWalletGesture.programmaticTimer = window.setTimeout(finishEntryWalletProgrammaticScroll, 370);
 }
 
 function ensureEntryWalletGestureTracking() {
@@ -631,6 +585,7 @@ function settleEntryWalletGesture(index, { behavior = 'smooth' } = {}) {
   const safeIndex = Math.max(0, Math.min(rows.length - 1, index));
   const baseIndex = Math.max(0, Math.min(rows.length - 1, entryWalletGesture.baseIndex >= 0 ? entryWalletGesture.baseIndex : entryWalletCurrentBaseIndex()));
   entryWalletGesture.targetIndex = safeIndex;
+  $('entryOverview')?.classList.toggle('inj-wallet-changing', safeIndex !== baseIndex);
   entryWalletGesture.settling = true;
   entryWalletGesture.tracking = true;
   entryWalletGesture.baseIndex = baseIndex;
@@ -692,6 +647,8 @@ function bindEntryWalletRailGestures(host) {
     clearTimeout(entryWalletGesture.settleTimer);
     entryWalletGesture.programmaticTimer = 0;
     entryWalletGesture.settleTimer = 0;
+    if (entryWalletGesture.motionFrame) cancelAnimationFrame(entryWalletGesture.motionFrame);
+    entryWalletGesture.motionFrame = 0;
     removeEntryWalletCarouselStage();
     entryWalletGesture.programmatic = false;
     entryWalletGesture.programmaticIndex = -1;
@@ -801,6 +758,7 @@ const entryOverviewSwipe = {
 function resetEntryOverviewSwipe(removeStage = true) {
   const overview = $('entryOverview');
   overview?.classList.remove('entry-overview-swipe-active');
+  overview?.style.removeProperty('--inj-wallet-swipe-opacity');
   entryOverviewSwipe.pointerId = null;
   entryOverviewSwipe.baseIndex = -1;
   entryOverviewSwipe.horizontal = false;
@@ -863,8 +821,10 @@ function bindEntryOverviewWalletGestures() {
         (entryOverviewSwipe.baseIndex === state.wallets.length - 1 && progress > 0)) {
       progress *= .22; // soft edge resistance
     }
-    setEntryWalletTrackProgress(Math.max(-1, Math.min(1, progress)), false);
-
+    // Show horizontal intent through a slight opacity cue on wallet-only
+    // values. No movement, scaling, or replacement of the global price.
+    overview.style.setProperty('--inj-wallet-swipe-opacity',
+      String(Math.max(.68, 1 - Math.abs(progress) * .3)));
     const preview = Math.max(0, Math.min(state.wallets.length - 1,
       entryOverviewSwipe.baseIndex + (progress > .18 ? 1 : progress < -.18 ? -1 : 0)));
     updateEntryWalletPagination(preview);
@@ -901,11 +861,25 @@ function bindEntryOverviewWalletGestures() {
     entryWalletGesture.suppressClickUntil = performance.now() + 520;
     updateEntryWalletPagination(target);
     setEntryWalletTrackProgress(target === base ? 0 : (target > base ? 1 : -1), true);
+    // The upper rail travels in sync even when the gesture starts on the big
+    // account card; previously it jumped to the new wallet only at commit.
+    if (target !== base) {
+      const host = $('entryWallets');
+      const rows = host ? [...host.querySelectorAll('.entry-wallet-row')] : [];
+      if (host && rows[target]) {
+        entryWalletGesture.programmatic = true;
+        entryWalletGesture.programmaticIndex = target;
+        host.classList.add('wallet-programmatic-scroll');
+        animateEntryWalletRailTo(entryWalletCenteredScrollLeft(host, rows[target]), { duration: 400 });
+      }
+    }
     overview?.classList.remove('entry-overview-swipe-active');
+    overview?.style.removeProperty('--inj-wallet-swipe-opacity');
+    if (target !== base) overview?.classList.add('inj-wallet-changing');
     entryOverviewSwipe.horizontal = false;
     entryOverviewSwipe.baseIndex = -1;
 
-    window.setTimeout(() => commitEntryWalletCarousel(target), 325);
+    window.setTimeout(() => commitEntryWalletCarousel(target), 415);
   };
 
   overview.addEventListener('pointerup', (event) => finish(event, false));
@@ -1184,12 +1158,12 @@ function renderEntryOverview() {
     'entryWalletWorth',
     total > 0 && state.price > 0 ? compactMoney(worth) : '—',
     worth,
-    { roll: Boolean(sameWorthWallet), stableDigits: true }
+    { roll: Boolean(sameWorthWallet), stableDigits: true, directional: Boolean(sameWorthWallet) }
   );
   if (entryWorth) entryWorth.dataset.walletAddress = wallet.address;
-  setEntryAnimatedValue('entryWalletTotal', row ? formatInj(total, 4) : 'Sincronizzazione…', total);
-  setEntryAnimatedValue('entryWalletStaked', row ? formatInj(number(row.staked), 4) : '—', number(row?.staked));
-  setEntryAnimatedValue('entryWalletRewards', row ? formatInj(number(row.rewards), 4) : '—', number(row?.rewards), { directional: true });
+  setEntryAnimatedValue('entryWalletTotal', row ? formatInj(total, 4) : 'Sincronizzazione…', total, { directional: Boolean(sameWorthWallet) });
+  setEntryAnimatedValue('entryWalletStaked', row ? formatInj(number(row.staked), 4) : '—', number(row?.staked), { directional: Boolean(sameWorthWallet) });
+  setEntryAnimatedValue('entryWalletRewards', row ? formatInj(number(row.rewards), 4) : '—', number(row?.rewards), { directional: Boolean(sameWorthWallet) });
   $('entryWalletFreshness').textContent = row?.updated ? formatFreshAge(row.updated) : '—';
   setEntryAnimatedValue('entryMarketPrice', state.price > 0 ? money(state.price, state.price < 10 ? 4 : 3) : '—', state.price, { directional: true, roll: true });
   const change = $('entryMarketChange');
@@ -8224,7 +8198,7 @@ function registerPwa() {
     // Android standalone must repair a stale worker without waiting for every
     // chart/font/image request to complete the window load event.
     const refreshWorker = () => {
-      navigator.serviceWorker.register('./sw.js?v=20261101androidpwa1',{updateViaCache:'none'})
+      navigator.serviceWorker.register('./sw.js?v=20261105-home-fit2',{updateViaCache:'none'})
         .then(registration => registration.update())
         .catch(() => {});
     };

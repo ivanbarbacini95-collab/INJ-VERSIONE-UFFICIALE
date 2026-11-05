@@ -31,10 +31,10 @@ function restore(json){
 }
 function undo(){if(!allowed()||!undoStack.length)return;const current=snapshot(),previous=undoStack.pop();redoStack.push(current);restore(previous);}
 function redo(){if(!allowed()||!redoStack.length)return;const current=snapshot(),next=redoStack.pop();undoStack.push(current);restore(next);}
-function mutate(fn){
+function mutate(fn,pack=false){
  if(!allowed())return notice(T('Sblocca il layout per modificare','Unlock the layout to edit'));
  if(selection().some(i=>i.cardLocked))return notice(T('Sblocca le card selezionate prima di modificarle','Unlock selected cards before editing'));
- pushHistory();$('wsConfig').close();fn();A.persist();A.layout();A.refresh();buttons();
+ pushHistory();$('wsConfig').close();fn();if(pack){A.model.compact(items(),'desktop',12);A.model.compact(items(),'mobile',4);}A.persist();A.layout();A.refresh();buttons();
 }
 function select(uid,additive){
  if(!allowed())return;
@@ -103,7 +103,7 @@ function resizeView(v){
    }
   }
   if(preset().snap)for(const [key,c] of [['desktop',12],['mobile',4]])A.model.settle(items(),key,c);
- });
+ },true);
 }
 function duplicate(){
  if(!allowed())return;
@@ -148,7 +148,7 @@ function run(a){
  if(a==='left')return align('x');
  if(a==='top')return align('y');
  if(a==='distribute')return distribute();
- if(a==='width'||a==='height')return mutate(()=>{const key=A.mode(),field=a==='width'?'w':'h',value=selection()[0].layouts[key][field];for(const i of selection())i.layouts[key]=A.model.normalize({...i.layouts[key],[field]:value},A.cols());});
+ if(a==='width'||a==='height')return mutate(()=>{const key=A.mode(),field=a==='width'?'w':'h',value=selection()[0].layouts[key][field];for(const i of selection())i.layouts[key]=A.model.normalize({...i.layouts[key],[field]:value},A.cols());},true);
  if(a==='vertical')return mutate(()=>{const key=A.mode(),list=selection().sort((a,b)=>a.layouts[key].y-b.layouts[key].y);if(list.length<3)return;const first=list[0].layouts[key],last=list.at(-1).layouts[key];const gap=(last.y+last.h-first.y-list.reduce((s,i)=>s+i.layouts[key].h,0))/(list.length-1);let y=first.y;for(const i of list){i.layouts[key].y=y;y+=i.layouts[key].h+gap;}});
  if(a==='cardlock'&&allowed()){pushHistory();const lock=!selection().every(i=>i.cardLocked);for(const i of selection())i.cardLocked=lock;A.persist();A.layout();}
 }
@@ -337,7 +337,7 @@ function buildTemplate(tmpl){
   for(const [key,c] of [['desktop',12],['mobile',4]])item.layouts[key]=A.model.firstFree(p.items,key,c,Math.min(c,spec.w),spec.h);
   p.items.push(item);
  }
- db.presets.push(p);db.active=p.id;A.persist();A.layout();A.refresh();$('wsPresetDialog').close();notice(T('Setup creato: ','Setup created: ')+tmpl.it);
+ A.model.compact(p.items,'desktop',12);A.model.compact(p.items,'mobile',4);db.presets.push(p);db.active=p.id;A.persist();A.layout();A.refresh();$('wsPresetDialog').close();notice(T('Setup creato: ','Setup created: ')+tmpl.it);
 }
 function previewPresets(){
  for(const row of $('wsPresetList').querySelectorAll('.ws-preset-row')){

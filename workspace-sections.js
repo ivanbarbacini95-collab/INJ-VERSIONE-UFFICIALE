@@ -339,9 +339,11 @@ function create(api){
    const bestAsk=Number(d.asks[0]?.[0]),bestBid=Number(d.bids[0]?.[0]);
    const live=p!==null?p:bestAsk>0&&bestBid>0?(bestAsk+bestBid)/2:null;
    const before=host._wsBookPrice;
-   const trend=live!==null&&before!==undefined?(live>before?'up':live<before?'down':'flat'):'flat';
+   const delta=live!==null&&before!==undefined?(live>before?'up':live<before?'down':'flat'):'flat';
+   const trend=delta==='flat'?(host._wsBookTrend||'flat'):delta;
+   host._wsBookTrend=trend;
    if(live!==null)host._wsBookPrice=live;
-   paint(priceNode,money(live,5),live,{});
+   paint(priceNode,money(live,4),live,{});
    const center=host.querySelector('.ws-book-price');
    if(center)center.dataset.trend=trend;
    const arrow=host.querySelector('.ws-book-live-arrow');
@@ -382,14 +384,17 @@ function create(api){
  }else if(i.type==='orderbook'){
   const bookStep=normalizedBookStep(i.bookStep);
   const toolbar=el('div','ws-book-toolbar');
-  const pair=el('span','ws-book-pair','INJ / USDT');
-  const label=el('label','ws-book-step-label','SIZE');
+  const pair=el('span','ws-book-pair',`INJ / USDT · ${bookStep.toFixed(String(bookStep).split('.')[1]?.length||0)} STEP · 100 LEVELS`);
+  const label=el('label','ws-book-step-label');
   const select=el('select','ws-book-step');
   select.setAttribute('aria-label',t('Dimensione aggregazione ordini','Order book grouping size'));
   for(const step of BOOK_STEPS){const option=el('option','',String(step));option.value=String(step);select.append(option);}
   select.value=String(bookStep);
   select.addEventListener('change',()=>api.change(i,'bookStep',normalizedBookStep(select.value)));
   label.append(select);toolbar.append(pair,label);host.append(toolbar);
+  const bookColumns=el('div','ws-book-columns ws-book-shared-columns');
+  bookColumns.append(el('span','',t('PREZZO','PRICE')),el('span','',t('QUANTITÀ INJ','INJ AMOUNT')),el('span','',t('TOTALE','TOTAL')+' · '+api.currency()));
+  host.append(bookColumns);
   if(!state.depth)empty(host);
   else{
    // One vertical stack, like the standalone Order Book in Home.
@@ -398,46 +403,45 @@ function create(api){
     grid.style.gridTemplateColumns='minmax(0,1fr)';
     grid.style.gridTemplateRows='minmax(0,1fr) auto minmax(0,1fr)';
     grid.style.gridAutoFlow='row';
-   const makeSide=(key,rows,label)=>{
+   const askGrouped=bucketBookLevels(d.asks,'ask',bookStep),bidGrouped=bucketBookLevels(d.bids,'bid',bookStep);
+   const sharedDepthMax=Math.max(1,...askGrouped.map(r=>r.size),...bidGrouped.map(r=>r.size));
+   const makeSide=(key,label)=>{
     const section=el('section','ws-book-'+key);
     section.setAttribute('aria-label',label);
-    section.append(el('h3','',label));
-    const columns=el('div','ws-book-columns');
-    columns.append(el('span','',t('PREZZO','PRICE')+' · '+api.currency()),el('span','','SIZE INJ'),el('span','',t('TOTALE','TOTAL')+' · '+api.currency()));
-    section.append(columns);
-    const levels=bucketBookLevels(rows,key,bookStep);
+    const levels=key==='ask'?askGrouped:bidGrouped;
     let cumulative=0;
     const enriched=levels.map(r=>({...r,total:(cumulative+=r.price*r.size)}));
-    const max=Math.max(1,...enriched.map(r=>r.size));
     for(const r of key==='ask'?enriched.reverse():enriched){
      const line=el('div','ws-book-level');
-     line.style.setProperty('--depth',(r.size/max*100)+'%');
+     line.style.setProperty('--depth',Math.min(100,r.size/sharedDepthMax*100).toFixed(2)+'%');
      const price=el('strong','ws-book-level-price');
      const size=el('span','ws-book-level-size');
      const total=el('span','ws-book-level-total');
-     paint(price,num(r.price,Math.max(3,String(bookStep).split('.')[1]?.length||0)),r.price,{});
-     paint(size,num(r.size,4),r.size,{});
+     paint(price,r.price.toFixed(Math.max(3,String(bookStep).split('.')[1]?.length||0)),r.price,{});
+     paint(size,new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(r.size),r.size,{});
      paint(total,money(r.total,2),r.total,{});
      line.append(price,size,total);
      section.append(line);
     }
     return section;
    };
-   const asks=makeSide('ask',d.asks,t('Ordini di vendita','Sell orders'));
+   const asks=makeSide('ask',t('Ordini di vendita','Sell orders'));
    asks.style.gridColumn='1 / -1';grid.append(asks);
    const topAsk=Number(d.asks[0]?.[0]),topBid=Number(d.bids[0]?.[0]);
    const live=p!==null?p:topAsk>0&&topBid>0?(topAsk+topBid)/2:null;
    const old=host._wsBookPrice;
-   const trend=live!==null&&old!==undefined?(live>old?'up':live<old?'down':'flat'):'flat';
+   const delta=live!==null&&old!==undefined?(live>old?'up':live<old?'down':'flat'):'flat';
+   const trend=delta==='flat'?(host._wsBookTrend||'flat'):delta;
+   host._wsBookTrend=trend;
    if(live!==null)host._wsBookPrice=live;
    const priceRow=el('div','ws-book-price');
    priceRow.dataset.trend=trend;
-   priceRow.append(el('small','ws-book-price-label',p!==null?'LAST TRADE':'MID PRICE'));
+   priceRow.append(el('small','ws-book-price-label',p!==null?t('ULTIMO SCAMBIO','LAST TRADE'):t('PREZZO MEDIO','MID PRICE')));
    const line=el('div','ws-book-price-line');
-   line.append(el('strong','ws-book-live-price',money(live,5)),el('span','ws-book-live-arrow',trend==='up'?'↑':trend==='down'?'↓':'•'));
+   line.append(el('strong','ws-book-live-price',money(live,4)),el('span','ws-book-live-arrow',trend==='up'?'↑':trend==='down'?'↓':'•'));
    priceRow.append(line);
    priceRow.style.gridColumn='1 / -1';grid.append(priceRow);
-   const bids=makeSide('bid',d.bids,t('Ordini di acquisto','Buy orders'));
+   const bids=makeSide('bid',t('Ordini di acquisto','Buy orders'));
    bids.style.gridColumn='1 / -1';grid.append(bids);
    host.append(grid);
    host._wsBookCacheKey=state.depthAt+'|'+bookStep+'|'+api.currency();

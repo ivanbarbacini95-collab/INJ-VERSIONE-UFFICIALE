@@ -1,0 +1,182 @@
+/* INJ Node · Home quick-access row · 2026-11-05
+   Three original clickable Home launchers, one compact row.
+   No cloned nodes, changed handlers, or changes to Market/Reward/Tools tabs. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access)
+> .entry-actions.entry-flat-v44{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ grid-template-rows:auto!important;
+ grid-auto-rows:min-content!important;
+ grid-auto-flow:row!important;
+ column-gap:clamp(6px,1.5vw,12px)!important;
+ row-gap:0!important;
+ align-items:stretch!important;
+ justify-content:stretch!important;
+ align-content:start!important;
+ min-height:0!important;
+ height:auto!important;
+ max-height:none!important;
+ width:100%!important;
+ padding:0!important;
+ margin-block:clamp(8px,1.7vw,14px)!important;
+}
+/* The saved drag-and-drop order remains authoritative. No fixed grid
+   positions: each of the three existing elements can still be reordered. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access)
+> .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action {
+ box-sizing:border-box!important;
+ display:flex!important;
+ position:relative!important;
+ grid-column:auto!important;
+ grid-row:auto!important;
+ flex-flow:row nowrap!important;
+ justify-content:center!important;
+ align-items:center!important;
+ align-self:stretch!important;
+ justify-self:stretch!important;
+ min-width:0!important;
+ width:100%!important;
+ height:clamp(54px,5.3vw,62px)!important;
+ min-height:54px!important;
+ max-height:62px!important;
+ gap:0!important;
+ padding:8px 4px!important;
+ margin:0!important;
+ border:1px solid color-mix(in srgb,var(--text,#fff) 10%,var(--line,#34414a))!important;
+ border-radius:13px!important;
+ background:color-mix(in srgb,var(--surface,#10161e) 94%,var(--surface-strong,#181d25) 6%)!important;
+ background-image:none!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 3%,transparent)!important;
+ text-align:center!important;
+ text-decoration:none!important;
+ overflow:hidden!important;
+ transform:none!important;
+ -webkit-transform:none!important;
+ -webkit-tap-highlight-color:transparent;
+}
+/* Suppress decorative full-size illustrations and the long descriptions,
+   so the tiles stay legible at 320px and do not fight the Home card. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+> :is(.entry-action-icon,.entry-action-arrow,.inj-tile-scene,.inj-luxury-icon,.bcg-treasury-visual,.inj-precision-icon){
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+:is(.inj-tile-description,.treasury-entry-details,.treasury-entry-subtitle){
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+> :is(span:not(.entry-action-icon):not(.inj-tile-scene):not(.bcg-treasury-visual):not(.inj-luxury-icon):not(.inj-precision-icon),.treasury-entry-copy){
+ display:flex!important;
+ position:relative!important;
+ inset:auto!important;
+ flex:1 1 auto!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ justify-content:center!important;
+ align-self:center!important;
+ min-width:0!important;
+ width:100%!important;
+ height:auto!important;
+ max-width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ gap:0!important;
+ text-align:center!important;
+ transform:none!important;
+ -webkit-transform:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+.inj-home-tile-title {
+ display:block!important;
+ position:relative!important;
+ flex:0 1 auto!important;
+ width:100%!important;
+ max-width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-size:clamp(10.5px,2.8vw,13.4px)!important;
+ font-weight:650!important;
+ line-height:1.2!important;
+ letter-spacing:.005em!important;
+ color:var(--text,#eff4f8)!important;
+ text-align:center!important;
+ text-transform:none!important;
+ white-space:nowrap!important;
+ text-overflow:clip!important;
+ overflow:visible!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::before,
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::after,
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+.inj-home-tile-title::after{
+ display:none!important;
+ content:none!important;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton):hover{
+  border-color:color-mix(in srgb,var(--text,#fff) 23%,var(--line,#34414a))!important;
+  background:var(--surface-strong,#151b24)!important;
+ }
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+> :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton):focus-visible{
+ outline:2px solid var(--accent,#92d6cb)!important;
+ outline-offset:2px!important;
+}
+@media(max-width:360px){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44{
+  column-gap:5px!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)
+ .inj-home-tile-title{
+  font-size:10px!important;
+  letter-spacing:-.015em!important;
+ }
+}
+/* Reinvest the height saved by replacing two oversized rows with one.
+   The chart stays the ORIGINAL interactive app.js component. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+#entryGate#entryGate#entryGate#entryGate
+.entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card{
+ height:calc(var(--inj-home-overview-card-height,210px) + 126px)!important;
+ max-height:calc(var(--inj-home-overview-card-height,210px) + 126px)!important;
+}
+@media(max-width:560px){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card{
+  height:calc(var(--inj-home-overview-card-height,210px) + 106px)!important;
+  max-height:calc(var(--inj-home-overview-card-height,210px) + 106px)!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton){
+  transition:none!important;
+ }
+}
