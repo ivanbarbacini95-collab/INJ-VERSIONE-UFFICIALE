@@ -111,6 +111,16 @@
  const fmtTime=ms=>new Date(ms).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',timeZone:'America/New_York'});
  let timeframe='1d', busy=false, lastQuote=null, lastGoodAt=0, quoteSource='', graphPoints=[], refreshTimer=null, marketPulseTimer=null, flowsHistory=[], flowDayKey=null, plottedFlowsFirstTime=true;
  const ranges={ '1d':['1d','1m'],'5d':['5d','5m'],'1mo':['1mo','30m'],'3mo':['3mo','1d'],'1y':['1y','1d'] };
+ // Price-range rail is independent from the main chart timeframe.
+ const priceRangeConfig={
+   '1d':{range:'1d',interval:'1m',maxDays:1},
+   '1w':{range:'1mo',interval:'1d',maxDays:7},
+   '1mo':{range:'1mo',interval:'1d',maxDays:31},
+   '1y':{range:'1y',interval:'1d',maxDays:366}
+ };
+ let selectedPriceRange='1d',priceRangeRequest=0,priceRangeSnapshot=null,
+   priceRangeLastFetched=0,priceRangeSyncing=false;
+
  function setText(id,value){const el=$(id);if(el)el.textContent=value;}
  function changeClass(id,value){const el=$(id);if(!el)return;el.classList.toggle('up',Number.isFinite(value)&&value>0);el.classList.toggle('down',Number.isFinite(value)&&value<0);}
  function status(value,extra){
@@ -211,6 +221,118 @@
      return {data:parseSnapshot(snap),source:tr('Backup mercato · dato ritardato','Market backup · delayed')};
    }catch(e){throw lastError||e}
  }
+ function marketRangePoints(raw,period){
+   const now=Date.now(),start=now-(priceRangeConfig[period].maxDays*86400000+60000);
+   if(period==='1d'){
+     const today=nyKey(new Date());
+     const day=raw.filter(p=>nyKey(new Date(p.time))===today);
+     const regular=day.filter(p=>pointSession(p.time)==='regular');
+     if(regular.length)return {points:regular,premarket:false};
+     const pre=day.filter(p=>pointSession(p.time)==='pre');
+     if(pre.length)return {points:pre,premarket:true};
+     // When markets are closed, keep the last verified trading session.
+     const lastDay=raw.filter(p=>pointSession(p.time)==='regular').at(-1);
+     return lastDay
+       ?{points:raw.filter(p=>nyKey(new Date(p.time))===nyKey(new Date(lastDay.time))&&pointSession(p.time)==='regular'),premarket:false}
+       :{points:[],premarket:false};
+   }
+   return {points:raw.filter(p=>p.time>=start),premarket:false};
+ }
+ function parsePriceRangeFromBars(bars,period){
+   const valid=bars.filter(p=>Number.isFinite(p.time)&&p.time>0&&Number.isFinite(p.close)&&p.close>0);
+   if(!valid.length)throw Error('No actual price bars');
+   const selected=marketRangePoints(valid,period),pts=selected.points;
+   if(!pts.length)throw Error('No period price bars');
+   const low=Math.min(...pts.map(p=>Number.isFinite(p.low)?p.low:p.close));
+   const high=Math.max(...pts.map(p=>Number.isFinite(p.high)?p.high:p.close));
+   const open=Number.isFinite(pts[0].open)?pts[0].open:pts[0].close;
+   const current=pts.at(-1).close;
+   if(!(Number.isFinite(low)&&Number.isFinite(high)&&Number.isFinite(open)&&Number.isFinite(current)&&low>0&&high>=low))throw Error('Invalid high/low');
+   return {period,low,high,open,current,premarket:selected.premarket,at:pts.at(-1).time};
+ }
+ function parseRangeYahoo(data,period){
+   const obj=data?.chart?.result?.[0];
+   if(!obj||data?.chart?.error||(obj.meta?.symbol&&obj.meta.symbol!=='INJC'))throw Error('Quote feed unavailable');
+   const q=obj.indicators?.quote?.[0]||{},ts=obj.timestamp||[];
+   const bars=ts.map((t,i)=>({
+      time:Number(t)*1000,open:numeric(q.open?.[i]),high:numeric(q.high?.[i]),
+      low:numeric(q.low?.[i]),close:numeric(q.close?.[i])
+   }));
+   return parsePriceRangeFromBars(bars,period);
+ }
+ function renderPriceRange(){
+   const data=priceRangeSnapshot?.period===selectedPriceRange?priceRangeSnapshot:null;
+   const noData=!data;
+   setText('etfPriceRangeLow',noData?'—':usd(data.low));
+   setText('etfPriceRangeHigh',noData?'—':usd(data.high));
+   setText('etfPriceRangeOpen',noData?'—':usd(data.open));
+   setText('etfPriceRangeNow',noData?'—':usd(
+     lastQuote&&Number.isFinite(lastQuote.price)&&lastQuote.quoteTime>=data.at?lastQuote.price:data.current
+   ));
+   const labels={'1d':'24H','1w':'1W','1mo':'1M','1y':'1Y'};
+   setText('etfPriceRangeTitle',(labels[selectedPriceRange]||'24H')+' · OPEN');
+   const openMarker=$('etfPriceRangeOpenMarker'),lastMarker=$('etfPriceRangeLastMarker'),
+     fill=$('etfPriceRangeFill'),track=$('etfPriceRangeTrack');
+   if(!openMarker||!lastMarker||!fill||!track)return;
+   track.classList.toggle('is-premarket',Boolean(data?.premarket));
+   track.classList.toggle('is-empty',noData);
+   if(noData){
+     openMarker.hidden=true;lastMarker.hidden=true;fill.style.width='0%';
+     setText('etfPriceRangeSource',tr('In attesa dei prezzi verificati per il periodo','Awaiting verified prices for this period'));
+     return;
+   }
+   const size=Math.max(data.high-data.low,0.000001);
+   const place=value=>Math.min(100,Math.max(0,(value-data.low)/size*100));
+   const current=lastQuote&&Number.isFinite(lastQuote.price)&&lastQuote.quoteTime>=data.at?lastQuote.price:data.current;
+   const openP=place(data.open),priceP=place(current);
+   openMarker.hidden=false;lastMarker.hidden=false;
+   openMarker.style.left=openP.toFixed(2)+'%';
+   lastMarker.style.left=priceP.toFixed(2)+'%';
+   fill.style.width=priceP.toFixed(2)+'%';
+   openMarker.title=tr('Apertura','Open')+': '+usd(data.open);
+   lastMarker.title=tr('Ultimo prezzo','Last price')+': '+usd(current);
+   setText('etfPriceRangeSource',tr(
+     data.premarket?'Range pre-market disponibile · feed potenzialmente ritardato':'Range dei prezzi effettivi · feed potenzialmente ritardato',
+     data.premarket?'Available pre-market range · potentially delayed':'Actual price range · potentially delayed'
+   ));
+ }
+ async function refreshPriceRange(force=false){
+   if(document.hidden)return;
+   if(!force&&priceRangeSyncing)return;
+   const period=selectedPriceRange,request=++priceRangeRequest;
+   if(!force&&priceRangeSnapshot?.period===period&&Date.now()-priceRangeLastFetched<55000){
+     renderPriceRange();return;
+   }
+   priceRangeSyncing=true;
+   const config=priceRangeConfig[period];
+   let incoming=null,lastError=null;
+   for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
+     try{
+       incoming=parseRangeYahoo(await getJson(yahooUrl(config.range,config.interval,host),11500),period);
+       break;
+     }catch(e){lastError=e;}
+   }
+   if(!incoming&&period==='1d'){
+     try{
+       const fallback=await getJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000);
+       if(fallback?.ticker==='INJC'&&Array.isArray(fallback.points)){
+         incoming=parsePriceRangeFromBars(fallback.points.map(p=>({
+           time:Date.parse(p.time),close:numeric(p.close),open:numeric(p.open),
+           high:numeric(p.high),low:numeric(p.low)
+         })),period);
+       }
+     }catch(e){lastError=e;}
+   }
+   // Ignore a slower response to an earlier timeframe selection.
+   if(request!==priceRangeRequest)return;
+   priceRangeSyncing=false;
+   if(incoming){priceRangeSnapshot=incoming;priceRangeLastFetched=Date.now();}
+   else{
+     if(priceRangeSnapshot?.period!==period)priceRangeSnapshot=null;
+     if(lastError)console.warn('INJC price range unavailable:',lastError.message);
+   }
+   renderPriceRange();
+ }
  function drawGraph(){
    const wrap=$('etfSvgWrap');if(!wrap)return;
    const points=graphPoints.filter(p=>Number.isFinite(p.close)&&p.close>0);
@@ -285,6 +407,7 @@
    graphPoints=data.points;
    drawGraph();
    renderStatus();
+   renderPriceRange();
  }
  async function refreshMarket(){
    if(busy||document.hidden)return;
@@ -389,18 +512,32 @@
       document.querySelectorAll('[data-etf-range]').forEach(btn=>{btn.classList.toggle('active',btn===b);btn.setAttribute('aria-pressed',String(btn===b))});
       graphPoints=[];drawGraph();refreshMarket();
    }));
-   $('etfRefresh')?.addEventListener('click',()=>{refreshMarket();refreshFlows()});
+   document.querySelectorAll('[data-etf-price-range]').forEach(button=>{
+     button.addEventListener('click',()=>{
+       const next=button.dataset.etfPriceRange;
+       if(!priceRangeConfig[next]||next===selectedPriceRange)return;
+       selectedPriceRange=next;
+       document.querySelectorAll('[data-etf-price-range]').forEach(b=>{
+         const active=b===button;
+         b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
+       });
+       priceRangeSnapshot=null;priceRangeLastFetched=0;
+       renderPriceRange();refreshPriceRange(true);
+     });
+   });
+   $('etfRefresh')?.addEventListener('click',()=>{refreshMarket();refreshFlows();refreshPriceRange(true)});
    $('etfAdvancedButton')?.addEventListener('click',()=>toggleExpandedChart());
    document.addEventListener('keydown',event=>{if(event.key==='Escape')toggleExpandedChart(false);});
-   document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshMarket();refreshFlows();renderStatus()}});
-   window.addEventListener('pageshow',()=>{refreshMarket();renderStatus()});
+   document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshMarket();refreshFlows();refreshPriceRange();renderStatus()}});
+   window.addEventListener('pageshow',()=>{refreshMarket();refreshPriceRange();renderStatus()});
    window.addEventListener('storage',event=>{if(event.key==='inj_node_language_v1')location.reload()});
    window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data?.type==='injnode:etf:language')location.reload()});
-   renderStatus();renderFlows();drawGraph();
-   refreshMarket();refreshFlows();
+   renderStatus();renderFlows();drawGraph();renderPriceRange();
+   refreshMarket();refreshFlows();refreshPriceRange();
    refreshTimer=setInterval(()=>{if(!document.hidden)refreshMarket()},30000);
    marketPulseTimer=setInterval(()=>{if(!document.hidden){renderStatus();if(flowDayKey!==nyKey(new Date()))renderFlows()}},1000);
    setInterval(()=>{if(!document.hidden)refreshFlows()},300000);
+   setInterval(()=>{if(!document.hidden)refreshPriceRange()},60000);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })();
