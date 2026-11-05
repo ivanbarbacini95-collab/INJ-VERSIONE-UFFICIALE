@@ -213,6 +213,31 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
   <div class="injc-chart-surface"><div id="etfSvgWrap" aria-live="off"></div>
    <div class="injc-chart-waiting" id="etfChartWaiting"><div class="injc-loading-orb" aria-hidden="true"></div><strong data-it="In attesa dei dati di mercato" data-en="Waiting for market data">In attesa dei dati di mercato</strong><p data-it="Il grafico si attiverà automaticamente non appena il provider registrerà scambi reali di INJC." data-en="The chart will activate automatically as soon as the data provider receives actual INJC trades.">Il grafico si attiverà automaticamente non appena il provider registrerà scambi reali di INJC.</p></div>
   </div>
+  <div class="injc-price-range" id="etfPriceRange" aria-label="Range dei prezzi INJC">
+    <div class="injc-price-range-head">
+      <div class="injc-price-range-eyebrow"><span data-it="RANGE PREZZO" data-en="PRICE RANGE">RANGE PREZZO</span> <span class="injc-range-period" id="etfPriceRangeTitle">24H</span></div>
+      <div class="injc-price-range-tabs" role="group" aria-label="Periodo del range del prezzo">
+        <button type="button" class="active" data-etf-price-range="1d" aria-pressed="true">1D</button>
+        <button type="button" data-etf-price-range="1w" aria-pressed="false">1W</button>
+        <button type="button" data-etf-price-range="1mo" aria-pressed="false">1M</button>
+        <button type="button" data-etf-price-range="1y" aria-pressed="false">1Y</button>
+      </div>
+    </div>
+    <div class="injc-price-range-values">
+      <div class="injc-range-low"><small>LOW</small><strong id="etfPriceRangeLow">—</strong></div>
+      <div class="injc-range-open"><small>OPEN</small><strong id="etfPriceRangeOpen">—</strong></div>
+      <div class="injc-range-high"><small>HIGH</small><strong id="etfPriceRangeHigh">—</strong></div>
+    </div>
+    <div class="injc-price-range-track is-empty" id="etfPriceRangeTrack" aria-label="Posizione del prezzo e dell'apertura nel range">
+      <span class="injc-price-range-fill" id="etfPriceRangeFill" style="width:0%"></span>
+      <span class="injc-price-range-open-marker" id="etfPriceRangeOpenMarker" hidden></span>
+      <span class="injc-price-range-last-marker" id="etfPriceRangeLastMarker" hidden></span>
+    </div>
+    <div class="injc-price-range-footer">
+      <small id="etfPriceRangeSource" data-it="In attesa dei prezzi verificati per il periodo" data-en="Awaiting verified prices for this period">In attesa dei prezzi verificati per il periodo</small>
+      <small class="injc-range-last"><span>LAST</span> <strong id="etfPriceRangeNow">—</strong></small>
+    </div>
+  </div>
   <div class="injc-chart-bottom"><small id="etfChartDataLabel" data-it="Aggiornamento automatico ogni 30 secondi quando la pagina è aperta" data-en="Auto-refresh every 30 seconds while page is open">Aggiornamento automatico ogni 30 secondi quando la pagina è aperta</small>
    <div class="injc-chart-actions"><a class="injc-simple-button" href="https://www.tradingview.com/symbols/NASDAQ-INJC/" target="_blank" rel="noopener noreferrer" data-it="TRADINGVIEW ↗" data-en="TRADINGVIEW ↗">TRADINGVIEW ↗</a><button class="injc-simple-button" type="button" id="etfAdvancedButton" aria-expanded="false" data-it="INGRANDISCI GRAFICO" data-en="EXPAND CHART">INGRANDISCI GRAFICO</button></div></div>
 
