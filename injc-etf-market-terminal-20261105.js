@@ -433,11 +433,21 @@
      return;
    }
    $('etfChartWaiting')?.classList.add('hidden');
-   const prices=points.map(p=>p.close),min=Math.min(...prices),max=Math.max(...prices),
-     pad=Math.max((max-min)*.16,max*.001,.00001),lo=min-pad,hi=max+pad;
-   const w=1000,h=350,left=14,right=18,top=32,bottom=40;
-   const x=i=>left+(w-left-right)*i/Math.max(points.length-1,1);
-   const y=v=>top+(h-top-bottom)*(hi-v)/Math.max(hi-lo,.00001);
+   // The old fixed 1000x350 SVG with preserveAspectRatio=none distorted the
+   // price/time labels on mobile: x and y text were scaled by different factors.
+   // Use actual rendered CSS-pixel dimensions so text remains fully proportional.
+   const rect=wrap.getBoundingClientRect();
+   const w=Math.max(220,Math.round(rect.width||wrap.clientWidth||360));
+   const h=Math.max(220,Math.round(rect.height||wrap.clientHeight||330));
+   const right=Math.max(75,Math.min(94,Math.round(w*.205)));
+   const left=18,top=33,bottom=45,plotRight=w-right,plotBottom=h-bottom;
+   const plotWidth=Math.max(1,plotRight-left),plotHeight=Math.max(1,plotBottom-top);
+   const priceFont=Math.max(12,Math.min(14,Math.round(w/36)));
+   const timeFont=Math.max(12,Math.min(14,Math.round(w/34)));
+   const prices=points.map(p=>p.close),min=Math.min(...prices),max=Math.max(...prices);
+   const pad=Math.max((max-min)*.16,max*.001,.00001),lo=min-pad,hi=max+pad;
+   const x=i=>left+plotWidth*i/Math.max(points.length-1,1);
+   const y=v=>top+plotHeight*(hi-v)/Math.max(hi-lo,.00001);
    const regular=points.filter(p=>p.session!=='pre');
    const lastRegular=regular.at(-1)?.close,firstRegular=regular[0]?.close;
    const up=Number.isFinite(lastRegular)&&Number.isFinite(firstRegular)?lastRegular>=firstRegular:points.at(-1).close>=points[0].close;
@@ -450,29 +460,39 @@
    }
    const regularIndices=points.map((p,i)=>p.session!=='pre'||!preActive?i:-1).filter(i=>i>=0);
    if(regularIndices.length)phases.push({indices:regularIndices,color:normalColor,kind:'regular'});
+   // Give each price tick its own right-side column, never overlaying the plot.
    let grid='';
    for(let i=0;i<4;i++){
-     const yy=top+(h-top-bottom)*i/3;
-     grid+='<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="currentColor" stroke-opacity=".12" stroke-dasharray="3 8"/><text x="'+(w-right)+'" y="'+(yy-7)+'" text-anchor="end" fill="currentColor" opacity=".57" font-size="12">'+fmt(hi-(hi-lo)*i/3,2)+'</text>';
+     const yy=top+plotHeight*i/3;
+     const value=hi-(hi-lo)*i/3;
+     const labelY=Math.max(priceFont+4,Math.min(h-8,yy+(i===0?-7:i===3?priceFont+3:priceFont/3)));
+     grid+='<line x1="'+left+'" y1="'+yy.toFixed(2)+'" x2="'+plotRight+'" y2="'+yy.toFixed(2)+'" stroke="currentColor" stroke-opacity=".12" stroke-dasharray="3 8"/>';
+     grid+='<text class="injc-axis-price" x="'+(plotRight+12)+'" y="'+labelY.toFixed(2)+'" text-anchor="start" fill="currentColor" opacity=".83" font-size="'+priceFont+'">'+fmt(value,2)+'</text>';
    }
    let shapes='';
    for(const p of phases){
      const arr=p.indices;
      const path=arr.map((idx,j)=>(j?'L':'M')+x(idx).toFixed(2)+' '+y(points[idx].close).toFixed(2)).join(' ');
      const shapeId=p.kind==='pre'?'injcPreFill':'injcNormalFill';
-     const fill=path+' L '+x(arr.at(-1))+' '+(h-bottom)+' L '+x(arr[0])+' '+(h-bottom)+' Z';
+     const fill=path+' L '+x(arr.at(-1)).toFixed(2)+' '+plotBottom+' L '+x(arr[0]).toFixed(2)+' '+plotBottom+' Z';
      if(arr.length>1)shapes+='<path d="'+fill+'" fill="url(#'+shapeId+')"/>';
      shapes+='<path d="'+path+'" fill="none" stroke="'+p.color+'" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
-     shapes+='<circle cx="'+x(arr.at(-1))+'" cy="'+y(points[arr.at(-1)].close)+'" r="4" fill="'+p.color+'"/>';
+     shapes+='<circle cx="'+x(arr.at(-1)).toFixed(2)+'" cy="'+y(points[arr.at(-1)].close).toFixed(2)+'" r="4" fill="'+p.color+'"/>';
    }
-   const ticks=[...new Set([0,Math.round((points.length-1)/2),points.length-1])];
-   const dates=ticks.map(i=>'<text x="'+x(i)+'" y="'+(h-11)+'" fill="currentColor" opacity=".56" font-size="12" text-anchor="'+(i===0?'start':i===points.length-1?'end':'middle')+'">'+(timeframe==='1d'?fmtTime(points[i].time):new Date(points[i].time).toLocaleDateString(lang()==='en'?'en-US':'it-IT',{month:'short',day:'numeric'}))+'</text>').join('');
+   // Avoid crowded 3-label time axes on narrow iPhones.
+   const midTick=Math.round((points.length-1)/2);
+   const ticks=plotWidth>=275?[0,midTick,points.length-1]:[0,points.length-1];
+   const dates=[...new Set(ticks)].map(i=>{
+     const value=timeframe==='1d'?fmtTime(points[i].time):new Date(points[i].time).toLocaleDateString(lang()==='en'?'en-US':'it-IT',{month:'short',day:'numeric'});
+     const align=i===0?'start':i===points.length-1?'end':'middle';
+     return '<text class="injc-axis-time" x="'+x(i).toFixed(2)+'" y="'+(h-13)+'" fill="currentColor" opacity=".88" font-size="'+timeFont+'" text-anchor="'+align+'">'+value+'</text>';
+   }).join('');
    let labels='';
    if(preActive){
-     labels+='<circle cx="24" cy="15" r="4" fill="'+preColor+'"/><text x="35" y="19" fill="currentColor" opacity=".75" font-size="12">PRE-MARKET</text>';
-     if(regularIndices.length)labels+='<circle cx="145" cy="15" r="4" fill="'+normalColor+'"/><text x="156" y="19" fill="currentColor" opacity=".75" font-size="12">NASDAQ</text>';
+     labels+='<circle cx="'+(left+5)+'" cy="16" r="4" fill="'+preColor+'"/><text x="'+(left+16)+'" y="20" fill="currentColor" opacity=".82" font-size="12">PRE-MARKET</text>';
+     if(regularIndices.length&&plotWidth>300)labels+='<circle cx="'+(left+128)+'" cy="16" r="4" fill="'+normalColor+'"/><text x="'+(left+140)+'" y="20" fill="currentColor" opacity=".82" font-size="12">NASDAQ</text>';
    }
-   wrap.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="'+tr('Grafico delle transazioni INJC: pre-market giallo, sessione rosso o verde','INJC traded chart: yellow pre-market, red or green regular session')+'"><defs><linearGradient id="injcPreFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+preColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+preColor+'" stop-opacity="0"/></linearGradient><linearGradient id="injcNormalFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+normalColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+normalColor+'" stop-opacity="0"/></linearGradient></defs>'+grid+shapes+labels+dates+'</svg>';
+   wrap.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+tr('Grafico delle transazioni INJC: pre-market giallo, sessione rosso o verde','INJC traded chart: yellow pre-market, red or green regular session')+'"><defs><linearGradient id="injcPreFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+preColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+preColor+'" stop-opacity="0"/></linearGradient><linearGradient id="injcNormalFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+normalColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+normalColor+'" stop-opacity="0"/></linearGradient></defs>'+grid+shapes+labels+dates+'</svg>';
    setText('etfChartDataLabel',tr('INJC · '+points.length+' punti intraday · storico Yahoo/backup, ultima quota da fonte indicata in alto','INJC · '+points.length+' intraday points · Yahoo/backup history, latest quote source shown above'));
  }
  function displayQuote(data,source){
@@ -620,6 +640,19 @@
    });
    $('etfRefresh')?.addEventListener('click',()=>{refreshMarket();refreshFlows();refreshPriceRange(true)});
    $('etfAdvancedButton')?.addEventListener('click',()=>toggleExpandedChart());
+   // Chart is redrawable on resize, full-screen transitions and rotation.
+   // Keep viewBox units 1:1 with CSS pixels to avoid squashed numeric glyphs.
+   const chartHost=$('etfSvgWrap');
+   let resizeQueued=false;
+   const onChartResize=()=>{
+     if(resizeQueued)return;
+     resizeQueued=true;
+     requestAnimationFrame(()=>{resizeQueued=false;if(graphPoints.length)drawGraph()});
+   };
+   if(chartHost&&typeof ResizeObserver==='function'){
+     new ResizeObserver(onChartResize).observe(chartHost);
+   }else window.addEventListener('resize',onChartResize);
+
    document.addEventListener('keydown',event=>{if(event.key==='Escape')toggleExpandedChart(false);});
    document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshMarket();refreshFlows();refreshPriceRange();renderStatus()}});
    window.addEventListener('pageshow',()=>{refreshMarket();refreshPriceRange();renderStatus()});
