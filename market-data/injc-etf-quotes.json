@@ -1,18 +1,73 @@
 {
   "schemaVersion": 1,
   "ticker": "INJC",
-  "generatedAt": "2026-11-05T15:40:00.000Z",
-  "source": "Nasdaq.com · riferimento del 05/11 10:40 ET (screenshot, non live)",
+  "generatedAt": "2026-11-05T20:08:05.972Z",
+  "source": "Yahoo Finance · quotes may be delayed",
   "quote": {
-    "price": 25.7,
-    "quoteTime": "2026-11-05T15:40:00.000Z",
+    "price": 25.350000381469727,
+    "quoteTime": "2026-11-05T18:10:34.000Z",
     "session": "regular",
-    "previous": 25,
-    "change": 2.8,
-    "open": null,
-    "high": null,
-    "low": null,
-    "volume": null
+    "previous": 25.15,
+    "change": 0.7952301450088588,
+    "open": 25.149999618530273,
+    "high": 26.13,
+    "low": 25.15,
+    "volume": 1721
   },
-  "points": []
+  "points": [
+    {
+      "time": "2026-11-05T15:51:00.000Z",
+      "session": "regular",
+      "open": 25.149999618530273,
+      "high": 25.209999084472656,
+      "low": 25.149999618530273,
+      "close": 25.209999084472656,
+      "volume": 0
+    },
+    {
+      "time": "2026-11-05T16:23:00.000Z",
+      "session": "regular",
+      "open": 26.1299991607666,
+      "high": 26.1299991607666,
+      "low": 26.1299991607666,
+      "close": 26.1299991607666,
+      "volume": 155
+    },
+    {
+      "time": "2026-11-05T17:04:00.000Z",
+      "session": "regular",
+      "open": 25.329999923706055,
+      "high": 25.329999923706055,
+      "low": 25.329999923706055,
+      "close": 25.329999923706055,
+      "volume": 147
+    },
+    {
+      "time": "2026-11-05T17:28:00.000Z",
+      "session": "regular",
+      "open": 25.43000030517578,
+      "high": 25.43000030517578,
+      "low": 25.43000030517578,
+      "close": 25.43000030517578,
+      "volume": 322
+    },
+    {
+      "time": "2026-11-05T18:10:00.000Z",
+      "session": "regular",
+      "open": 25.350000381469727,
+      "high": 25.350000381469727,
+      "low": 25.350000381469727,
+      "close": 25.350000381469727,
+      "volume": 227
+    },
+    {
+      "time": "2026-11-05T18:10:34.000Z",
+      "session": "regular",
+      "open": 25.350000381469727,
+      "high": 25.350000381469727,
+      "low": 25.350000381469727,
+      "close": 25.350000381469727,
+      "volume": 0
+    }
+  ]
 }
