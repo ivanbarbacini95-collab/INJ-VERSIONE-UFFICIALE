@@ -400,7 +400,7 @@
      candleHalo=node('ellipse',{rx:8,ry:8,class:'inj-candle-last-halo'});
      candleDot=node('ellipse',{rx:2.1,ry:2.1,class:'inj-candle-last-dot'});
      markerSvg.replaceChildren(candleHalo,candleDot);
-     candleHalo.addEventListener('animationend',()=>candleHalo.classList.remove('is-pulsing'));
+     candleHalo.addEventListener('animationend',event=>event.currentTarget.classList.remove('is-pulsing'));
    }
    // Always size the center and halo in REAL screen pixels. Recalibrate
    // whenever chart bounds change; keep the soft glow animation untouched.
@@ -451,7 +451,62 @@
    pending=true;
    requestAnimationFrame(()=>{pending=false;render();});
  }
+ function syncChartControls(){
+   const btn=get('injLiteChartOptions'),label=get('injLiteChartOptionsLabel'),panel=get('injLiteChartPanel');
+   const en=root.lang==='en',short=PERIODS[period].short;
+   if(label)label.textContent=short+' · '+(chartType==='line'?(en?'LINE':'LINEE'):(en?'CANDLES':'CANDELE'));
+   if(btn)btn.setAttribute('aria-label',en?'Chart settings: '+short+', '+chartType:'Impostazioni grafico: '+short+', '+chartType);
+   const labels={
+     '1h':['ULTIMA ORA','LAST HOUR'],'1d':['ULTIME 24 ORE','LAST 24 HOURS'],
+     '1w':['ULTIMI 7 GIORNI','LAST 7 DAYS'],'1mo':['ULTIMI 30 GIORNI','LAST 30 DAYS'],
+     '1y':['ULTIMI 365 GIORNI','LAST 365 DAYS']
+   };
+   put('injLiteChartSub','INJ / USDT · '+labels[period][en?1:0]);
+   panel?.querySelectorAll('[data-lite-chart-type]').forEach(el=>{
+     el.setAttribute('aria-pressed',String(el.dataset.liteChartType===chartType));
+   });
+   panel?.querySelectorAll('[data-lite-chart-timeframe]').forEach(el=>{
+     el.setAttribute('aria-pressed',String(el.dataset.liteChartTimeframe===period));
+   });
+ }
+ function bootChartControls(){
+   const btn=get('injLiteChartOptions'),panel=get('injLiteChartPanel');
+   if(!btn||!panel)return;
+   const close=()=>{panel.hidden=true;btn.setAttribute('aria-expanded','false');};
+   btn.addEventListener('click',()=>{
+     panel.hidden=!panel.hidden;
+     btn.setAttribute('aria-expanded',String(!panel.hidden));
+   });
+   document.addEventListener('pointerdown',event=>{
+     if(!panel.hidden&&!panel.contains(event.target)&&!btn.contains(event.target))close();
+   },{passive:true});
+   document.addEventListener('keydown',event=>{
+     if(event.key==='Escape'&&!panel.hidden){close();btn.focus({preventScroll:true});}
+   });
+   panel.addEventListener('click',event=>{
+     const selected=event.target.closest('button[data-lite-chart-type],button[data-lite-chart-timeframe]');
+     if(!selected)return;
+     const requested=selected.dataset.liteChartTimeframe,type=selected.dataset.liteChartType;
+     const nextPeriod=requested&&PERIODS[requested]?requested:period;
+     const nextType=['line','candles'].includes(type)?type:chartType;
+     if(nextPeriod!==period||nextType!==chartType){
+       const periodChanged=nextPeriod!==period;
+       period=nextPeriod;chartType=nextType;source=sources[period];
+       try{localStorage.setItem('inj_lite_chart_prefs_v1',JSON.stringify({period,type:chartType}));}catch(_){}
+       if(periodChanged){
+         clearChart(true);lastPrice=NaN;
+         put('injLightLive',source.rows.length?'LIVE':'SYNC');
+         void refreshCandles(true);
+       }
+       syncChartControls();schedule();
+     }
+     close();
+   });
+   syncChartControls();
+   window.addEventListener('injnode:languagechange',()=>{syncChartControls();schedule()});
+ }
  function boot(){
+   bootChartControls();
    const litePlot=get('injLightChartPlot');
    if(litePlot && typeof ResizeObserver==='function'){
      // Recalibrate after Pro → Lite and on device rotation.
