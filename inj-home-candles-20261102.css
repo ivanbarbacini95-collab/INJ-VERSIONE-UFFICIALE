@@ -301,3 +301,17 @@ html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-inj-line-
 html[data-inj-page="index"] body #injLightHome #injLightChartPlot[data-chart-type="candles"] > #injLightLineMarkerSvg{
   display:none!important;
 }
+
+/* Lite candlestick legibility · responsive density, 2026-11-05.
+   Keep the wick crisp and the OHLC bodies fully opaque on phones/tablets. */
+html[data-inj-page="index"] body #injLightHome
+  #injLightChartPlot[data-chart-type="candles"] #injLightLineSvg .inj-candle-wick{
+  stroke-width:1.2px!important;
+  opacity:.98!important;
+  shape-rendering:geometricPrecision;
+}
+html[data-inj-page="index"] body #injLightHome
+  #injLightChartPlot[data-chart-type="candles"] #injLightLineSvg .inj-candle-body{
+  opacity:1!important;
+  shape-rendering:geometricPrecision;
+}
