@@ -1,0 +1,53 @@
+/* INJ NODE · Dashboard native theme artwork · 2026-11-05
+   The Home uses an ambient SVG compositor inside #entryGate, which is
+   hidden in Dashboard. Without that layer the Dashboard showed only
+   a flat page-gradient, giving the impression of an opaque rectangle
+   below the data cards.
+   Reuse the *selected theme's existing artwork* on the one viewport root,
+   not a second element between the canvas and information cards. */
+html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme]{
+  background-color:var(--theme-canvas,var(--bg,#061019))!important;
+  background-image:var(--inj-theme-art,none),var(--page-gradient,none)!important;
+  background-repeat:repeat-x,no-repeat!important;
+  background-size:100vw 100%,100% 100%!important;
+  background-position:0 50%,center center!important;
+  background-attachment:fixed,fixed!important;
+  /* The Dashboard does not inherit the Home background-animation override. */
+}
+@keyframes inj-dashboard-theme-flow {
+  from {background-position:0 50%,center center}
+  to {background-position:-100vw 50%,center center}
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme][data-inj-theme-motion="dynamic"]{
+  animation:inj-dashboard-theme-flow var(--inj-signature-duration,34s) linear infinite!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme]:not([data-inj-theme-motion="dynamic"]){
+  animation:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme]{
+    animation:none!important;
+    background-position:0 50%,center center!important;
+  }
+}
+/* Only *structural* surfaces become transparent. Keep the existing filled
+   Dashboard data cards, wallet tiles, market panels and navigation controls
+   completely unchanged, including their borders, typography and gradients. */
+html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme]
+ body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell,
+html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme]
+ body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main#top,
+html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme]
+ body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main#top >
+ :is(.overview-grid,.metrics-grid,.analytics-grid,.detail-grid),
+html[data-inj-page="index"][data-inj-scroll="dashboard"][data-theme]
+ body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main#top >
+ .wallet-dock > .saved-wallets {
+  background:transparent!important;
+  background-image:none!important;
+  background-color:transparent!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+/* Dashboard page surfaces never hide the root art. No change to the Home
+   scrollport: it keeps its existing GPU-composited artwork and navigation. */
