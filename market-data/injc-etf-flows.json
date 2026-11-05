@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "ticker": "INJC",
+  "exchange": "Nasdaq",
+  "firstTradingSession": "2026-11-05",
+  "timeZone": "America/New_York",
+  "note": "Only dated issuer/qualified ETF flow-source reports with distinct creation and redemption USD values are eligible. Secondary-market ETF turnover is not a fund flow. Keep absent values unreported.",
+  "lastVerifiedAt": null,
+  "sessions": []
+}
