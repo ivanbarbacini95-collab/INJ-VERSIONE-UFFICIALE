@@ -240,3 +240,16 @@ body.injc-chart-modal-open{overflow:hidden!important;touch-action:none}
 @media(prefers-reduced-motion:reduce){
  .injc-price-range-fill,.injc-price-range-last-marker{transition:none}
 }
+
+/* INJC axis typography · responsive, undistorted CSS-pixel viewBox */
+#etfSvgWrap svg .injc-axis-price,
+#etfSvgWrap svg .injc-axis-time {
+  font-family: var(--inj-chosen-face, system-ui, -apple-system, sans-serif);
+  font-weight: 620;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-rendering: geometricPrecision;
+  pointer-events: none;
+}
+#etfSvgWrap svg .injc-axis-price { font-weight: 640; }
+#etfSvgWrap svg .injc-axis-time { font-weight: 600; }
