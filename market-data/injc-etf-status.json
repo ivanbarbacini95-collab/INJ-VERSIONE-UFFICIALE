@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "asOf": "2026-11-05",
-  "checkedAt": "2026-11-05T08:57:34.250Z",
+  "checkedAt": "2026-11-05T20:05:06.827Z",
   "sourceStatus": "sec-edgar-checked",
   "fund": {
     "name": "Canary Staked INJ ETF",
@@ -20,13 +20,13 @@
     "description": "Nasdaq approved the listing application. Not evidence of a first trade."
   },
   "registration": {
-    "status": "unconfirmed",
+    "status": "effective",
     "latestForm": "S-1/A",
     "latestDate": "2026-11-02",
     "amendment": 5,
     "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024117/inj-s1a_110226.htm",
-    "effectiveDate": null,
-    "effectiveSource": null
+    "effectiveDate": "2026-11-04",
+    "effectiveSource": "https://www.sec.gov/Archives/edgar/data/2073616/999999999526003429/xslEFFECTX01%2Fprimary_doc.xml"
   },
   "trading": {
     "status": "confirmed",
@@ -57,6 +57,11 @@
     "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937126024476/inj-424b3_110426.htm"
   },
   "recentSEC": [
+    {
+      "form": "EFFECT",
+      "date": "2026-11-04",
+      "source": "https://www.sec.gov/Archives/edgar/data/2073616/999999999526003429/xslEFFECTX01%2Fprimary_doc.xml"
+    },
     {
       "form": "424B3",
       "date": "2026-11-04",
@@ -91,11 +96,6 @@
       "form": "S-1/A",
       "date": "2025-12-17",
       "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937125020561/inj-s1a_121725.htm"
-    },
-    {
-      "form": "S-1",
-      "date": "2025-07-17",
-      "source": "https://www.sec.gov/Archives/edgar/data/2073616/000199937125009309/canaryinj-s1_071725.htm"
     }
   ],
   "latest8A": {
