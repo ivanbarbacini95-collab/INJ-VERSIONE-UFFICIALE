@@ -16,10 +16,14 @@
  const cssVar='--inj-home-fit-chart-height';
  // Use the device's physical portrait size, not visualViewport.height:
  // iOS can alter its visible viewport during menu/status chrome updates.
+ // Ignore temporary visualViewport and browser-chrome changes caused by
+ // opening a section, bottom-tab popover or Safari returning from an overlay.
+ // Only a genuine CSS viewport width/orientation change invalidates a fit.
  const geometryKey=()=>[
-   Math.round(window.innerWidth||document.documentElement.clientWidth),
+   Math.round(document.documentElement.clientWidth||window.innerWidth),
    Math.round(window.screen?.height||window.innerHeight),
-   Math.round(window.screen?.width||window.innerWidth)
+   Math.round(window.screen?.width||window.innerWidth),
+   media.matches?'portrait':'other'
  ].join('x');
  function restoreStable(chart){
    if(!stableLayout||stableLayout.key!==geometryKey())return false;
@@ -35,16 +39,39 @@
   const chart=byId('entryInsights');
   if(chart)chart.style.removeProperty(cssVar);
  }
+ // Inactive navigation tabs and fullscreen sections are NOT geometry changes.
+ // Do not clear the previously measured Home chart height while navigating:
+ // restoring it on the first Home paint prevents a visible shrink/jump.
+ function homeReady(){
+  const body=document.body;
+  return body.classList.contains('entry-gate-open')
+    && !body.classList.contains('boot-loading')
+    && !body.classList.contains('entry-live-launch')
+    && !body.classList.contains('dashboard-home-instant-return')
+    && !body.classList.contains('inj-section-open')
+    && !body.classList.contains('focus-display-open')
+    && !body.classList.contains('pulse-view-open')
+    && !body.classList.contains('live-charts-open');
+ }
  function fit(){
   pending=false;
-  if(!eligible()){reset();return;}
+  if(!media.matches){
+    // The genuine orientation/layout change is the only reason to discard
+    // the portrait fit. A switch to another Home tab retains its snapshot.
+    reset();
+    return;
+  }
+  if(!eligible())return;
   const gate=byId('entryGate'),chart=byId('entryInsights');
   const overview=byId('entryOverview');
   const actions=gate?.querySelector('.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44');
   const nav=byId('injPrimaryBottomNav');
-  if(!gate||!chart||!overview||!actions||!gate.classList.contains('visible')){
-   root.removeAttribute('data-inj-home-fit');return;
-  }
+  if(!gate||!chart||!overview||!actions||!gate.classList.contains('visible')||
+     gate.getAttribute('aria-hidden')==='true')return;
+  // A returning Home may not have the bottom dock in its final top layer yet.
+  // Apply a saved fit immediately; never measure transient section geometry.
+  if(restoreStable(chart))return;
+  if(!homeReady())return;
   // While Control Center or theme picker is open, the dock can be detached
   // or covered and its measured top stops being a reliable space boundary.
   // Preserve the original Home fit, never squeeze the price chart.
@@ -53,9 +80,7 @@
    restoreStable(chart);
    return;
   }
-  // Theme changes are presentation-only: keep cards/chart/quick links at
-  // their last correct sizes until the real device geometry changes.
-  if(restoreStable(chart))return;
+  // Only first entry, or an actual change of CSS viewport width, measures.
   const navRect=nav?.getBoundingClientRect();
   const viewportTop=window.visualViewport?.offsetTop||0;
   const viewportHeight=window.visualViewport?.height||window.innerHeight;
@@ -85,6 +110,7 @@
   const fits=available>=218 && actualBottom<=navTop-8;
   root.dataset.injHomeFit=fits?'true':'false';
   stableLayout={key:geometryKey(),chartHeight,fits};
+  // A single-screen Home must always reopen from its stable top origin.
   if(fits&&gate.scrollTop>0)gate.scrollTop=0;
  }
  function schedule(){
@@ -104,6 +130,8 @@
   if(typeof MutationObserver==='function'){
    new MutationObserver(schedule).observe(root,{attributes:true,attributeFilter:['data-inj-home-tab','data-inj-view-mode']});
    if(gate)new MutationObserver(schedule).observe(gate,{attributes:true,attributeFilter:['class','aria-hidden']});
+   const shell=gate?.querySelector('.entry-gate-shell');
+   if(shell)new MutationObserver(schedule).observe(shell,{childList:true});
    // Recheck after Settings closes. Cached geometry is restored if unchanged.
    new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['class']});
   }
