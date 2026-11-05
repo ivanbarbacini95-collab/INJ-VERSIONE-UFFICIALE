@@ -37,10 +37,29 @@
       '<small id="injLightChange" class="inj-light-meta">— · 24H</small></div>'+
     '</div>'+
     '<section class="inj-light-chart"><div class="inj-light-chart-head">'+
-       '<h2 data-light-it="Andamento INJ" data-light-en="INJ price movement">Andamento INJ</h2>'+ 
+       '<div class="inj-lite-chart-heading"><h2 data-light-it="Andamento INJ" data-light-en="INJ price movement">Andamento INJ</h2>'+
+         '<div class="inj-lite-chart-tools">'+
+           '<button id="injLiteChartOptions" class="inj-lite-chart-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="injLiteChartPanel" aria-label="Impostazioni grafico">'+
+             '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 14V6m4 11V9m4 4V3m4 13V8M2 9h2m2 4h2m2-7h2m2 7h2"/></svg>'+
+             '<span id="injLiteChartOptionsLabel">1W · LINEE</span><span aria-hidden="true" class="inj-lite-chart-chevron">⌄</span>'+
+           '</button>'+
+           '<div id="injLiteChartPanel" class="inj-lite-chart-panel" hidden>'+
+             '<div class="inj-lite-chart-panel-label" data-light-it="TIPO GRAFICO" data-light-en="CHART TYPE">TIPO GRAFICO</div>'+
+             '<div class="inj-lite-chart-option-row" role="group" aria-label="Tipo di grafico">'+
+               '<button type="button" data-lite-chart-type="line" data-light-it="Linee" data-light-en="Line">Linee</button>'+
+               '<button type="button" data-lite-chart-type="candles" data-light-it="Candele" data-light-en="Candles">Candele</button></div>'+
+             '<div class="inj-lite-chart-panel-label" data-light-it="INTERVALLO" data-light-en="TIME RANGE">INTERVALLO</div>'+
+             '<div class="inj-lite-chart-option-row inj-lite-chart-timeframes" role="group" aria-label="Timeframe">'+
+               '<button type="button" data-lite-chart-timeframe="1h">1H</button>'+
+               '<button type="button" data-lite-chart-timeframe="1d">1D</button>'+
+               '<button type="button" data-lite-chart-timeframe="1w">1W</button>'+
+               '<button type="button" data-lite-chart-timeframe="1mo">1M</button>'+
+               '<button type="button" data-lite-chart-timeframe="1y">1Y</button></div>'+
+           '</div>'+
+         '</div></div>'+
        '<span class="inj-light-6h-performance" id="injLightPerf6h" aria-live="off">— · 1W</span>'+
        '<span class="inj-light-live"><i aria-hidden="true"></i><span id="injLightLive">SYNC</span></span></div>'+
-       '<p class="inj-light-chart-sub" data-light-it="INJ / USDT · ULTIMI 7 GIORNI" data-light-en="INJ / USDT · ROLLING 7 DAYS">INJ / USDT · ULTIMI 7 GIORNI</p>'+
+       '<p id="injLiteChartSub" class="inj-light-chart-sub">INJ / USDT · ULTIMI 7 GIORNI</p>'+
        '<div id="injLightChartPlot" class="inj-light-chart-plot">'+
           '<svg viewBox="0 0 320 150" preserveAspectRatio="none" role="img" aria-label="Grafico settimanale a linee del prezzo INJ">'+
           '<g class="inj-light-grid"><path d="M0 24H320M0 72H320M0 120H320"/></g>'+
