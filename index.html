@@ -1551,5 +1551,82 @@
   <iframe id="injMarketFrame" title="Mercato" loading="eager" referrerpolicy="same-origin"></iframe>
 </div>
 <script defer src="market-portal.js?v=20261102-routefix1"></script>
+
+<!-- INJ live tick arrows: Home Pro + Dashboard (2026-11-05) -->
+<style id="inj-live-quote-arrows">
+  /* Lightweight visual cue; price digits, odometer geometry and all API feeds stay unchanged. */
+  html[data-inj-page="index"] #entryMarketPrice::after,
+  html[data-inj-page="index"] #marketPrice::after {
+    content:"↑";
+    display:inline-block;
+    flex:0 0 auto;
+    margin-inline-start:.17em;
+    font:700 .38em/1 system-ui,-apple-system,sans-serif;
+    letter-spacing:0;
+    vertical-align:.13em;
+    opacity:0;
+    color:var(--muted,#8a98a8);
+    pointer-events:none;
+    transition:opacity .16s ease,color .16s ease;
+  }
+  html[data-inj-page="index"] #entryMarketPrice[data-inj-quote-direction="up"]::after,
+  html[data-inj-page="index"] #marketPrice[data-inj-quote-direction="up"]::after {
+    content:"↑";
+    color:#28d997;
+    opacity:1;
+  }
+  html[data-inj-page="index"] #entryMarketPrice[data-inj-quote-direction="down"]::after,
+  html[data-inj-page="index"] #marketPrice[data-inj-quote-direction="down"]::after {
+    content:"↓";
+    color:#f15b64;
+    opacity:1;
+  }
+  @media (prefers-reduced-motion:reduce) {
+    html[data-inj-page="index"] #entryMarketPrice::after,
+    html[data-inj-page="index"] #marketPrice::after { transition:none; }
+  }
+</style>
+<script id="inj-live-quote-arrows-controller">
+(function(){
+  'use strict';
+  if(document.documentElement.dataset.injPage!=='index') return;
+  // Reuse the exact numeric prices rendered by the existing live feed.
+  // Keep the two indicators in sync with their own last observed market tick.
+  [
+    ['entryMarketPrice','entryNumericValue','data-entry-numeric-value'],
+    ['marketPrice','numericValue','data-numeric-value']
+  ].forEach(function(def){
+    var element=document.getElementById(def[0]);
+    if(!element) return;
+    var previous=NaN;
+    var hideTimer=0;
+    function update(){
+      var next=Number(element.dataset[def[1]]);
+      if(!Number.isFinite(next)||next<=0){
+        previous=NaN;
+        window.clearTimeout(hideTimer);
+        delete element.dataset.injQuoteDirection;
+        return;
+      }
+      if(Number.isFinite(previous)){
+        var delta=next-previous;
+        if(Math.abs(delta)>Math.max(1e-10,Math.abs(previous)*1e-11)){
+          element.dataset.injQuoteDirection=delta>0?'up':'down';
+          window.clearTimeout(hideTimer);
+          hideTimer=window.setTimeout(function(){
+            delete element.dataset.injQuoteDirection;
+          },1050);
+        }
+      }
+      previous=next;
+    }
+    new MutationObserver(update).observe(element,{
+      attributes:true,
+      attributeFilter:[def[2]]
+    });
+    update();
+  });
+})();
+</script>
 </body>
 </html>
