@@ -8,11 +8,11 @@
  const SVG='http://www.w3.org/2000/svg';
  const HOUR=3600000,DAY=86400000,WEEK=7*DAY;
  const PERIODS={
-   '1h':{span:HOUR,step:60000,interval:'1m',short:'1H'},
-   '1d':{span:DAY,step:900000,interval:'15m',short:'1D'},
-   '1w':{span:WEEK,step:HOUR,interval:'1h',short:'1W'},
-   '1mo':{span:30*DAY,step:8*HOUR,interval:'8h',short:'1M'},
-   '1y':{span:365*DAY,step:3*DAY,interval:'3d',short:'1Y'}
+   '1h':{span:HOUR,step:3*60000,interval:'3m',short:'1H'},
+   '1d':{span:DAY,step:30*60000,interval:'30m',short:'1D'},
+   '1w':{span:WEEK,step:4*HOUR,interval:'4h',short:'1W'},
+   '1mo':{span:30*DAY,step:DAY,interval:'1d',short:'1M'},
+   '1y':{span:365*DAY,step:WEEK,interval:'1w',short:'1Y'}
  };
  const sources=Object.fromEntries(Object.keys(PERIODS).map(key=>[key,{rows:[],updatedAt:0,lastAttempt:0,loading:false}]));
  let period='1w',chartType='line';
@@ -134,7 +134,10 @@
    })).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));
    const frag=document.createDocumentFragment();
    if(chartType==='candles'){
-     const width=Math.max(.8,Math.min(5.5,.72*(geo.x1-geo.x0)/bars.length));
+     const centers=bars.map(bar=>geo.center(bar));
+      const gaps=centers.slice(1).map((x,i)=>x-centers[i]).filter(g=>g>0.1);
+      const slot=gaps.length?Math.min(...gaps):(geo.x1-geo.x0)/Math.max(1,bars.length);
+      const width=Math.min(8.5,Math.max(2.3,slot*.72));
      for(const bar of bars){
        const x=Math.max(geo.x0,Math.min(geo.x1,geo.center(bar)));
        const cls=bar.c>=bar.o?'inj-candle-up':'inj-candle-down';
@@ -146,7 +149,7 @@
        }));
        frag.appendChild(node('rect',{
          x:(x-width/2).toFixed(3),y:Math.min(yo,yc).toFixed(3),
-         width:width.toFixed(3),height:Math.max(.8,Math.abs(yc-yo)).toFixed(3),
+         width:width.toFixed(3),height:Math.max(1.15,Math.abs(yc-yo)).toFixed(3),rx:'.35',
          class:'inj-candle-body '+cls
        }));
      }
@@ -193,6 +196,9 @@
      now.hidden=false;
      now.style.top=(y/150*100)+'%';
      put('injLightPriceNow',format(price,4));
+     // Same vertical coordinate as the right-hand live-price chip.
+     const guide=get('injLiteCurrentPriceGuide');
+     if(guide){guide.hidden=false;guide.style.top=(y/150*100)+'%';}
      labels.forEach(t=>{
        const el=get(t.id);if(el)el.hidden=Math.abs(y-t.y)<15;
      });
@@ -355,7 +361,7 @@
    const stage=get(light?'injLightChartPlot':'entrySparkStage');
    if(stage){delete stage.dataset.injCandlesReady;delete stage.dataset.injLineReady;}
    if(light){
-     ['injLightPriceHigh','injLightPriceMid','injLightPriceLow','injLightPriceNow'].forEach(id=>{const el=get(id);if(el)el.hidden=true;});
+     ['injLightPriceHigh','injLightPriceMid','injLightPriceLow','injLightPriceNow','injLiteCurrentPriceGuide'].forEach(id=>{const el=get(id);if(el)el.hidden=true;});
      put('injLightPerf6h','— · '+PERIODS[period].short);
      put('injLightLive','SYNC');
      hideInspection('light');
@@ -452,55 +458,39 @@
    requestAnimationFrame(()=>{pending=false;render();});
  }
  function syncChartControls(){
-   const btn=get('injLiteChartOptions'),label=get('injLiteChartOptionsLabel'),panel=get('injLiteChartPanel');
-   const en=root.lang==='en',short=PERIODS[period].short;
-   if(label)label.textContent=short+' · '+(chartType==='line'?(en?'LINE':'LINEE'):(en?'CANDLES':'CANDELE'));
-   if(btn)btn.setAttribute('aria-label',en?'Chart settings: '+short+', '+chartType:'Impostazioni grafico: '+short+', '+chartType);
+   const controls=get('injLiteChartControls'),en=root.lang==='en';
    const labels={
      '1h':['ULTIMA ORA','LAST HOUR'],'1d':['ULTIME 24 ORE','LAST 24 HOURS'],
      '1w':['ULTIMI 7 GIORNI','LAST 7 DAYS'],'1mo':['ULTIMI 30 GIORNI','LAST 30 DAYS'],
      '1y':['ULTIMI 365 GIORNI','LAST 365 DAYS']
    };
    put('injLiteChartSub','INJ / USDT · '+labels[period][en?1:0]);
-   panel?.querySelectorAll('[data-lite-chart-type]').forEach(el=>{
+   controls?.querySelectorAll('[data-lite-chart-type]').forEach(el=>{
      el.setAttribute('aria-pressed',String(el.dataset.liteChartType===chartType));
    });
-   panel?.querySelectorAll('[data-lite-chart-timeframe]').forEach(el=>{
+   controls?.querySelectorAll('[data-lite-chart-timeframe]').forEach(el=>{
      el.setAttribute('aria-pressed',String(el.dataset.liteChartTimeframe===period));
    });
  }
  function bootChartControls(){
-   const btn=get('injLiteChartOptions'),panel=get('injLiteChartPanel');
-   if(!btn||!panel)return;
-   const close=()=>{panel.hidden=true;btn.setAttribute('aria-expanded','false');};
-   btn.addEventListener('click',()=>{
-     panel.hidden=!panel.hidden;
-     btn.setAttribute('aria-expanded',String(!panel.hidden));
-   });
-   document.addEventListener('pointerdown',event=>{
-     if(!panel.hidden&&!panel.contains(event.target)&&!btn.contains(event.target))close();
-   },{passive:true});
-   document.addEventListener('keydown',event=>{
-     if(event.key==='Escape'&&!panel.hidden){close();btn.focus({preventScroll:true});}
-   });
-   panel.addEventListener('click',event=>{
+   const controls=get('injLiteChartControls');
+   if(!controls)return;
+   controls.addEventListener('click',event=>{
      const selected=event.target.closest('button[data-lite-chart-type],button[data-lite-chart-timeframe]');
-     if(!selected)return;
+     if(!selected||!controls.contains(selected))return;
      const requested=selected.dataset.liteChartTimeframe,type=selected.dataset.liteChartType;
      const nextPeriod=requested&&PERIODS[requested]?requested:period;
      const nextType=['line','candles'].includes(type)?type:chartType;
-     if(nextPeriod!==period||nextType!==chartType){
-       const periodChanged=nextPeriod!==period;
-       period=nextPeriod;chartType=nextType;source=sources[period];
-       try{localStorage.setItem('inj_lite_chart_prefs_v1',JSON.stringify({period,type:chartType}));}catch(_){}
-       if(periodChanged){
-         clearChart(true);lastPrice=NaN;
-         put('injLightLive',source.rows.length?'LIVE':'SYNC');
-         void refreshCandles(true);
-       }
-       syncChartControls();schedule();
+     if(nextPeriod===period&&nextType===chartType)return;
+     const periodChanged=nextPeriod!==period;
+     period=nextPeriod;chartType=nextType;source=sources[period];
+     try{localStorage.setItem('inj_lite_chart_prefs_v1',JSON.stringify({period,type:chartType}));}catch(_){}
+     if(periodChanged){
+       clearChart(true);lastPrice=NaN;
+       put('injLightLive',source.rows.length?'LIVE':'SYNC');
+       void refreshCandles(true);
      }
-     close();
+     syncChartControls();schedule();
    });
    syncChartControls();
    window.addEventListener('injnode:languagechange',()=>{syncChartControls();schedule()});
