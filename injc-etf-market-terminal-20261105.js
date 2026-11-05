@@ -270,7 +270,7 @@
      lastQuote&&Number.isFinite(lastQuote.price)&&lastQuote.quoteTime>=data.at?lastQuote.price:data.current
    ));
    const labels={'1d':'24H','1w':'1W','1mo':'1M','1y':'1Y'};
-   setText('etfPriceRangeTitle',(labels[selectedPriceRange]||'24H')+' · OPEN');
+   setText('etfPriceRangeTitle',labels[selectedPriceRange]||'24H');
    const openMarker=$('etfPriceRangeOpenMarker'),lastMarker=$('etfPriceRangeLastMarker'),
      fill=$('etfPriceRangeFill'),track=$('etfPriceRangeTrack');
    if(!openMarker||!lastMarker||!fill||!track)return;
