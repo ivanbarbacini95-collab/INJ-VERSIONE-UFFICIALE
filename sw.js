@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inj-node-v20261105-home-native-edge1';
+const CACHE_NAME = 'inj-node-v20261105-workspace-hairline80';
 const APP_SHELL = [
   './inj-theme-canvas-sync-20261105.css?v=theme-continuity1',
   './inj-home-native-edge-20261105.css?v=fullbleed-native-edge1',
@@ -24,7 +24,7 @@ const APP_SHELL = [
   './workspace.js?v=20261104-align-all-v3',
   './workspace.html?v=20261104-mono-pro1',
   './workspace.html?v=workspace-20261103-fullscreen-r2',
-  './workspace.css?v=20261104-align-all-v3',
+  './workspace.css?v=20261105-price-guide-hairline80',
   './workspace.js?v=fullscreen-amounts-20261103r2',
   './workspace-pro.css?v=fullscreen-amounts-20261103r2',
   './workspace-pro.js?v=fullscreen-amounts-20261103r2',
