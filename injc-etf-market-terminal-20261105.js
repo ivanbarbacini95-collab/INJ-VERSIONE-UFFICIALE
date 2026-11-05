@@ -127,7 +127,7 @@
    const pill=$('etfListingPill');
    if(pill){pill.dataset.state=value;pill.classList.toggle('is-live',value==='open'&&extra==='fresh');}
    let txt={open:tr('NASDAQ APERTO','NASDAQ OPEN'),pre:tr('PRE-MARKET','PRE-MARKET'),closed:tr('MERCATO CHIUSO','MARKET CLOSED')}[value];
-   if(value==='open'&&extra==='pending')txt=tr('IN ATTESA DEI PRIMI SCAMBI','AWAITING FIRST TRADE');
+   if(value==='open'&&extra==='pending')txt=tr('PREZZO IN ATTESA DAL FEED','AWAITING PRICE FEED');
    setText('etfListingBadge',txt);
    setText('etfMarketClock',tr('Nasdaq · 09:30–16:00 New York','Nasdaq · 9:30 AM–4:00 PM New York'));
  }
