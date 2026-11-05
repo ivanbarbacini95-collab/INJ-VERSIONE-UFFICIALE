@@ -51,6 +51,57 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
   break;
  }catch(e){console.warn(host+': '+e.message);}
 }
+
+// Secondary path: the Nasdaq website public last-sale snapshot may contain a newer tick
+// than the Yahoo intraday bars. It is NOT a licensed Nasdaq streaming entitlement.
+function parseNasdaqEt(s){
+ if(typeof s!=='string')return NaN;
+ const m=s.match(/([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)\s*(ET|EST|EDT)/i);
+ if(!m)return NaN;
+ const month=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[1].slice(0,3).toLowerCase());
+ if(month<0)return NaN;
+ let h=Number(m[4])%12;if(m[7].toUpperCase()==='PM')h+=12;
+ const naive=Date.UTC(Number(m[3]),month,Number(m[2]),h,Number(m[5]),Number(m[6]||0));
+ const zone=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'shortOffset'}).formatToParts(new Date(naive)).find(p=>p.type==='timeZoneName')?.value||'GMT-5';
+ const z=zone.match(/GMT([+-])(\d{1,2})(?::(\d\d))?/);
+ const offset=z?(z[1]==='-'?-1:1)*(Number(z[2])*60+Number(z[3]||0)):-300;
+ return naive-offset*60000;
+}
+const quoteValue=s=>{
+ const n=typeof s==='number'?s:Number(String(s||'').trim().replace(/[,$%\s]/g,''));
+ return Number.isFinite(n)?n:null;
+};
+try{
+ const res=await fetch('https://api.nasdaq.com/api/quote/INJC/info?assetclass=etf',{
+   signal:AbortSignal.timeout(9000),
+   headers:{accept:'application/json, text/plain, */*','user-agent':'Mozilla/5.0 (compatible; INJNodeETFQuote/2.1)','referer':'https://www.nasdaq.com/'}
+ });
+ if(!res.ok)throw Error('Nasdaq HTTP '+res.status);
+ const raw=await res.json(),d=raw?.data;
+ if(d?.symbol&&String(d.symbol).toUpperCase()!=='INJC')throw Error('Symbol mismatch');
+ const primary=d?.primaryData;
+ const price=quoteValue(primary?.lastSalePrice);
+ const timestamp=parseNasdaqEt(primary?.lastTradeTimestamp??primary?.lastTradeTime??'');
+ if(!(price>0)||!Number.isFinite(timestamp)||timestamp>now.getTime()+120000
+   ||nyKey(new Date(timestamp))!==date)throw Error('No timestamped INJC Nasdaq trade for today');
+ const oldTime=Date.parse(payload?.quote?.quoteTime||'');
+ if(!Number.isFinite(oldTime)||timestamp>=oldTime-60000){
+   const delta=quoteValue(primary.netChange),percentage=quoteValue(primary.percentageChange);
+   const prev=Number.isFinite(delta)?price-delta:payload?.quote?.previous??null;
+   const sameDay=payload?.quote?.quoteTime&&nyKey(new Date(payload.quote.quoteTime))===date;
+   payload={schemaVersion:1,ticker:'INJC',generatedAt:now.toISOString(),
+     source:'Nasdaq.com public last-sale · timestamped, may be delayed',
+     quote:{
+       price,quoteTime:new Date(timestamp).toISOString(),session:session(timestamp),
+       previous:prev,change:Number.isFinite(percentage)?percentage:prev>0?(price-prev)/prev*100:null,
+       open:sameDay?payload.quote.open:null,high:sameDay?payload.quote.high:null,
+       low:sameDay?payload.quote.low:null,volume:sameDay?payload.quote.volume:null
+     },
+     points:payload?.points||[]};
+   console.log('Prioritized public Nasdaq.com last-sale',price,new Date(timestamp).toISOString());
+ }
+}catch(e){console.warn('Nasdaq public quote unavailable; using timestamped Yahoo backup: '+e.message);}
+
 if(!payload){console.log('No real INJC prints yet. Preserve previous verified snapshot.');process.exit(0);}
 const previous=JSON.parse(await fs.readFile(path,'utf8'));
 if(previous.quote&&Date.parse(previous.quote.quoteTime)>Date.parse(payload.quote.quoteTime)){
