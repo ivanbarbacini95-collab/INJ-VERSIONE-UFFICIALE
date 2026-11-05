@@ -135,7 +135,7 @@
  function renderStatus(){
    const now=new Date(),state=marketState(),nowKey=nyKey(now);
    const current=Boolean(lastQuote?.quoteTime&&nyKey(new Date(lastQuote.quoteTime))===nowKey&&Date.now()-lastQuote.quoteTime<1200000);
-   const fresh=Boolean(current&&Date.now()-lastGoodAt<180000);
+   const fresh=Boolean(current&&lastQuote?.providerRealTime===true&&Date.now()-lastQuote.quoteTime<90000&&Date.now()-lastGoodAt<180000);
    status(state,state==='open'&&lastQuote?.session!=='regular'?'pending':fresh?'fresh':'stale');
    if(!lastQuote)setText('etfQuoteFreshness',state==='pre'?tr('Pre-market · in attesa di scambi reali','Pre-market · awaiting actual trades'):tr('In attesa di una quotazione verificabile','Waiting for a verified market quote'));
    const count=$('etfOpenCountdown'),label=$('etfCountdownLabel');
