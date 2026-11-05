@@ -29,12 +29,13 @@
     "effectiveSource": null
   },
   "trading": {
-    "status": "unconfirmed",
-    "date": null,
-    "marketPrice": null,
+    "status": "confirmed",
+    "date": "2026-11-05",
+    "marketPrice": 25.7,
     "volume": null,
     "nav": null,
-    "source": "https://canaryetfs.com/injc/"
+    "source": "https://www.nasdaq.com/market-activity/etf/injc",
+    "evidence": "Nasdaq.com displayed a timestamped INJC quote on 2026-11-05 10:40 ET, user-provided screenshot. Historical observation, not a current live price."
   },
   "milestones": [
     {
