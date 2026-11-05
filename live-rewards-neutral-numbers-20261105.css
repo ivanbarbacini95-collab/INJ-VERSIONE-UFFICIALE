@@ -1,0 +1,37 @@
+/* INJ Node · Live Reward · neutral, theme-aware numeric typography.
+   Only the Live Rewards surface is affected; reward motion, status lights,
+   per-wallet tracking, totals and updates remain unchanged. */
+html[data-inj-page="live-rewards"] body
+:is(
+  .reward-live-number strong,
+  .rewards-total-value strong,
+  #rewardsTotal,
+  #rewardsTotalDay,
+  #rewardsTotalStaked,
+  #rewardsApr,
+  .rewards-total-metrics strong,
+  .reward-card-stats strong,
+  .reward-wallet-index,
+  .rewards-head-status > strong
+){
+  color:var(--text,#f5fbfd)!important;
+  text-shadow:none!important;
+}
+html[data-inj-page="live-rewards"] body
+:is(
+  #rewardsTotalFiat,
+  .rewards-total-fiat,
+  .reward-fiat-pair,
+  .reward-live-number small,
+  .rewards-total-value small,
+  .reward-velocity-summary small
+){
+  color:var(--muted-strong,#bccbd3)!important;
+  text-shadow:none!important;
+}
+/* The live-indicator dots and runway retain their semantic accent.
+   Numeric tick updates never flash bright green or red. */
+html[data-inj-page="live-rewards"] body
+.reward-live-number strong.flash{
+  animation:none!important;
+}

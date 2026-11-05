@@ -1,4 +1,4 @@
-/* INJ Node · immersive My Reward navigation & green accrual refinement. */
+/* INJ Node · immersive My Reward navigation with theme-aware numeric colors. */
 (()=>{
 'use strict';
 const root=document.documentElement;
@@ -27,17 +27,16 @@ function init(){
  });
  window.addEventListener('injnode:languagechange',refreshLabel);
  const frameCss=`
- html[data-inj-reward-embedded="true"] body :is(#rewardsTotal,#rewardsTotalFiat,.reward-live-number strong,#ladderRewardValue,#ladderRewardInj){
-  color:#43e69b!important;font-weight:850!important
- }
+ /* Leave numeric colors to each destination's theme-aware styles. */
  html[data-inj-reward-embedded="true"] body :is(.rewards-total-value strong,.reward-live-number strong,.ladder-total strong){
-  font-family:"INJ Geist","Geist",system-ui,sans-serif!important;font-weight:850!important
+  font-family:"INJ Geist","Geist",system-ui,sans-serif!important;
+  font-weight:850!important;
  }`;
  function styleFrame(frame){
   try{
    const doc=frame.contentDocument;
-   if(!doc||!doc.documentElement||doc.getElementById('injMyRewardGreenNumbers'))return;
-   const style=doc.createElement('style');style.id='injMyRewardGreenNumbers';style.textContent=frameCss;
+   if(!doc||!doc.documentElement||doc.getElementById('injMyRewardFrameTypography'))return;
+   const style=doc.createElement('style');style.id='injMyRewardFrameTypography';style.textContent=frameCss;
    (doc.head||doc.documentElement).append(style);
   }catch(_){}
  }

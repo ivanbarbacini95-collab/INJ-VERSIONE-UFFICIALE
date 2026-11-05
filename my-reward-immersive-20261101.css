@@ -1,4 +1,4 @@
-/* Minimal, immersive My Reward — heavy Geist, permanently green accrual. */
+/* Minimal, immersive My Reward — theme-neutral numeric values. */
 html[data-inj-page="index"][data-inj-home-tab="reward"] body>#injPrimaryBottomNav,
 html[data-inj-page="index"][data-inj-home-tab="reward"] body>#injPrimaryBottomNav:popover-open{
  display:none!important;visibility:hidden!important;pointer-events:none!important
@@ -55,9 +55,13 @@ html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGat
  background:color-mix(in srgb,var(--text,#e8f9f2) 13%,transparent)!important;
  margin:21px 0 18px!important;height:1px!important
 }
-#injMyRewardPanel :is(.inj-myreward-accrued,.inj-myreward-reward-fiat){
- color:#43e69b!important;font-family:"INJ Geist","Geist",system-ui,sans-serif!important;
- font-weight:850!important;text-shadow:none!important
+#injMyRewardPanel .inj-myreward-accrued{
+ color:var(--text,#f5fbfd)!important;font-family:"INJ Geist","Geist",system-ui,sans-serif!important;
+ font-weight:800!important;text-shadow:none!important
+}
+#injMyRewardPanel .inj-myreward-reward-fiat{
+ color:var(--muted-strong,#b7c4cc)!important;font-family:"INJ Geist","Geist",system-ui,sans-serif!important;
+ font-weight:700!important;text-shadow:none!important
 }
 #injMyRewardPanel .inj-myreward-accrued{
  font-size:clamp(27px,5.8vw,47px)!important;line-height:1.16!important;letter-spacing:-.034em!important;margin-top:8px!important

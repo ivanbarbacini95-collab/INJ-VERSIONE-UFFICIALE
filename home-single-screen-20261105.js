@@ -7,13 +7,30 @@
  if(window.__injHomeSingleScreen)return;
  window.__injHomeSingleScreen=true;
  const root=document.documentElement;
- let pending=false,roundTrip=false;
+ let pending=false;
+ let stableLayout=null;
+ // A palette change (and its settings overlay) must never cause chart
+ // geometry to be recalculated against a hidden/covered bottom dock.
  const media=window.matchMedia('(max-width:700px) and (orientation:portrait)');
  const byId=id=>document.getElementById(id);
  const cssVar='--inj-home-fit-chart-height';
+ // Use the device's physical portrait size, not visualViewport.height:
+ // iOS can alter its visible viewport during menu/status chrome updates.
+ const geometryKey=()=>[
+   Math.round(window.innerWidth||document.documentElement.clientWidth),
+   Math.round(window.screen?.height||window.innerHeight),
+   Math.round(window.screen?.width||window.innerWidth)
+ ].join('x');
+ function restoreStable(chart){
+   if(!stableLayout||stableLayout.key!==geometryKey())return false;
+   chart.style.setProperty(cssVar,stableLayout.chartHeight+'px');
+   root.dataset.injHomeFit=stableLayout.fits?'true':'false';
+   return true;
+ }
  const eligible=()=>root.dataset.injPage==='index'&&root.dataset.injHomeTab==='home'
     &&root.dataset.injViewMode!=='light'&&media.matches;
  function reset(){
+  stableLayout=null;
   root.removeAttribute('data-inj-home-fit');
   const chart=byId('entryInsights');
   if(chart)chart.style.removeProperty(cssVar);
@@ -28,6 +45,17 @@
   if(!gate||!chart||!overview||!actions||!gate.classList.contains('visible')){
    root.removeAttribute('data-inj-home-fit');return;
   }
+  // While Control Center or theme picker is open, the dock can be detached
+  // or covered and its measured top stops being a reliable space boundary.
+  // Preserve the original Home fit, never squeeze the price chart.
+  if(document.body.classList.contains('menu-overlay-open') ||
+     document.getElementById('headerMenu')?.classList.contains('open')){
+   restoreStable(chart);
+   return;
+  }
+  // Theme changes are presentation-only: keep cards/chart/quick links at
+  // their last correct sizes until the real device geometry changes.
+  if(restoreStable(chart))return;
   const navRect=nav?.getBoundingClientRect();
   const viewportTop=window.visualViewport?.offsetTop||0;
   const viewportHeight=window.visualViewport?.height||window.innerHeight;
@@ -48,13 +76,15 @@
    root.removeAttribute('data-inj-home-fit');return;
   }
   const available=Math.floor(baseH + navTop - buttonsBottom - 13);
-  const chartHeight=Math.max(188,Math.min(288,available));
+  // On very short screens, scrolling is preferable to crushing the chart.
+  const chartHeight=Math.max(218,Math.min(288,available));
   chart.style.setProperty(cssVar,chartHeight+'px');
   // Commit the no-scroll layout only when ALL three destinations will be
   // visible and the chart still has enough room for price/time/P&L.
   const actualBottom=actions.getBoundingClientRect().bottom+offset;
-  const fits=available>=188 && actualBottom<=navTop-8;
+  const fits=available>=218 && actualBottom<=navTop-8;
   root.dataset.injHomeFit=fits?'true':'false';
+  stableLayout={key:geometryKey(),chartHeight,fits};
   if(fits&&gate.scrollTop>0)gate.scrollTop=0;
  }
  function schedule(){
@@ -74,6 +104,8 @@
   if(typeof MutationObserver==='function'){
    new MutationObserver(schedule).observe(root,{attributes:true,attributeFilter:['data-inj-home-tab','data-inj-view-mode']});
    if(gate)new MutationObserver(schedule).observe(gate,{attributes:true,attributeFilter:['class','aria-hidden']});
+   // Recheck after Settings closes. Cached geometry is restored if unchanged.
+   new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['class']});
   }
   window.addEventListener('resize',schedule,{passive:true});
   window.addEventListener('orientationchange',schedule,{passive:true});

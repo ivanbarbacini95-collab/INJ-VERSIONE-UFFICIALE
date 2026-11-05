@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html data-inj-screen="boot" data-inj-page="index" data-inj-viewport="80" data-theme="navy" lang="it">
+<html data-inj-screen="boot" data-inj-page="index" data-inj-viewport="80" data-theme="obsidian" lang="it">
 <head>
 <meta charset="utf-8"/>
 <script id="inj-android-pwa-canonical-start">
@@ -16,8 +16,8 @@
 </script>
 
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<meta content="#07121b" name="theme-color"/>
-<style id="inj-prepaint-canvas">html,body{background-color:#07121b;color-scheme:dark}html[data-theme="black"],html[data-theme="black"] body{background-color:#000}html[data-theme="light"],html[data-theme="light"] body{background-color:#eef5ff;color-scheme:light}html[data-theme="amber"],html[data-theme="amber"] body{background-color:#05080d}html[data-theme="velvet"],html[data-theme="velvet"] body{background-color:#0a1024}html[data-theme="ocean-x-solar"],html[data-theme="ocean-x-solar"] body{background-color:#1b122c}</style>
+<meta content="#060b11" name="theme-color"/>
+<style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}</style>
 
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="INJ Node" name="apple-mobile-web-app-title"/>
@@ -32,10 +32,12 @@
 
 <script>
     try {
-      const savedTheme = (localStorage.getItem('inj_monitor_theme') === 'dynamic' ? 'navy' : localStorage.getItem('inj_monitor_theme'));
-      document.documentElement.dataset.theme = ['navy', 'black', 'light', 'amber', 'velvet', 'ocean-x-solar'].includes(savedTheme) ? savedTheme : 'navy';
-      const initialTone = {navy:'#07121b',black:'#000000',light:'#eef5ff',amber:'#05080d',velvet:'#0a1024','ocean-x-solar':'#1b122c'};
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||'#07121b');
+      const savedTheme = localStorage.getItem('inj_monitor_theme');
+      const oldThemes = {"navy":"orbit","black":"classic-black","light":"classic-white","amber":"obsidian","velvet":"orbit","ocean-x-solar":"obsidian","ocean":"obsidian","chromatic":"orbit","aqua":"arctic","ocean-x-electric":"orbit","ocean-x-ion":"orbit","ocean-x-toxic":"obsidian","dynamic":"obsidian","emerald":"obsidian","ember":"obsidian","titanium":"obsidian","pure-black":"classic-black","graphite":"classic-black","frost-white":"classic-white","warm-ivory":"classic-white","midnight-blue":"orbit","slate-grey":"classic-black","liquid-silver":"classic-black","chrome-blue":"orbit","pearl-glass":"classic-white","rose-copper":"obsidian","sapphire-glass":"orbit","golden-satin":"obsidian","neon-grid":"orbit","cyber-cyan":"obsidian","quantum-purple":"orbit","matrix-green":"obsidian","solar-circuit":"obsidian","red-horizon":"obsidian","classic-navy":"orbit","classic-ivory":"classic-white","classic-stone":"classic-black","classic-champagne":"classic-white"};
+      const initialTone = {'classic-black':'#030304','classic-white':'#ffffff',obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a'};
+      document.documentElement.dataset.theme = initialTone[savedTheme] ? savedTheme : (oldThemes[savedTheme] || 'obsidian');
+      document.documentElement.dataset.injThemeMotion = 'static';
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.obsidian);
       const savedUiStyle = localStorage.getItem('inj_monitor_ui_style');
       document.documentElement.dataset.uiStyle = ['elegant', 'futuristic', 'ultra'].includes(savedUiStyle) ? savedUiStyle : 'elegant';
       if (sessionStorage.getItem('inj_node_return_home') === '1') {
@@ -353,7 +355,7 @@
 <script defer src="./control-center-more-20261029.js?v=20261029macro4"></script>
 
 <link rel="stylesheet" href="./inj-top-seamless.css?v=20261029continuity5"/>
-<script defer src="./inj-top-seamless.js?v=20261028ios27"></script>
+<script defer src="./inj-top-seamless.js?v=20261105-ios-edge-sample2"></script>
 <link rel="stylesheet" href="./home-compact-value-bars.css?v=20261028compactbars2"/>
 <link rel="stylesheet" href="./home-market-events.css?v=20261029borderless1"/>
 <script defer src="./home-market-events.js?v=20261029macro4"></script>
@@ -402,6 +404,10 @@
 <link rel="stylesheet" href="./android-native-scroll-20261101.css?v=android-scroll1"/>
 <link rel="stylesheet" href="./inj-rubik-global-20261102.css?v=rubikbold1">
 <link rel="stylesheet" href="./inj-font-platform-unified-20261103.css?v=sf-dual-20261103a">
+<link rel="stylesheet" href="./inj-six-themes-20261103.css?v=20261105-theme-canvas1">
+<link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=20261104-black-luminous1">
+<link rel="stylesheet" href="./inj-theme-canvas-sync-20261105.css?v=theme-continuity1">
+<script defer src="./inj-six-themes-20261103.js?v=20261105-theme-canvas1"></script>
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">

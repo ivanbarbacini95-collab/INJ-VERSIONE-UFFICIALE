@@ -1,0 +1,31 @@
+/* INJ Node · instant palette continuity · 2026-11-05
+   One chosen theme controls the page canvas, Home top, and status-tint
+   fallback. No fake status overlays or changes to touch/scroll/safe-area. */
+html[data-theme][data-inj-page="index"]{
+  --inj-native-status-tone:var(--theme-canvas,var(--bg,#07121b))!important;
+  --inj-native-top-tone:var(--theme-canvas,var(--bg,#07121b))!important;
+  background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+/* The old Home overlay had its OWN full-screen gradient, with a different
+   top origin from html, which painted an apparent previous-theme band.
+   Paint the selected theme just once, on the viewport root. */
+html[data-theme][data-inj-page="index"] body > #entryGate#entryGate.entry-gate,
+html[data-theme][data-inj-page="index"] body > #entryGate#entryGate.entry-gate.visible,
+html[data-theme][data-inj-page="index"] body > #entryGate#entryGate.entry-gate > .entry-gate-shell:not(.first-access),
+html[data-theme][data-inj-page="index"] body > .app-shell{
+  background-color:transparent!important;
+  background-image:none!important;
+}
+/* Keep the topmost Home elements clear, not a hard rectangular paint.
+   Menu surfaces and full-screen destinations retain their proper panels. */
+html[data-theme][data-inj-page="index"] body #entryGate
+:is(.entry-home-top,.home-safe-heading.inj-terminal-hero-arranged){
+  background-color:transparent!important;
+  background-image:none!important;
+}
+/* The Lite surface owns its design, but its top fill must use this theme's
+   current canvas rather than a persisted solid status color. */
+html[data-theme][data-inj-page="index"] body #injLightHome .inj-light-screen{
+  --inj-native-status-tone:var(--theme-canvas,var(--bg,#07121b));
+  --inj-native-top-tone:var(--theme-canvas,var(--bg,#07121b));
+}

@@ -453,3 +453,18 @@ html[data-theme="titanium"] {
   will-change:auto;
  }
 }
+
+
+/* 2026-11-05 · Theme surface continuity across INJ Node.
+   Never keep a legacy status/top tone when the selected palette changes.
+   Existing theme artwork and content gradients continue to use their own
+   dynamic variables; only the SOLID top/background fallback is unified. */
+html[data-theme] {
+  --inj-native-status-tone:var(--theme-canvas,var(--bg,#07121b))!important;
+  --inj-native-top-tone:var(--theme-canvas,var(--bg,#07121b))!important;
+  --theme-browser:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+html[data-theme][data-inj-page],
+html[data-theme][data-inj-market] {
+  background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+}

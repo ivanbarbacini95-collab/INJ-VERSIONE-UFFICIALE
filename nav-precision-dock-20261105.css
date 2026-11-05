@@ -1,0 +1,170 @@
+/* INJ Node / Precision Dock — 2026-11-05
+   Premium visual refinement of the existing 5-destination navigation.
+   The native tab handlers, popover, layout visibility and theme logic remain intact. */
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav {
+  --inj-dock-neutral:color-mix(in srgb,var(--text,#f0effa) 56%,var(--muted,#9da0bb) 44%);
+  --inj-dock-hairline:color-mix(in srgb,var(--text,#f0effa) 12%,transparent);
+  height:72px!important;
+  border:0!important;
+  border-radius:24px!important;
+  padding:6px!important;
+  gap:4px!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  background:linear-gradient(160deg,
+    color-mix(in srgb,var(--surface-strong,#191b30) 96%,var(--text,#fff) 4%),
+    color-mix(in srgb,var(--surface-strong,#191b30) 93%,var(--bg,#080b16) 7%))!important;
+  box-shadow:0 12px 32px color-mix(in srgb,var(--bg,#060711) 35%,transparent),
+    inset 0 0 0 1px var(--inj-dock-hairline),
+    inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 5%,transparent)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(115%)!important;
+  backdrop-filter:blur(22px) saturate(115%)!important;
+}
+/* Keep the single-color, theme-synced orbit from the existing component,
+   with an intentionally quiet hairline rather than a glowing thick outline. */
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-nav-comet-orbit {
+  opacity:.47!important;
+  z-index:3!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-nav-comet-orbit rect {
+  animation-duration:22s!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab {
+  position:relative!important;
+  display:flex!important;
+  flex-flow:column nowrap!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  height:100%!important;
+  padding:8px 2px 7px!important;
+  border:0!important;
+  border-radius:17px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--inj-dock-neutral)!important;
+  transform:none!important;
+  -webkit-tap-highlight-color:transparent;
+  transition:background-color .24s ease,color .24s ease,transform .18s ease,box-shadow .24s ease!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab::before {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:3px;
+  width:19px;
+  height:2px;
+  border-radius:99px;
+  background:var(--accent,#ae9ce8);
+  opacity:0;
+  transform:translateX(-50%) scaleX(.5);
+  transition:opacity .2s ease,transform .24s ease;
+  pointer-events:none;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active {
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--accent,#ae9ce8) 9%,var(--surface,#191b30) 91%),
+    color-mix(in srgb,var(--accent,#ae9ce8) 4%,var(--surface,#191b30) 96%))!important;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent,#ae9ce8) 15%,transparent)!important;
+  color:var(--text,#fff)!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active::before {
+  opacity:.94;
+  transform:translateX(-50%) scaleX(1);
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav .inj-bottom-tab-icon {
+  flex:0 0 24px!important;
+  display:flex!important;
+  width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
+  margin:0 auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  color:inherit!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav .inj-bottom-tab-icon svg {
+  width:23px!important;
+  height:23px!important;
+  margin:auto!important;
+  stroke:currentColor!important;
+  stroke-width:1.7px!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  fill:none!important;
+  opacity:.91!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active .inj-bottom-tab-icon {
+  color:var(--accent,#ae9ce8)!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active .inj-bottom-tab-icon svg{
+  opacity:1!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav .inj-bottom-tab-label,
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav .inj-bottom-tab[data-inj-tab="reward"] .inj-bottom-tab-label {
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:13px!important;
+  max-width:100%!important;
+  margin:0!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:clamp(9px,2.45vw,10.5px)!important;
+  font-weight:650!important;
+  line-height:1.1!important;
+  letter-spacing:.015em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  text-wrap:nowrap!important;
+  word-break:normal!important;
+  overflow:visible!important;
+  color:inherit!important;
+}
+@media (hover:hover) and (pointer:fine){
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab:not(.is-active):hover{
+    background:color-mix(in srgb,var(--text,#fff) 5%,transparent)!important;
+    color:var(--text,#fff)!important;
+  }
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab:active {
+  transform:scale(.965)!important;
+}
+html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab:focus-visible {
+  outline:2px solid var(--accent,#ae9ce8)!important;
+  outline-offset:-3px!important;
+}
+@media (min-width:800px){
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav{
+    width:min(570px,calc(100% - 40px))!important;
+    height:76px!important;
+    padding:7px!important;
+  }
+}
+@media(max-width:365px){
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav {
+    height:68px!important;
+    gap:2px!important;
+    padding:5px 4px!important;
+    border-radius:20px!important;
+  }
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab{
+    padding:7px 1px 6px!important;
+    gap:4px!important;
+    border-radius:14px!important;
+  }
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav .inj-bottom-tab-icon,
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav .inj-bottom-tab-icon svg{
+    width:21px!important;height:21px!important;min-height:21px!important;
+  }
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav .inj-bottom-tab-label{
+    font-size:8.4px!important;letter-spacing:0!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab,
+  html[data-inj-page="index"] body > #injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab::before{
+    transition:none!important;
+  }
+}

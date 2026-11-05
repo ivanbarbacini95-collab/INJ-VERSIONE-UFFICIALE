@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<meta content="#0b1722" name="theme-color"/>
-<style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="emerald"],html[data-theme="emerald"] body{background-color:#06110f}html[data-theme="ember"],html[data-theme="ember"] body{background-color:#150c12}html[data-theme="titanium"],html[data-theme="titanium"] body{background-color:#151b21}</style>
+<meta content="#060b11" name="theme-color"/>
+<style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}</style>
 
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="INJ Node" name="apple-mobile-web-app-title"/>
@@ -21,7 +21,7 @@
     try {
       const savedTheme = localStorage.getItem('inj_monitor_theme');
       const oldThemes = {"navy":"orbit","black":"classic-black","light":"classic-white","amber":"obsidian","velvet":"orbit","ocean-x-solar":"obsidian","ocean":"obsidian","chromatic":"orbit","aqua":"arctic","ocean-x-electric":"orbit","ocean-x-ion":"orbit","ocean-x-toxic":"obsidian","dynamic":"obsidian","emerald":"obsidian","ember":"obsidian","titanium":"obsidian","pure-black":"classic-black","graphite":"classic-black","frost-white":"classic-white","warm-ivory":"classic-white","midnight-blue":"orbit","slate-grey":"classic-black","liquid-silver":"classic-black","chrome-blue":"orbit","pearl-glass":"classic-white","rose-copper":"obsidian","sapphire-glass":"orbit","golden-satin":"obsidian","neon-grid":"orbit","cyber-cyan":"obsidian","quantum-purple":"orbit","matrix-green":"obsidian","solar-circuit":"obsidian","red-horizon":"obsidian","classic-navy":"orbit","classic-ivory":"classic-white","classic-stone":"classic-black","classic-champagne":"classic-white"};
-      const initialTone = {'classic-black':'#030304','classic-white':'#ffffff',obsidian:'#0b1722',arctic:'#f3f9fc',orbit:'#15152e'};
+      const initialTone = {'classic-black':'#030304','classic-white':'#ffffff',obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a'};
       document.documentElement.dataset.theme = initialTone[savedTheme] ? savedTheme : (oldThemes[savedTheme] || 'obsidian');
       document.documentElement.dataset.injThemeMotion = 'static';
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.obsidian);
@@ -38,9 +38,9 @@
   </script>
 <style>html[data-return-home="1"] .boot-splash{display:none!important}</style>
 <link href="style.css?v=16.01.44" rel="stylesheet"/>
-<script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--inj-native-status-tone').trim()||cs.getPropertyValue('--theme-canvas').trim()||cs.getPropertyValue('--bg').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
+<script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--theme-canvas').trim()||cs.getPropertyValue('--bg').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <link rel="stylesheet" href="viewport.css?v=16.00.74">
-<script defer src="viewport.js?v=20261102litepro-native1"></script>
+<script defer src="viewport.js?v=20261105-theme-canvas1"></script>
 
 <style id="entry-flat-v44-css">
 .entry-actions.entry-flat-v44{display:flex!important;flex-direction:column!important;gap:10px!important;width:100%!important}
@@ -342,7 +342,7 @@
 <script defer src="./control-center-more-20261029.js?v=20261029macro4"></script>
 
 <link rel="stylesheet" href="./inj-top-seamless.css?v=20261029continuity5"/>
-<script defer src="./inj-top-seamless.js?v=20261102-toptone1"></script>
+<script defer src="./inj-top-seamless.js?v=20261105-ios-edge-sample2"></script>
 <link rel="stylesheet" href="./home-compact-value-bars.css?v=20261028compactbars2"/>
 <link rel="stylesheet" href="./home-market-events.css?v=20261029borderless1"/>
 <script defer src="./home-market-events.js?v=20261029macro4"></script>
@@ -380,7 +380,7 @@
 <link rel="stylesheet" href="./inj-inter-light-20261029.css?v=interlight-global-1"/>
 <link rel="stylesheet" href="./inj-font-switcher-20261029.css?v=geistbold8"/>
 <link rel="stylesheet" href="./home-bottom-tabs-20261030.css?v=20261101-home-fixed5"/>
-<script defer src="./home-bottom-tabs-20261030.js?v=20261102-litepro-nav1"></script>
+<script defer src="./home-bottom-tabs-20261030.js?v=20261105-precision-icons1"></script>
 <link rel="stylesheet" href="./market-tab-navigation-20261031.css?v=marketrail11"/>
 <script defer src="./market-tab-navigation-20261031.js?v=marketrail14"></script>
 <link rel="stylesheet" href="./my-reward-20261101.css?v=1">
@@ -396,8 +396,8 @@
 <link rel="stylesheet" href="./inj-ux-refinement-20261101.css?v=1">
 <script defer src="./inj-ux-refinement-20261101.js?v=5"></script>
 <script defer src="./inj-local-access-lock-20261101.js?v=1"></script>
-<link rel="stylesheet" href="./my-reward-immersive-20261101.css?v=4">
-<script defer src="./my-reward-immersive-20261101.js?v=2"></script>
+<link rel="stylesheet" href="./my-reward-immersive-20261101.css?v=20261105-neutral1">
+<script defer src="./my-reward-immersive-20261101.js?v=20261105-neutral1"></script>
 <link rel="stylesheet" href="./nav-premium-loop-20261101.css?v=13-theme-accent">
 <script defer src="./nav-premium-loop-20261101.js?v=13-theme-accent"></script>
 <link rel="stylesheet" href="./home-theme-continuity-20261101.css?v=20261102-toptone1">
@@ -418,7 +418,7 @@
 <link rel="stylesheet" href="./tools-desktop-equal-height-20261103.css?v=20261103-tools104a">
 <link rel="stylesheet" href="./settings-desktop-readable-20261103.css?v=20261103-controlcenter1">
 <link rel="stylesheet" href="./inj-font-platform-unified-20261103.css?v=sf-dual-20261103a">
-<link rel="stylesheet" href="./inj-six-themes-20261103.css?v=theme-persist-flow-20261103c">
+<link rel="stylesheet" href="./inj-six-themes-20261103.css?v=20261105-theme-canvas1">
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=20261104-black-luminous1">
 <link rel="stylesheet" href="./inj-monochrome-pro-20261104.css?v=mono-pro1">
@@ -427,9 +427,11 @@
 <link rel="stylesheet" href="./home-single-screen-20261105.css?v=fit-wallet-border5">
 <link rel="stylesheet" href="./home-pro-launchers-20261105.css?v=premium-links3">
 <link rel="stylesheet" href="./home-wallet-motion-20261105.css?v=wallet-single-card3">
-<script defer src="./home-single-screen-20261105.js?v=fit-home3"></script>
+<script defer src="./home-single-screen-20261105.js?v=theme-layout-stable1"></script>
 <script defer src="./home-pro-launcher-guard-20261105.js?v=launcher-clean1"></script>
-<script defer src="./inj-six-themes-20261103.js?v=20261104-no-planets1"></script>
+<script defer src="./inj-six-themes-20261103.js?v=20261105-theme-canvas1"></script>
+<link rel="stylesheet" href="./nav-precision-dock-20261105.css?v=precision-dock1">
+<link rel="stylesheet" href="./inj-theme-canvas-sync-20261105.css?v=theme-continuity1">
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
