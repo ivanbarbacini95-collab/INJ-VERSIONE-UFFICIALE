@@ -26,7 +26,7 @@
  const roundTop=value=>{
    if(!(value>0))return 0;
    const exponent=Math.pow(10,Math.floor(Math.log10(value)));
-   const target=value*1.075/exponent;
+   const target=value/exponent;
    const step=[1,2,2.5,5,10].find(n=>n>=target)||10;
    return step*exponent;
  };
