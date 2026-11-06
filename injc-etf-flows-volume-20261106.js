@@ -129,6 +129,16 @@
    scheduleFlowScale();
  };
  const byDay=new Map();
+ const dailyPrice=new Map();
+ const usdPrice=v=>Number.isFinite(v)&&v>0?'$'+v.toLocaleString(lang()==='en'?'en-US':'it-IT',
+   {minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+ const usdEstimate=v=>Number.isFinite(v)&&v>=0?'$'+v.toLocaleString(lang()==='en'?'en-US':'it-IT',
+   {minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+ function rememberPrice(date,price,priority=0){
+   const n=Number(price),old=dailyPrice.get(date);
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(n)||n<=0)return;
+   if(!old||priority>=old.priority)dailyPrice.set(date,{price:n,priority});
+ }
  let volumeDays=[],volumeFirst=true,volumeLoading=false,volumeRaf=0,volumeSnapshot='',lastVolumeSource='';
  let volumeMode='session',intradayPoints=[],intradaySource='';
  function validVolume(k,value){
@@ -152,7 +162,7 @@
      const v=q.volume?.[i],close=q.close?.[i];
      if(v===null||v===undefined||!(Number(close)>0))return;
      const k=nyDay(Number(timestamp)*1000);
-     if(validVolume(k,Number(v))){mergeVolume(k,v,2);added++;}
+     if(validVolume(k,Number(v))){mergeVolume(k,v,2);rememberPrice(k,close,2);added++;}
    });
    if(!added)throw Error('No actual dated INJC volume');
    lastVolumeSource='Yahoo Finance · '+tr('dati potenzialmente ritardati','potential delay');
@@ -185,7 +195,7 @@
    for(const p of valid){
      if(nyDay(p.time)!==date||p.time===lastTime)continue;
      lastTime=p.time;total+=p.volume;
-     points.push({date,time:p.time,volume:total});
+     points.push({date,time:p.time,volume:total,price:Number(p.close)});
    }
    return points;
  }
@@ -198,7 +208,7 @@
    const time=Date.parse(q?.quoteTime||''),volume=Number(q?.volume);
    if(last&&Number.isFinite(time)&&nyDay(time)===last.date&&nyHour(time)>=570&&nyHour(time)<960
      &&Number.isSafeInteger(volume)&&volume>last.volume){
-     const row={date:last.date,time:Math.max(time,last.time),volume};
+     const row={date:last.date,time:Math.max(time,last.time),volume,price:Number(q?.price)>0?Number(q.price):last.price};
      if(row.time===last.time)points[points.length-1]=row;
      else points.push(row);
    }
@@ -217,7 +227,8 @@
    if(!scroller||!axis)return;
    const session=volumeMode==='session';
    const pts=session?intradayPoints.map(p=>({...p})):
-     volumeDays.map(date=>({date,volume:byDay.get(date)?.volume??null}));
+     volumeDays.map(date=>({date,volume:byDay.get(date)?.volume??null,
+       price:dailyPrice.get(date)?.price??null}));
    const source=session?intradaySource:lastVolumeSource;
    setText('etfVolumeSourceLabel',source||tr('In attesa del volume riportato','Awaiting reported volume'));
    const good=pts.map((p,i)=>({...p,i})).filter(p=>Number.isFinite(p.volume));
@@ -233,12 +244,13 @@
          good.length+' sessions with reported volume · INJC shares'));
    if(!pts.length){scroller.replaceChildren();return;}
    const width=Math.max(scroller.clientWidth,
-     session?Math.min(5000,Math.max(390,pts.length*24+40)):pts.length*58+50);
+     session?Math.min(5000,Math.max(390,pts.length*24+130)):pts.length*58+130);
    const top=21,bottom=180,plotHeight=bottom-top,previousX=scroller.scrollLeft;
    const atEnd=volumeFirst||scroller.scrollWidth-scroller.clientWidth-previousX<82;
    const earliest=pts[0].time,latest=pts.at(-1).time;
-   const x=i=>session?30+(pts[i].time-earliest)/Math.max(1,latest-earliest)*(width-60)
-     :width-30-(pts.length-1-i)*58;
+   const leftMargin=66,rightMargin=66;
+   const x=i=>session?leftMargin+(pts[i].time-earliest)/Math.max(1,latest-earliest)*(width-leftMargin-rightMargin)
+     :width-rightMargin-(pts.length-1-i)*58;
    let max=0;
    good.forEach(p=>{const px=x(p.i);if(px>=previousX-50&&px<=previousX+scroller.clientWidth+50)max=Math.max(max,p.volume);});
    if(!max)max=Math.max(0,...good.map(p=>p.volume));
