@@ -1,0 +1,1715 @@
+/* INJ Node Home CSS part 3 — original cascade. */
+
+/* ./menu-accordion.css?v=160626 */
+/* v16.01.45 — INJ Node Control Center settings disclosure redesign.
+   Theme-neutral, low-glow mobile-first styling. Existing actions keep their IDs/handlers. */
+#headerMenuPanel .menu-accordion{
+  display:block;
+  margin:15px 0 0;
+  border:1px solid var(--line,rgba(255,255,255,.14));
+  border-radius:19px;
+  background:color-mix(in srgb,var(--surface,rgba(30,35,44,1)) 62%,transparent);
+  box-shadow:none;
+  overflow:visible;
+  color:var(--text,inherit);
+}
+#headerMenuPanel .menu-accordion:not([open]){overflow:hidden}
+#headerMenuPanel .menu-accordion-trigger{
+  list-style:none;
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  width:100%;
+  padding:15px 15px;
+  min-height:74px;
+  outline-offset:-3px;
+  -webkit-tap-highlight-color:transparent;
+}
+#headerMenuPanel .menu-accordion-trigger::-webkit-details-marker{display:none}
+#headerMenuPanel .menu-accordion-trigger::marker{content:""}
+#headerMenuPanel .menu-accordion-trigger:focus-visible{
+  outline:2px solid var(--accent, #72bfc4);
+  border-radius:18px;
+}
+#headerMenuPanel .menu-accordion-symbol{
+  flex:none;
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  border:1px solid var(--line,rgba(255,255,255,.14));
+  border-radius:13px;
+  background:color-mix(in srgb,var(--accent, #bba5ce) 9%,transparent);
+  color:var(--accent,var(--text));
+}
+#headerMenuPanel .menu-accordion-symbol svg{
+  width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+#headerMenuPanel .menu-accordion-copy{
+  display:flex;flex-direction:column;justify-content:center;
+  min-width:0;flex:1;gap:4px;
+}
+#headerMenuPanel .menu-accordion-copy strong{
+  font-size:.99rem;font-weight:750;letter-spacing:-.018em;line-height:1.25;
+  color:var(--text,inherit);
+}
+#headerMenuPanel .menu-accordion-copy small{
+  font-size:.70rem;color:var(--muted, #a8a0ad);line-height:1.4;
+}
+#headerMenuPanel .menu-accordion-caret{
+  width:18px;height:18px;flex:none;margin-left:auto;
+  fill:none;stroke:var(--muted,var(--text));stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .22s ease;
+}
+#headerMenuPanel .menu-accordion[open] > .menu-accordion-trigger .menu-accordion-caret{
+  transform:rotate(180deg)
+}
+#headerMenuPanel .menu-accordion[open] > .menu-accordion-trigger{
+  border-bottom:1px solid var(--line,rgba(255,255,255,.12))
+}
+#headerMenuPanel .menu-accordion-content{
+  display:flex;flex-direction:column;gap:0;
+  padding:7px 9px 10px;min-width:0;
+}
+#headerMenuPanel .menu-accordion .menu-settings-grid{
+  display:flex!important;
+  flex-direction:column!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  width:100%;min-width:0;
+}
+#headerMenuPanel .menu-accordion .menu-action.menu-setting,
+#headerMenuPanel .menu-accordion .menu-language-card,
+#headerMenuPanel .menu-accordion-advanced .menu-action{
+  width:100%!important;max-width:none!important;min-width:0;
+  min-height:60px!important;height:auto!important;
+  margin:0!important;
+  padding:11px 10px!important;
+  display:flex!important;align-items:center!important;
+  justify-content:flex-start!important;
+  flex-direction:row!important;gap:11px!important;
+  border:0!important;border-radius:11px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:left;
+  transform:none!important;
+}
+#headerMenuPanel .menu-accordion .menu-action:hover,
+#headerMenuPanel .menu-accordion .menu-action:focus-visible{
+  background:color-mix(in srgb,var(--accent,#bba5ce) 8%,transparent)!important;
+}
+#headerMenuPanel .menu-accordion .menu-action-icon{
+  flex:0 0 38px!important;
+  width:38px!important;height:38px!important;
+  border-radius:11px!important;
+  display:grid!important;place-items:center;
+}
+#headerMenuPanel .menu-accordion .menu-action-copy,
+#headerMenuPanel .menu-accordion .menu-language-copy{
+  min-width:0;flex:1 1 auto!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:flex-start!important;gap:3px!important;
+  text-align:left!important;
+}
+#headerMenuPanel .menu-accordion .menu-action-copy strong,
+#headerMenuPanel .menu-accordion .menu-language-copy strong{
+  font-size:.86rem;line-height:1.3;font-weight:680;
+}
+#headerMenuPanel .menu-accordion .menu-action-copy small,
+#headerMenuPanel .menu-accordion .menu-language-copy small{
+  font-size:.70rem;line-height:1.35;
+}
+#headerMenuPanel .menu-accordion #themeControl{
+  display:block!important;
+  min-width:0;width:100%!important;
+  position:relative!important;
+  margin:0!important;
+}
+#headerMenuPanel .menu-accordion #themeButton{width:100%}
+#headerMenuPanel .menu-accordion #themePicker{
+  position:static!important;
+  inset:auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  transform:none!important;
+  margin:2px 0 10px!important;
+  box-shadow:none!important;
+  z-index:auto!important;
+  max-height:min(42dvh,360px);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+#headerMenuPanel .menu-accordion .menu-language-card{
+  flex-wrap:wrap!important;
+  row-gap:8px!important;
+}
+#headerMenuPanel .menu-accordion .menu-language-options{
+  order:4;width:100%;max-width:none;
+  display:flex!important;justify-content:stretch!important;
+  flex-basis:100%;margin:1px 0 0 49px;
+}
+#headerMenuPanel .menu-accordion .menu-language-options button{
+  flex:1;min-width:0;
+  touch-action:manipulation;
+}
+#headerMenuPanel .menu-accordion .menu-language-value{margin-left:auto}
+#headerMenuPanel .menu-accordion .menu-accordion-advanced-content .menu-action{
+  gap:11px!important;
+}
+#headerMenuPanel .menu-accordion .menu-action-chevron,
+#headerMenuPanel .menu-accordion .menu-action-value,
+#headerMenuPanel .menu-accordion .menu-system-dot,
+#headerMenuPanel .menu-accordion .menu-action-state{
+  flex:none!important;margin-left:auto!important;
+}
+#headerMenuPanel .menu-accordion .menu-accordion-content > .menu-action + .menu-action{
+  border-top:1px solid var(--line,rgba(255,255,255,.09))!important;
+  border-radius:0!important;
+}
+#headerMenuPanel .menu-accordion .menu-accordion-content > .menu-action:first-child{border-radius:11px 11px 0 0!important}
+#headerMenuPanel .menu-accordion .menu-accordion-content > .menu-action:last-child{border-radius:0 0 11px 11px!important}
+@media (max-width:480px){
+  #headerMenuPanel .menu-accordion{margin-top:12px;border-radius:17px}
+  #headerMenuPanel .menu-accordion-trigger{min-height:69px;padding:12px}
+  #headerMenuPanel .menu-accordion-copy strong{font-size:.94rem}
+  #headerMenuPanel .menu-accordion-copy small{font-size:.66rem}
+  #headerMenuPanel .menu-accordion-content{padding:5px 7px 8px}
+  #headerMenuPanel .menu-accordion .menu-language-options{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){
+  #headerMenuPanel .menu-accordion-caret{transition:none}
+}
+
+/* v16.06.26 · iPhone Control Center: collapsed Theme must occupy ZERO space.
+   The picker is static in this accordion, so visibility/opacity alone
+   previously left a ~360px blank area before Language. */
+#headerMenuPanel .menu-accordion-preferences>.menu-accordion-content,
+#headerMenuPanel .menu-accordion-preferences .menu-settings-grid{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  flex:0 0 auto!important;justify-content:flex-start!important;
+  align-content:start!important;
+}
+#headerMenuPanel .menu-accordion-preferences #themeControl{
+  height:auto!important;min-height:0!important;flex:0 0 auto!important;
+}
+#headerMenuPanel .menu-accordion-preferences #themeControl:not(.open) #themePicker{
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+  height:0!important;min-height:0!important;max-height:0!important;
+  margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;
+}
+#headerMenuPanel .menu-accordion-preferences #themeControl.open #themePicker{
+  display:block!important;visibility:visible!important;pointer-events:auto!important;
+  height:auto!important;min-height:0!important;max-height:min(42dvh,360px)!important;
+  margin:4px 0 10px!important;overflow-x:hidden!important;overflow-y:auto!important;
+}
+#headerMenuPanel .menu-accordion-preferences #languageControl{
+  position:relative!important;inset:auto!important;align-self:stretch!important;
+  flex:0 0 auto!important;order:initial!important;margin:0!important;min-height:0!important;
+}
+
+
+/* ./home-mobile-launcher-fix.css?v=160204 */
+/* v16.02.04 – INJ Node mobile Home launcher consistency.
+   Keeps the native 2-column Home, reserves a complete line for Command Center
+   and prevents decorative artwork from ever covering a label. */
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:auto!important;
+  gap:10px!important;
+  align-items:stretch!important;
+  justify-items:stretch!important;
+  width:100%!important;
+ }
+ /* Arrange four complete pairs first, then the full-width destinations. */
+ html[data-inj-page="index"] body #entryGate #entryDashboardButton{order:1!important}
+ html[data-inj-page="index"] body #entryGate #entryLiveButton{order:2!important}
+ html[data-inj-page="index"] body #entryGate #entryLiveChartsButton{order:3!important}
+ html[data-inj-page="index"] body #entryGate #entryOrderBookButton{order:4!important}
+ html[data-inj-page="index"] body #entryGate #entryPerformanceButton{order:5!important}
+ html[data-inj-page="index"] body #entryGate #entryConverterButton{order:6!important}
+ html[data-inj-page="index"] body #entryGate #entryMarketButton{order:7!important}
+ html[data-inj-page="index"] body #entryGate #entryLiveRewardsButton{order:8!important}
+ html[data-inj-page="index"] body #entryGate #entryCommandCenterButton{order:9!important}
+ html[data-inj-page="index"] body #entryGate #entryComparisonButton{order:10!important}
+ html[data-inj-page="index"] body #entryGate #entryVisualizeWealthButton{order:11!important}
+ html[data-inj-page="index"] body #entryGate #entryTreasuryButton{order:12!important}
+
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton){
+  box-sizing:border-box!important;display:flex!important;
+  position:relative!important;
+  grid-column:auto!important;grid-row:auto!important;
+  flex-direction:column!important;flex-wrap:nowrap!important;
+  justify-content:flex-end!important;align-items:center!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:104px!important;min-height:104px!important;max-height:none!important;
+  gap:0!important;padding:12px 8px 13px!important;margin:0!important;
+  overflow:hidden!important;text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton)
+ > :is(.entry-action-icon,.entry-action-arrow){display:none!important}
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton)
+ > span.inj-tile-scene{
+  display:block!important;position:absolute!important;box-sizing:border-box!important;
+  top:11px!important;bottom:auto!important;left:50%!important;right:auto!important;
+  width:70%!important;max-width:116px!important;min-width:0!important;
+  height:51px!important;min-height:0!important;
+  margin:0!important;padding:0!important;
+  flex:none!important;order:0!important;align-self:auto!important;
+  transform:translateX(-50%)!important;-webkit-transform:translateX(-50%)!important;
+  opacity:.89!important;z-index:1!important;
+  overflow:hidden!important;pointer-events:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton)
+ > span:not(.entry-action-icon):not(.inj-tile-scene){
+  position:relative!important;z-index:2!important;
+  display:flex!important;flex:0 0 auto!important;order:1!important;
+  align-items:center!important;justify-content:center!important;
+  align-self:center!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:auto!important;padding:0!important;margin:0!important;
+  text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryLiveChartsButton,#entryOrderBookButton,
+ #entryPerformanceButton,#entryConverterButton,#entryMarketButton,#entryLiveRewardsButton) strong{
+  width:100%!important;min-width:0!important;
+  font-size:clamp(12px,3.35vw,14px)!important;
+  line-height:1.2!important;font-weight:800!important;
+  white-space:normal!important;overflow:hidden!important;
+  text-overflow:ellipsis!important;overflow-wrap:normal!important;
+  text-align:center!important;margin:0!important;
+ }
+
+ /* Command Center is a separate full-width launcher, not a squeezed square.
+    Hide its old small icon so it never overlaps the animated scene or title. */
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryCommandCenterButton{
+  box-sizing:border-box!important;position:relative!important;
+  display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  align-items:center!important;justify-content:flex-start!important;
+  grid-column:1/-1!important;grid-row:auto!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:78px!important;min-height:78px!important;max-height:none!important;
+  gap:0!important;padding:12px 112px 12px 19px!important;
+  overflow:hidden!important;text-align:left!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryCommandCenterButton
+ > :is(.entry-action-icon,.entry-action-arrow){display:none!important}
+ html[data-inj-page="index"] body #entryGate #entryCommandCenterButton
+ > span:not(.entry-action-icon):not(.inj-tile-scene){
+  display:flex!important;position:relative!important;z-index:2!important;
+  flex:1 1 auto!important;order:0!important;
+  align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  padding:0!important;margin:0!important;
+  text-align:left!important;background:transparent!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryCommandCenterButton strong{
+  font-size:clamp(14px,3.8vw,17px)!important;
+  font-weight:800!important;line-height:1.25!important;
+  white-space:normal!important;max-width:100%!important;
+  overflow:visible!important;text-overflow:clip!important;
+  text-align:left!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryCommandCenterButton > span.inj-tile-scene{
+  position:absolute!important;display:block!important;box-sizing:border-box!important;
+  right:15px!important;left:auto!important;top:50%!important;bottom:auto!important;
+  width:88px!important;max-width:88px!important;min-width:0!important;
+  height:54px!important;min-height:0!important;
+  padding:0!important;margin:0!important;
+  z-index:1!important;order:unset!important;flex:none!important;
+  align-self:auto!important;opacity:.85!important;pointer-events:none!important;
+  transform:translateY(-50%)!important;-webkit-transform:translateY(-50%)!important;
+  overflow:hidden!important;
+ }
+ html[data-inj-page="index"] body #entryGate #entryCommandCenterButton > .inj-tile-scene svg{
+  display:block!important;width:100%!important;height:100%!important;
+ }
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryComparisonButton,#entryVisualizeWealthButton,#entryTreasuryButton){
+  grid-column:1/-1!important;grid-row:auto!important;width:100%!important;
+ }
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44{gap:8px!important}
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryCommandCenterButton{padding-right:98px!important;padding-left:14px!important}
+ html[data-inj-page="index"] body #entryGate
+ #entryCommandCenterButton > span.inj-tile-scene{width:75px!important;right:12px!important}
+}
+
+
+/* ./dashboard-native-scroll.css?v=160525 */
+/* INJ Node 16.03.06 — single native document scroller for Dashboard.
+ * The previous cascade set overflow-y:auto on BOTH html and body. Safari PWA
+ * can latch a later swipe to body, whose own scroll range is zero, making
+ * Dashboard appear frozen after visiting Home or another section.
+ * Keep html as the only vertical scroll owner. Do not affect modal/iframe pages.
+ */
+html[data-inj-page="index"][data-inj-scroll="dashboard"]{
+  position:static!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]
+body.dashboard-scroll-ready:not(.entry-gate-open):not(.menu-overlay-open):not(.inj-section-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open):not(.chart-overlay-open){
+  position:static!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:auto!important;
+}
+/* Keep the Dashboard shell in normal document flow; never create a nested
+ * viewport-height scrolling box when switching modes on iOS.
+ * Individual carousels and charts retain their own horizontal interactions.
+ */
+html[data-inj-page="index"][data-inj-scroll="dashboard"]
+body.dashboard-scroll-ready:not(.entry-gate-open):not(.inj-section-open)
+> .app-shell{
+  position:relative!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+}
+
+/* v16.05.23 — Last author stylesheet: a single native document scroller.
+   Locks for actual modals and fullscreen sections remain in control. */
+html[data-inj-page="index"][data-inj-scroll="dashboard"]:not(:has(
+  #entryGate.visible[aria-hidden="false"],
+  #headerMenu.open,
+  .inj-content-frame,
+  #injMarketPortal:not([hidden]),
+  dialog[open],
+  #converterView.open,
+  #performanceTimelineView.open,
+  #focusDisplayDialog.mode-active:not(.mode-parked),
+  #liveChartsDialog.mode-active:not(.mode-parked),
+  #pulseViewDialog.mode-active:not(.mode-parked)
+)) {
+ position:static!important;inset:auto!important;
+ height:auto!important;min-height:100%!important;max-height:none!important;
+ overflow-x:clip!important;overflow-y:auto!important;
+ touch-action:auto!important;-webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]:not(:has(
+  #entryGate.visible[aria-hidden="false"],
+  #headerMenu.open,
+  .inj-content-frame,
+  #injMarketPortal:not([hidden]),
+  dialog[open],
+  #converterView.open,
+  #performanceTimelineView.open,
+  #focusDisplayDialog.mode-active:not(.mode-parked),
+  #liveChartsDialog.mode-active:not(.mode-parked),
+  #pulseViewDialog.mode-active:not(.mode-parked)
+)) body.dashboard-scroll-ready {
+ position:static!important;inset:auto!important;
+ height:auto!important;min-height:100dvh!important;max-height:none!important;
+ overflow-x:clip!important;overflow-y:visible!important;
+ touch-action:auto!important;-webkit-overflow-scrolling:auto!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]:not(:has(
+  #entryGate.visible[aria-hidden="false"],
+  #headerMenu.open,
+  .inj-content-frame,
+  #injMarketPortal:not([hidden]),
+  dialog[open],
+  #converterView.open,
+  #performanceTimelineView.open,
+  #focusDisplayDialog.mode-active:not(.mode-parked),
+  #liveChartsDialog.mode-active:not(.mode-parked),
+  #pulseViewDialog.mode-active:not(.mode-parked)
+)) body.dashboard-scroll-ready > .app-shell {
+ display:block!important;position:relative!important;inset:auto!important;
+ width:100%!important;height:auto!important;min-height:100dvh!important;
+ max-height:none!important;overflow-x:clip!important;overflow-y:visible!important;
+ visibility:visible!important;pointer-events:auto!important;
+ touch-action:auto!important;transform:none!important;
+ -webkit-transform:none!important;contain:none!important;
+}
+html[data-inj-page="index"][data-inj-scroll="dashboard"]
+body.dashboard-scroll-ready > #entryGate[aria-hidden="true"]:not(.immersive-underlay) {
+ pointer-events:none!important;visibility:hidden!important;
+}
+
+
+/* v16.05.25 — Live View and Dashboard never share a touch or scroll layer.
+   A parked fullscreen Live View must be entirely removed from hit-testing,
+   while the live/closing overlay keeps its normal transition untouched. */
+html[data-inj-page="index"] #focusDisplayDialog[hidden],
+html[data-inj-page="index"] #focusDisplayDialog.mode-parked {
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+/* The Dashboard is the document scroller only after the Live overlay has
+   actually finished. Do not modify modal or Home scroll ownership here. */
+
+
+/* ./adaptive-layout.css?v=160600 */
+/* INJ NODE · Adaptive System v16.06.00
+   Shared responsive refinements for all first-party pages.
+   It never changes html/body scroll ownership, document heights, touch-action,
+   overlays, native chart data, or JavaScript financial calculations.
+   Layout scales by viewport and independently of touch/mouse capabilities. */
+:root {
+  --inj-fluid-space:clamp(12px,1.5vw,28px);
+  --inj-fluid-gap:clamp(10px,1.2vw,22px);
+  --inj-fluid-panel-gap:clamp(12px,1.5vw,28px);
+  --inj-fluid-copy:clamp(12px,.82vw,16px);
+  --inj-fluid-label:clamp(10px,.72vw,13px);
+  --inj-fluid-heading:clamp(18px,1.65vw,29px);
+}
+html[data-inj-page] :is(
+  .entry-gate-shell,.entry-overview,.entry-overview-main,.entry-overview-stats,
+  .entry-insights,.entry-insights-head,.entry-desktop-metrics,
+  .treasury-main,.treasury-grid,.treasury-panel,.treasury-hero-copy,
+  .treasury-chart-summary,.treasury-allocation-side,.treasury-velocity-grid,
+  .rewards-main,.rewards-layout,.rewards-list-panel,.rewards-total-wallets,
+  .cc-main,.cc-market-stage,.cc-data-stage,.cc-data-deck,.cc-panel,
+  .cap-main,.cap-picker-grid,.cap-panel,.cap-scenario,.cap-results-grid,
+  .wealth-main,.wealth-results,.wealth-all-grid,.wealth-income-grid,
+  .wealth-growth,.wealth-growth-chart,.terminal-shell,.chart-column
+) {
+  min-width:0;
+  box-sizing:border-box;
+}
+html[data-inj-market] :is(
+  .shell,.inj-mi-hero,.inj-mi-snapshot,.inj-essentials,.overview,
+  .panel,.toolbar,.tools,.tablewrap,.detailstats
+) { min-width:0;box-sizing:border-box; }
+
+/* Fluid text stays within columns without forcing a sideways document width. */
+html[data-inj-page] :is(
+  .treasury-hero-copy,.treasury-panel,.cc-panel,.cap-panel,
+  .wealth-result,.rewards-list-panel,.entry-overview
+) :is(strong,small,span) {
+  max-width:100%;
+}
+html[data-inj-page] :is(.treasury-chart-ranges,.cc-chart-tools,.entry-price-timebar),
+html[data-inj-market] :is(.detail-ranges,.inj-mi-switch,.toolbar) {
+  max-width:100%;
+}
+
+/* Charts that fill a host are fluid; only their outer host changes width. */
+html[data-inj-page="live-charts"] :is(.chart-column,.chart-stage,.plot),
+html[data-inj-page="command-center"] :is(.cc-chart,.cc-chart-body,.cc-charts),
+html[data-inj-page="treasury"] :is(.treasury-spark-stage,.treasury-chart-summary),
+html[data-inj-page="visualize-wealth"] :is(.wealth-growth-chart,.wealth-growth-results) {
+  min-width:0;
+  max-width:100%;
+}
+html[data-inj-page="live-charts"] :is(.chart-stage,.chart-column),
+html[data-inj-page="command-center"] .cc-chart-body { isolation:isolate; }
+
+/* Home launcher grid and wider sections must not overflow a 1:1 PWA iframe. */
+@media (max-width:599px) {
+ :root{
+  --inj-fluid-space:12px;
+  --inj-fluid-gap:10px;
+  --inj-fluid-panel-gap:12px;
+ }
+ html[data-inj-page="index"] :is(
+  .entry-gate-shell,.entry-overview,.entry-insights,.entry-actions,
+  .entry-desktop-metrics,.entry-overview-stats
+ ) { min-width:0;max-width:100%; }
+ html[data-inj-page="index"] .entry-action {
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="index"] .entry-action :is(strong,small){
+  min-width:0;
+  overflow-wrap:break-word;
+ }
+ html[data-inj-page="treasury"] :is(.treasury-grid,.treasury-metrics,.treasury-allocation-metrics){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div {
+  min-width:0;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div>small {
+  overflow-wrap:anywhere;
+ }
+ html[data-inj-page="live-rewards"] :is(.rewards-layout,.rewards-list,.rewards-total-wallets){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="command-center"] :is(.cc-now,.cc-data-deck,.cc-chart-tools){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="command-center"] .cc-chart{
+  min-width:0;
+ }
+ html[data-inj-page="comparison"] :is(.cap-picker-grid,.cap-results-grid,.cap-wallet-cards){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="visualize-wealth"] :is(.wealth-results,.wealth-all-grid,.wealth-income-grid){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-market] :is(.inj-mi-snapshot,.inj-essentials-pair,.overview){
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-market] .inj-essentials-donut-body{
+  min-width:0;max-width:100%;
+ }
+ html[data-inj-page="order-book"] :is(.book-shell,.columns,.levels){
+  min-width:0;
+ }
+}
+
+/* Narrow landscape phones and compact foldables: content gets priority. */
+@media (max-height:530px) and (orientation:landscape) {
+ html[data-inj-page="live-charts"] .terminal-header {
+  min-height:0;padding-block:6px;
+ }
+ html[data-inj-page="command-center"] :is(.cc-topbar,.cc-now){
+  min-height:0;
+ }
+ html[data-inj-page="index"] .node-ambient-ring.r2,
+ html[data-inj-page="index"] .node-ambient-ring.r3{
+  display:none!important;
+ }
+}
+/* Tablet: preserve independent columns until the viewport truly needs stacking. */
+@media (min-width:600px) and (max-width:1023px){
+ :root{
+  --inj-fluid-space:clamp(16px,2.5vw,26px);
+  --inj-fluid-gap:clamp(12px,1.8vw,20px);
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div{
+  min-width:0;
+ }
+ html[data-inj-page="live-rewards"] .rewards-layout,
+ html[data-inj-page="comparison"] .cap-picker-grid {
+  min-width:0;
+ }
+ html[data-inj-page="command-center"] :is(.cc-market-stage,.cc-data-deck){
+  min-width:0;
+ }
+ html[data-inj-market] .inj-mi-snapshot{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+ }
+}
+/* Desktop: give terminal data space while keeping proportions predictable. */
+@media (min-width:1024px) and (max-width:1799px){
+ :root{--inj-fluid-space:clamp(19px,2vw,34px)}
+ html[data-inj-page="treasury"] .treasury-velocity-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div{min-width:0}
+ html[data-inj-market] .inj-mi-snapshot{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+ }
+}
+/* Widescreen/ultrawide: no stretched text/tiles, but charts can use extra width. */
+@media (min-width:1800px) {
+ :root{
+  --inj-fluid-space:clamp(24px,2.2vw,58px);
+  --inj-fluid-gap:clamp(17px,1.3vw,32px);
+  --inj-fluid-panel-gap:clamp(20px,1.6vw,40px);
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready>.app-shell{
+  width:100%;max-width:2260px!important;margin-inline:auto!important;
+ }
+ html[data-inj-page="index"] #entryGate .entry-gate-shell:not(.first-access){
+  width:100%;max-width:2200px!important;margin-inline:auto!important;
+ }
+ html[data-inj-page="treasury"] .treasury-shell,
+ html[data-inj-page="live-rewards"] .rewards-shell,
+ html[data-inj-page="comparison"] .cap-shell,
+ html[data-inj-page="visualize-wealth"] .wealth-shell{
+  width:100%;max-width:2160px!important;margin-inline:auto!important;
+ }
+ html[data-inj-market] .shell{
+  max-width:2200px!important;margin-inline:auto!important;
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:clamp(15px,1.4vw,32px)!important;
+ }
+ html[data-inj-page="live-charts"] .terminal-shell{
+  width:100%;max-width:none!important;
+ }
+ html[data-inj-page="command-center"] .cc-main{
+  max-width:none!important;
+ }
+ html[data-inj-market] .inj-mi-snapshot{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ }
+}
+/* Large monitor viewing comfort, including 49-inch 32:9 panels. */
+@media (min-width:2560px) {
+ :root{
+  --inj-fluid-copy:clamp(15px,.75vw,19px);
+  --inj-fluid-label:clamp(12px,.65vw,16px);
+  --inj-fluid-heading:clamp(24px,1.4vw,35px);
+ }
+ html[data-inj-page="command-center"] .cc-topbar,
+ html[data-inj-page="live-charts"] .terminal-header{
+  padding-inline:clamp(28px,2vw,70px);
+ }
+ html[data-inj-page="treasury"] .treasury-velocity-grid>div{
+  min-height:126px;
+ }
+}
+/* Avoid accidental animation jank on touch/mobile in heavy decorative layers. */
+@media (hover:none) and (pointer:coarse) {
+ html[data-inj-page="index"] .node-ambient-ring.r3 {display:none}
+ html[data-inj-page="treasury"] .treasury-hero-orbit {
+  filter:none!important;
+ }
+}
+/* Stronger platform accessibility settings always win. */
+@media (prefers-reduced-motion:reduce) {
+ html[data-inj-page] :is(
+  .node-ambient-element,.node-ambient-ring,.treasury-hero-orbit,
+  .rewards-total-orbit,.reward-flow,.number-change-digit
+ ) {animation:none!important}
+ html[data-inj-page] :is(
+  .treasury-progress i,.treasury-allocation-bar i,.cc-chart,
+  .entry-action,.rewards-total-orbit
+ ),html[data-inj-market] :is(.inj-essentials-gauge-progress,.inj-mi-snapshot article){
+  transition-duration:0s!important;
+ }
+}
+/* Prevent print layouts from inheriting desktop fixed viewport sizes. */
+@media print {
+ html[data-inj-page] :is(.treasury-main,.cap-main,.wealth-main,.rewards-main){
+  max-width:100%!important;
+ }
+}
+
+
+/* ./validator-transparent.css?v=160627 */
+/* INJ NODE v16.06.27 — Validator rows remain seamless in EVERY theme.
+   Scope is the Dashboard validator list only. Preserve its outer card,
+   status pills, metrics, privacy classes and warning colors. */
+html[data-inj-page="index"] body #validatorCard #validatorList > .validator-row{
+  background:none!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+}
+html[data-inj-page="index"] body #validatorCard #validatorList > .validator-row::before,
+html[data-inj-page="index"] body #validatorCard #validatorList > .validator-row::after{
+  content:none!important;
+  display:none!important;
+}
+/* Keep clean, minimal distinction when the selected wallet has 2+ validators. */
+html[data-inj-page="index"] body #validatorCard #validatorList > .validator-row + .validator-row{
+  border-top:1px solid var(--line,rgba(255,255,255,.14))!important;
+}
+html[data-inj-page="index"] body #validatorCard #validatorList > .empty-state{
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+/* Theme choice never reinstates an inset tile on validator rows. */
+html[data-inj-page="index"][data-theme] body .app-shell #validatorCard .validator-list > .validator-row{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+
+/* ./wallet-selection-glow.css?v=160701 */
+/* INJ Node v16.06.30 — Theme-aware Dashboard wallet selection.
+   Theme-colored individual tiles; no enclosing wallet rail rectangle. Pure presentation:
+   no scroll rules, touch handlers, wallet calculations or theme overrides. */
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-dock-title,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock::before,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock::after,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets::before,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock > .saved-wallets::after,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip::before,
+html[data-inj-page="index"][data-theme] body .app-shell main#top > section.wallet-dock .wallet-mini-strip::after{
+  content:none!important;
+  display:none!important;
+}
+/* Unselected wallet cards share the same gradient as other dashboard cards. */
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini {
+  background:var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  min-width:0;
+  box-sizing:border-box;
+
+  border:1px solid color-mix(in srgb,var(--accent) 13%,var(--line))!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease!important;
+}
+/* Selected wallet keeps its own theme gradient plus an accent glow. */
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini.active {
+  background:radial-gradient(ellipse at 94% 0%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 57%),var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  border-color:color-mix(in srgb,var(--accent) 82%,var(--line))!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),
+    0 0 17px color-mix(in srgb,var(--accent) 19%,transparent),
+    0 0 29px color-mix(in srgb,var(--accent) 9%,transparent)!important;
+  -webkit-box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),
+    0 0 17px color-mix(in srgb,var(--accent) 19%,transparent),
+    0 0 29px color-mix(in srgb,var(--accent) 9%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini.active .wallet-mini-name{
+  color:var(--accent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini.active .wallet-mini-status{
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 11%,transparent),
+             0 0 12px color-mix(in srgb,var(--accent) 40%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini .wallet-mini-main:focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:3px!important;
+  border-radius:inherit;
+}
+@media (hover:hover) and (pointer:fine) {
+ html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini:not(.active):hover{
+   border-color:color-mix(in srgb,var(--accent) 48%,var(--line))!important;
+   box-shadow:0 0 12px color-mix(in srgb,var(--accent) 10%,transparent)!important;
+ }
+}
+@media (prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-theme] body .app-shell main#top #walletCards > .wallet-mini{
+   transition:none!important;
+   animation:none!important;
+ }
+}
+
+
+/* ./wallet-rail-seamless.css?v=20261105-wallet-border-safe1 */
+/* INJ NODE v16.06.31 — Seamless multi-wallet rail / all themes.
+   Home and Dashboard cards use the shared theme surface.
+   This targets only Dashboard's #top .wallet-dock + #walletCards.
+   No changes to scrolling, click targets or wallet data. */
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock > .saved-wallets,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock .wallet-dock-title,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock #walletCards {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+}
+/* Safari sometimes paints old decor through the horizontally composited strip.
+   Suppress only presentation pseudos, NOT the row's actual controls or text. */
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock > .saved-wallets::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock > .saved-wallets::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock #walletCards::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top > .wallet-dock #walletCards::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini::after,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini > .wallet-mini-main::before,
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini > .wallet-mini-main::after {
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini {
+  background:var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  position:relative;
+
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line))!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  isolation:auto!important;
+}
+/* A card's interactive button also must not hold the legacy inset rectangle. */
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini > .wallet-mini-main {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+/* The viewed wallet keeps the theme card gradient and a subtle accent tint. */
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini.active {
+  background:radial-gradient(ellipse at 94% 0%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 57%),var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+  border-color:color-mix(in srgb,var(--accent) 88%,var(--line))!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),
+    0 0 15px color-mix(in srgb,var(--accent) 24%,transparent),
+    0 0 26px color-mix(in srgb,var(--accent) 10%,transparent)!important;
+  -webkit-box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),
+    0 0 15px color-mix(in srgb,var(--accent) 24%,transparent),
+    0 0 26px color-mix(in srgb,var(--accent) 10%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini.active .wallet-mini-name {
+  color:var(--accent)!important;
+}
+/* Keep every gap physically clear; browser remains in charge of horizontal
+   overflow and vertical scrolling. Do not change touch-action or dimensions. */
+@media (prefers-reduced-motion:reduce) {
+ html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards > .wallet-mini {
+   transition:none!important;
+   animation:none!important;
+ }
+}
+
+
+/* v16.06.32 · shared multi-wallet presentation for Home and Dashboard.
+   The native three-cell Dashboard wallet grid is preserved with no extra
+   child and no top/bottom positioning adjustments. */
+html[data-inj-page="index"][data-theme] body .app-shell #top #walletCards .wallet-mini-current-label {
+ display:none!important;
+}
+/* Home carousel uses .entry-wallet-row.selected/.entry-wallet.selected,
+   independent of Dashboard state; never modify gesture transforms,
+   snap positions, horizontal/vertical overflow, padding or row dimensions. */
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section,
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section > .entry-wallets,
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section #entryWallets,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row {
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+ filter:none!important;
+ box-shadow:none!important;
+ -webkit-box-shadow:none!important;
+}
+/* Remove only the backdrop pseudo-layers that create rectangular fill in
+   the gap between adjacent Home wallet items, not gesture markers/handles. */
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section::before,
+html[data-inj-page="index"][data-theme] body #entryGate .entry-wallet-section::after,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets::before,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets::after,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row::before,
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row::after {
+ content:none!important;
+ display:none!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row > .entry-wallet {
+  background:var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+ border-color:color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+ box-shadow:none!important;
+ -webkit-box-shadow:none!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+ transition:border-color .18s ease,box-shadow .18s ease!important;
+}
+/* ONE active glow plus theme-colored tile on the selected button. The separate rename
+   button and any existing Home wallet ticker layout remain untouched. */
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row.selected > .entry-wallet.selected {
+  background:radial-gradient(ellipse at 94% 0%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 57%),var(--inj-theme-panel,var(--card-gradient,var(--surface)))!important;
+
+ border-color:color-mix(in srgb,var(--accent) 90%,var(--line))!important;
+ box-shadow:
+   0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),
+   0 0 16px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+ -webkit-box-shadow:
+   0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),
+   0 0 16px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row.selected > .entry-wallet.selected > i {
+ background:var(--accent)!important;
+ box-shadow:0 0 12px color-mix(in srgb,var(--accent) 38%,transparent)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-theme] body #entryGate #entryWallets > .entry-wallet-row > .entry-wallet {
+  transition:none!important;
+ }
+}
+
+
+/* 2026-11-05 · Dashboard wallet border safe-space.
+   iOS scroll containers crop borders and selected-card shadows when the
+   horizontally scrolling row is flush to its own top/bottom padding edge.
+   Add internal breathing room, without changing wallet card dimensions,
+   click areas, horizontal swipes or the native Dashboard scroller. */
+@media (max-width: 900px), (hover:none) and (pointer:coarse) {
+  html[data-inj-page="index"][data-theme] body .app-shell main#top
+  > .wallet-dock .saved-wallets > #walletCards.wallet-mini-strip {
+    box-sizing:border-box!important;
+    padding:8px 5px 9px!important;
+    scroll-padding-inline:5px;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+  }
+  html[data-inj-page="index"][data-theme] body .app-shell main#top
+  > .wallet-dock .saved-wallets > #walletCards.wallet-mini-strip > .wallet-mini {
+    flex-shrink:0!important;
+    margin-block:0!important;
+  }
+}
+
+
+/* ./app-icon-picker.css?v=160704 */
+/* INJ Node v16.07.03 — installable app icon selector, isolated from Theme. */
+#headerMenuPanel .menu-app-icon-control{
+  display:block;width:100%;min-width:0;height:auto;min-height:0;
+  margin:0;padding:0;
+  background:transparent;border:0;box-shadow:none;
+}
+#headerMenuPanel .menu-app-icon-control:not([open]) .menu-app-icon-panel{display:none!important}
+#headerMenuPanel .menu-app-icon-trigger{
+  list-style:none;cursor:pointer;width:100%;
+  user-select:none;-webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#headerMenuPanel .menu-app-icon-trigger::-webkit-details-marker{display:none}
+#headerMenuPanel .menu-app-icon-trigger::marker{content:""}
+#headerMenuPanel .menu-app-icon-trigger:focus-visible{
+  outline:2px solid var(--accent);outline-offset:-2px;border-radius:13px;
+}
+#headerMenuPanel .menu-app-icon-trigger svg{
+  width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+#headerMenuPanel .menu-app-icon-preview{
+  display:block!important;flex:0 0 36px;
+  width:36px!important;height:36px!important;object-fit:cover;
+  border-radius:10px;border:1px solid var(--line);
+  box-shadow:0 3px 10px color-mix(in srgb,var(--bg) 25%,transparent);
+}
+#headerMenuPanel .menu-app-icon-trigger .menu-action-chevron{
+  flex:0 0 16px!important;width:16px;height:16px;margin-left:0!important;
+  color:var(--muted);transition:transform .2s ease;
+}
+#headerMenuPanel .menu-app-icon-control[open] .menu-app-icon-trigger .menu-action-chevron{
+  transform:rotate(180deg);
+}
+#headerMenuPanel .menu-app-icon-panel{
+  display:block;min-width:0;padding:4px 10px 12px;
+  box-sizing:border-box;
+}
+#headerMenuPanel .menu-app-icon-choices{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;width:100%;min-width:0;
+}
+#headerMenuPanel .menu-app-icon-choice{
+  appearance:none;-webkit-appearance:none;
+  display:flex!important;align-items:center;justify-content:flex-start;
+  flex-direction:row;gap:10px;
+  width:100%;min-width:0;min-height:70px;
+  padding:9px 10px;
+  border:1px solid color-mix(in srgb,var(--accent) 23%,var(--line));
+  border-radius:13px;
+  background:var(--inj-theme-panel,var(--surface-strong));
+  color:var(--text);
+  text-align:left;cursor:pointer;
+  box-shadow:none;transform:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#headerMenuPanel .menu-app-icon-choice img{
+  display:block;width:46px;height:46px;flex:0 0 46px;
+  border-radius:12px;object-fit:cover;
+  border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));
+}
+#headerMenuPanel .menu-app-icon-choice span{
+  min-width:0;flex:1 1 auto;
+  color:var(--text);font-size:12px;font-weight:750;line-height:1.3;
+  overflow-wrap:anywhere;
+}
+#headerMenuPanel .menu-app-icon-choice>i{
+  display:block;width:11px;height:11px;flex:none;
+  border-radius:50%;border:1px solid var(--line);
+  background:transparent;
+}
+#headerMenuPanel .menu-app-icon-choice[aria-pressed="true"]{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),
+             0 0 12px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+#headerMenuPanel .menu-app-icon-choice[aria-pressed="true"]>i{
+  background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 9px color-mix(in srgb,var(--accent) 40%,transparent);
+}
+#headerMenuPanel .menu-app-icon-choice:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
+#headerMenuPanel .menu-app-icon-note{
+  margin:12px 0 10px;
+  color:var(--muted);font-size:11px;line-height:1.55;
+}
+#headerMenuPanel .menu-app-icon-install{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;min-width:0;min-height:42px;
+  border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));
+  border-radius:12px;padding:9px 12px;
+  background:color-mix(in srgb,var(--accent) 10%,var(--surface-strong));
+  color:var(--text);font-size:12px;font-weight:760;
+  text-decoration:none;text-align:center;box-sizing:border-box;
+}
+#headerMenuPanel .menu-app-icon-install svg{
+  display:block;width:16px;height:16px;flex:none;
+  fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+#headerMenuPanel .menu-app-icon-install:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;
+}
+@media(max-width:355px){
+ #headerMenuPanel .menu-app-icon-choice{gap:7px;padding:8px}
+ #headerMenuPanel .menu-app-icon-choice img{width:39px;height:39px;flex-basis:39px}
+}
+@media(prefers-reduced-motion:reduce){
+ #headerMenuPanel .menu-app-icon-trigger .menu-action-chevron{transition:none}
+}
+
+/* v16.07.04 · Browser installation fallback on iPhone standalone PWAs. */
+#headerMenuPanel .menu-app-icon-copy{
+ display:block!important;appearance:none;-webkit-appearance:none;
+ width:100%;min-height:42px;margin:8px 0 0!important;
+ padding:8px 12px!important;border:1px solid var(--line)!important;
+ border-radius:12px!important;background:transparent!important;
+ color:var(--text)!important;font-size:12px!important;
+ font-weight:700;text-align:center;cursor:pointer;
+ box-shadow:none!important;transform:none!important;
+}
+#headerMenuPanel .menu-app-icon-copy:focus-visible{
+ outline:2px solid var(--accent);outline-offset:2px;
+}
+
+
+/* ./inj-uhd.css?v=160710 */
+/* INJ Node · display fidelity layer · v16.07.10
+   Supports Retina / 4K / ultrawide without scaling, blurring or changing
+   wallet/chart coordinates. Theme backgrounds remain CSS gradients (resolution independent).
+   Do not force canvas DPR: individual renderers own backing-store resolution. */
+:root{
+ font-optical-sizing:auto;
+ font-kerning:normal;
+ -webkit-text-size-adjust:100%;
+ text-size-adjust:100%;
+}
+html,body{
+ -webkit-font-smoothing:antialiased;
+ -moz-osx-font-smoothing:grayscale;
+ text-rendering:optimizeLegibility;
+}
+html body :is(button,input,select,textarea,label){
+ font-kerning:normal;
+ -webkit-font-smoothing:antialiased;
+}
+html body :is(
+ .inj-location-name,.inj-location-section,.entry-action strong,
+ .market-heading,.market-heading h1,.market-asset-section .heading,
+ .mp-name,.mp-price,.mp-percent,.hm-symbol,.hm-change,.hm-price,
+ .price-amount,.market-ticker-number,.metric-value,.stat-value,
+ .overview strong,.inj-mi-stat strong,.inj-mi-snapshot strong,
+ .detail-primary strong,.treasury-total,.wealth-total
+){
+ text-rendering:geometricPrecision;
+ font-variant-numeric:tabular-nums;
+}
+html body svg{
+ shape-rendering:geometricPrecision;
+}
+html body :is(.entry-action-icon,.home,.market-icon,.header-menu-button) svg :is(path,polyline,polygon,line,circle,rect){
+ vector-effect:non-scaling-stroke;
+}
+/* Embedded SVG icons typically use native path widths; preserve fill/stroke
+   rather than applying filters that blur at odd device pixel ratios. */
+html body :is(img,canvas,video){
+ image-rendering:auto;
+}
+html body :is(img,svg){
+ max-width:100%;
+}
+/* High density displays: allow selected captions and live values to breathe.
+   No blanket zoom or transform: iPhone scroll and safe-area geometry remain unchanged. */
+@media (min-width:1920px){
+ html{font-size:clamp(16px,.5vw,20px)}
+ html body{font-size:clamp(14px,.47vw,19px)}
+ html body :is(
+  .inj-mi-tabs button,.overview small,.market-ticker-label,.mp-meta small,
+  .mp-heading,.inj-mi-update,.inj-essentials-source,
+  .inj-mi-snapshot article span,.detailstats small,.treasury-metric-label,
+  .market-asset-section .heading span
+ ){
+  font-size:clamp(11px,.36vw,15px)!important;
+  letter-spacing:.015em;
+ }
+ html body :is(
+  .inj-location-name,.entry-action strong,.mp-name strong,.mp-price-value,
+  .metric-value,.stat-value,.inj-mi-stat strong,.inj-mi-snapshot article strong
+ ){
+  font-size:clamp(15px,.65vw,27px)!important;
+  line-height:1.22;
+ }
+ html[data-inj-market] .heatmap-grid .heatmap-tile .hm-symbol{
+  font-size:clamp(14px,.62vw,21px)!important;
+ }
+ html[data-inj-market] .heatmap-grid .heatmap-tile .hm-change{
+  font-size:clamp(14px,.59vw,19px)!important;
+ }
+ html[data-inj-market] .heatmap-grid .heatmap-tile .hm-price{
+  font-size:clamp(12px,.48vw,16px)!important;
+ }
+}
+/* Full 4K/5K desktop: fluid primary section titles but no enlarged fixed chrome. */
+@media (min-width:3000px){
+ html body :is(
+  .header h1,.brand h1,.inj-location-section,
+  .market-asset-section .heading h2,.inj-mi-hero h2
+ ){
+  font-size:clamp(18px,.7vw,29px)!important;
+  line-height:1.15;
+ }
+}
+/* Themes are defined with CSS gradients, not bitmap screenshots: they remain
+   resolution-independent on 2x/3x screens and at native 4K/5K dimensions. */
+
+
+/* ./home-entry-feedback.css?v=160719 */
+/* INJ Node · Home entry feedback preferences.
+   Only styles two existing-menu-format rows: no overlay, extra scroll surface or layout rewrite. */
+#menuFeedbackSoundButton .menu-action-value,
+#menuFeedbackHapticButton .menu-action-value{
+ font-weight:800;
+ font-variant-numeric:tabular-nums;
+ min-width:37px;
+ text-align:right;
+}
+#menuFeedbackSoundButton[aria-pressed="true"] .menu-action-value,
+#menuFeedbackHapticButton[aria-pressed="true"] .menu-action-value{
+ color:var(--accent,var(--text));
+}
+#menuFeedbackSoundButton[aria-pressed="false"] .menu-action-value,
+#menuFeedbackHapticButton[aria-pressed="false"] .menu-action-value{
+ color:var(--muted);
+}
+#menuFeedbackHapticButton:disabled{
+ opacity:.62;
+ cursor:not-allowed;
+}
+#menuFeedbackHapticButton:disabled .menu-action-copy small{
+ color:var(--muted);
+}
+
+
+/* Simple inline volume control in Settings > Preferences. */
+#headerMenuPanel #menuFeedbackVolumeControl{
+ --volume-percent:40%;
+ display:flex!important;
+ flex-direction:column!important;
+ gap:9px!important;
+ width:100%!important;min-width:0!important;
+ padding:10px 13px 12px!important;margin:0!important;
+ box-sizing:border-box;
+ border-top:1px solid var(--line,rgba(170,170,170,.14));
+ background:color-mix(in srgb,var(--accent,#9ad3ea) 4%,transparent);
+ border-radius:10px;
+}
+#headerMenuPanel .menu-feedback-volume-head{
+ display:flex;align-items:baseline;justify-content:space-between;
+ gap:8px;min-width:0;
+}
+#headerMenuPanel .menu-feedback-volume-head label{
+ font-size:.82rem;font-weight:720;color:var(--text);
+}
+#headerMenuPanel .menu-feedback-volume-head output{
+ color:var(--accent,var(--text));
+ font-size:.78rem;font-weight:800;
+ white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+#headerMenuPanel #menuFeedbackVolumeHint{
+ font-size:.69rem;line-height:1.3;color:var(--muted);
+}
+/* Visible, robust native slider. Keep iOS WebKit's thumb instead of suppressing it. */
+#headerMenuPanel .menu-feedback-volume-slider{
+ display:flex!important;align-items:center!important;gap:10px!important;
+ width:100%!important;min-width:0!important;
+}
+#headerMenuPanel .menu-feedback-volume-slider button{
+ flex:0 0 36px!important;
+ width:36px!important;height:36px!important;
+ display:grid!important;place-items:center!important;
+ border-radius:10px!important;
+ border:1px solid var(--line,rgba(180,190,200,.26))!important;
+ background:color-mix(in srgb,var(--accent,#7dd4e4) 12%,var(--panel,#101e30))!important;
+ color:var(--text)!important;
+ font-size:21px!important;font-weight:650!important;line-height:1!important;
+ padding:0!important;margin:0!important;
+ touch-action:manipulation;
+}
+#headerMenuPanel .menu-feedback-volume-slider button:active{
+ background:color-mix(in srgb,var(--accent,#7dd4e4) 24%,var(--panel,#101e30))!important;
+}
+#headerMenuPanel #menuFeedbackVolume{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ flex:1 1 auto!important;width:100%!important;min-width:0!important;
+ height:36px!important;max-width:100%!important;
+ margin:0!important;padding:0 2px!important;
+ appearance:auto!important;-webkit-appearance:auto!important;
+ accent-color:var(--accent,#69bffa)!important;
+ border:0!important;box-shadow:none!important;
+ background:linear-gradient(90deg,
+  var(--accent,#69bffa) 0%,var(--accent,#69bffa) var(--volume-percent,40%),
+  color-mix(in srgb,var(--line,#708090) 82%,var(--muted,#8a9bad)) var(--volume-percent,40%),
+  color-mix(in srgb,var(--line,#708090) 82%,var(--muted,#8a9bad)) 100%) center / 100% 5px no-repeat!important;
+ cursor:pointer;touch-action:pan-x;
+}
+#headerMenuPanel #menuFeedbackVolume:focus-visible{outline:2px solid var(--accent,#69bffa)!important;outline-offset:3px}
+#headerMenuPanel #menuFeedbackVolumeControl.is-muted{
+ opacity:.62;
+}
+#headerMenuPanel #menuFeedbackVolume:disabled{cursor:not-allowed}
+
+#headerMenuPanel #menuFeedbackVolumeControl.is-muted .menu-feedback-volume-slider button{
+ opacity:.48!important;pointer-events:none!important;
+}
+/* Hide the ordinary vibration row on browsers (including iPhone Safari)
+   that cannot provide the Web Vibration API. No experimental iPhone test. */
+#headerMenuPanel #menuFeedbackHapticButton[hidden]{display:none!important}
+
+
+/* ./dashboard-ipad-layout.css?v=160722 */
+/* INJ Node · iPad Dashboard alignment · v16.07.22
+   Keeps iPhone layout, wallet logic, animation and the native document scroller intact.
+   Fixes legacy implicit grid tracks and asymmetric hero-card heights on tablets. */
+@media (min-width:600px) and (max-width:1400px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top {
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > :is(
+    .wallet-dock,.aggregate-strip,.overview-grid,.metrics-grid,.analytics-grid
+  ) {
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    margin-inline:0!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .overview-grid {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    gap:clamp(10px,1.4vw,17px)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #accountDetail > .data-card {
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:auto!important;
+    align-self:stretch!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #worthCard :is(
+    .hero-number,.hero-secondary,.worth-performance-stack,.allocation-labels
+  ){
+    min-width:0;
+    max-width:100%;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid {
+    display:grid!important;
+    grid-auto-flow:row!important;
+    align-items:stretch!important;
+    gap:clamp(10px,1.4vw,17px)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid > .data-card {
+    grid-row:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:128px!important;
+    height:auto!important;
+    box-sizing:border-box!important;
+    align-self:stretch!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .analytics-grid {
+    display:grid!important;
+    gap:clamp(10px,1.4vw,17px)!important;
+    align-items:stretch!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .analytics-grid > .data-card {
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top #validatorCard {
+    grid-column:1/-1!important;
+  }
+}
+/* Portrait / compact iPads: natural reading order, two equal metric columns.
+   The last APR card spans both columns, preventing an orphan half row. */
+@media (min-width:600px) and (max-width:1180px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > .data-card {
+    grid-column:auto!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #aprCard {
+    grid-column:1/-1!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .analytics-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .analytics-grid > .data-card {
+    grid-column:1/-1!important;
+    grid-row:auto!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #ownedTotalCard .owned-total-main {
+    min-width:0!important;
+  }
+}
+/* Smaller split-screen iPad windows require stacked hero cards. */
+@media (min-width:600px) and (max-width:759px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .overview-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #ownedTotalCard {
+    grid-column:1/-1!important;
+    grid-row:1!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #availableCard {
+    grid-column:1!important;
+    grid-row:2!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #stakedCard {
+    grid-column:2!important;
+    grid-row:2!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #rewardsCard {
+    grid-column:1!important;
+    grid-row:3!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > #aprCard {
+    grid-column:2!important;
+    grid-row:3!important;
+  }
+}
+/* Wide iPads in landscape: three metrics above two, with no unused tracks. */
+@media (min-width:1181px) and (max-width:1400px) {
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid {
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > .data-card:nth-child(-n+3) {
+    grid-column:span 2!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .metrics-grid > .data-card:nth-child(n+4) {
+    grid-column:span 3!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .analytics-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell #top .analytics-grid > :is(#yieldCard,#targetCard) {
+    grid-column:auto!important;
+    grid-row:auto!important;
+  }
+}
+
+
+/* ./home-wide-menu-fix.css?v=20261102-settings-fullscreen1 */
+/* INJ Node · v16.07.44 · full-width desktop canvas and contained Settings.
+   Home-only selectors. No scroll ownership, touch gestures, theme selections,
+   wallet state or sound/volume logic are changed. */
+
+/* Ultrawide: the window itself is the themed canvas. No centered outer shell
+   with visible differently colored side pillars. Keep content grids intact. */
+@media (min-width:1800px){
+ html[data-inj-page="index"],
+ html[data-inj-page="index"] body{
+  width:100%!important;
+  max-width:none!important;
+  background:var(--page-gradient,linear-gradient(150deg,var(--theme-canvas,#020708),var(--bg,#020708))),var(--theme-canvas,var(--bg,#020708))!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell,
+ html[data-inj-page="index"] body > .app-shell{
+  width:100%!important;
+  max-width:none!important;
+  margin-inline:0!important;
+  border-inline:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+ }
+ /* Home entry remains comfortably laid out, but has no visible framed island. */
+ html[data-inj-page="index"] #entryGate{
+  width:100%!important;
+  max-width:none!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+ }
+ html[data-inj-page="index"] #entryGate > .entry-gate-shell:not(.first-access){
+  border-color:transparent!important;
+  box-shadow:none!important;
+  background:transparent!important;
+ }
+}
+
+/* Control Center · v16.07.44
+   Keep the panel mounted while closed: display:none prevented every entrance
+   and exit transition. Visibility + pointer-events keep it truly inactive.
+   A restrained upward fade reads as a native popover, never as a drawer. */
+html[data-inj-page="index"] #headerMenu #headerMenuPanel {
+  display:block!important;
+  position:fixed!important;
+  top:max(9px,env(safe-area-inset-top,0px))!important;
+  bottom:auto!important;
+  right:max(10px,env(safe-area-inset-right,0px))!important;
+  left:auto!important;
+  width:min(430px,calc(100vw - 20px))!important;
+  max-width:calc(100vw - 20px)!important;
+  height:auto!important;
+  max-height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  scrollbar-gutter:stable;
+  z-index:2147483200!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translate3d(0,10px,0) scale(.985)!important;
+  -webkit-transform:translate3d(0,10px,0) scale(.985)!important;
+  transform-origin:top right!important;
+  animation:none!important;
+  transition:opacity .22s ease,transform .27s cubic-bezier(.22,1,.36,1),visibility 0s linear .27s!important;
+}
+html[data-inj-page="index"] #headerMenu #headerMenuBackdrop {
+  display:block!important;
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  z-index:2147483100!important;
+  background:rgba(2,8,18,.46)!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  animation:none!important;
+  transition:opacity .22s ease,visibility 0s linear .22s!important;
+}
+html[data-inj-page="index"] #headerMenu.open #headerMenuPanel {
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:translate3d(0,0,0) scale(1)!important;
+  -webkit-transform:translate3d(0,0,0) scale(1)!important;
+  transition:opacity .22s ease,transform .27s cubic-bezier(.22,1,.36,1),visibility 0s linear 0s!important;
+}
+html[data-inj-page="index"] #headerMenu.open #headerMenuBackdrop {
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  transition:opacity .22s ease,visibility 0s linear 0s!important;
+}
+
+/* The Control Center identity is part of the scrolling content, NOT sticky:
+   otherwise the title floats over wallet/settings rows on iPhone and desktop. */
+html[data-inj-page="index"] #headerMenuPanel .menu-control-head {
+  position:static!important;
+  inset:auto!important;
+  top:auto!important;
+  z-index:auto!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+html[data-inj-page="index"] #headerMenuPanel :is(button,summary) {
+  -webkit-tap-highlight-color:transparent;
+}
+html[data-inj-page="index"] #headerMenuPanel :is(button,summary):focus-visible {
+  outline:2px solid var(--accent,#76d6cf);
+  outline-offset:2px;
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-inj-page="index"] #headerMenu #headerMenuPanel,
+  html[data-inj-page="index"] #headerMenu.open #headerMenuPanel,
+  html[data-inj-page="index"] #headerMenu #headerMenuBackdrop,
+  html[data-inj-page="index"] #headerMenu.open #headerMenuBackdrop {
+    transition:none!important;
+    animation:none!important;
+  }
+}
+
+/* The range control exists only within the Settings preferences disclosure.
+   It cannot become an independently positioned floating element. */
+html[data-inj-page="index"] #headerMenuPanel #menuFeedbackVolumeControl{
+ position:static!important;
+ inset:auto!important;
+ transform:none!important;
+ float:none!important;
+ clear:both!important;
+ max-width:100%!important;
+}
+html[data-inj-page="index"] #headerMenuPanel #menuPreferencesAccordion:not([open]) #menuFeedbackVolumeControl{
+ display:none!important;
+}
+
+/* Preserve normal native details opening/closing, and don't allow horizontal
+   swipes inside the range slider to drag the entire floating panel. */
+html[data-inj-page="index"] #headerMenuPanel :is(.menu-accordion,.menu-accordion-content){
+ max-width:100%!important;
+ min-width:0!important;
+}
+html[data-inj-page="index"] #headerMenuPanel .menu-feedback-volume-slider{
+ max-width:100%!important;
+ min-width:0!important;
+}
+html[data-inj-page="index"] #headerMenuPanel #menuFeedbackVolume{
+ touch-action:pan-x!important;
+}
+@media(max-width:599px){
+ html[data-inj-page="index"] #headerMenu.open #headerMenuPanel{
+  right:max(8px,env(safe-area-inset-right,0px))!important;
+  width:calc(100vw - 16px)!important;
+  max-width:calc(100vw - 16px)!important;
+  scrollbar-gutter:auto;
+ }
+}
+
+/* 2026-11-02 · Settings is its own screen, never a transparent window over Home.
+   The existing content, theme picker, accordions and close handlers stay intact. */
+html[data-inj-page="index"] body.menu-overlay-open #entryGate > .entry-gate-shell > :not(#headerMenu){
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] #headerMenu.open #headerMenuBackdrop{
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  background:var(--theme-canvas,var(--bg,#07121b))!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  transition:none!important;
+}
+html[data-inj-page="index"] #headerMenu.open #headerMenuPanel{
+  position:fixed!important;
+  inset:0!important;
+  top:0!important;right:0!important;bottom:0!important;left:0!important;
+  box-sizing:border-box!important;
+  display:block!important;
+  width:100vw!important;min-width:0!important;max-width:none!important;
+  height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;
+  margin:0!important;
+  padding:calc(18px + env(safe-area-inset-top,0px))
+          max(18px,calc((100vw - 680px)/2))
+          calc(24px + env(safe-area-inset-bottom,0px))!important;
+  border:0!important;border-radius:0!important;
+  background:var(--theme-canvas,var(--bg,#07121b))!important;
+  background-image:
+    linear-gradient(180deg,
+      var(--inj-native-top-tone,var(--theme-canvas,var(--bg,#07121b))) 0px,
+      color-mix(in srgb,var(--inj-native-top-tone,var(--theme-canvas,var(--bg,#07121b))) 40%,transparent) 66px,
+      transparent 145px),
+    var(--page-gradient,none)!important;
+  background-position:center top,center center!important;
+  background-size:100% 100%!important;
+  background-attachment:fixed!important;
+  background-repeat:no-repeat!important;
+  box-shadow:none!important;
+  color:var(--text)!important;
+  visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+  transform:none!important;-webkit-transform:none!important;
+  transform-origin:center!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  scrollbar-gutter:auto!important;
+  transition:none!important;
+}
+@media(max-width:760px){
+ html[data-inj-page="index"] #headerMenu.open #headerMenuPanel{
+   padding:calc(15px + env(safe-area-inset-top,0px))
+           max(16px,env(safe-area-inset-right,0px))
+           calc(22px + env(safe-area-inset-bottom,0px))
+           max(16px,env(safe-area-inset-left,0px))!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] #headerMenu.open #headerMenuBackdrop,
+ html[data-inj-page="index"] #headerMenu.open #headerMenuPanel{
+  transition:none!important;
+ }
+}
