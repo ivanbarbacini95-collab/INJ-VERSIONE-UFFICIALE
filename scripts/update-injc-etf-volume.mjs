@@ -12,7 +12,10 @@ const nyDate=ms=>{
 const today=nyDate(Date.now());
 const existing=JSON.parse(await fs.readFile(path,'utf8'));
 const previous=new Map((existing.sessions||[]).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)
- &&Number.isSafeInteger(Number(x.volume))&&Number(x.volume)>=0).map(x=>[x.date,Number(x.volume)]));
+ &&Number.isSafeInteger(Number(x.volume))&&Number(x.volume)>=0).map(x=>[x.date,{
+  volume:Number(x.volume),
+  close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null
+ }]));
 let incoming=null;
 for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
  try{
@@ -33,7 +36,7 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
       ||!Number.isSafeInteger(volume)||volume<0)return;
    const day=new Date(date+'T12:00:00Z').getUTCDay();
    if(day===0||day===6)return;
-   rows.set(date,volume);
+   rows.set(date,{volume,close});
   });
   if(!rows.size)throw Error('No dated valid share volume on '+host);
   incoming=rows;break;
@@ -43,15 +46,21 @@ if(!incoming){
  console.log('Provider unavailable. Preserve prior reported historical volumes.');
  process.exit(0);
 }
-for(const [date,value] of incoming){
+for(const [date,row] of incoming){
  const prev=previous.get(date);
  // Market volume is cumulative during a session. Avoid regressions from stale feeds.
- if(prev===undefined||value>=prev)previous.set(date,value);
+ // Use the same day's reported closing/last quote as an approximate valuation reference.
+ previous.set(date,{
+   volume:prev?Math.max(prev.volume,row.volume):row.volume,
+   close:row.close>0?row.close:(prev?.close??null)
+ });
 }
 const sessions=[...previous].filter(([date])=>date>=first&&date<=today)
  .sort(([a],[b])=>a.localeCompare(b))
- .map(([date,volume])=>({date,volume}));
-const old=JSON.stringify((existing.sessions||[]).map(x=>({date:x.date,volume:x.volume})));
+ .map(([date,row])=>({date,volume:row.volume,close:row.close}));
+const old=JSON.stringify((existing.sessions||[]).map(x=>({
+ date:x.date,volume:x.volume,close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null
+})));
 if(JSON.stringify(sessions)===old){
  console.log('No new INJC share volume data. Existing cache unchanged.');
  process.exit(0);
@@ -59,7 +68,7 @@ if(JSON.stringify(sessions)===old){
 const payload={
  schemaVersion:1,ticker:'INJC',exchange:'Nasdaq',
  firstTradingSession:first,timeZone:'America/New_York',unit:'ETF shares',
- note:'Reported daily trading volume of INJC ETF shares; not fund flows or Injective token volume. Latest session may be partial.',
+ note:'Reported daily INJC ETF shares traded and same-session reported close used only for indicative valuation. Not fund flows. Latest session may be partial.',
  source:'Yahoo Finance · daily quote bars · potentially delayed',
  generatedAt:new Date().toISOString(),sessions
 };
