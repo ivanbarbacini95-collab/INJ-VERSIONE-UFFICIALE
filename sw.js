@@ -13,7 +13,9 @@ const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
 
 function cacheKey(url) {
   // Same deployed file with ?v=old and ?v=new must be cached only once.
-  return new Request(url.origin + url.pathname);
+  const scopePath = new URL(self.registration.scope).pathname;
+  const path = url.pathname === scopePath ? scopePath + 'index.html' : url.pathname;
+  return new Request(url.origin + path);
 }
 function neverStore(pathname) {
   return pathname.startsWith('/api/') ||
@@ -65,18 +67,19 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET' || request.headers.has('range')) return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
-  if (neverStore(url.pathname)) {
+  const marketData = /\\/market-data\\/[^/]+\\.json$/i.test(url.pathname);
+  // An offline snapshot must never masquerade as an ONLINE/live quote.
+  if (neverStore(url.pathname) || marketData) {
     event.respondWith(fetch(request, { cache: 'no-store' }));
     return;
   }
 
   const navigation = request.mode === 'navigate';
-  const marketData = /\/market-data\/[^/]+\.json$/i.test(url.pathname);
-  // Documents and quotes must be revalidated; regular static files use
+  // Documents must be revalidated; regular static files use
   // HTTP caching and a single offline fallback, without duplicated variants.
   event.respondWith((async () => {
     try {
-      const response = await fetch(request, (navigation || marketData) ? { cache: 'no-store' } : undefined);
+      const response = await fetch(request, navigation ? { cache: 'no-store' } : undefined);
       schedulePut(event, url, response);
       return response;
     } catch (_) {
