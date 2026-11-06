@@ -111,6 +111,7 @@
  }
  const fmtTime=ms=>new Date(ms).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',timeZone:'America/New_York'});
  let timeframe='1d', busy=false, lastQuote=null, lastGoodAt=0, quoteSource='', graphPoints=[], refreshTimer=null, marketPulseTimer=null, flowsHistory=[], flowDayKey=null, plottedFlowsFirstTime=true;
+ let lastChartPhase=null;
  const ranges={ '1d':['1d','1m'],'5d':['5d','5m'],'1mo':['1mo','30m'],'3mo':['3mo','1d'],'1y':['1y','1d'] };
  // Price-range rail is independent from the main chart timeframe.
  const priceRangeConfig={
@@ -127,9 +128,10 @@
  function status(value,extra){
    const pill=$('etfListingPill');
    if(pill){pill.dataset.state=value;pill.classList.toggle('is-live',value==='open'&&extra==='fresh');}
-   let txt={open:tr('NASDAQ APERTO','NASDAQ OPEN'),pre:tr('PRE-MARKET','PRE-MARKET'),closed:tr('MERCATO CHIUSO','MARKET CLOSED')}[value];
-   if(value==='open'&&extra==='pending')txt=tr('PREZZO IN ATTESA DAL FEED','AWAITING PRICE FEED');
+   const txt={open:'OPEN',pre:'PRE-MARKET',closed:'CLOSE'}[value]||'CLOSE';
    setText('etfListingBadge',txt);
+   const chartStatus=$('etfChartSession');
+   if(chartStatus){chartStatus.dataset.state=value;chartStatus.textContent=txt;}
    setText('etfMarketClock',tr('Nasdaq · 09:30–16:00 New York','Nasdaq · 9:30 AM–4:00 PM New York'));
  }
  function renderStatus(){
@@ -137,6 +139,7 @@
    const current=Boolean(lastQuote?.quoteTime&&nyKey(new Date(lastQuote.quoteTime))===nowKey&&Date.now()-lastQuote.quoteTime<1200000);
    const fresh=Boolean(current&&lastQuote?.providerRealTime===true&&Date.now()-lastQuote.quoteTime<90000&&Date.now()-lastGoodAt<180000);
    status(state,state==='open'&&lastQuote?.session!=='regular'?'pending':fresh?'fresh':'stale');
+   if(lastChartPhase!==state){lastChartPhase=state;if(graphPoints.length)drawGraph();}
    if(!lastQuote)setText('etfQuoteFreshness',state==='pre'?tr('Pre-market · in attesa di scambi reali','Pre-market · awaiting actual trades'):tr('In attesa di una quotazione verificabile','Waiting for a verified market quote'));
    const count=$('etfOpenCountdown'),label=$('etfCountdownLabel');
    if(count&&label){
@@ -175,7 +178,15 @@
    const nowKey=nyKey(new Date()),dayRaw=raw.filter(p=>nyKey(new Date(p.time))===nowKey);
    const dayRegular=dayRaw.filter(p=>p.session==='regular'),dayPre=dayRaw.filter(p=>p.session==='pre');
    const session=dayRegular.length?'regular':dayPre.length?'pre':'regular';
-   const points=timeframe==='1d'?(dayRegular.length||dayPre.length?dayRaw.filter(p=>p.session==='regular'||p.session==='pre'):raw.filter(p=>p.session==='regular')):raw.filter(p=>p.session==='regular');
+   // The prior close is a verified historical price, never a fabricated overnight trade.
+   const allRegular=raw.filter(p=>p.session==='regular');
+   const priorClose=allRegular.filter(p=>nyKey(new Date(p.time))<nowKey).at(-1);
+   const lastRegularDay=allRegular.length?nyKey(new Date(allRegular.at(-1).time)):null;
+   const points=timeframe==='1d'
+     ?(dayRegular.length?dayRaw.filter(p=>p.session==='regular'||p.session==='pre')
+       :dayPre.length?[...(priorClose?[{...priorClose,session:'close-anchor'}]:[]),...dayPre]
+       :allRegular.filter(p=>nyKey(new Date(p.time))===lastRegularDay))
+     :allRegular;
    const selected=(session==='pre'?dayPre.at(-1):dayRegular.at(-1))??raw.filter(p=>p.session==='regular').at(-1)??raw.at(-1);
    // A real extended-hours trade is required: never substitute a regular-market close for a fictitious pre-market quote.
    let price=selected?.close,quoteTime=selected?.time;
@@ -446,19 +457,21 @@
    const timeFont=Math.max(12,Math.min(14,Math.round(w/34)));
    const prices=points.map(p=>p.close),min=Math.min(...prices),max=Math.max(...prices);
    const pad=Math.max((max-min)*.16,max*.001,.00001),lo=min-pad,hi=max+pad;
-   const x=i=>left+plotWidth*i/Math.max(points.length-1,1);
+   const hasOvernightTail=timeframe==='1d'&&marketState()!=='open'&&points.at(-1)?.session!=='pre'&&points.at(-1)?.session!=='close-anchor';
+   const activePlotWidth=hasOvernightTail?plotWidth*.78:plotWidth;
+   const x=i=>left+activePlotWidth*i/Math.max(points.length-1,1);
    const y=v=>top+plotHeight*(hi-v)/Math.max(hi-lo,.00001);
    const regular=points.filter(p=>p.session!=='pre');
    const lastRegular=regular.at(-1)?.close,firstRegular=regular[0]?.close;
-   const up=Number.isFinite(lastRegular)&&Number.isFinite(firstRegular)?lastRegular>=firstRegular:points.at(-1).close>=points[0].close;
-   const normalColor=up?'#45c996':'#f4777f',preColor='#f4c95d';
+   const up=Number.isFinite(lastQuote?.change)?lastQuote.change>=0:Number.isFinite(lastRegular)&&Number.isFinite(firstRegular)?lastRegular>=firstRegular:points.at(-1).close>=points[0].close;
+   const normalColor=up?'#45c996':'#f4777f',preColor='#c59a40';
    const preActive=timeframe==='1d'&&points.some(p=>p.session==='pre');
    const phases=[];
    if(preActive){
      const indices=points.map((p,i)=>p.session==='pre'?i:-1).filter(i=>i>=0);
      if(indices.length)phases.push({indices,color:preColor,kind:'pre'});
    }
-   const regularIndices=points.map((p,i)=>p.session!=='pre'||!preActive?i:-1).filter(i=>i>=0);
+   const regularIndices=points.map((p,i)=>p.session==='regular'?i:-1).filter(i=>i>=0);
    if(regularIndices.length)phases.push({indices:regularIndices,color:normalColor,kind:'regular'});
    // Give each price tick its own right-side column, never overlaying the plot.
    let grid='';
@@ -492,7 +505,8 @@
      labels+='<circle cx="'+(left+5)+'" cy="16" r="4" fill="'+preColor+'"/><text x="'+(left+16)+'" y="20" fill="currentColor" opacity=".82" font-size="12">PRE-MARKET</text>';
      if(regularIndices.length&&plotWidth>300)labels+='<circle cx="'+(left+128)+'" cy="16" r="4" fill="'+normalColor+'"/><text x="'+(left+140)+'" y="20" fill="currentColor" opacity=".82" font-size="12">NASDAQ</text>';
    }
-   wrap.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+tr('Grafico delle transazioni INJC: pre-market giallo, sessione rosso o verde','INJC traded chart: yellow pre-market, red or green regular session')+'"><defs><linearGradient id="injcPreFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+preColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+preColor+'" stop-opacity="0"/></linearGradient><linearGradient id="injcNormalFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+normalColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+normalColor+'" stop-opacity="0"/></linearGradient></defs>'+grid+shapes+labels+dates+'</svg>';
+   wrap.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+tr('Grafico INJC: pre-market giallo scuro, sessione regolare rossa o verde; tratteggio senza scambi','INJC chart: dark yellow pre-market, red or green regular session; dashed no-trade period')+'"><defs><linearGradient id="injcPreFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+preColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+preColor+'" stop-opacity="0"/></linearGradient><linearGradient id="injcNormalFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+normalColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+normalColor+'" stop-opacity="0"/></linearGradient></defs>'+grid+shapes+labels+dates+'</svg>';
+   window.__injcEtfChartEnhance?.({wrap,points,timeframe,state:marketState(),x,y,left,top,plotRight,plotBottom,preColor,normalColor,hasOvernightTail,usd,lang,fmtTime});
    setText('etfChartDataLabel',tr('INJC · '+points.length+' punti intraday · storico Yahoo/backup, ultima quota da fonte indicata in alto','INJC · '+points.length+' intraday points · Yahoo/backup history, latest quote source shown above'));
  }
  function displayQuote(data,source){
