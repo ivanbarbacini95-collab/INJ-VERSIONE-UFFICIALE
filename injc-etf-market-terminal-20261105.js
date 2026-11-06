@@ -111,7 +111,7 @@
  }
  const fmtTime=ms=>new Date(ms).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',timeZone:'America/New_York'});
  let timeframe='1d', busy=false, lastQuote=null, lastGoodAt=0, quoteSource='', graphPoints=[], refreshTimer=null, marketPulseTimer=null, flowsHistory=[], flowDayKey=null, plottedFlowsFirstTime=true;
- let lastChartPhase=null;
+ let lastChartPhase=null, lastFeedSuccessAt=0, lastFeedFailureAt=0, fastQuoteBusy=false;
  const ranges={ '1d':['1d','1m'],'5d':['5d','5m'],'1mo':['1mo','30m'],'3mo':['3mo','1d'],'1y':['1y','1d'] };
  // Price-range rail is independent from the main chart timeframe.
  const priceRangeConfig={
@@ -124,6 +124,25 @@
    priceRangeLastFetched=0,priceRangeSyncing=false;
 
  function setText(id,value){const el=$(id);if(el)el.textContent=value;}
+ function renderFeedIndicator(){
+   const el=$('etfFeedIndicator'),textNode=$('etfQuoteFreshness');
+   if(!el||!textNode)return;
+   const active=lastFeedSuccessAt>0&&Date.now()-lastFeedSuccessAt<35000;
+   const online=active&&lastFeedSuccessAt>=lastFeedFailureAt-6000;
+   el.dataset.feed=online?'online':'offline';
+   textNode.textContent=online?'ONLINE':'OFFLINE';
+   const age=lastQuote?.quoteTime?Math.max(0,Math.floor((Date.now()-lastQuote.quoteTime)/60000)):null;
+   const time=lastQuote?.quoteTime?fmtTime(lastQuote.quoteTime)+' NY':'—';
+   const source=quoteSource||tr('Nessun provider verificato','No verified provider');
+   const details=online
+     ?tr('Feed disponibile','Data feed reachable')+' · '+source+' · '+
+       tr('ultimo scambio','last trade')+' '+time+(age!==null?' · '+age+' min':'')
+     :tr('Feed non disponibile o aggiornamento non riuscito','Data feed unavailable or update failed')+
+       (lastQuote?.quoteTime?' · '+tr('ultimo dato','last quote')+' '+time:'');
+   el.title=details;
+   textNode.title=details;
+   el.setAttribute('aria-label',details);
+ }
  function changeClass(id,value){const el=$(id);if(!el)return;el.classList.toggle('up',Number.isFinite(value)&&value>0);el.classList.toggle('down',Number.isFinite(value)&&value<0);}
  function status(value,extra){
    const pill=$('etfListingPill');
@@ -140,24 +159,24 @@
    const fresh=Boolean(current&&lastQuote?.providerRealTime===true&&Date.now()-lastQuote.quoteTime<90000&&Date.now()-lastGoodAt<180000);
    status(state,state==='open'&&lastQuote?.session!=='regular'?'pending':fresh?'fresh':'stale');
    if(lastChartPhase!==state){lastChartPhase=state;if(graphPoints.length)drawGraph();}
-   if(!lastQuote)setText('etfQuoteFreshness',state==='pre'?tr('Pre-market · in attesa di scambi reali','Pre-market · awaiting actual trades'):tr('In attesa di una quotazione verificabile','Waiting for a verified market quote'));
+   renderFeedIndicator();
    const count=$('etfOpenCountdown'),label=$('etfCountdownLabel');
    if(count&&label){
      const opening=nextOpen();
      count.textContent=opening?countdownString(opening-Date.now()):'—';
-     label.textContent=tr('ALL’APERTURA DEL NASDAQ','UNTIL NASDAQ OPENS');
+     label.textContent=tr('APRE TRA','OPENS IN');
      const bar=$('etfCountdownBox');
      if(bar)bar.dataset.session=state;
      if(state==='open'){
        const minute=dayCloseMinute(nowKey);
        const closing=nyOpenUtc(nowKey)+(minute-570)*60000;
        count.textContent=countdownString(closing-Date.now());
-       label.textContent=tr('ALLA CHIUSURA DEL NASDAQ','UNTIL NASDAQ CLOSE');
+       label.textContent=tr('CHIUDE TRA','CLOSES IN');
      }
    }
  }
  function yahooUrl(range,interval,host='query1.finance.yahoo.com'){
-   const u='https://'+host+'/v8/finance/chart/INJC?range='+encodeURIComponent(range)+'&interval='+encodeURIComponent(interval)+'&includePrePost='+((range==='1d'||range==='5d')?'true':'false');
+   const u='https://'+host+'/v8/finance/chart/INJC?range='+encodeURIComponent(range)+'&interval='+encodeURIComponent(interval)+'&includePrePost='+((range==='1d'||range==='5d')?'true':'false')+'&cacheBust='+Date.now();
    return 'https://proxy.cors.dev/'+u;
  }
  async function getJson(url,timeout=12500){
@@ -260,14 +279,18 @@
    };
  }
  function nasdaqUrl(viaProxy=false){
-   const direct='https://api.nasdaq.com/api/quote/INJC/info?assetclass=etf';
+   const direct='https://api.nasdaq.com/api/quote/INJC/info?assetclass=etf&cacheBust='+Date.now();
    return viaProxy?'https://proxy.cors.dev/'+direct:direct;
  }
  async function getNasdaq(){
-   for(const url of [nasdaqUrl(),nasdaqUrl(true)]){
-     try{return parseNasdaq(await getJson(url,6500));}catch(_){}
-   }
-   return null;
+   // Request direct and backup concurrently: use the first valid exchange-timestamped quote.
+   // Polling frequently cannot remove the latency of a delayed upstream market feed.
+   try{
+     return await Promise.any([
+       getJson(nasdaqUrl(),4600).then(parseNasdaq),
+       getJson(nasdaqUrl(true),5600).then(parseNasdaq)
+     ]);
+   }catch(_){return null;}
  }
  function withChart(quote,reference){
    if(!reference)return quote;
@@ -465,13 +488,15 @@
    const lastRegular=regular.at(-1)?.close,firstRegular=regular[0]?.close;
    const up=Number.isFinite(lastQuote?.change)?lastQuote.change>=0:Number.isFinite(lastRegular)&&Number.isFinite(firstRegular)?lastRegular>=firstRegular:points.at(-1).close>=points[0].close;
    const normalColor=up?'#45c996':'#f4777f',preColor='#c59a40';
-   const preActive=timeframe==='1d'&&marketState()!=='open'&&points.some(p=>p.session==='pre');
+   // True pre-market price prints retain their own yellow sloping line, even after open.
+   // Never turn overnight last-close placeholders into an invented price trajectory.
+   const preActive=timeframe==='1d'&&points.some(p=>p.session==='pre');
    const phases=[];
    if(preActive){
      const indices=points.map((p,i)=>p.session==='pre'?i:-1).filter(i=>i>=0);
      if(indices.length)phases.push({indices,color:preColor,kind:'pre'});
    }
-   const regularIndices=points.map((p,i)=>p.session==='regular'||(marketState()==='open'&&p.session==='pre')?i:-1).filter(i=>i>=0);
+   const regularIndices=points.map((p,i)=>p.session==='regular'?i:-1).filter(i=>i>=0);
    if(regularIndices.length)phases.push({indices:regularIndices,color:normalColor,kind:'regular'});
    // Give each price tick its own right-side column, never overlaying the plot.
    let grid='';
@@ -527,9 +552,7 @@
    }
    changeClass('etfQuoteChange',pre?null:data.change);
    changeClass('etfQuoteDelta',pre?null:data.price-data.previous);
-   const ageM=Math.max(0,Math.floor((Date.now()-data.quoteTime)/60000));
-   const age=ageM>=15?' · '+tr('RITARDO ≥15 MIN','DELAY ≥15 MIN'):ageM>=3?' · '+tr('dato '+ageM+' min fa','quote '+ageM+' min old'):'';
-   setText('etfQuoteFreshness',source+' · '+(pre?tr('PRE-MARKET','PRE-MARKET'):tr('ultimo scambio','last trade'))+' '+fmtTime(data.quoteTime)+' NY'+age);
+   renderFeedIndicator();
    setText('etfVolume',count(data.volume));
    setText('etfNotional',Number.isFinite(data.volume)?shortUsd(data.volume*data.price):'—');
    setText('etfDayHigh',usd(data.high));setText('etfDayLow',usd(data.low));
@@ -540,24 +563,39 @@
    renderStatus();
    renderPriceRange();
  }
+ async function refreshFastNasdaq(){
+   if(fastQuoteBusy||document.hidden)return;
+   const state=marketState();
+   if(state!=='open'&&state!=='pre')return;
+   fastQuoteBusy=true;
+   try{
+     const fresh=await getNasdaq();
+     if(!fresh)return;
+     lastFeedSuccessAt=Date.now();
+     if(!lastQuote||fresh.quoteTime>=lastQuote.quoteTime){
+       const merged=lastQuote?withChart(fresh,lastQuote):fresh;
+       displayQuote(merged,fresh.providerRealTime
+         ?'Nasdaq.com · exchange timestamp · real-time flag'
+         :'Nasdaq.com · public exchange timestamp');
+     }
+     renderFeedIndicator();
+   }finally{fastQuoteBusy=false;}
+ }
  async function refreshMarket(){
    if(busy||document.hidden)return;
    busy=true;
    setText('etfSyncLabel',tr('SINCRONIZZAZIONE','SYNCING'));
    try{
      const incoming=await getQuote();
+     lastFeedSuccessAt=Date.now();
      displayQuote(incoming.data,incoming.source);
      const stale=Date.now()-incoming.data.quoteTime>15*60000;
      setText('etfSyncLabel',stale?tr('DATO RITARDATO','DELAYED QUOTE'):tr('QUOTAZIONE AGGIORNATA','QUOTE UPDATED'));
    }catch(err){
-     // Never erase a last-known real quote, but clearly identify a failed live update.
-     if(lastQuote){
-       setText('etfSyncLabel',tr('FEED NON DISPONIBILE','FEED UNAVAILABLE'));
-       setText('etfQuoteFreshness',tr('Ultimo dato disponibile · aggiornamento non riuscito','Last available quote · update failed')+' · '+fmtTime(lastQuote.quoteTime)+' NY');
-     }else{
-       setText('etfSyncLabel',tr('IN ATTESA','PENDING'));
-       setText('etfQuoteFreshness',tr('Nessun primo scambio disponibile dal provider · riprova automaticamente','No first trade available from the provider · automatic retry'));
-     }
+     lastFeedFailureAt=Date.now();
+     // Preserve the last verified quote. Connection status is separate from trade freshness.
+     setText('etfSyncLabel',tr('FEED NON DISPONIBILE','FEED UNAVAILABLE'));
+     renderFeedIndicator();
      renderStatus();
    }finally{busy=false}
  }
@@ -659,7 +697,8 @@
    window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data?.type==='injnode:etf:language')location.reload()});
    renderStatus();renderFlows();drawGraph();renderPriceRange();
    refreshMarket();refreshFlows();refreshPriceRange();
-   refreshTimer=setInterval(()=>{if(!document.hidden)refreshMarket()},20000);
+   refreshTimer=setInterval(()=>{if(!document.hidden)refreshMarket()},15000);
+   setInterval(()=>{if(!document.hidden)refreshFastNasdaq()},10000);
    marketPulseTimer=setInterval(()=>{if(!document.hidden){renderStatus();if(flowDayKey!==nyKey(new Date()))renderFlows()}},1000);
    setInterval(()=>{if(!document.hidden)refreshFlows()},300000);
    setInterval(()=>{if(!document.hidden)refreshPriceRange()},60000);
