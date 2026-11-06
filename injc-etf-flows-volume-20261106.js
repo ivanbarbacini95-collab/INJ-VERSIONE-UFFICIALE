@@ -322,7 +322,8 @@
      const results=await Promise.allSettled([
        fetchJson(source,10500),
        fetchJson('./market-data/injc-etf-volume.json?t='+Date.now(),8000),
-       fetchJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000)
+       fetchJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000),
+       fetchJson('https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/INJC?range=5d&interval=5m&includePrePost=false',10500)
      ]);
      if(results[1].status==='fulfilled'){
        const d=results[1].value;
@@ -334,13 +335,27 @@
      if(results[0].status==='fulfilled'){
        try{parseYahooVolume(results[0].value);}catch(_){}
      }
+     let snapshotPts=[];
      if(results[2].status==='fulfilled'){
        const d=results[2].value,q=d?.quote;
+       snapshotPts=snapshotIntraday(d);
        if(d?.ticker==='INJC'&&q&&Number.isFinite(Date.parse(q.quoteTime))
            &&Number.isSafeInteger(Number(q.volume))&&Number(q.volume)>=0){
          mergeVolume(nyDay(Date.parse(q.quoteTime)),q.volume,0);
          if(!lastVolumeSource)lastVolumeSource=tr('Snapshot INJC · dati potenzialmente ritardati','INJC snapshot · potential delay');
        }
+     }
+     let yahooPts=[];
+     if(results[3].status==='fulfilled')yahooPts=yahooIntraday(results[3].value);
+     if(yahooPts.length>=2&&yahooPts.at(-1).date>=(snapshotPts.at(-1)?.date||'')){
+       intradayPoints=yahooPts;
+       intradaySource=tr('Volumi intraday Yahoo · feed potenzialmente ritardato','Yahoo intraday volumes · potentially delayed');
+     }else if(snapshotPts.length){
+       intradayPoints=snapshotPts;
+       intradaySource=tr('Volumi intraday snapshot · feed potenzialmente ritardato','Intraday snapshot volume · potentially delayed');
+     }else if(yahooPts.length){
+       intradayPoints=yahooPts;
+       intradaySource=tr('Volumi intraday Yahoo · feed potenzialmente ritardato','Yahoo intraday volumes · potentially delayed');
      }
      const today=nyDay(Date.now()),start=new Date('2026-11-05T12:00:00Z'),keys=[];
      const weekdays=new Set();
@@ -349,8 +364,9 @@
        if(day!==0&&day!==6)weekdays.add(key);
      }
      volumeDays=[...weekdays].filter(k=>k<=today);
-     const signature=volumeDays.join(',')+';'+[...byDay].map(([k,v])=>k+':'+v.volume).join(',');
-     if(signature!==volumeSnapshot){volumeSnapshot=signature;drawVolume();}
+     const signature=volumeMode+';'+volumeDays.join(',')+';'+[...byDay].map(([k,v])=>k+':'+v.volume).join(',')+
+       ';'+intradayPoints.map(p=>p.time+':'+p.volume).join(',');
+     if(signature!==volumeSnapshot){volumeSnapshot=signature;drawVolume(true);}
      else queueVolumeDraw();
    }catch(error){console.warn('INJC traded-volume chart:',error.message);drawVolume();}
    finally{volumeLoading=false;}
@@ -363,6 +379,18 @@
      const obs=new ResizeObserver(()=>{scheduleFlowScale();queueVolumeDraw();});
      for(const id of ['etfFlowHistory','etfVolumeHistory'])if($(id))obs.observe($(id));
    }else window.addEventListener('resize',()=>{scheduleFlowScale();queueVolumeDraw()});
+   document.querySelectorAll('[data-injc-volume-mode]').forEach(button=>{
+     button.addEventListener('click',()=>{
+       const mode=button.dataset.injcVolumeMode;
+       if(mode!=='session'&&mode!=='history')return;
+       volumeMode=mode;volumeFirst=true;
+       document.querySelectorAll('[data-injc-volume-mode]').forEach(b=>{
+         const active=b===button;b.classList.toggle('active',active);
+         b.setAttribute('aria-pressed',String(active));
+       });
+       drawVolume(true);
+     });
+   });
    $('etfRefresh')?.addEventListener('click',refreshVolume);
    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshVolume();});
    window.addEventListener('pageshow',refreshVolume);
