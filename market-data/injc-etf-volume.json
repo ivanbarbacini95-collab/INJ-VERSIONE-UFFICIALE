@@ -5,13 +5,14 @@
   "firstTradingSession": "2026-11-05",
   "timeZone": "America/New_York",
   "unit": "ETF shares",
-  "note": "Reported daily trading volume of INJC ETF shares; not fund flows or Injective token volume. Latest session may be partial.",
+  "note": "Reported daily INJC ETF shares traded and same-session reported close used only for indicative valuation. Not fund flows. Latest session may be partial.",
   "source": "Yahoo Finance · daily quote bars · potentially delayed",
-  "generatedAt": "2026-11-06T09:33:26.811Z",
+  "generatedAt": "2026-11-06T09:55:46.139Z",
   "sessions": [
     {
       "date": "2026-11-05",
-      "volume": 2900
+      "volume": 2900,
+      "close": 26.149999618530273
     }
   ]
 }
