@@ -288,7 +288,11 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
       <div><strong data-it="Trading Volume · quote INJC" data-en="Trading Volume · INJC shares">Trading Volume · quote INJC</strong>
         <small id="etfVolumeSummary" data-it="Storico dei volumi scambiati" data-en="Trading-volume history">Storico dei volumi scambiati</small>
       </div>
-      <span class="injc-volume-unit">SHARES · NASDAQ</span>
+      <div class="injc-volume-controls" role="group" aria-label="Visualizzazione volume INJC">
+        <button type="button" class="active" data-injc-volume-mode="session" aria-pressed="true" data-it="SESSIONE" data-en="SESSION">SESSIONE</button>
+        <button type="button" data-injc-volume-mode="history" aria-pressed="false" data-it="STORICO" data-en="HISTORY">STORICO</button>
+        <span class="injc-volume-unit">SHARES · NASDAQ</span>
+      </div>
     </div>
     <div class="injc-volume-graph" id="etfVolumeGraph" aria-label="Andamento storico del volume scambiato delle quote INJC">
       <div class="injc-volume-scroller" id="etfVolumeHistory" tabindex="0" role="region" aria-label="Storico del volume delle quote INJC · scorri orizzontalmente"></div>
