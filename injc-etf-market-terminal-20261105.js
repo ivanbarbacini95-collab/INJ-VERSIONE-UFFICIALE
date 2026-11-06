@@ -536,9 +536,9 @@
    window.__injcEtfChartEnhance?.({wrap,points,timeframe,state:marketState(),x,y,left,top,plotRight,plotBottom,preColor,normalColor,hasOvernightTail,usd,lang,fmtTime});
    setText('etfChartDataLabel',tr(
      'INJC · '+points.length+' punti prezzo verificati · '+(points.length>=2?'tocca o passa il mouse per esplorare':'altri dati in arrivo')+
-       (hasOvernightTail?' · tratteggio giallo = ultima chiusura, non nuovi scambi':'')+' · fonti indicate sopra',
+       (hasOvernightTail?' · tratteggio giallo = ultima chiusura, non nuovi scambi':'')+' · i feed pubblici possono essere ritardati',
      'INJC · '+points.length+' verified price points · '+(points.length>=2?'touch or hover to inspect':'more data pending')+
-       (hasOvernightTail?' · yellow dashed = last close, not new trades':'')+' · sources shown above'
+       (hasOvernightTail?' · yellow dashed = last close, not new trades':'')+' · public market feeds may be delayed'
    ));
  }
  function displayQuote(data,source){
@@ -725,7 +725,7 @@
    window.addEventListener('storage',event=>{if(event.key==='inj_node_language_v1')location.reload()});
    window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data?.type==='injnode:etf:language')location.reload()});
    renderStatus();renderFlows();drawGraph();renderPriceRange();
-   refreshMarket();refreshFlows();refreshPriceRange();
+   refreshFastNasdaq();refreshMarket();refreshFlows();refreshPriceRange();
    refreshTimer=setInterval(()=>{if(!document.hidden)refreshMarket()},15000);
    setInterval(()=>{if(!document.hidden)refreshFastNasdaq()},10000);
    marketPulseTimer=setInterval(()=>{if(!document.hidden){renderStatus();if(flowDayKey!==nyKey(new Date()))renderFlows()}},1000);
