@@ -182,3 +182,61 @@
  .injc-volume-controls button{transition:none}
  .injc-volume-svg.is-new-data .injc-volume-line{animation:none}
 }
+
+
+/* Volume turnover metrics + uncluttered intraday/historical time-axis labels */
+.injc-volume-time-label{
+ font-family:var(--inj-chosen-face,system-ui,-apple-system,sans-serif);
+ font-size:10px;
+ font-weight:640;
+ font-variant-numeric:tabular-nums;
+ letter-spacing:0;
+ pointer-events:none;
+}
+.injc-volume-summary{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:9px;
+ margin-top:15px;
+}
+.injc-volume-metric{
+ min-width:0;min-height:77px;
+ padding:13px 13px 12px;
+ display:flex;flex-direction:column;justify-content:center;gap:8px;
+ background:color-mix(in srgb,var(--etf-card) 85%,transparent);
+ border:1px solid color-mix(in srgb,var(--etf-ink) 12%,var(--etf-line));
+ border-radius:12px;
+}
+.injc-volume-metric span{
+ display:block;
+ color:var(--etf-muted);font-size:9px;font-weight:730;line-height:1.25;
+ letter-spacing:.055em;
+}
+.injc-volume-metric strong{
+ display:block;max-width:100%;color:var(--etf-ink);
+ font-size:clamp(15px,2.25vw,23px);font-weight:790;
+ line-height:1.22;letter-spacing:-.025em;
+ overflow-wrap:anywhere;font-variant-numeric:tabular-nums;
+}
+.injc-volume-metric-highlight{
+ border-color:color-mix(in srgb,var(--etf-accent) 24%,var(--etf-line));
+ background:color-mix(in srgb,var(--etf-accent) 4%,var(--etf-card));
+}
+.injc-volume-metric-highlight strong{color:var(--etf-accent)}
+.injc-volume-valuation-note{
+ margin:9px 2px 0;
+ color:var(--etf-muted);
+ font-size:10px;line-height:1.55;
+}
+@media(max-width:600px){
+ .injc-volume-summary{gap:6px}
+ .injc-volume-metric{min-height:76px;padding:10px 8px}
+ .injc-volume-metric span{font-size:8px;letter-spacing:.015em;line-height:1.3}
+ .injc-volume-metric strong{font-size:clamp(13px,3.3vw,18px)}
+ .injc-volume-valuation-note{font-size:9px}
+ .injc-volume-time-label{font-size:10px}
+}
+@media(max-width:350px){
+ .injc-volume-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .injc-volume-metric-highlight{grid-column:1 / -1;grid-row:1}
+}
