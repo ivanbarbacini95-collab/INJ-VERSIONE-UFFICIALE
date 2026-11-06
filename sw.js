@@ -67,7 +67,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET' || request.headers.has('range')) return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
-  const marketData = /\\/market-data\\/[^/]+\\.json$/i.test(url.pathname);
+  const marketData = /\/market-data\/[^/]+\.json$/i.test(url.pathname);
   // An offline snapshot must never masquerade as an ONLINE/live quote.
   if (neverStore(url.pathname) || marketData) {
     event.respondWith(fetch(request, { cache: 'no-store' }));
