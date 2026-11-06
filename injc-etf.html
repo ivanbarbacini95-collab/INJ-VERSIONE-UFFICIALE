@@ -171,7 +171,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
-<link rel="stylesheet" href="./injc-etf-market-terminal-20261105.css?v=visible-pending-flows-20261105b">
+<link rel="stylesheet" href="./injc-etf-market-terminal-20261105.css?v=etf-session-inspect-20261106a">
 </head>
 <body>
 <div class="etf-shell">
@@ -204,7 +204,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <section aria-label="Grafico INJC">
  <div class="injc-title-row"><h2 data-it="Grafico di mercato" data-en="Market Chart">Grafico di mercato</h2><small id="etfSyncLabel">IN ATTESA</small></div>
  <div class="injc-panel" id="etfChartPanel">
-  <div class="injc-chart-top"><strong>INJC / USD <span style="color:var(--etf-muted);font-weight:550">· NASDAQ</span></strong><div class="injc-tabs" role="group" aria-label="Periodo del grafico">
+  <div class="injc-chart-top"><strong>INJC / USD <span style="color:var(--etf-muted);font-weight:550">· NASDAQ</span></strong><span class="injc-chart-session" id="etfChartSession" data-state="closed" aria-label="Stato della sessione Nasdaq">CLOSE</span><div class="injc-tabs" role="group" aria-label="Periodo del grafico">
     <button type="button" data-etf-range="1d" class="active" aria-pressed="true">1D</button>
     <button type="button" data-etf-range="5d" aria-pressed="false">5D</button>
     <button type="button" data-etf-range="1mo" aria-pressed="false">1M</button>
@@ -287,7 +287,8 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <footer class="brand-footer"><strong>INJ NODE</strong> / BY B CAPITAL GROUP</footer>
 </main>
 </div>
-<script defer src="./injc-etf-market-terminal-20261105.js?v=visible-pending-flows-20261105b"></script>
+<script defer src="./injc-etf-market-terminal-20261105.js?v=etf-session-inspect-20261106a"></script>
+<script defer src="./injc-etf-session-inspector-20261106.js?v=etf-session-inspect-20261106a"></script>
 
 </body>
 </html>
