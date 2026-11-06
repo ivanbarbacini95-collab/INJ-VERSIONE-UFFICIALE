@@ -1,0 +1,1918 @@
+/* INJ Node Home CSS part 7 — ordered cascade. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;350;400;450;500&display=swap");
+
+/* ./inj-editorial-typography.css?v=20261029fontbalance3 */
+/* INJ Node / Balanced Finance — Inter 350/400, 2026-10-29
+   Replaces the previous typography trial on INJNODE only.
+   Layout, themes, live data, canvas charts and interactive controls unchanged.
+   Weights: 350 hero numbers; 400 readable labels and supporting data.
+   Legacy pages include font-weight:800/900!important. The specificity bridge
+   below overrides these old rules without rewriting many separate stylesheets.
+*/
+
+:root{
+ --inj-minimal-font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ --inj-minimal-mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+ --inj-node-terminal-font:var(--inj-minimal-font);
+ --inj-home-title-face:var(--inj-minimal-font);
+ --inj-home-description-face:var(--inj-minimal-font);
+ --inj-editorial-face:var(--inj-minimal-font);
+}
+html,html body{
+ font-family:var(--inj-minimal-font)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+ -webkit-font-smoothing:antialiased;
+ text-rendering:optimizeLegibility;
+}
+/* The impossible ID pair in :is() boosts specificity; * matches all real
+   elements. Keep vector charts and font icons untouched. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-synthesis-weight:none;
+ -webkit-font-smoothing:antialiased;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+/* Primary prices and balances use an intermediate 350 weight: slim, not skeletal. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,
+ #entryDesktopDailyRewardValue,
+ #treasuryTotalMajor,#treasuryTotalDecimals,#treasuryTotalWorth,
+ #treasuryHeaderPrice,#treasuryPnl24Value,
+ #rewardsTotal,#rewardsTotalFiat,
+ #capSourcePrice,#capProjectedPrice,
+ #ccLivePrice,#ccNetWorth,#ccTotalInj,#ccTotalPnl,
+ #headerLivePrice,#bookLivePrice,
+ #wealthTotal,#wealthStaked,#wealthAllWorth,
+ #ladderRewardValue,#ladderRewardInj,
+ #etfSpotPrice,#freedomPrice,#freedomWorth,
+ #injIntelPrice,#detailPrice,
+ .entry-market-mini>strong,.entry-overview-worth>strong,
+ .entry-price-pnl strong,.entry-desktop-metric>strong,
+ .treasury-total-display>strong,.treasury-hero-worth,
+ .treasury-hero-pnl>strong,.rewards-total-value>strong,
+ .rewards-total-fiat,.wealth-amount,.wealth-growth-result-value,
+ .market-price-line>strong,.market-price>strong,
+ .market-price-row>strong,.ws-main-price,.ws-price-value,
+ .ws-price-main,.ws-price,.ws-hero-price,
+ .cc-now-price,.cc-price,.cc-primary-value,
+ .cap-total-value,.cap-hero-value,
+ .freedom-figure-worth,.freedom-hero-figure,
+ .inj-mi-snapshot article>strong,.overview article>strong,
+ .etf-hero-price,.etf-main-price
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:350!important;
+ font-synthesis-weight:none;
+ letter-spacing:-.012em!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+/* Dense trading and microdata remain regular 400 for readability. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .levels,.levels span,.levels strong,
+ .heatmap-card,.heatmap-card strong,.heatmap-card .price,
+ .ws-section-value,.ws-data-value,.ws-card-heading,
+ .treasury-metric>strong,.rewards-total-metrics strong,
+ .entry-overview-stats strong,.market-asset-price,
+ .inj-mi-snapshot small,.ws-chart-ticks,.ws-book,
+ .book-meta,.columns,.market-table,
+ .entry-pnl-stat strong,.entry-desktop-metrics small
+){
+ font-weight:400!important;
+ letter-spacing:0!important;
+}
+/* Understated titles: preserve original sizing and translated text. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ h1,h2,h3,h4,h5,h6,
+ .inj-home-tile-title,.ws-card-heading strong,.ws-card-title,
+ .treasury-kicker,.rewards-kicker,
+ .card-title,.card-heading,.card-label,.section-heading,
+ .metric-label,.section-label,.entry-pnl-heading-copy>span,
+ .inj-location-name,.inj-location-section,
+ .cc-eyebrow,.market-terminal-kicker,.ladder-eyebrow
+){
+ font-weight:400!important;
+ letter-spacing:.015em!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(.inj-tile-description,.inj-events-next-text,.ws-sub,
+ .ws-data-status,.caption,.subtitle,.description,.hint,
+ .note,.treasury-hero-copy>span,.rewards-total-label){
+ font-weight:400!important;
+ letter-spacing:0!important;
+}
+/* Keep addresses, transaction hashes and code distinct and unambiguous. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(code,kbd,samp,pre,.tx-hash,.wallet-address,
+ .address-hash,.mono,[data-monospace]){
+ --inj-node-terminal-font:var(--inj-minimal-mono);
+ font-family:var(--inj-minimal-mono)!important;
+ font-weight:400!important;
+ letter-spacing:0!important;
+}
+/* Price-change color/glow, user themes, SVG charts and icons stay intact. */
+
+
+/* INJ NODE 2026-10-29 — Dashboard + Live View proportion pass v3 */
+/* The preceding global reset kept these values at 400 because their
+   real DOM IDs were not in the earlier 300-weight list. These selectors
+   cover Dashboard and the fullscreen Live View without changing layout. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ /* Dashboard: principal numbers, personal balance, rewards and milestones */
+ .app-shell .hero-number,
+ .app-shell .hero-secondary,
+ .app-shell .metric-card .metric-value,
+ .app-shell .reward-rate-grid strong,
+ .app-shell .aggregate-metric>strong,
+ .app-shell .target-progress-copy,
+ .app-shell .target-live-missing>strong,
+ .app-shell .target-stats strong,
+ .app-shell #nativeUsdcBalance,
+ .app-shell #ownedVsStakedInj,
+ .app-shell #netWorthChange24h,
+ .app-shell #netWorthPnl,
+ .app-shell #marketChange,
+ .app-shell #marketChangeAmount,
+ .app-shell #rewardMilestoneLabel,
+ .app-shell #rewardAutoTargetLabel,
+ .app-shell .market-tf-meta b,
+ /* Fullscreen Live View: exact real IDs, plus live range/secondary figures */
+ #focusDisplayPrice,#focusDisplayWorth,
+ #focusDisplayTotalInj,#focusDisplayDailyReward,
+ #focusDisplayApr,#focusDisplayStaked,#focusDisplayRewards,
+ .focus-display-dialog .focus-display-primary>strong,
+ .focus-display-dialog .focus-display-clock,
+ /* Related chart-dialog quote and live chart headline */
+ #chartHeaderPrice,
+ #headerLivePrice,
+ /* Smaller number-heavy pages previously missed in the first pass */
+ #treasuryRewards,#treasuryAvailable,#treasuryStaked,#treasuryApr,
+ #treasuryNetWorthCurrent,#treasuryRewardDay,#treasuryRewardMonth,
+ #ccDailyReward,#ccDailyPnl,#ccAvailable,#ccStaked,
+ #rewardsHeaderPrice,
+ #capWalletNow,#capWalletFuture,
+ #wealthPrice,#wealthGrowthSimpleValue,#wealthGrowthCompoundValue,
+ #ladderPrice,#ladderStaked,
+ #freedomInj,#freedomSpendingTotal
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:350!important;
+ font-synthesis-weight:none;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+/* Keep tiny details at 400. These are visually slimmer than bold
+   terminal labels while staying legible on iPhone, iPad, and 4K screens. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .app-shell .market-tf-meta strong,
+ .app-shell .card-label,
+ .app-shell .timeframe-collapse-toggle strong,
+ .app-shell .allocation-labels b,
+ .app-shell .reward-auto-target-meta b,
+ .focus-display-dialog .focus-display-range-copy b,
+ .focus-display-dialog .focus-display-label,
+ .focus-display-dialog .focus-display-wallet,
+ .focus-display-dialog .focus-display-live,
+ .focus-display-dialog .focus-display-system,
+ .native-chart-summary strong,
+ .rewards-total-metrics strong,
+ .treasury-metric strong,
+ .ws-section-value,
+ .ws-data-value,
+ .levels strong,
+ .heatmap-card strong
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-synthesis-weight:none;
+}
+/* Retain existing positive/negative color, brief change glows, and
+   responsive font sizing: no text-shadow, transform or font-size overrides. */
+
+
+/* Proportional type tune-up: prevent compressed-looking figures in the
+   fullscreen Live View. Only font metrics change; the DOM, layout, prices,
+   status colors and responsive sizes are preserved. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ #focusDisplayPrice,#focusDisplayWorth,
+ .focus-display-dialog .focus-display-primary > strong
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:350!important;
+ font-stretch:normal!important;
+ letter-spacing:-.008em!important;
+ font-kerning:normal!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ #focusDisplayClock,
+ #focusDisplayTotalInj,#focusDisplayDailyReward,
+ #focusDisplayApr,#focusDisplayStaked,#focusDisplayRewards,
+ #focusDisplayRangeMin,#focusDisplayRangeMax,
+ #focusDisplayChange24h,#focusDisplaySystemText
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-stretch:normal!important;
+ letter-spacing:0!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .focus-display-dialog .focus-display-clock,
+ .focus-display-dialog .focus-display-label,
+ .focus-display-dialog .focus-display-live,
+ .focus-display-dialog .focus-display-wallet,
+ .focus-display-dialog .focus-display-stats > div > span,
+ .focus-display-dialog .focus-display-range-copy,
+ .focus-display-dialog .focus-display-system
+){
+ font-family:var(--inj-minimal-font)!important;
+ font-weight:400!important;
+ font-stretch:normal!important;
+ letter-spacing:.012em!important;
+}
+/* Shared financial numerals: generous kerning without excessive visual
+   compression. Small trading rows retain weight 400 from the rules above. */
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .app-shell .hero-number,.app-shell .hero-secondary,
+ .app-shell .metric-card .metric-value,
+ #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,
+ #treasuryTotalMajor,#treasuryTotalWorth,
+ #chartHeaderPrice,#headerLivePrice,
+ #ccLivePrice,#ccNetWorth,.ws-main-price,.ws-price-value,
+ .market-price-line > strong,.rewards-total-value,
+ .wealth-amount,.cap-total-value,.ladder-reward-value
+){
+ font-weight:350!important;
+ font-stretch:normal!important;
+ letter-spacing:-.012em!important;
+ font-variant-numeric:tabular-nums lining-nums!important;
+}
+html body :is(*,#__injMinimalWeight#__injMinimalWeight):is(
+ .ws-data-value,.ws-section-value,
+ .levels strong,.heatmap-card strong,.market-asset-price,
+ .entry-overview-stats strong,.treasury-metric strong,
+ .rewards-total-metrics strong
+){
+ font-weight:400!important;
+ font-stretch:normal!important;
+ letter-spacing:0!important;
+}
+/* Respect device accessibility settings, font icons, and system text zoom:
+   no scaleX(), scaleY(), custom width/height, or forced nowrap. */
+
+
+/* ./home-borderless-dividers-20261029.css?v=2 */
+/* INJ Node · 29 Oct 2026
+   Frameless Home. Tiny theme-aware separators distinguish every destination.
+   Scoped to the returning-user Home only; no resizing or JS/event changes. */
+html[data-inj-page="index"] body #entryGate {
+  --inj-home-hairline:color-mix(in srgb,var(--accent,#8ae4ce) 22%,var(--line,#405260));
+}
+
+/* Home shortcuts and More stay frameless.
+   B Capital Group / Treasury intentionally keeps its framed card. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 :is(
+  .entry-action:not(#entryTreasuryButton),
+  #entryWorkspaceButton,
+  #entryInjcEtfButton,
+  #entryMarketEventsButton,
+  #entryFreedomButton
+),
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 :is(
+  .entry-action:not(#entryTreasuryButton),
+  #entryWorkspaceButton,
+  #entryInjcEtfButton,
+  #entryMarketEventsButton,
+  #entryFreedomButton
+):is(:hover,:active,:focus) {
+  border:0!important;
+  border-color:transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  outline-offset:2px;
+  isolation:isolate;
+}
+
+/* Section shortcuts: short centered line, not another boxed button.
+   No change to child SVG illustrations, captions, motion, click/touch targets. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action{
+  position:relative!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action:not(#entryTreasuryButton)::before{
+  content:none!important;
+  display:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action:not(#entryTreasuryButton)::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:29%!important;
+  right:29%!important;
+  bottom:1px!important;
+  top:auto!important;
+  width:auto!important;
+  height:1px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:var(--inj-home-hairline)!important;
+  box-shadow:none!important;
+  opacity:.85!important;
+  transform:none!important;
+  animation:none!important;
+  pointer-events:none!important;
+  z-index:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44
+#entryWorkspaceButton::after{
+  left:36%!important;right:36%!important;
+}
+
+/* More: a straight line above and below the label, without a surrounding card. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore[open] > .inj-home-more-toggle,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle:hover {
+  position:relative!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::before,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  width:auto!important;
+  height:1px!important;
+  left:0!important;
+  right:0!important;
+  top:auto!important;
+  bottom:auto!important;
+  background:var(--inj-home-hairline)!important;
+  opacity:.76!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  animation:none!important;
+  pointer-events:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::before{
+  top:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle::after{
+  bottom:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-content{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-content > .inj-market-events-slot{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* Wallet selection tiles, the first two Home cards (wallet portfolio
+   and price chart), and their swipe clones keep their original theme frames.
+   Only the container behind them and secondary desktop metrics remain flat. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) :is(.entry-wallet-section,.entry-desktop-metrics,.entry-desktop-metric) {
+  border-color:transparent!important;
+  border-style:none!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) .entry-desktop-metric {
+  border-bottom:1px solid var(--inj-home-hairline)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) #injMarketTicker.inj-market-ticker {
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Focus remains visible even with frameless buttons. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44 .entry-action:focus-visible,
+html[data-inj-page="index"] body #entryGate#entryGate
+#injHomeMore > .inj-home-more-toggle:focus-visible {
+  outline:1px solid var(--accent,#8ae4ce)!important;
+  outline-offset:1px!important;
+}
+
+/* The minimum-size hit area, responsive tile layout and motion are unchanged. */
+@media(min-width:800px){
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 .entry-action:not(#entryTreasuryButton)::after{
+    left:34%!important;right:34%!important;
+  }
+}
+
+
+/* ./home-chart-fill-20261029.css?v=2 */
+/* 2026-10-29 · Home chart matches the exact measured first card height.
+   Header, the compact 00/24 UTC axis and the P/L remain visible.
+   The SVG uses the remaining area instead of imposing a taller second card. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) #entryInsights.entry-price-card{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  height:var(--inj-home-overview-card-height,210px)!important;
+  min-height:0!important;
+  max-height:var(--inj-home-overview-card-height,210px)!important;
+  padding-bottom:7px!important;
+  gap:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights>.entry-insights-head{
+  flex:0 0 auto!important;
+  margin-bottom:2px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryInsights>.entry-sparkline.entry-price-chart{
+  display:flex!important;
+  flex:1 1 0%!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  gap:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryInsights #entrySparkStage.entry-spark-stage{
+  display:block!important;
+  position:relative!important;
+  flex:1 1 0%!important;
+  align-self:stretch!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  min-height:0!important;
+  height:0!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  padding:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights #entrySparkStage>svg{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-timebar{
+  display:flex!important;
+  justify-content:space-between!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-height:17px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:2px 0 0!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryInsights .entry-price-pnl{
+  flex:0 0 auto!important;
+  margin-top:2px!important;
+  margin-bottom:0!important;
+}
+
+
+/* ./home-more-inline-20261029.css?v=20261029isolated3 */
+/* The former More destinations now live directly in the Home grid. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryMarketEventsButton{order:13!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryInjcEtfButton{order:14!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryWorkspaceButton{order:15!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryFreedomButton{order:16!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44>#entryTreasuryButton{order:17!important;grid-column:1/-1!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton>.inj-events-tile-stars,
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryFreedomButton>.freedom-entry-micro{display:none!important}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+  display:flex!important;position:relative!important;box-sizing:border-box!important;
+  grid-column:auto!important;grid-row:auto!important;flex:0 1 auto!important;
+  flex-flow:column nowrap!important;align-items:center!important;justify-content:flex-end!important;
+  align-self:stretch!important;gap:0!important;width:100%!important;min-width:0!important;
+  max-width:100%!important;height:92px!important;min-height:92px!important;max-height:92px!important;
+  margin:0!important;padding:7px 7px 9px!important;border:0!important;border-radius:0!important;
+  background:transparent!important;background-image:none!important;box-shadow:none!important;
+  overflow:hidden!important;text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.entry-action-arrow,.entry-action-icon:not(.freedom-entry-emblem)){display:none!important}
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem.entry-action-icon){
+  display:block!important;position:absolute!important;box-sizing:border-box!important;
+  z-index:1!important;flex:none!important;top:6px!important;bottom:auto!important;
+  left:50%!important;right:auto!important;width:70%!important;max-width:96px!important;
+  min-width:0!important;height:34px!important;min-height:0!important;max-height:34px!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;opacity:.88!important;
+  transform:translateX(-50%)!important;pointer-events:none!important;overflow:hidden!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem) svg{
+  display:block!important;width:100%!important;height:100%!important;max-height:100%!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-events-tile-copy,.freedom-entry-copy,span:not(.entry-action-icon):not(.inj-tile-scene):not(.inj-more-market-symbol)){
+  display:flex!important;position:relative!important;z-index:2!important;
+  flex:0 0 auto!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;align-self:center!important;order:1!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;
+  gap:3px!important;margin:0!important;padding:0!important;
+  background:transparent!important;text-align:center!important;overflow:visible!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ .inj-home-tile-title{
+  display:block!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;margin:0!important;
+  font-family:var(--inj-minimal-font,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:clamp(12px,3.35vw,14px)!important;font-weight:400!important;
+  line-height:1.25!important;letter-spacing:.015em!important;text-transform:uppercase!important;
+  text-align:center!important;white-space:normal!important;text-wrap:balance!important;
+  overflow:visible!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ :is(.inj-tile-description,#injMarketNextSummary){
+  display:block!important;width:100%!important;max-width:100%!important;margin:0!important;
+  font-family:system-ui,-apple-system,sans-serif!important;font-size:10.5px!important;
+  font-weight:400!important;line-height:1.2!important;letter-spacing:0!important;
+  text-transform:none!important;text-align:center!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+ }
+}
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+  display:flex!important;position:relative!important;box-sizing:border-box!important;
+  grid-column:auto!important;flex:0 0 auto!important;flex-flow:row nowrap!important;
+  align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;min-width:0!important;height:76px!important;min-height:76px!important;
+  max-height:76px!important;gap:0!important;margin:0!important;
+  padding:9px 125px 9px 19px!important;text-align:left!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:none!important;overflow:hidden!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.entry-action-arrow,.entry-action-icon:not(.freedom-entry-emblem)){display:none!important}
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem.entry-action-icon){
+  display:block!important;position:absolute!important;z-index:1!important;
+  top:50%!important;bottom:auto!important;left:auto!important;right:17px!important;
+  width:95px!important;height:48px!important;max-width:95px!important;max-height:48px!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+  transform:translateY(-50%)!important;pointer-events:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-tile-scene,.inj-more-market-symbol,.freedom-entry-emblem) svg{
+  display:block!important;width:100%!important;height:100%!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ >:is(.inj-events-tile-copy,.freedom-entry-copy,span:not(.entry-action-icon):not(.inj-tile-scene):not(.inj-more-market-symbol)){
+  display:flex!important;position:relative!important;z-index:2!important;flex:1 1 auto!important;
+  flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;
+  align-self:center!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  height:auto!important;gap:3px!important;margin:0!important;padding:0!important;
+  text-align:left!important;overflow:hidden!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ .inj-home-tile-title{
+  display:block!important;width:100%!important;font-family:var(--inj-minimal-font,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:clamp(14px,1.08vw,17px)!important;font-weight:400!important;line-height:1.26!important;
+  letter-spacing:.015em!important;text-transform:uppercase!important;text-align:left!important;
+  white-space:normal!important;overflow:visible!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton)
+ :is(.inj-tile-description,#injMarketNextSummary){
+  display:block!important;width:100%!important;max-width:100%!important;
+  font-family:system-ui,-apple-system,sans-serif!important;font-size:11px!important;
+  font-weight:400!important;line-height:1.25!important;letter-spacing:0!important;
+  text-align:left!important;white-space:nowrap!important;overflow:hidden!important;
+  text-overflow:ellipsis!important;
+ }
+}
+
+
+/* 29 Oct · Screenshot correction: the first and fourth former-More tiles
+   were inheriting full-width decoration and the live-event preview text.
+   Preserve their 92px/2-column hit areas, center art above labels, and
+   keep the real Market Events control / data-fetch machinery unchanged. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton.entry-action-market-events #injMarketNextSummary,
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton.entry-action-market-events > .inj-events-tile-stars,
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryFreedomButton.entry-action-freedom > .freedom-entry-micro {
+  display:none!important;
+  visibility:hidden!important;
+}
+@media(max-width:799px){
+  /* Market Event: only a short title under a contained top-center chart icon. */
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryMarketEventsButton.entry-action-market-events{
+    display:block!important;
+    position:relative!important;
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    height:92px!important;
+    min-height:92px!important;
+    max-height:92px!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-more-market-symbol.inj-tile-scene{
+    display:block!important;
+    position:absolute!important;
+    z-index:1!important;
+    left:50%!important;
+    right:auto!important;
+    top:6px!important;
+    bottom:auto!important;
+    width:65px!important;
+    max-width:66%!important;
+    height:35px!important;
+    max-height:35px!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+    transform:translateX(-50%)!important;
+    pointer-events:none!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-more-market-symbol.inj-tile-scene svg{
+    width:100%!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-events-tile-copy{
+    display:flex!important;
+    position:absolute!important;
+    z-index:2!important;
+    left:5px!important;
+    right:5px!important;
+    top:auto!important;
+    bottom:12px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:19px!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    flex:none!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:0!important;
+    text-align:center!important;
+    overflow:hidden!important;
+    background:transparent!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryMarketEventsButton.entry-action-market-events > .inj-events-tile-copy > .inj-home-tile-title{
+    display:block!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:clamp(12px,3.35vw,14px)!important;
+    font-weight:400!important;
+    line-height:1.2!important;
+    letter-spacing:.015em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align:center!important;
+  }
+
+  /* Financial Freedom: constrain animation to a separate icon zone.
+     The two-line heading and the short caption never touch the artwork. */
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > #entryFreedomButton.entry-action-freedom{
+    display:block!important;
+    position:relative!important;
+    grid-column:auto!important;
+    height:92px!important;
+    min-height:92px!important;
+    max-height:92px!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-emblem.entry-action-icon{
+    display:grid!important;
+    position:absolute!important;
+    z-index:1!important;
+    top:5px!important;
+    bottom:auto!important;
+    left:50%!important;
+    right:auto!important;
+    width:33px!important;
+    height:33px!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:33px!important;
+    max-height:33px!important;
+    flex:none!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    transform:translateX(-50%)!important;
+    pointer-events:none!important;
+    place-items:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-emblem.entry-action-icon .freedom-mark{
+    display:block!important;
+    width:33px!important;
+    height:33px!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:33px!important;
+    max-height:33px!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-copy{
+    display:flex!important;
+    position:absolute!important;
+    z-index:2!important;
+    top:auto!important;
+    bottom:7px!important;
+    left:3px!important;
+    right:3px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:45px!important;
+    min-height:0!important;
+    max-height:45px!important;
+    flex:none!important;
+    margin:0!important;
+    padding:0!important;
+    gap:2px!important;
+    flex-direction:column!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    align-self:auto!important;
+    background:transparent!important;
+    overflow:hidden!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-copy > .inj-home-tile-title{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    max-height:30px!important;
+    margin:0!important;
+    padding:0!important;
+    font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+    font-size:clamp(11.3px,3.1vw,13px)!important;
+    font-weight:400!important;
+    line-height:1.15!important;
+    letter-spacing:0!important;
+    text-transform:uppercase!important;
+    white-space:normal!important;
+    overflow:hidden!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    text-align:center!important;
+  }
+  html[data-inj-page="index"] body #entryGate#entryGate
+  #entryFreedomButton.entry-action-freedom > .freedom-entry-copy > .inj-tile-description{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    margin:0!important;
+    padding:0!important;
+    font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+    font-size:clamp(9px,2.45vw,10.5px)!important;
+    font-weight:400!important;
+    line-height:1.15!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align:center!important;
+  }
+}
+
+/* Screenshot fix v3: the old full-width event/freedom copy class names have
+   been removed from the HTML. The two destinations now have the same
+   self-contained icon + text cells as the other Home shortcuts. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton #injMarketNextSummary[hidden]{
+  display:none!important;
+}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton.entry-action-market-events,#entryFreedomButton.entry-action-freedom){
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:40px minmax(0,1fr)!important;
+  grid-auto-flow:row!important;
+  justify-items:center!important;
+  align-items:center!important;
+  align-content:stretch!important;
+  position:relative!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  box-sizing:border-box!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:92px!important;
+  min-height:92px!important;
+  max-height:92px!important;
+  padding:4px 6px 8px!important;
+  margin:0!important;
+  gap:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+  text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryFreedomButton)
+ >:is(.inj-home-market-art,.inj-home-freedom-art).inj-tile-scene{
+  display:grid!important;
+  position:relative!important;
+  grid-column:1!important;
+  grid-row:1!important;
+  place-items:center!important;
+  justify-self:center!important;
+  align-self:center!important;
+  z-index:1!important;
+  inset:auto!important;
+  left:auto!important;right:auto!important;
+  top:auto!important;bottom:auto!important;
+  box-sizing:border-box!important;
+  flex:none!important;
+  width:62px!important;
+  max-width:70%!important;
+  height:36px!important;
+  min-height:0!important;
+  max-height:36px!important;
+  padding:0!important;
+  margin:0!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  opacity:.86!important;
+  color:var(--accent,var(--text))!important;
+  pointer-events:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryFreedomButton.entry-action-freedom > .inj-home-freedom-art.inj-tile-scene {
+   width:38px!important;
+   max-width:38px!important;
+   height:36px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMarketEventsButton > .inj-home-market-art svg,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryFreedomButton > .inj-home-freedom-art svg.freedom-mark{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:100%!important;
+  max-height:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryFreedomButton)>span.inj-home-unified-copy{
+  display:flex!important;
+  position:relative!important;
+  grid-column:1!important;
+  grid-row:2!important;
+  z-index:2!important;
+  flex:none!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  inset:auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  gap:3px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  overflow:hidden!important;
+  text-align:center!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryMarketEventsButton,#entryFreedomButton)
+ >.inj-home-unified-copy>strong.inj-home-tile-title{
+  display:block!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:22px!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+  font-size:clamp(11px,3.15vw,13.5px)!important;
+  font-weight:400!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  text-wrap:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+  transform:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryFreedomButton>.inj-home-unified-copy>small.inj-tile-description{
+  display:block!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  max-height:16px!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+  font-size:clamp(9px,2.55vw,10.5px)!important;
+  font-weight:400!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  color:var(--muted-strong,var(--muted))!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+ }
+}
+
+
+/* ./home-rounded-launchers-20261029.css?v=1 */
+/* INJ Node · Home launcher — classic rounded cards (29 Oct 2026).
+   Restore the familiar soft-corner framed tiles, without reverting the
+   two-column grouping, the descriptions, the live content or the
+   B Capital Group treasury card. Scoped exclusively to the Home grid. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  column-gap:10px!important;
+  row-gap:10px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton),
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):is(:hover,:active,:focus){
+  box-sizing:border-box!important;
+  border:1px solid color-mix(in srgb,var(--accent,#b2c7c4) 23%,var(--line,#48545b))!important;
+  border-radius:18px!important;
+  background:color-mix(in srgb,var(--surface,#152127) 67%,transparent)!important;
+  background-image:none!important;
+  box-shadow:0 2px 10px rgba(0,0,0,.08)!important;
+  -webkit-box-shadow:0 2px 10px rgba(0,0,0,.08)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  overflow:hidden!important;
+  isolation:isolate;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color .22s ease,background .22s ease,box-shadow .22s ease!important;
+}
+/* A soft interactive highlight, not a permanent bright or glowing frame. */
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton):hover{
+  border-color:color-mix(in srgb,var(--accent,#b2c7c4) 47%,var(--line,#48545b))!important;
+  background:color-mix(in srgb,var(--accent,#b2c7c4) 7%,var(--surface,#152127))!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.11)!important;
+ }
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):focus-visible{
+ outline:1px solid var(--accent,#b4c9c2)!important;
+ outline-offset:2px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):active{
+ background:color-mix(in srgb,var(--accent,#b2c7c4) 9%,var(--surface,#152127))!important;
+}
+/* No additional line at the bottom of each framed destination; the
+   rounded border is its only divider. Icon pseudo effects remain untouched. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton)::after{
+ content:none!important;
+ display:none!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+/* Four former More destinations follow exactly the same framing as the
+   standard sections. Keep their existing carefully fixed icon/text layout. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> :is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+ border-radius:18px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#b2c7c4) 23%,var(--line,#48545b))!important;
+ background:color-mix(in srgb,var(--surface,#152127) 67%,transparent)!important;
+ box-shadow:0 2px 10px rgba(0,0,0,.08)!important;
+}
+/* Treasury stays the last full-width card and keeps its established
+   border, radius, gradient and brand mark. */
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+   border-radius:16px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryMarketEventsButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryFreedomButton).entry-action{
+   border-radius:16px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+   transition:none!important;
+ }
+}
+
+/* Keep the Market Event subtitle after retiring the circuit stylesheet.
+   The live calendar keeps its independent hidden data element. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMarketEventsButton.entry-action-market-events
+>.inj-home-unified-copy>.inj-home-market-caption.inj-tile-description{
+ display:block!important;
+ visibility:visible!important;
+ opacity:.85!important;
+ position:relative!important;
+ flex:0 0 auto!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+ min-height:12px!important;
+ max-height:none!important;
+ height:auto!important;
+ padding:0!important;
+ margin:0!important;
+ font-family:var(--inj-minimal-font,system-ui,-apple-system,sans-serif)!important;
+ font-size:clamp(9px,2.55vw,10.5px)!important;
+ font-weight:400!important;
+ line-height:1.2!important;
+ letter-spacing:0!important;
+ white-space:nowrap!important;
+ overflow:hidden!important;
+ text-overflow:ellipsis!important;
+ text-align:center!important;
+ color:var(--muted-strong,var(--muted,#a9b0b5))!important;
+}
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMarketEventsButton.entry-action-market-events
+ >.inj-home-unified-copy>.inj-home-market-caption.inj-tile-description{
+   font-size:11px!important;
+   text-align:left!important;
+ }
+}
+
+
+/* ./home-macro-calendar-tile-20261029.css?v=1 */
+/* INJ Node · Market Event Home launcher v4
+   This tile deliberately has its own ID and native two-child layout so old
+   full-width Market Events CSS cannot bleed into it. Keep data in the hidden
+   #injMarketNextSummary child and the existing calendar click handler. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryMacroCalendarButton.entry-action-macro-calendar {
+  order:13!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  position:relative!important;
+  isolation:isolate!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  align-self:stretch!important;
+  justify-content:flex-end!important;
+  gap:0!important;
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  text-align:center!important;
+  overflow:hidden!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMacroCalendarButton.entry-action-macro-calendar > .inj-macro-calendar-copy {
+  box-sizing:border-box!important;
+  display:flex!important;
+  position:relative!important;
+  z-index:2!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  align-self:center!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  overflow:visible!important;
+  text-align:center!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMacroCalendarButton.entry-action-macro-calendar > .inj-macro-calendar-copy > .inj-home-tile-title {
+  display:block!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:var(--inj-minimal-font,system-ui,-apple-system,sans-serif)!important;
+  font-size:clamp(12px,3.35vw,14px)!important;
+  font-weight:400!important;
+  line-height:1.2!important;
+  letter-spacing:.015em!important;
+  white-space:nowrap!important;
+  text-transform:uppercase!important;
+  color:var(--text,#ecedef)!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  transform:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMacroCalendarButton.entry-action-macro-calendar > .inj-macro-calendar-copy > .inj-tile-description {
+  display:block!important;
+  visibility:visible!important;
+  opacity:.86!important;
+  position:static!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:var(--inj-minimal-font,system-ui,-apple-system,sans-serif)!important;
+  font-size:clamp(9px,2.55vw,10.5px)!important;
+  font-weight:400!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  text-transform:none!important;
+  color:var(--muted-strong,var(--muted,#abb2b8))!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryMacroCalendarButton.entry-action-macro-calendar > #injMarketNextSummary {
+  display:none!important;
+}
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryMacroCalendarButton.entry-action-macro-calendar {
+   min-height:92px!important;
+   height:92px!important;
+   max-height:92px!important;
+   padding:7px 7px 9px!important;
+   border-radius:16px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMacroCalendarButton.entry-action-macro-calendar > .inj-home-market-art.inj-tile-scene {
+   display:block!important;
+   position:absolute!important;
+   z-index:1!important;
+   top:6px!important;
+   bottom:auto!important;
+   left:50%!important;
+   right:auto!important;
+   box-sizing:border-box!important;
+   height:34px!important;
+   min-height:0!important;
+   max-height:34px!important;
+   width:70%!important;
+   max-width:96px!important;
+   min-width:0!important;
+   margin:0!important;
+   padding:0!important;
+   opacity:.88!important;
+   transform:translateX(-50%)!important;
+   pointer-events:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMacroCalendarButton.entry-action-macro-calendar > .inj-home-market-art svg{
+   display:block!important;
+   width:100%!important;
+   height:100%!important;
+ }
+}
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryMacroCalendarButton.entry-action-macro-calendar{
+   min-height:68px!important;
+   height:68px!important;
+   max-height:68px!important;
+   padding:8px 82px 8px 14px!important;
+   flex-direction:row!important;
+   justify-content:flex-start!important;
+   align-items:center!important;
+   text-align:left!important;
+   border-radius:18px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMacroCalendarButton.entry-action-macro-calendar > .inj-macro-calendar-copy{
+   align-items:flex-start!important;
+   justify-content:center!important;
+   text-align:left!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMacroCalendarButton.entry-action-macro-calendar > .inj-macro-calendar-copy > :is(.inj-home-tile-title,.inj-tile-description){
+   text-align:left!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMacroCalendarButton.entry-action-macro-calendar > .inj-home-market-art.inj-tile-scene{
+   display:block!important;
+   position:absolute!important;
+   top:50%!important;
+   right:9px!important;
+   bottom:auto!important;
+   left:auto!important;
+   width:64px!important;
+   height:43px!important;
+   max-width:64px!important;
+   max-height:43px!important;
+   margin:0!important;
+   padding:0!important;
+   transform:translateY(-50%)!important;
+   pointer-events:none!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryMacroCalendarButton.entry-action-macro-calendar > .inj-home-market-art svg{
+   width:100%!important;
+   height:100%!important;
+ }
+}
+
+
+/* ./home-icon-micro-motion-20261029.css?v=1 */
+/* INJ Node · understated Home icon motion.
+   A tiny asynchronous drift and opacity breath on every launcher icon.
+   Individual SVG path animations (market/rewards/freedom) are preserved
+   because this only animates the outermost SVG, not its children. */
+@keyframes inj-home-icon-breathe {
+  0%,100% {translate:0 0;opacity:.92}
+  48%,58% {translate:0 -1.4px;opacity:1}
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > :is(.entry-action-icon,.inj-tile-scene,.treasury-menu-icon) svg {
+  animation:inj-home-icon-breathe 6.4s ease-in-out infinite;
+  animation-delay:var(--inj-icon-delay,-.9s);
+  transform-origin:center;
+  transform-box:fill-box;
+}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n+1) {--inj-icon-delay:-.7s}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n+2) {--inj-icon-delay:-2.1s}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n+3) {--inj-icon-delay:-3.65s}
+html[data-inj-page="index"] body #entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:nth-child(4n) {--inj-icon-delay:-5.1s}
+@media(hover:hover) and (pointer:fine){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:hover > :is(.entry-action-icon,.inj-tile-scene,.treasury-menu-icon) svg {
+    opacity:1;
+    filter:drop-shadow(0 0 2px color-mix(in srgb,var(--accent,#b9c6be) 33%,transparent));
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action > :is(.entry-action-icon,.inj-tile-scene,.treasury-menu-icon) svg {
+    animation:none!important;
+    translate:none!important;
+    opacity:1!important;
+  }
+}
+
+
+/* ./inj-theme-continuity-20261029.css?v=1 */
+/* INJ Node · seamless theme canvas for Home, Dashboard and overlays.
+   Source of the dark-band bug: a separately painted gradient on html, body,
+   entryGate and entry shell. Make one fixed, non-tiling root canvas; content
+   scrolls OVER it, so colored ambient gradients never restart or end.
+   No changes to viewport size, safe area, navigation or touch gestures. */
+html[data-theme][data-inj-page="index"]{
+ background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+ background-image:var(--page-gradient,none)!important;
+ background-position:center center!important;
+ background-size:100% 100%!important;
+ background-repeat:no-repeat!important;
+ background-attachment:fixed!important;
+ color-scheme:normal;
+}
+html[data-theme="light"][data-inj-page="index"]{color-scheme:light}
+html[data-theme]:not([data-theme="light"])[data-inj-page="index"]{color-scheme:dark}
+/* Root retains the color for Safari/PWA chrome. All overlapping scroll
+   surfaces remain transparent, including the original header and safe-area. */
+html[data-theme][data-inj-page="index"] body,
+html[data-theme][data-inj-page="index"] body.entry-gate-open,
+html[data-theme][data-inj-page="index"] body > #entryGate.entry-gate,
+html[data-theme][data-inj-page="index"] body > #entryGate.entry-gate.visible,
+html[data-theme][data-inj-page="index"] body > #entryGate.entry-gate > .entry-gate-shell,
+html[data-theme][data-inj-page="index"] body > .app-shell{
+ background-color:transparent!important;
+ background-image:none!important;
+ background:none!important;
+ background-attachment:scroll!important;
+ background-size:auto!important;
+}
+/* Decorative theme atmospheres already use position:fixed. Keep them
+   visible and do not override their animation, color or transform. */
+html[data-theme][data-inj-page="index"] #entryGate :is(.ocean-x-atmosphere,.velvet-nebula-atmosphere){
+ pointer-events:none!important;
+}
+/* Header-only opaque masks from older nav skins: never paint a second
+   dark slab at the status bar. Menu/popup/picker surfaces stay unaffected. */
+html[data-theme][data-inj-page="index"] body
+:is(.entry-home-top,.home-safe-heading,.app-shell > .topbar){
+ background-color:transparent!important;
+ background-image:none!important;
+ box-shadow:none!important;
+}
+/* Other full-screen panels are separate scrollports and get a stable
+   viewport-locked canvas, not a short image anchored to document top. */
+html[data-theme][data-inj-page="index"] body
+:is(#performanceTimelineView.open,#converterView.open,#injMarketEventsOverlay:not([hidden])){
+ background-color:var(--theme-canvas,var(--bg,#07121b))!important;
+ background-image:var(--page-gradient,none)!important;
+ background-repeat:no-repeat!important;
+ background-position:center center!important;
+ background-size:cover!important;
+ background-attachment:fixed!important;
+}
+
+
+/* ./theme-unified-list-20261029.css?v=1 */
+/* INJ Node · six curated themes under a single Theme control.
+   No nested category cards, no second lists and no changes to picker JS. */
+html[data-inj-page="index"] body #headerMenuPanel #themeControl .theme-picker{
+ max-height:min(54dvh,430px)!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ padding:7px!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ border:0!important;
+ -webkit-overflow-scrolling:touch;
+ overscroll-behavior:contain;
+}
+html[data-inj-page="index"] body #headerMenuPanel #themeControl.open > #themePicker.theme-picker{
+ display:block!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel #themePicker > .theme-list-unified{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ row-gap:3px!important;
+ column-gap:0!important;
+ min-width:0!important;
+ padding:0!important;
+ margin:0!important;
+ border:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel #themePicker > .theme-list-unified > button{
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:11px!important;
+ min-height:47px!important;
+ padding:8px 10px!important;
+ border:1px solid transparent!important;
+ border-radius:10px!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ color:var(--text,#e8eeee)!important;
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-size:12px!important;
+ font-weight:440!important;
+ line-height:1.3!important;
+ text-align:left!important;
+ letter-spacing:0!important;
+ cursor:pointer!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel #themePicker > .theme-list-unified > button.active{
+ border-color:color-mix(in srgb,var(--accent,#a8c2bf) 36%,var(--line,#576064))!important;
+ background:color-mix(in srgb,var(--accent,#a8c2bf) 7%,var(--surface,#121c20))!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel #themePicker > .theme-list-unified > button:is(:hover,:focus-visible){
+ background:color-mix(in srgb,var(--accent,#a8c2bf) 8%,var(--surface,#121c20))!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel #themePicker > .theme-list-unified > button .theme-swatch{
+ flex:0 0 25px!important;
+ width:25px!important;
+ height:25px!important;
+ border-radius:8px!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel #themePicker > .theme-list-unified > button span{
+ min-width:0;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #headerMenuPanel #themePicker > .theme-list-unified > button{
+  transition:none!important;
+ }
+}
+
+
+/* ./home-quiet-luxury-20261029.css?v=20261029ql1 */
+/* INJ Node · Quiet Luxury Terminal / Home, 29 October 2026.
+   Presentation only: no trading data, wallet state, routes or event behavior changed.
+   Loaded last; scoped to the returning-user Home. Theme tokens stay authoritative. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {
+  column-gap:clamp(9px,1vw,13px)!important;
+  row-gap:clamp(9px,1vw,13px)!important;
+  align-items:stretch!important;
+}
+
+/* Lock destination ordering independently of DOM insertion on every screen size. */
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryDashboardButton{order:1!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryLiveButton{order:2!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryLiveChartsButton{order:3!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryOrderBookButton{order:4!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryPerformanceButton{order:5!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryConverterButton{order:6!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryMarketButton{order:7!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryLiveRewardsButton{order:8!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryCommandCenterButton{order:9!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryComparisonButton{order:10!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryVisualizeWealthButton{order:11!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryRewardLadderButton{order:12!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > :is(#entryMarketEventsButton,#entryMacroCalendarButton){order:13!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryInjcEtfButton{order:14!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryWorkspaceButton{order:15!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryFreedomButton{order:16!important}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-actions.entry-flat-v44 > #entryTreasuryButton{order:17!important;grid-column:1/-1!important}
+
+/* Refined material: soft-corner frame + barely illuminated inner rim.
+   No large blur layers, no heavy glow and no fixed geometry on text. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton) {
+  border:1px solid color-mix(in srgb,var(--accent,#b0c3be) 16%,var(--line,#56636c))!important;
+  border-radius:18px!important;
+  background:linear-gradient(146deg,
+    color-mix(in srgb,var(--surface,#18262a) 88%,transparent) 0%,
+    color-mix(in srgb,var(--surface,#18262a) 73%,transparent) 100%)!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 5%,transparent),
+    0 5px 18px rgba(0,0,0,.055)!important;
+  transition:background-color .28s ease,border-color .28s ease,box-shadow .28s ease,
+    transform .28s cubic-bezier(.2,.75,.3,1)!important;
+  -webkit-tap-highlight-color:transparent;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton):hover {
+  border-color:color-mix(in srgb,var(--accent,#bacbc8) 43%,var(--line,#56636c))!important;
+  background:color-mix(in srgb,var(--surface,#18262a) 91%,var(--accent,#bacbc8) 9%)!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 9%,transparent),
+    0 7px 20px rgba(0,0,0,.09)!important;
+  transform:translateY(-1px)!important;
+ }
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):active {
+  transform:scale(.992)!important;
+  border-color:color-mix(in srgb,var(--accent,#bacbc8) 43%,var(--line,#56636c))!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44 > .entry-action:focus-visible{
+ outline:2px solid var(--accent,#a9c5c0)!important;outline-offset:3px!important;
+}
+
+/* Unified typography without changing the user's existing light-weight font. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action .inj-home-tile-title {
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-size:clamp(11.3px,1.02vw,13px)!important;
+ font-weight:400!important;line-height:1.22!important;
+ letter-spacing:.055em!important;text-transform:uppercase!important;
+ color:var(--text,#edf4f5)!important;opacity:.96!important;
+ text-wrap:balance!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action .inj-tile-description {
+ font-family:var(--inj-minimal-font,system-ui,sans-serif)!important;
+ font-size:clamp(10px,.86vw,11.5px)!important;
+ font-weight:400!important;line-height:1.3!important;
+ letter-spacing:0!important;
+ color:color-mix(in srgb,var(--text,#edf4f5) 67%,transparent)!important;
+ opacity:1!important;
+}
+
+/* Icon geometry is already precise. Calm the luminance and animate only
+   an outer 1px breathing motion without overriding each icon's inner art. */
+@keyframes inj-quiet-icon {
+ 0%,100%{translate:0 0;opacity:.88}
+ 50%{translate:0 -1.2px;opacity:1}
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton) > :is(.inj-tile-scene,.entry-action-icon,.inj-more-market-symbol) svg {
+ animation:inj-quiet-icon 9s ease-in-out infinite!important;
+ animation-delay:var(--inj-icon-delay,-1s)!important;
+ filter:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-action .inj-luxury-icon{
+ color:color-mix(in srgb,var(--text,#e7efee) 78%,var(--accent,#bed0cc))!important;
+}
+
+/* Portfolio overview and chart share depth and corner treatment without
+   altering chart sizing, pointer interaction, balance updates or wallet swipe. */
+html[data-inj-page="index"] body #entryGate#entryGate
+:is(#entryOverview,#entryInsights,.entry-wallet-card-slide){
+ border-radius:21px!important;
+ border-color:color-mix(in srgb,var(--accent,#b5c9c2) 13%,var(--line,#47535d))!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 5%,transparent),
+   0 5px 20px rgba(0,0,0,.055)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-overview-main :is(#entryMarketPrice,.entry-market-mini > strong){
+ letter-spacing:-.035em!important;font-weight:300!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-overview-main :is(#entryWalletWorth,.entry-overview-worth > strong){
+ font-weight:300!important;letter-spacing:-.025em!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+:is(.entry-overview-head,.entry-insights-head) > div > span{
+ letter-spacing:.095em!important;font-weight:400!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-price-pnl #entryInsightPnl{
+ font-weight:300!important;letter-spacing:-.025em!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-desktop-metrics .entry-desktop-metric{
+ border-radius:16px!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text,#fff) 4%,transparent)!important;
+}
+
+/* B Capital Group: visual punctuation rather than a bright marketing banner.
+   The brand glyph occupies the existing arrow's footprint. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> #entryTreasuryButton.entry-action-treasury{
+ border-radius:21px!important;
+ border:1px solid color-mix(in srgb,#c1ad8d 21%,var(--line,#516169))!important;
+ background:linear-gradient(115deg,
+   color-mix(in srgb,var(--surface,#18252c) 89%,transparent),
+   color-mix(in srgb,var(--surface,#18252c) 79%,#c1ad8d 5%))!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#d8c6a9 9%,transparent),
+   0 6px 19px rgba(0,0,0,.075)!important;
+ transition:border-color .3s ease,box-shadow .3s ease!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton > svg.entry-action-arrow{display:none!important}
+/* The existing animated B Capital SVG remains the single official brand icon. */
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton > .bcg-treasury-visual{
+ color:color-mix(in srgb,#ceb68e 44%,var(--accent,#b9c9c3))!important;
+ opacity:.76!important;
+ filter:drop-shadow(0 0 9px rgba(200,170,125,.055))!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton .bcg-orbit{animation-duration:26s!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton .bcg-signal{animation-duration:8s!important}
+html[data-inj-page="index"] body #entryGate#entryGate
+#entryTreasuryButton .treasury-entry-copy > strong.inj-home-tile-title{
+ font-weight:400!important;letter-spacing:.075em!important;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryTreasuryButton:hover{
+ border-color:color-mix(in srgb,#c1ad8d 49%,var(--line,#516169))!important;
+ box-shadow:inset 0 1px 0 rgba(236,210,174,.1),0 7px 21px rgba(0,0,0,.095)!important;
+ }
+}
+
+/* Mobile: maintain balanced 2-column touch targets and readable subtitles. */
+@media(max-width:799px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+   height:96px!important;min-height:96px!important;max-height:96px!important;
+   padding:7px 8px 11px!important;border-radius:17px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action:not(#entryTreasuryButton) .inj-home-tile-title{
+   font-size:clamp(11px,3.05vw,13.2px)!important;letter-spacing:.042em!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action:not(#entryTreasuryButton) .inj-tile-description{
+   font-size:clamp(9.5px,2.55vw,10.6px)!important;line-height:1.24!important;
+ }
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action:not(#entryTreasuryButton){
+   padding-inline:6px!important;
+ }
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action .inj-home-tile-title{
+   font-size:10.7px!important;letter-spacing:.015em!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > .entry-action svg,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryTreasuryButton .bcg-orbit,
+ html[data-inj-page="index"] body #entryGate#entryGate
+ #entryTreasuryButton .bcg-signal{
+   animation:none!important;
+   transition:none!important;
+   translate:none!important;
+ }
+}
+
+
+/* ./privacy-shield-refined-20261029.css?v=privacylux1 */
+/* INJ Node / discreet privacy mask v2, 29 Oct 2026.
+   Screenshare-safe presentation: the underlying live amounts are unchanged.
+   Privacy mode is NOT an authentication or data security mechanism. */
+body.privacy-on .private{
+ filter:none!important;-webkit-filter:none!important;
+}
+/* Keep all private values hidden using the original Privacy Shield selectors.
+   Replace the five glowing bullets with a neutral, narrow concealed-value
+   indicator; avoid blur, strong neon boxes and digit-length disclosure. */
+body.privacy-on :is(
+ .private:is(strong,small,span,b,output),
+ .entry-overview-worth.private > :is(strong,small),
+ .entry-overview-stats.private > div > strong,
+ .entry-price-pnl.private > strong,
+ .focus-display-stats.private > div > strong,
+ .focus-display-stats.private .reward-accent-frame > strong,
+ .morning-brief-reward-grid.private > div > :is(strong,span)
+)::after{
+ content:""!important;
+ display:block!important;
+ visibility:visible!important;
+ position:absolute!important;
+ left:50%!important;top:50%!important;
+ transform:translate(-50%,-50%)!important;
+ width:clamp(39px,5.5ch,65px)!important;
+ min-width:39px!important;max-width:65px!important;
+ height:14px!important;min-height:14px!important;max-height:14px!important;
+ margin:0!important;padding:0!important;
+ border:0!important;border-radius:3px!important;
+ background-color:transparent!important;
+ background-image:
+   linear-gradient(90deg,color-mix(in srgb,var(--text,#e9eeef) 48%,transparent),color-mix(in srgb,var(--text,#e9eeef) 48%,transparent)),
+   linear-gradient(90deg,color-mix(in srgb,var(--text,#e9eeef) 28%,transparent),color-mix(in srgb,var(--text,#e9eeef) 28%,transparent)),
+   linear-gradient(90deg,color-mix(in srgb,var(--text,#e9eeef) 40%,transparent),color-mix(in srgb,var(--text,#e9eeef) 40%,transparent))!important;
+ background-size:30% 5px,22% 5px,25% 5px!important;
+ background-position:0 50%,43% 50%,78% 50%!important;
+ background-repeat:no-repeat!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;
+ text-shadow:none!important;box-shadow:none!important;
+ filter:none!important;-webkit-filter:none!important;
+ font-size:0!important;letter-spacing:0!important;
+ opacity:.9!important;
+ animation:inj-privacy-refined-enter .2s ease-out both!important;
+ pointer-events:none!important;
+}
+@keyframes inj-privacy-refined-enter{
+ from{opacity:0}to{opacity:.9}
+}
+/* Keep live connectivity clear while signalling Privacy on the full-screen
+   Live View as well as on Home. No overlay covering buttons or charts. */
+body.privacy-on #entryOverview .entry-overview-live,
+body.privacy-on #focusDisplayDialog .focus-display-live{
+ color:var(--muted,#afbec7)!important;
+}
+body.privacy-on #entryOverview .entry-overview-live::after{
+ font:400 9px/1.2 var(--inj-minimal-font,system-ui,sans-serif)!important;
+ letter-spacing:.09em!important;
+}
+body.privacy-on #focusDisplayDialog .focus-display-live > span{
+ font-size:0!important;
+}
+body.privacy-on #focusDisplayDialog .focus-display-live > span::after{
+ content:"PRIVATE"!important;
+ font:400 10px/1.2 var(--inj-minimal-font,system-ui,sans-serif)!important;
+ letter-spacing:.1em!important;
+}
+body.privacy-on :is(#entryPrivacyButton.active,#privacyButton.active){
+ box-shadow:none!important;
+ border-color:color-mix(in srgb,var(--accent,#b5c6c3) 43%,var(--line,#495862))!important;
+ background:color-mix(in srgb,var(--surface,#14242c) 90%,var(--accent,#b5c6c3) 10%)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body.privacy-on :is(
+  .private:is(strong,small,span,b,output),
+  .entry-overview-worth.private > :is(strong,small),
+  .entry-overview-stats.private > div > strong,
+  .entry-price-pnl.private > strong,
+  .focus-display-stats.private strong,
+  .morning-brief-reward-grid.private > div > :is(strong,span)
+ )::after{animation:none!important;opacity:1!important}
+}
+
+
+/* ./inj-information-density-20261029.css?v=1 */
+/* Compact informative cards; leave chart canvases, wallet logic and navigation untouched. */
+html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell :is(.metric-card,.aggregate-metric,.data-card){
+  min-height:0!important;
+}
+html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell .metrics-grid>.data-card{
+  padding-block:clamp(11px,1.1vw,17px)!important;
+  gap:clamp(5px,.55vw,9px)!important;
+}
+html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell :is(.metric-card,.aggregate-metric) {
+  padding-block:clamp(9px,.85vw,15px)!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44>.entry-action:not(#entryTreasuryButton){
+  min-height:0!important;
+  padding-block:clamp(12px,1.1vw,18px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats{
+  gap:clamp(7px,.85vw,13px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats>div{
+  min-height:0!important;
+  padding-block:clamp(10px,1vw,16px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+  row-gap:clamp(10px,1.2vw,20px)!important;
+}
+@media(max-width:599px){
+ html[data-inj-page="index"] body.dashboard-scroll-ready .app-shell .metrics-grid>.data-card{
+   padding-block:12px!important;
+ }
+}
