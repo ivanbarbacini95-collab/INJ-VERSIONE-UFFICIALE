@@ -261,13 +261,23 @@
    const y=v=>scale>0?bottom-v/scale*plotHeight:bottom;
    const grid=[top,(top+bottom)/2,bottom].map(t=>
      '<line x1="0" y1="'+t+'" x2="'+width+'" y2="'+t+'" stroke="currentColor" stroke-opacity=".12" stroke-dasharray="3 6"/>').join('');
-   let lastLabel=-Infinity;
-   const dates=pts.map((p,i)=>{
-     if(x(i)-lastLabel<75&&i!==pts.length-1)return '';
-     lastLabel=x(i);
-     return '<text x="'+x(i).toFixed(2)+'" y="210" text-anchor="middle" fill="currentColor" opacity=".67" font-size="10">'+
-       (session?formatNYTime(p.time):dateFmt(p.date))+'</text>';
-   }).join('');
+   // Tick positions are chosen by actual rendered spacing. Preserve endpoints;
+   // suppress nearby middle labels, particularly late-session dense prints.
+   const minGap=session?110:90;
+   const labelIndices=[];
+   if(pts.length){
+     labelIndices.push(pts.length-1);
+     if(pts.length>1&&x(pts.length-1)-x(0)>=minGap)labelIndices.push(0);
+     for(let i=1;i<pts.length-1;i++){
+       if(labelIndices.every(j=>Math.abs(x(i)-x(j))>=minGap))labelIndices.push(i);
+     }
+   }
+   labelIndices.sort((a,b)=>a-b);
+   const dates=labelIndices.map(i=>
+     '<text class="injc-volume-time-label" x="'+x(i).toFixed(2)+
+       '" y="210" text-anchor="middle" fill="currentColor" opacity=".72" font-size="10">'+
+       (session?formatNYTime(pts[i].time):dateFmt(pts[i].date))+'</text>'
+   ).join('');
    const segments=[];let part=[];
    pts.forEach((p,i)=>{if(Number.isFinite(p.volume))part.push([x(i),y(p.volume)]);
      else if(part.length){segments.push(part);part=[];}});
@@ -292,9 +302,24 @@
    const plot=scroller.querySelector('svg'),cursor=plot.querySelector('.injc-volume-cursor');
    const line=cursor.querySelector('line'),dot=cursor.querySelector('circle');
    const tip=$('etfVolumeTooltip');let selected=-1;
+   const renderValuation=point=>{
+     const shares=Number.isFinite(point?.volume)?point.volume:null;
+     const reference=point?.price;
+     const hasPrice=Number.isFinite(reference)&&reference>0;
+     setText('etfVolumeSummaryShares',shares===null?'—':number(shares));
+     setText('etfVolumeSummaryPrice',hasPrice?usdPrice(reference):'—');
+     setText('etfVolumeSummaryNotional',shares!==null&&hasPrice?usdEstimate(shares*reference):'—');
+     const stamp=point?.date?(session&&Number.isFinite(point.time)
+       ?point.date+' · '+formatNYTime(point.time)+' NY':point.date):'—';
+     setText('etfVolumeValuationNote',hasPrice
+       ?tr('Riferimento '+stamp+' · stima = quote × prezzo INJC rilevato nella stessa seduta. Non è controvalore effettivo degli scambi né afflusso nel fondo.',
+           'Reference '+stamp+' · estimate = shares × same-session INJC price. Not actual traded turnover or fund inflows.')
+       :tr('Riferimento '+stamp+' · manca il prezzo della stessa seduta: nessuna stima con prezzi di altre date.',
+           'Reference '+stamp+' · same-session price unavailable: no estimate using prices from other dates.'));
+   };
    const select=i=>{
      const p=good[i];if(!p)return;
-     selected=i;cursor.setAttribute('visibility','visible');
+     selected=i;renderValuation(p);cursor.setAttribute('visibility','visible');
      line.setAttribute('x1',x(p.i));line.setAttribute('x2',x(p.i));
      dot.setAttribute('cx',x(p.i));dot.setAttribute('cy',y(p.volume));
      if(tip){
@@ -324,6 +349,7 @@
    plot.addEventListener('blur',()=>{cursor.setAttribute('visibility','hidden');if(tip)tip.hidden=true;});
    if(atEnd)scroller.scrollLeft=scroller.scrollWidth;
    else scroller.scrollLeft=Math.min(previousX,scroller.scrollWidth-scroller.clientWidth);
+   renderValuation(good.length?good.at(-1):null);
    volumeFirst=false;
  }
  async function refreshVolume(){
@@ -340,7 +366,10 @@
      if(results[1].status==='fulfilled'){
        const d=results[1].value;
        if(d?.ticker==='INJC'&&Array.isArray(d.sessions)){
-         d.sessions.forEach(row=>mergeVolume(row.date,row.volume,1));
+         d.sessions.forEach(row=>{
+           mergeVolume(row.date,row.volume,1);
+           rememberPrice(row.date,row.close,1);
+         });
          if(d.sessions.length)lastVolumeSource=tr('Storico INJC · feed aggiornato periodicamente','INJC history · periodically refreshed feed');
        }
      }
@@ -351,6 +380,8 @@
      if(results[2].status==='fulfilled'){
        const d=results[2].value,q=d?.quote;
        snapshotPts=snapshotIntraday(d);
+       if(d?.ticker==='INJC'&&q?.quoteTime&&q.price&&q.session==='regular')
+         rememberPrice(nyDay(Date.parse(q.quoteTime)),q.price,0);
        if(d?.ticker==='INJC'&&q&&Number.isFinite(Date.parse(q.quoteTime))
            &&Number.isSafeInteger(Number(q.volume))&&Number(q.volume)>=0){
          mergeVolume(nyDay(Date.parse(q.quoteTime)),q.volume,0);
@@ -377,7 +408,8 @@
      }
      volumeDays=[...weekdays].filter(k=>k<=today);
      const signature=volumeMode+';'+volumeDays.join(',')+';'+[...byDay].map(([k,v])=>k+':'+v.volume).join(',')+
-       ';'+intradayPoints.map(p=>p.time+':'+p.volume).join(',');
+       ';'+intradayPoints.map(p=>p.time+':'+p.volume+':'+p.price).join(',')+
+       ';'+[...dailyPrice].map(([k,v])=>k+':'+v.price).join(',');
      if(signature!==volumeSnapshot){volumeSnapshot=signature;drawVolume(true);}
      else queueVolumeDraw();
    }catch(error){console.warn('INJC traded-volume chart:',error.message);drawVolume();}
