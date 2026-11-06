@@ -256,3 +256,60 @@ body.injc-chart-modal-open{overflow:hidden!important;touch-action:none}
 }
 #etfSvgWrap svg .injc-axis-price { font-weight: 640; }
 #etfSvgWrap svg .injc-axis-time { font-weight: 600; }
+
+
+/* INJC · market phases and verified-price interaction · 2026-11-06 */
+:root { --injc-pre:#c59a40; }
+.status-pill[data-state="pre"] {
+ color:var(--injc-pre);
+ border-color:color-mix(in srgb,var(--injc-pre) 36%,var(--etf-line));
+ background:color-mix(in srgb,var(--injc-pre) 8%,var(--etf-card));
+}
+.injc-chart-session {
+ display:inline-flex;align-items:center;justify-content:center;
+ margin-left:auto;white-space:nowrap;flex:none;
+ padding:6px 10px;border:1px solid var(--etf-line);
+ border-radius:7px;background:color-mix(in srgb,var(--etf-card) 91%,transparent);
+ color:var(--etf-muted);font-size:10px;font-weight:800;
+ line-height:1;letter-spacing:.065em;font-variant-numeric:tabular-nums;
+}
+.injc-chart-session[data-state="pre"]{
+ color:var(--injc-pre);
+ border-color:color-mix(in srgb,var(--injc-pre) 45%,var(--etf-line));
+ background:color-mix(in srgb,var(--injc-pre) 9%,var(--etf-card));
+}
+.injc-chart-session[data-state="open"]{
+ color:var(--injc-up);
+ border-color:color-mix(in srgb,var(--injc-up) 40%,var(--etf-line));
+ background:color-mix(in srgb,var(--injc-up) 9%,var(--etf-card));
+}
+#etfSvgWrap svg.injc-price-inspectable {
+ touch-action:pan-y; cursor:crosshair;
+ -webkit-tap-highlight-color:transparent; user-select:none;
+}
+#etfSvgWrap svg.injc-price-inspectable:focus-visible{
+ outline:2px solid var(--etf-accent);outline-offset:-2px;border-radius:8px;
+}
+#etfSvgWrap .injc-price-inspector {
+ position:absolute;top:8px;left:50%;transform:translateX(-50%);
+ min-width:126px;max-width:calc(100% - 16px);padding:9px 13px 8px;
+ display:flex;flex-direction:column;gap:3px;pointer-events:none;z-index:4;
+ border:1px solid color-mix(in srgb,var(--etf-ink) 15%,var(--etf-line));
+ border-radius:11px;
+ background:color-mix(in srgb,var(--etf-card) 94%,var(--etf-bg));
+ color:var(--etf-ink);
+ box-shadow:0 6px 24px rgba(0,0,0,.15);
+ font-variant-numeric:tabular-nums;text-align:left;
+}
+#etfSvgWrap .injc-price-inspector[hidden]{display:none!important}
+#etfSvgWrap .injc-inspector-price{font-size:15px;font-weight:780;line-height:1.1;letter-spacing:-.02em}
+#etfSvgWrap .injc-inspector-time{color:var(--etf-muted);font-size:10px;white-space:nowrap}
+#etfSvgWrap .injc-inspector-session{font-size:9px;letter-spacing:.09em;font-weight:790;color:var(--etf-muted)}
+#etfSvgWrap .injc-inspector-session[data-state="pre"]{color:var(--injc-pre)}
+#etfSvgWrap .injc-chart-cursor{transition:none;pointer-events:none}
+@media(max-width:530px){
+ .injc-chart-session{padding:6px 8px;font-size:9px}
+ .injc-chart-top .injc-tabs{width:100%;justify-content:space-between;gap:2px}
+ .injc-chart-top .injc-tabs button{flex:1;min-width:0}
+ #etfSvgWrap .injc-price-inspector{padding:8px 10px;min-width:126px}
+}
