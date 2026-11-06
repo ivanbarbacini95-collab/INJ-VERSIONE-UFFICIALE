@@ -1,0 +1,72 @@
+name: INJ Node · INJC traded-share volume history
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Interval is UTC; cover the US regular market and its closing prints in winter/summer.
+    - cron: '*/15 12-23 * * 1-5'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/injc-etf-volume.yml'
+      - 'scripts/update-injc-etf-volume.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: injnode-injc-etf-share-volume
+  cancel-in-progress: false
+
+jobs:
+  share-volume-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Collect real INJC ETF daily share volumes
+        run: node scripts/update-injc-etf-volume.mjs
+      - name: Publish volume history without overwriting newer changes
+        shell: bash
+        run: |
+          set -eu
+          file="market-data/injc-etf-volume.json"
+          if git diff --quiet -- "$file"; then
+            echo "No updated traded-share volume to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          snapshot="$(mktemp)"
+          remote="$(mktemp)"
+          trap 'rm -f "$snapshot" "$remote"' EXIT
+          cp "$file" "$snapshot"
+          for attempt in 1 2 3 4 5 6; do
+            git fetch --quiet origin main
+            if git show "origin/main:$file" > "$remote" 2>/dev/null; then
+              if node -e '
+                const fs=require("node:fs");
+                const local=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+                const remote=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
+                if(remote.generatedAt&&Date.parse(remote.generatedAt)>=Date.parse(local.generatedAt))process.exit(0);
+                process.exit(1);
+              ' "$snapshot" "$remote"; then
+                echo "A newer volume history is already available."
+                exit 0
+              fi
+            fi
+            git reset --hard origin/main
+            cp "$snapshot" "$file"
+            git add "$file"
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "data(injc): update daily ETF share trading volumes"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep "$attempt"
+          done
+          echo "::error::Unable to publish INJC volume history after retries"
+          exit 1
