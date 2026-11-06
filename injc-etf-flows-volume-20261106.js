@@ -20,7 +20,7 @@
    const abs=Math.abs(n),suffix=abs>=1e9?'B':abs>=1e6?'M':abs>=1e3?'K':'';
    const value=abs>=1e9?n/1e9:abs>=1e6?n/1e6:abs>=1e3?n/1e3:n;
    const decimals=suffix&&Math.abs(value)<10?1:0;
-   return (unit?unit:'')+value.toLocaleString(lang()==='en'?'en-US':'it-IT',
+   return (n<0?'-':'')+(unit?unit:'')+Math.abs(value).toLocaleString(lang()==='en'?'en-US':'it-IT',
      {maximumFractionDigits:decimals})+suffix;
  };
  const roundTop=value=>{
