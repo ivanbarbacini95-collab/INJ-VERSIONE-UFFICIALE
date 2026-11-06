@@ -1,0 +1,135 @@
+/* INJC Official · compact Nasdaq price header + connection state · 2026-11-06 */
+.injc-price-card.injc-price-compact{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ gap:0!important;
+ padding:clamp(18px,3vw,28px)!important;
+}
+.injc-price-compact .injc-quote-primary{width:100%;min-width:0}
+.injc-price-compact .injc-price{
+ margin:8px 0 8px;
+ line-height:1.12;
+ font-size:clamp(48px,7vw,82px);
+}
+.injc-price-compact .injc-price-line{
+ gap:8px 18px;
+ align-items:baseline;
+}
+.injc-quote-bottom{
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-end;
+ gap:12px;
+ margin-top:16px;
+ min-width:0;
+}
+.injc-feed-indicator{
+ display:inline-flex;
+ flex:0 0 auto;
+ align-items:center;
+ justify-content:flex-start;
+ gap:7px;
+ min-height:29px;
+ border-radius:99px;
+ padding:7px 11px;
+ border:1px solid color-mix(in srgb,var(--etf-muted) 23%,var(--etf-line));
+ background:color-mix(in srgb,var(--etf-ink) 3%,transparent);
+ color:var(--etf-muted);
+ font-size:11px;
+ font-weight:820;
+ line-height:1;
+ letter-spacing:.095em;
+}
+.injc-feed-indicator strong{font:inherit;line-height:1}
+.injc-feed-dot{
+ display:block;
+ flex:0 0 7px;
+ width:7px;height:7px;
+ border-radius:50%;
+ background:currentColor;
+ opacity:.85;
+}
+.injc-feed-indicator[data-feed="online"]{
+ color:var(--injc-up);
+ background:color-mix(in srgb,var(--injc-up) 7%,var(--etf-card));
+ border-color:color-mix(in srgb,var(--injc-up) 29%,var(--etf-line));
+}
+.injc-feed-indicator[data-feed="offline"]{color:var(--injc-down)}
+.injc-price-compact .injc-market-countdown{
+ flex:0 1 auto;
+ display:flex;
+ flex-direction:row;
+ justify-content:flex-end;
+ align-items:center;
+ gap:7px;
+ min-height:31px;
+ min-width:0;
+ margin:0!important;
+ padding:7px 9px!important;
+ border-radius:9px;
+ border:1px solid color-mix(in srgb,var(--etf-accent) 15%,var(--etf-line));
+ background:color-mix(in srgb,var(--etf-accent) 4%,var(--etf-card));
+}
+.injc-price-compact .injc-market-countdown span{
+ flex:0 1 auto;
+ color:var(--etf-muted);
+ font-size:9px;
+ font-weight:740;
+ letter-spacing:.035em;
+ white-space:nowrap;
+}
+.injc-price-compact .injc-market-countdown strong{
+ margin:0!important;
+ flex:0 0 auto;
+ color:var(--etf-ink);
+ font-size:clamp(12px,2vw,16px)!important;
+ line-height:1!important;
+ font-weight:770;
+ letter-spacing:0;
+ font-variant-numeric:tabular-nums;
+ white-space:nowrap;
+}
+.injc-price-compact .injc-market-countdown small{
+ margin:0;
+ font-size:9px;
+ font-weight:770;
+ white-space:nowrap;
+ color:var(--etf-muted);
+}
+.injc-price-compact .injc-market-countdown[data-session="pre"] strong{
+ color:var(--injc-pre,#c59a40);
+}
+.injc-price-compact .injc-quote-reference{
+ display:flex;
+ flex-wrap:wrap;
+ gap:4px 16px;
+ width:100%;
+ margin-top:15px;
+ padding-top:11px;
+ border-top:1px solid color-mix(in srgb,var(--etf-ink) 11%,transparent);
+}
+.injc-price-compact .injc-quote-reference p{
+ flex:1 1 310px;
+ min-width:0;
+ margin:0;
+ font-size:10px;
+ line-height:1.48;
+ color:var(--etf-muted);
+}
+@media(max-width:530px){
+ .injc-price-card.injc-price-compact{padding:18px!important}
+ .injc-price-compact .injc-price{font-size:clamp(44px,12vw,62px);margin-top:7px}
+ .injc-quote-bottom{gap:7px;margin-top:13px}
+ .injc-feed-indicator{font-size:10px;padding:7px 9px;min-height:30px}
+ .injc-price-compact .injc-market-countdown{padding:7px 8px!important;gap:5px}
+ .injc-price-compact .injc-market-countdown span{font-size:8px}
+ .injc-price-compact .injc-market-countdown strong{font-size:12px!important}
+ .injc-price-compact .injc-market-countdown small{font-size:8px}
+ .injc-price-compact .injc-quote-reference{gap:4px;margin-top:12px;padding-top:10px}
+ .injc-price-compact .injc-quote-reference p{flex:1 1 100%;font-size:9px}
+}
+@media(max-width:355px){
+ .injc-quote-bottom{flex-wrap:wrap}
+ .injc-price-compact .injc-market-countdown{margin-left:auto!important}
+}
