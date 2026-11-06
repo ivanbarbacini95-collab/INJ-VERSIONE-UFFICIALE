@@ -131,7 +131,8 @@
    const active=lastFeedSuccessAt>0&&Date.now()-lastFeedSuccessAt<35000;
    const online=active;
    el.dataset.feed=online?'online':'offline';
-   textNode.textContent=online?'ONLINE':'OFFLINE';
+   const label=online?'ONLINE':'OFFLINE';
+   if(textNode.textContent!==label)textNode.textContent=label;
    const age=lastQuote?.quoteTime?Math.max(0,Math.floor((Date.now()-lastQuote.quoteTime)/60000)):null;
    const time=lastQuote?.quoteTime?fmtTime(lastQuote.quoteTime)+' NY':'—';
    const source=quoteSource||tr('Nessun provider verificato','No verified provider');
@@ -328,7 +329,7 @@
    const backup=(async()=>{
      try{
        const snap=await getJson('./market-data/injc-etf-quotes.json?t='+Date.now(),5000);
-       return {data:parseSnapshot(snap),source:snap.source||'Market snapshot'};
+       return {data:parseSnapshot(snap),source:'Cached INJC quote · last verified snapshot',cacheOnly:true};
      }catch(_){return null;}
    })();
    const [nasdaq,yahoo,snapshot]=await Promise.all([primary,chart,backup]);
@@ -613,10 +614,12 @@
    setText('etfSyncLabel',tr('SINCRONIZZAZIONE','SYNCING'));
    try{
      const incoming=await getQuote();
-     lastFeedSuccessAt=Date.now();
+     if(!incoming.cacheOnly)lastFeedSuccessAt=Date.now();
      displayQuote(incoming.data,incoming.source);
      const stale=Date.now()-incoming.data.quoteTime>15*60000;
-     setText('etfSyncLabel',stale?tr('DATO RITARDATO','DELAYED QUOTE'):tr('QUOTAZIONE AGGIORNATA','QUOTE UPDATED'));
+     setText('etfSyncLabel',incoming.cacheOnly
+       ?tr('ULTIMO DATO MEMORIZZATO','LAST STORED QUOTE')
+       :stale?tr('DATI RITARDATI','DELAYED DATA'):tr('QUOTAZIONE AGGIORNATA','QUOTE UPDATED'));
    }catch(err){
      lastFeedFailureAt=Date.now();
      // Preserve the last verified quote. Connection status is separate from trade freshness.
