@@ -112,6 +112,7 @@
  const fmtTime=ms=>new Date(ms).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',timeZone:'America/New_York'});
  let timeframe='1d', busy=false, lastQuote=null, lastGoodAt=0, quoteSource='', graphPoints=[], refreshTimer=null, marketPulseTimer=null, flowsHistory=[], flowDayKey=null, plottedFlowsFirstTime=true;
  let lastChartPhase=null, lastFeedSuccessAt=0, lastFeedFailureAt=0, fastQuoteBusy=false;
+ let observedPrePrints=[], observedPreDay='';
  const ranges={ '1d':['1d','1m'],'5d':['5d','5m'],'1mo':['1mo','30m'],'3mo':['3mo','1d'],'1y':['1y','1d'] };
  // Price-range rail is independent from the main chart timeframe.
  const priceRangeConfig={
@@ -128,7 +129,7 @@
    const el=$('etfFeedIndicator'),textNode=$('etfQuoteFreshness');
    if(!el||!textNode)return;
    const active=lastFeedSuccessAt>0&&Date.now()-lastFeedSuccessAt<35000;
-   const online=active&&lastFeedSuccessAt>=lastFeedFailureAt-6000;
+   const online=active;
    el.dataset.feed=online?'online':'offline';
    textNode.textContent=online?'ONLINE':'OFFLINE';
    const age=lastQuote?.quoteTime?Math.max(0,Math.floor((Date.now()-lastQuote.quoteTime)/60000)):null;
@@ -558,7 +559,32 @@
    setText('etfDayHigh',usd(data.high));setText('etfDayLow',usd(data.low));
    setText('etfDayOpen',usd(data.open));setText('etfPreviousClose',usd(data.previous));
    setText('etfVolumeFootnote',tr('Volumi di quote nella sessione regolare, non afflussi netti nel fondo. Controvalore indicativo = volume × ultimo prezzo.','Regular-session share volume, not net fund inflows. Indicative turnover = volume × last share price.'));
-   graphPoints=data.points;
+   const nowDay=nyKey(new Date()),quoteDay=nyKey(new Date(data.quoteTime));
+   if(observedPreDay!==nowDay){observedPreDay=nowDay;observedPrePrints=[];}
+   if(quoteDay===nowDay&&pointSession(data.quoteTime)==='pre'&&Number.isFinite(data.price)&&data.price>0){
+     // Only timestamped, actually reported pre-market trades are added.
+     // A second observed print allows the amber line to slope up or down.
+     const p={time:data.quoteTime,close:data.price,open:null,high:null,low:null,volume:null,session:'pre'};
+     const idx=observedPrePrints.findIndex(row=>row.time===p.time);
+     if(idx<0)observedPrePrints.push(p);
+     else observedPrePrints[idx]=p;
+     observedPrePrints.sort((a,b)=>a.time-b.time);
+     if(observedPrePrints.length>400)observedPrePrints=observedPrePrints.slice(-400);
+   }
+   const rows=(Array.isArray(data.points)&&data.points.length?data.points:graphPoints).filter(p=>Number.isFinite(p?.time)&&Number.isFinite(p?.close)&&p.close>0);
+   if(timeframe==='1d'&&observedPrePrints.length){
+     const preRows=rows.filter(p=>p.session==='pre'&&nyKey(new Date(p.time))===nowDay);
+     const regularRows=rows.filter(p=>p.session==='regular'&&nyKey(new Date(p.time))===nowDay);
+     let lastPrior=rows.filter(p=>p.session==='close-anchor'||(p.session==='regular'&&nyKey(new Date(p.time))<nowDay)).at(-1);
+     if(!lastPrior)lastPrior=graphPoints.filter(p=>p.session==='close-anchor'||(p.session==='regular'&&nyKey(new Date(p.time))<nowDay)).at(-1);
+     const actualRegular=(quoteDay===nowDay&&pointSession(data.quoteTime)==='regular')
+       ?[{time:data.quoteTime,close:data.price,session:'regular',open:null,high:null,low:null,volume:null}]
+       :[];
+     const merged=[...(lastPrior?[{...lastPrior,session:'close-anchor'}]:[]),...preRows,...observedPrePrints,...regularRows,...actualRegular];
+     const byTime=new Map();
+     for(const p of merged)byTime.set(p.time,p);
+     graphPoints=[...byTime.values()].sort((a,b)=>a.time-b.time);
+   }else graphPoints=rows;
    drawGraph();
    renderStatus();
    renderPriceRange();
