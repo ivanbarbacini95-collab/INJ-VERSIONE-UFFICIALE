@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "ticker": "INJC",
+  "exchange": "Nasdaq",
+  "firstTradingSession": "2026-11-05",
+  "timeZone": "America/New_York",
+  "unit": "ETF shares",
+  "note": "Daily reported trading volume of INJC shares, NOT fund creations/redemptions or Injective token volume. No synthetic or interpolated data. Current session may be partial.",
+  "source": null,
+  "generatedAt": null,
+  "sessions": []
+}
