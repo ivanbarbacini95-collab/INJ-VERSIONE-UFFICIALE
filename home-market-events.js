@@ -59,7 +59,7 @@
  const tickerTrack=$('injMarketTickerTrack');
  const tickerMotion={
   offset:0,lap:0,lastTime:0,dragging:false,pointerId:null,lastX:0,visible:true,pending:null,
-  speed:30,group:null,observer:null,hadData:false
+  speed:30,group:null,observer:null,hadData:false,frame:0
  };
  let lastTickerPayload=null;
  const reducedTickerMotion=!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -77,15 +77,29 @@
  function paintTicker(){
   tickerTrack.style.transform='translate3d('+(-tickerMotion.offset).toFixed(2)+'px,0,0)';
  }
+ function stopTicker(){
+  if(tickerMotion.frame)cancelAnimationFrame(tickerMotion.frame);
+  tickerMotion.frame=0;tickerMotion.lastTime=0;
+ }
+ function startTicker(){
+  if(tickerMotion.frame||document.hidden||!tickerMotion.visible||
+    tickerMotion.dragging||reducedTickerMotion||!tickerMotion.hadData||!tickerMotion.lap)return;
+  tickerMotion.lastTime=0;
+  tickerMotion.frame=requestAnimationFrame(tickerFrame);
+ }
  function tickerFrame(t){
+  tickerMotion.frame=0;
+  if(document.hidden||!tickerMotion.visible||tickerMotion.dragging||reducedTickerMotion||!tickerMotion.hadData){
+   tickerMotion.lastTime=0;return;
+  }
   const elapsed=tickerMotion.lastTime?Math.min(50,Math.max(0,t-tickerMotion.lastTime)):0;
   tickerMotion.lastTime=t;
-  if(!tickerMotion.lap&&tickerMotion.hadData)measureTicker();
-  if(tickerMotion.lap&&!document.hidden&&tickerMotion.visible&&!tickerMotion.dragging&&!reducedTickerMotion){
+  if(!tickerMotion.lap)measureTicker();
+  if(tickerMotion.lap){
    tickerMotion.offset=modulo(tickerMotion.offset+tickerMotion.speed*elapsed/1000,tickerMotion.lap);
    paintTicker();
   }
-  requestAnimationFrame(tickerFrame);
+  tickerMotion.frame=requestAnimationFrame(tickerFrame);
  }
  function dropTickerPointer(e){
   if(!tickerMotion.dragging||(e&&e.pointerId!==tickerMotion.pointerId))return;
@@ -95,11 +109,13 @@
   if(id!==null&&tickerViewport.hasPointerCapture?.(id)){
    try{tickerViewport.releasePointerCapture(id)}catch(_){}
   }
+  startTicker();
  }
  tickerViewport.addEventListener('pointerdown',event=>{
   if(tickerMotion.dragging||(!event.isPrimary)||(event.pointerType==='mouse'&&event.button!==0))return;
   if(!tickerMotion.lap)measureTicker();
   tickerMotion.dragging=true;tickerMotion.pointerId=event.pointerId;
+  stopTicker();
   tickerMotion.lastX=event.clientX;tickerMotion.lastTime=0;
   try{tickerViewport.setPointerCapture(event.pointerId)}catch(_){}
  },{passive:true});
@@ -123,16 +139,16 @@
   paintTicker();
  });
  if('ResizeObserver' in window){
-  tickerMotion.observer=new ResizeObserver(()=>{measureTicker();paintTicker()});
+  tickerMotion.observer=new ResizeObserver(()=>{measureTicker();paintTicker();startTicker()});
   tickerMotion.observer.observe(tickerViewport);
  }
  if('IntersectionObserver' in window){
   new IntersectionObserver(records=>{
    tickerMotion.visible=!!records[0]?.isIntersecting;
-   tickerMotion.lastTime=0;
+   if(tickerMotion.visible)startTicker();else stopTicker();
   },{threshold:0}).observe(tickerViewport);
  }
- requestAnimationFrame(tickerFrame);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stopTicker();else startTicker()});
  function usdCompact(x){
   const value=Number(x);
   if(!Number.isFinite(value)||value<=0)return '—';
@@ -218,7 +234,7 @@
   }
   for(const group of tickerTrack.children)
    Array.from(group.children).forEach((node,index)=>updateTickerItem(node,entries[index],quote));
-  measureTicker();paintTicker();
+  measureTicker();paintTicker();startTicker();
   $('injMarketTicker').classList.remove('is-stale');
  }
  // Secondary sources keep the ribbon useful if the Vercel API route is absent.
