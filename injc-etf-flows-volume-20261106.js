@@ -130,6 +130,7 @@
  };
  const byDay=new Map();
  let volumeDays=[],volumeFirst=true,volumeLoading=false,volumeRaf=0,volumeSnapshot='',lastVolumeSource='';
+ let volumeMode='session',intradayPoints=[],intradaySource='';
  function validVolume(k,value){
    return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k>='2026-11-05'&&k<=nyDay(Date.now())&&
      Number.isSafeInteger(value)&&value>=0;
@@ -168,98 +169,148 @@
    if(volumeRaf)return;
    volumeRaf=requestAnimationFrame(()=>{volumeRaf=0;drawVolume();});
  }
- function drawVolume(){
-   const scroller=$('etfVolumeHistory'),axis=$('etfVolumeRightAxis');
-   const label=$('etfVolumeSourceLabel');
-   if(!scroller||!axis)return;
-   if(label)label.textContent=lastVolumeSource||tr('In attesa del volume negoziato','Awaiting traded volume');
-   const days=volumeDays;
-   const usable=days.map((date,i)=>({date,i,volume:byDay.get(date)?.volume??null})).filter(p=>Number.isFinite(p.volume));
-   setText('etfVolumeSummary',tr(
-     usable.length+' sedute con volume riportato · quantità di quote INJC',
-     usable.length+' sessions with reported volume · INJC shares traded'
-   ));
-   const empty=$('etfVolumeEmpty');
-   if(empty)empty.hidden=usable.length>0;
-   if(!days.length){scroller.replaceChildren();return;}
-   const step=58,pxWidth=Math.max(scroller.clientWidth,days.length*step+30),height=220;
-   const plotTop=21,plotBottom=180,plotHeight=plotBottom-plotTop;
-   const first=Math.max(0,Math.floor(scroller.scrollLeft/step));
-   const end=Math.min(days.length,Math.ceil((scroller.scrollLeft+scroller.clientWidth)/step)+1);
-   let peak=0;
-   for(let i=first;i<end;i++)peak=Math.max(peak,byDay.get(days[i])?.volume||0);
-   const scale=roundTop(peak);
-   const rightLabels=axis.querySelectorAll('[data-volume-axis]');
-   [scale,scale/2,0].forEach((v,i)=>{if(rightLabels[i])rightLabels[i].textContent=scale?compact(v):(i===2?'0':'—');});
-   const x=i=>30+i*step;
-   const y=n=>scale>0?plotBottom-n/scale*plotHeight:plotBottom;
-   const grid=[plotTop,(plotTop+plotBottom)/2,plotBottom].map(yv=>
-     '<line x1="0" y1="'+yv+'" x2="'+pxWidth+'" y2="'+yv+'" stroke="currentColor" stroke-opacity=".11" stroke-dasharray="3 6"/>'
-   ).join('');
-   const cadence=days.length>24?Math.ceil(days.length/24):1;
-   const labels=days.map((d,i)=>i%cadence===0||i===days.length-1
-     ?'<text x="'+x(i)+'" y="211" text-anchor="middle" fill="currentColor" opacity=".64" font-size="10">'+dateFmt(d)+'</text>':'').join('');
-   let paths='',segments=[],current=[];
-   for(let i=0;i<days.length;i++){
-     const v=byDay.get(days[i])?.volume;
-     if(Number.isFinite(v)){current.push([x(i),y(v)]);}
-     else if(current.length){segments.push(current);current=[];}
+ const nyHour=ms=>{
+   const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',
+     hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date(ms)).map(p=>[p.type,p.value]));
+   return (Number(parts.hour)%24)*60+Number(parts.minute);
+ };
+ const formatNYTime=ms=>new Date(ms).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',
+   {timeZone:'America/New_York',hour:'2-digit',minute:'2-digit'});
+ function cumulativeVolumeRows(rows){
+   const valid=rows.filter(p=>Number.isFinite(p.time)&&Number.isSafeInteger(p.volume)&&p.volume>=0
+      &&Number(p.close)>0&&nyHour(p.time)>=570&&nyHour(p.time)<960&&nyDay(p.time)>='2026-11-05')
+     .sort((a,b)=>a.time-b.time);
+   if(!valid.length)return [];
+   const date=nyDay(valid.at(-1).time),points=[];let total=0,lastTime=0;
+   for(const p of valid){
+     if(nyDay(p.time)!==date||p.time===lastTime)continue;
+     lastTime=p.time;total+=p.volume;
+     points.push({date,time:p.time,volume:total});
    }
-   if(current.length)segments.push(current);
-   const radius=3.5;
-   const dots=usable.map(p=>'<circle class="injc-volume-dot" cx="'+x(p.i)+'" cy="'+y(p.volume)+'" r="'+radius+'"/>').join('');
+   return points;
+ }
+ function snapshotIntraday(json){
+   if(json?.ticker!=='INJC'||!Array.isArray(json.points))return [];
+   const raw=json.points.filter(p=>p.session==='regular').map(p=>({
+     time:Date.parse(p.time),close:p.close,volume:p.volume===null?NaN:Number(p.volume)
+   }));
+   const points=cumulativeVolumeRows(raw),last=points.at(-1),q=json.quote;
+   const time=Date.parse(q?.quoteTime||''),volume=Number(q?.volume);
+   if(last&&Number.isFinite(time)&&nyDay(time)===last.date&&nyHour(time)>=570&&nyHour(time)<960
+     &&Number.isSafeInteger(volume)&&volume>last.volume){
+     const row={date:last.date,time:Math.max(time,last.time),volume};
+     if(row.time===last.time)points[points.length-1]=row;
+     else points.push(row);
+   }
+   return points;
+ }
+ function yahooIntraday(data){
+   const o=data?.chart?.result?.[0],q=o?.indicators?.quote?.[0],times=o?.timestamp||[];
+   if(!o||o?.meta?.symbol?.toUpperCase()!=='INJC'||!q)return [];
+   return cumulativeVolumeRows(times.map((t,i)=>({
+     time:Number(t)*1000,close:q.close?.[i],
+     volume:q.volume?.[i]===null||q.volume?.[i]===undefined?NaN:Number(q.volume[i])
+   })));
+ }
+ function drawVolume(newData=false){
+   const scroller=$('etfVolumeHistory'),axis=$('etfVolumeRightAxis'),empty=$('etfVolumeEmpty');
+   if(!scroller||!axis)return;
+   const session=volumeMode==='session';
+   const pts=session?intradayPoints.map(p=>({...p})):
+     volumeDays.map(date=>({date,volume:byDay.get(date)?.volume??null}));
+   const source=session?intradaySource:lastVolumeSource;
+   setText('etfVolumeSourceLabel',source||tr('In attesa del volume riportato','Awaiting reported volume'));
+   const good=pts.map((p,i)=>({...p,i})).filter(p=>Number.isFinite(p.volume));
+   if(empty){
+     empty.hidden=good.length>0;
+     empty.textContent=session?tr('In attesa dei volumi intraday','Awaiting intraday volume')
+       :tr('In attesa dello storico dei volumi','Awaiting volume history');
+   }
+   setText('etfVolumeSummary',session
+     ?tr('Volume cumulato nella seduta '+(pts.at(-1)?.date||'—')+' · '+good.length+' punti',
+         'Cumulative session volume '+(pts.at(-1)?.date||'—')+' · '+good.length+' points')
+     :tr(good.length+' sedute con volume riportato · quote INJC',
+         good.length+' sessions with reported volume · INJC shares'));
+   if(!pts.length){scroller.replaceChildren();return;}
+   const width=Math.max(scroller.clientWidth,
+     session?Math.min(5000,Math.max(390,pts.length*24+40)):pts.length*58+50);
+   const top=21,bottom=180,plotHeight=bottom-top,previousX=scroller.scrollLeft;
+   const atEnd=volumeFirst||scroller.scrollWidth-scroller.clientWidth-previousX<82;
+   const earliest=pts[0].time,latest=pts.at(-1).time;
+   const x=i=>session?30+(pts[i].time-earliest)/Math.max(1,latest-earliest)*(width-60)
+     :width-30-(pts.length-1-i)*58;
+   let max=0;
+   good.forEach(p=>{const px=x(p.i);if(px>=previousX-50&&px<=previousX+scroller.clientWidth+50)max=Math.max(max,p.volume);});
+   if(!max)max=Math.max(0,...good.map(p=>p.volume));
+   const scale=roundTop(max);
+   axis.querySelectorAll('[data-volume-axis]').forEach((label,i)=>{
+     label.textContent=scale?compact([scale,scale/2,0][i]):(i===2?'0':'—');
+   });
+   const y=v=>scale>0?bottom-v/scale*plotHeight:bottom;
+   const grid=[top,(top+bottom)/2,bottom].map(t=>
+     '<line x1="0" y1="'+t+'" x2="'+width+'" y2="'+t+'" stroke="currentColor" stroke-opacity=".12" stroke-dasharray="3 6"/>').join('');
+   let lastLabel=-Infinity;
+   const dates=pts.map((p,i)=>{
+     if(x(i)-lastLabel<75&&i!==pts.length-1)return '';
+     lastLabel=x(i);
+     return '<text x="'+x(i).toFixed(2)+'" y="210" text-anchor="middle" fill="currentColor" opacity=".67" font-size="10">'+
+       (session?formatNYTime(p.time):dateFmt(p.date))+'</text>';
+   }).join('');
+   const segments=[];let part=[];
+   pts.forEach((p,i)=>{if(Number.isFinite(p.volume))part.push([x(i),y(p.volume)]);
+     else if(part.length){segments.push(part);part=[];}});
+   if(part.length)segments.push(part);
+   let shapes='';
    for(const segment of segments){
      if(segment.length<2)continue;
-     const d=segment.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1].toFixed(2)).join(' ');
-     const fill=d+' L'+segment.at(-1)[0]+' '+plotBottom+' L'+segment[0][0]+' '+plotBottom+' Z';
-     paths+='<path class="injc-volume-fill" d="'+fill+'"/><path class="injc-volume-line" d="'+d+'"/>';
+     const d=segment.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ');
+     const fill=d+' L'+segment.at(-1)[0].toFixed(2)+' '+bottom+' L'+segment[0][0].toFixed(2)+' '+bottom+' Z';
+     shapes+='<path class="injc-volume-fill" d="'+fill+'"/><path class="injc-volume-line" d="'+d+'"/>';
    }
-   const html='<svg class="injc-volume-svg" width="'+pxWidth+'" height="'+height+'" viewBox="0 0 '+pxWidth+' '+height+'" role="img" aria-label="'+
-     tr('Grafico cronologico dei volumi di quote INJC effettivamente riportati','Chronological reported INJC share trading volume')+
-     '" tabindex="0">'+grid+paths+dots+labels+'<g class="injc-volume-cursor" visibility="hidden" pointer-events="none">'+
-     '<line class="injc-volume-crosshair" y1="'+plotTop+'" y2="'+plotBottom+'"/>'+
+   const dots=good.map(p=>'<circle class="injc-volume-dot" cx="'+x(p.i).toFixed(2)+
+     '" cy="'+y(p.volume).toFixed(2)+'" r="3.5"/>').join('');
+   const svg='<svg class="injc-volume-svg'+(newData?' is-new-data':'')+'" width="'+width+
+     '" height="220" viewBox="0 0 '+width+' 220" tabindex="0" role="img" aria-label="'+
+     tr('Volume delle quote INJC · usa il dito o mouse per vedere i dati','INJC share volume · touch or hover to inspect')+
+     '">'+grid+shapes+dots+dates+
+     '<g class="injc-volume-cursor" visibility="hidden" pointer-events="none">'+
+     '<line class="injc-volume-crosshair" y1="'+top+'" y2="'+bottom+'"/>'+
      '<circle class="injc-volume-select-dot" r="6"/></g></svg>';
-   const wasAtEnd=volumeFirst||scroller.scrollWidth-scroller.clientWidth-scroller.scrollLeft<82;
-   const previousX=scroller.scrollLeft;
-   scroller.innerHTML=html;
-   const svg=scroller.querySelector('svg'),cursor=svg.querySelector('.injc-volume-cursor');
+   scroller.innerHTML=svg;
+   const plot=scroller.querySelector('svg'),cursor=plot.querySelector('.injc-volume-cursor');
    const line=cursor.querySelector('line'),dot=cursor.querySelector('circle');
-   let selected=-1;
-   const tooltip=$('etfVolumeTooltip');
-   const update=i=>{
-     const p=usable[i];if(!p)return;
+   const tip=$('etfVolumeTooltip');let selected=-1;
+   const select=i=>{
+     const p=good[i];if(!p)return;
      selected=i;cursor.setAttribute('visibility','visible');
      line.setAttribute('x1',x(p.i));line.setAttribute('x2',x(p.i));
      dot.setAttribute('cx',x(p.i));dot.setAttribute('cy',y(p.volume));
-     if(tooltip){
-       tooltip.querySelector('strong').textContent=number(p.volume)+' '+tr('quote','shares');
-       tooltip.querySelector('small').textContent=p.date+' · INJC';
-       tooltip.hidden=false;
-       tooltip.style.left=Math.max(80,Math.min(scroller.clientWidth-80,x(p.i)-scroller.scrollLeft))+'px';
+     if(tip){
+       tip.querySelector('strong').textContent=number(p.volume)+' '+tr('quote','shares');
+       tip.querySelector('small').textContent=(session?formatNYTime(p.time)+' NY · ':'')+p.date;
+       tip.hidden=false;
+       tip.style.left=Math.max(80,Math.min(scroller.clientWidth-80,x(p.i)-scroller.scrollLeft))+'px';
      }
    };
-   const nearest=evt=>{
-     const rect=svg.getBoundingClientRect();
-     const px=(evt.clientX-rect.left)*pxWidth/Math.max(1,rect.width);
-     let k=-1,best=Infinity;
-     usable.forEach((p,i)=>{const delta=Math.abs(px-x(p.i));if(delta<best){best=delta;k=i;}});
-     if(k>=0&&best<=step*1.3)update(k);
+   const hover=event=>{
+     const rect=plot.getBoundingClientRect(),px=(event.clientX-rect.left)*width/Math.max(1,rect.width);
+     let best=Infinity,index=-1;
+     good.forEach((p,i)=>{const distance=Math.abs(px-x(p.i));if(distance<best){best=distance;index=i;}});
+     if(index>=0)select(index);
    };
-   svg.addEventListener('pointermove',nearest,{passive:true});
-   svg.addEventListener('pointerdown',nearest,{passive:true});
-   svg.addEventListener('pointerleave',e=>{
-     if(e.pointerType==='mouse'){cursor.setAttribute('visibility','hidden');if(tooltip)tooltip.hidden=true;}
+   plot.addEventListener('pointermove',hover,{passive:true});
+   plot.addEventListener('pointerdown',hover,{passive:true});
+   plot.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse'){
+     cursor.setAttribute('visibility','hidden');if(tip)tip.hidden=true;
+   }});
+   plot.addEventListener('keydown',event=>{
+     if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
+     event.preventDefault();
+     const next=Math.max(0,Math.min(good.length-1,(selected<0?good.length-1:selected)+(event.key==='ArrowLeft'?-1:1)));
+     select(next);scroller.scrollLeft=Math.max(0,x(good[next].i)-scroller.clientWidth*.5);
    });
-   svg.addEventListener('keydown',e=>{
-     if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
-     e.preventDefault();
-     const next=Math.max(0,Math.min(usable.length-1,
-       (selected<0?usable.length-1:selected)+(e.key==='ArrowLeft'?-1:1)));
-     update(next);
-     scroller.scrollLeft=Math.max(0,x(usable[next].i)-scroller.clientWidth*.5);
-   });
-   svg.addEventListener('blur',()=>{cursor.setAttribute('visibility','hidden');if(tooltip)tooltip.hidden=true;});
-   if(wasAtEnd)scroller.scrollLeft=scroller.scrollWidth;
+   plot.addEventListener('blur',()=>{cursor.setAttribute('visibility','hidden');if(tip)tip.hidden=true;});
+   if(atEnd)scroller.scrollLeft=scroller.scrollWidth;
    else scroller.scrollLeft=Math.min(previousX,scroller.scrollWidth-scroller.clientWidth);
    volumeFirst=false;
  }
