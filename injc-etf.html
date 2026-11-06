@@ -172,7 +172,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
 <link rel="stylesheet" href="./injc-etf-market-terminal-20261105.css?v=etf-session-inspect-20261106a">
-<link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=netflow-volume-20261106final">
+<link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=netflow-volume-20261106value1">
 </head>
 <body>
 <div class="etf-shell">
@@ -300,7 +300,22 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
       <div class="injc-volume-empty" id="etfVolumeEmpty" data-it="In attesa di sedute con volume riportato" data-en="Awaiting sessions with reported traded volume">In attesa di sedute con volume riportato</div>
       <div class="injc-volume-tooltip" id="etfVolumeTooltip" hidden><strong></strong><small></small></div>
     </div>
-    <div class="injc-volume-foot"><small id="etfVolumeSourceLabel" data-it="In attesa dei dati sulle quote negoziate" data-en="Awaiting share trading volume">In attesa dei dati sulle quote negoziate</small><small data-it="Quote negoziate sul mercato · non afflussi del fondo" data-en="Exchange-traded shares · not fund inflows">Quote negoziate sul mercato · non afflussi del fondo</small></div>
+    <div class="injc-volume-summary" id="etfVolumeValuation" aria-label="Riepilogo del volume negoziato">
+       <div class="injc-volume-metric">
+         <span data-it="SHARES SCAMBIATE" data-en="SHARES TRADED">SHARES SCAMBIATE</span>
+         <strong id="etfVolumeSummaryShares">—</strong>
+       </div>
+       <div class="injc-volume-metric injc-volume-metric-highlight">
+         <span data-it="CONTROVALORE STIMATO" data-en="EST. TRADED VALUE">CONTROVALORE STIMATO</span>
+         <strong id="etfVolumeSummaryNotional">—</strong>
+       </div>
+       <div class="injc-volume-metric">
+         <span data-it="PREZZO DI RIFERIMENTO" data-en="REFERENCE PRICE">PREZZO DI RIFERIMENTO</span>
+         <strong id="etfVolumeSummaryPrice">—</strong>
+       </div>
+     </div>
+     <p class="injc-volume-valuation-note" id="etfVolumeValuationNote" data-it="Stima: numero di quote × prezzo INJC rilevato nella stessa seduta. Non è il controvalore effettivo degli scambi né un afflusso al fondo." data-en="Estimate: shares × INJC reference price from the same session. Not actual traded turnover or fund inflows.">Stima: numero di quote × prezzo INJC rilevato nella stessa seduta. Non è il controvalore effettivo degli scambi né un afflusso al fondo.</p>
+     <div class="injc-volume-foot"><small id="etfVolumeSourceLabel" data-it="In attesa dei dati sulle quote negoziate" data-en="Awaiting share trading volume">In attesa dei dati sulle quote negoziate</small><small data-it="Quote negoziate sul mercato · non afflussi del fondo" data-en="Exchange-traded shares · not fund inflows">Quote negoziate sul mercato · non afflussi del fondo</small></div>
   </div>
   <div class="injc-flow-foot"><span id="etfFlowVerified" aria-live="polite" data-it="In attesa di report ufficiale dei flussi" data-en="Awaiting verified flows report">In attesa di report ufficiale dei flussi</span> <a id="etfFlowsSource" href="https://canaryetfs.com/injc/" target="_blank" rel="noopener noreferrer" hidden data-it="FONTE ↗" data-en="SOURCE ↗">FONTE ↗</a>
    <div data-it="Inflow/outflow indicano nuove sottoscrizioni e rimborsi, non acquisti e vendite sul mercato secondario. Le barre si valorizzano soltanto con una fonte giornaliera verificata." data-en="Inflows/outflows reflect creations and redemptions, not secondary-market buying and selling. Bars populate only from verified daily fund flow reports.">Inflow/outflow indicano nuove sottoscrizioni e rimborsi, non acquisti e vendite sul mercato secondario. Le barre si valorizzano soltanto con una fonte giornaliera verificata.</div>
@@ -317,8 +332,8 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <footer class="brand-footer"><strong>INJ NODE</strong> / BY B CAPITAL GROUP</footer>
 </main>
 </div>
-<script defer src="./injc-etf-flows-volume-20261106.js?v=netflow-volume-20261106final"></script>
-<script defer src="./injc-etf-market-terminal-20261105.js?v=netflow-volume-20261106final"></script>
+<script defer src="./injc-etf-flows-volume-20261106.js?v=netflow-volume-20261106value1"></script>
+<script defer src="./injc-etf-market-terminal-20261105.js?v=netflow-volume-20261106value1"></script>
 <script defer src="./injc-etf-session-inspector-20261106.js?v=etf-session-inspect-20261106a"></script>
 
 </body>
