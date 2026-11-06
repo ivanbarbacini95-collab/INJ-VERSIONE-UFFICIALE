@@ -585,36 +585,16 @@
      :tr('Flussi non pubblicati/verificati · nuove colonne per ogni seduta Nasdaq','Fund flows not yet published/verified · one new set of columns each Nasdaq session'));
    $('etfFlowsSource').hidden=!lastVerified;
    if(lastVerified)$('etfFlowsSource').href=lastVerified.source;
-   const el=$('etfFlowHistory');if(!el)return;
-   const oldScroll=el.scrollLeft,first=plottedFlowsFirstTime;
-   const all=Array.from(byDate.values()).filter(r=>dateKeys.includes(r.date));
-   const max=Math.max(1,...all.map(r=>Math.max(r.inflowUsd,r.outflowUsd)));
-   const todayLabel=tr('OGGI','TODAY');
-   const frag=document.createDocumentFragment();
-   for(const key of dateKeys){
-     const row=byDate.get(key),label=key.slice(8)+'/'+key.slice(5,7);
-     const group=document.createElement('div');group.className='injc-flow-day';group.dataset.day=key;group.classList.toggle('is-current',key===today);
-     group.setAttribute('aria-label',key+' · '+(row?'Inflow '+shortUsd(row.inflowUsd)+'; Outflow '+shortUsd(row.outflowUsd):tr('flussi non disponibili','fund flows unavailable')));
-     group.title=group.getAttribute('aria-label');
-     const bars=document.createElement('div');bars.className='injc-flow-columns';
-     for(const side of ['inflow','outflow']){
-       const bar=document.createElement('i');bar.className='injc-flow-column '+side;
-       if(row){
-         const value=side==='inflow'?row.inflowUsd:row.outflowUsd;
-         bar.style.height=(value===0?'3px':Math.max(6,Math.min(100,value/max*100)).toFixed(1)+'%');
-         bar.classList.toggle('is-zero',value===0);
-       }else{bar.style.height='64px';bar.classList.add('is-pending');}
-       bars.appendChild(bar);
-     }
-     group.appendChild(bars);
-     const date=document.createElement('span');date.className='injc-flow-date';date.textContent=label;group.appendChild(date);
-     const state=document.createElement('small');state.className='injc-flow-day-state';state.textContent=row?'✓':key===today?todayLabel:'·';group.appendChild(state);
-     frag.appendChild(group);
+   // Signed flow renderer uses verified daily fund reports only.
+   // Price and traded-share volume are intentionally separate data streams.
+   if(typeof window.__injcEtfFlowsRender==='function'){
+     window.__injcEtfFlowsRender({
+       dateKeys,
+       rows:dateKeys.map(key=>byDate.get(key)||null),
+       today,
+       source:flowsHistory
+     });
    }
-   el.replaceChildren(frag);
-   if(first){el.scrollLeft=el.scrollWidth;plottedFlowsFirstTime=false;}
-   else el.scrollLeft=Math.min(oldScroll,Math.max(0,el.scrollWidth-el.clientWidth));
-   setText('etfFlowsSummary',tr(dateKeys.length+' sedute dal lancio · '+byDate.size+' con dati verificati',dateKeys.length+' sessions since listing · '+byDate.size+' with verified flows'));
    flowDayKey=today;
  }
  async function refreshFlows(){
