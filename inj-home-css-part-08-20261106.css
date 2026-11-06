@@ -1,0 +1,2195 @@
+/* INJ Node Home CSS part 8 — ordered cascade. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500;600;700&family=Oxanium:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Rubik:wght@400;500;600;700&display=swap");
+
+/* ./info-card-density-20261029.css?v=20261029compact1 */
+/* INJ Node · compact informative cards, 29 Oct 2026
+   Keeps existing typography scale, 2-column Home launcher, charts, data, click
+   targets and Wallet/Workspace persistence. Compacts DATA-only cards by
+   reducing internal whitespace; content may expand naturally when required. */
+
+/* DASHBOARD — wallet balances and APR information, not price-chart panels. */
+html[data-inj-page="index"] body .app-shell #top .metrics-grid > .data-card.metric-card,
+html[data-inj-page="index"] body.dashboard-scroll-ready > .app-shell main#top > .metrics-grid > .data-card.metric-card{
+  box-sizing:border-box!important;
+  height:auto!important;
+  min-height:clamp(86px,6vw,106px)!important;
+  max-height:none!important;
+  padding:clamp(10px,.9vw,14px)!important;
+  align-content:center!important;
+  gap:clamp(3px,.4vw,6px)!important;
+}
+html[data-inj-page="index"] body .app-shell #top
+.metrics-grid > .data-card.metric-card .metric-value{
+  margin-top:0!important;
+  margin-bottom:0!important;
+  line-height:1.13!important;
+}
+html[data-inj-page="index"] body .app-shell #top
+.metrics-grid > .data-card.metric-card .card-label{
+  min-height:0!important;
+  line-height:1.25!important;
+}
+html[data-inj-page="index"] body .app-shell #top
+.metrics-grid > .data-card.metric-card > small{
+  line-height:1.25!important;
+}
+/* Multi-wallet summary: prevent label/value rails from becoming tall boxes. */
+html[data-inj-page="index"] body .app-shell #aggregateSection:not(.collapsed)
+> .aggregate-metric{
+  min-height:clamp(72px,5vw,96px)!important;
+  height:auto!important;
+  padding:9px 11px!important;
+  gap:4px!important;
+}
+html[data-inj-page="index"] body .app-shell #aggregateSection:not(.collapsed)
+> .aggregate-metric > strong{
+  margin-top:2px!important;
+  line-height:1.15!important;
+}
+
+/* Dashboard's small estimate cards — leave the target and progress bar visible. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid{
+  margin-top:clamp(9px,1vw,14px)!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard
+.reward-rate-grid > div{
+  box-sizing:border-box!important;
+  min-height:clamp(77px,5.7vw,96px)!important;
+  height:auto!important;
+  padding:10px 12px!important;
+  gap:4px!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard
+.reward-rate-grid > div > strong{
+  margin-top:0!important;
+  margin-bottom:0!important;
+  line-height:1.16!important;
+}
+html[data-inj-page="index"] body .app-shell :is(#yieldCard,#targetCard).data-card{
+  padding:clamp(12px,1vw,17px)!important;
+}
+html[data-inj-page="index"] body .app-shell
+:is(#yieldCard,#targetCard) .section-heading{
+  margin-bottom:clamp(6px,.7vw,10px)!important;
+}
+
+/* LIVE VIEW — smaller statistical boxes, closer labels/values. Main live price
+   remains prominent, controls stay untouched, and notches retain safe areas. */
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+  row-gap:clamp(10px,1.95vh,24px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog
+:is(.focus-display-price-block,.focus-display-worth-block){
+  row-gap:clamp(4px,.75vh,9px)!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats{
+  min-height:0!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats > div{
+  box-sizing:border-box!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:7px clamp(6px,1.2vw,10px)!important;
+  gap:3px!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats strong,
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats span{
+  line-height:1.2!important;
+}
+html[data-inj-page="index"] body #focusDisplayDialog .focus-display-range{
+  padding-top:2px!important;
+  row-gap:7px!important;
+}
+@media(max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+   row-gap:clamp(9px,1.55vh,17px)!important;
+ }
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats{
+   width:min(88vw,500px)!important;
+   max-width:100%!important;
+ }
+}
+/* On short landscape viewports avoid forcing cards taller than their text. */
+@media(orientation:landscape) and (max-height:720px){
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-content{
+   row-gap:8px!important;
+ }
+ html[data-inj-page="index"] body #focusDisplayDialog .focus-display-stats > div{
+   padding:6px 8px!important;
+ }
+}
+
+/* Desktop-only Home information strip; never change primary Home launcher. */
+@media(min-width:800px){
+ html[data-inj-page="index"] body #entryGate
+ .entry-gate-shell:not(.first-access) .entry-desktop-metric{
+   box-sizing:border-box!important;
+   min-height:clamp(78px,6vh,98px)!important;
+   height:auto!important;
+   padding:clamp(10px,.95vw,15px)!important;
+   gap:4px!important;
+   align-content:center!important;
+ }
+}
+
+/* TREASURY — detail/account metric strip, not the graph/chart panels. */
+html[data-inj-page="treasury"] body
+.treasury-metrics .treasury-metric{
+  box-sizing:border-box!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:clamp(9px,.85vw,12px) clamp(10px,.9vw,14px)!important;
+  gap:3px!important;
+}
+html[data-inj-page="treasury"] body
+.treasury-allocation-metrics .treasury-metric{
+  padding-block:clamp(8px,.8vw,12px)!important;
+}
+html[data-inj-page="treasury"] body
+.treasury-allocation-metrics .treasury-metric:first-child{
+  padding-left:0!important;
+}
+html[data-inj-page="treasury"] body
+.treasury-allocation-metrics .treasury-metric:last-child{
+  padding-right:0!important;
+}
+
+/* LIVE REWARDS — summary metric cells; retain the live counter and orbit. */
+html[data-inj-page="live-rewards"] body
+.rewards-total-metrics{
+  margin-top:clamp(10px,1.2vw,15px)!important;
+}
+html[data-inj-page="live-rewards"] body
+.rewards-total-metrics > div{
+  box-sizing:border-box!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:8px clamp(9px,.95vw,13px)!important;
+  gap:3px!important;
+}
+
+/* Focus visibility and dynamic accessibility sizing take priority over density.
+   No overflow:hidden, text truncation, transforms or fixed card heights added. */
+
+
+/* ./home-signature-accents-20261029.css?v=20261029motion1 */
+/* INJ Node · Home signature accents & precision micro-motion · 29 Oct 2026
+   Decorative only: preserve Home navigation, copy, wallet state, sizes and themes.
+   Each destination has a soft individual hue and a different icon detail motion. */
+.entry-actions.entry-flat-v44 > .entry-action {
+  --home-card-tone:#a2bdc3;
+  --home-motion-speed:8s;
+}
+html[data-inj-page="index"] #entryDashboardButton       {--home-card-tone:#81b8af;--home-motion-speed:8.4s}
+html[data-inj-page="index"] #entryLiveButton            {--home-card-tone:#83b7cd;--home-motion-speed:6.7s}
+html[data-inj-page="index"] #entryLiveChartsButton      {--home-card-tone:#9daddb;--home-motion-speed:7.6s}
+html[data-inj-page="index"] #entryOrderBookButton       {--home-card-tone:#9dbbd0;--home-motion-speed:6.9s}
+html[data-inj-page="index"] #entryPerformanceButton     {--home-card-tone:#b6a1d1;--home-motion-speed:8.1s}
+html[data-inj-page="index"] #entryConverterButton       {--home-card-tone:#b6bea0;--home-motion-speed:9.2s}
+html[data-inj-page="index"] #entryMarketButton          {--home-card-tone:#83beae;--home-motion-speed:7.2s}
+html[data-inj-page="index"] #entryLiveRewardsButton     {--home-card-tone:#b2c58d;--home-motion-speed:7.9s}
+html[data-inj-page="index"] #entryCommandCenterButton   {--home-card-tone:#9aa9d0;--home-motion-speed:6.8s}
+html[data-inj-page="index"] #entryComparisonButton      {--home-card-tone:#c5a8ba;--home-motion-speed:8.7s}
+html[data-inj-page="index"] #entryVisualizeWealthButton {--home-card-tone:#c7b18e;--home-motion-speed:9s}
+html[data-inj-page="index"] #entryRewardLadderButton    {--home-card-tone:#a4bd95;--home-motion-speed:7.5s}
+html[data-inj-page="index"] #entryMarketEventsButton    {--home-card-tone:#c7ae99;--home-motion-speed:7.4s}
+html[data-inj-page="index"] #entryMacroCalendarButton  {--home-card-tone:#c7ae99;--home-motion-speed:7.4s}
+html[data-inj-page="index"] #entryInjcEtfButton         {--home-card-tone:#b3aacb;--home-motion-speed:8.3s}
+html[data-inj-page="index"] #entryWorkspaceButton       {--home-card-tone:#9fbec2;--home-motion-speed:7.8s}
+html[data-inj-page="index"] #entryFreedomButton         {--home-card-tone:#c2ac9b;--home-motion-speed:9.5s}
+html[data-inj-page="index"] #entryTreasuryButton        {--home-card-tone:#c6b08f;--home-motion-speed:10s}
+
+/* A whisper of color in the card material rather than solid colored panels.
+   Mix with the selected theme's surface so dark/light palettes remain intact. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton) {
+  background:linear-gradient(145deg,
+    color-mix(in srgb,var(--surface,#17242b) 92%,var(--home-card-tone) 8%) 0%,
+    color-mix(in srgb,var(--surface,#17242b) 96%,var(--home-card-tone) 4%) 100%)!important;
+  border-color:color-mix(in srgb,var(--line,#52616a) 73%,var(--home-card-tone) 27%)!important;
+}
+@media (hover:hover) and (pointer:fine){
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+  > .entry-action:not(#entryTreasuryButton):hover {
+    background:linear-gradient(145deg,
+      color-mix(in srgb,var(--surface,#17242b) 87%,var(--home-card-tone) 13%),
+      color-mix(in srgb,var(--surface,#17242b) 94%,var(--home-card-tone) 6%))!important;
+    border-color:color-mix(in srgb,var(--line,#52616a) 57%,var(--home-card-tone) 43%)!important;
+  }
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:not(#entryTreasuryButton):active {
+  background:color-mix(in srgb,var(--surface,#17242b) 86%,var(--home-card-tone) 14%)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action:focus-visible {
+  outline-color:var(--home-card-tone)!important;
+}
+
+/* Restrict accent to decorative icon artwork, never data values or labels. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > :is(.inj-tile-scene.inj-luxury-icon,.inj-more-market-symbol,
+                       .freedom-entry-emblem,.entry-action-icon) {
+  color:color-mix(in srgb,var(--home-card-tone) 61%,var(--text,#e6eff1) 39%)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+> .entry-action > .inj-luxury-icon .pi-motion {
+  transform-box:fill-box;
+  transform-origin:center;
+  will-change:auto;
+}
+
+/* Distinct micro-motion per icon: calm, staggered, no flashing or giant rotation. */
+@keyframes inj-home-detail-pulse {
+  0%,100%{opacity:.42} 48%,60%{opacity:1}
+}
+@keyframes inj-home-detail-rise {
+  0%,100%{translate:0 1px;opacity:.66} 50%{translate:0 -1.7px;opacity:1}
+}
+@keyframes inj-home-detail-slide {
+  0%,100%{translate:-1.4px 0;opacity:.65} 50%{translate:1.6px 0;opacity:1}
+}
+@keyframes inj-home-detail-turn {
+  0%,100%{rotate:-5deg;opacity:.68} 50%{rotate:5deg;opacity:1}
+}
+@keyframes inj-home-detail-bloom {
+  0%,100%{scale:.96;opacity:.62} 50%{scale:1.05;opacity:1}
+}
+@keyframes inj-home-detail-trace {
+  0%,100%{stroke-dashoffset:0;opacity:.68}
+  50%{stroke-dashoffset:-10;opacity:1}
+}
+@keyframes inj-home-detail-tick {
+  0%,68%,100%{opacity:.44} 12%,28%{opacity:1}
+}
+@keyframes inj-home-detail-candle {
+  0%,100%{scale:1 .94;opacity:.75} 50%{scale:1 1.05;opacity:1}
+}
+@keyframes inj-home-detail-orbit {
+  0%,100%{stroke-dashoffset:0;opacity:.56} 50%{stroke-dashoffset:14;opacity:.94}
+}
+/* Replace the old uniform 8-second highlight only on icon detail paths. */
+html[data-inj-page="index"] body #entryGate#entryGate
+.entry-actions.entry-flat-v44 > .entry-action .inj-luxury-icon .pi-motion {
+  animation:inj-home-detail-pulse var(--home-motion-speed,8s) ease-in-out infinite!important;
+  animation-delay:var(--inj-icon-delay,-1s)!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryLiveButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryLiveRewardsButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryRewardLadderButton .pi-motion{
+  animation-name:inj-home-detail-rise!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryOrderBookButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryComparisonButton .pi-motion{
+  animation-name:inj-home-detail-slide!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryConverterButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryInjcEtfButton .pi-motion{
+  animation-name:inj-home-detail-turn!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryWorkspaceButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryVisualizeWealthButton .pi-motion{
+  animation-name:inj-home-detail-bloom!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryLiveChartsButton .pi-motion{
+  animation-name:inj-home-detail-candle!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryPerformanceButton .pi-motion{
+  stroke-dasharray:8 3;
+  animation-name:inj-home-detail-trace!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryCommandCenterButton .pi-motion,
+html[data-inj-page="index"] body #entryGate#entryGate #entryDashboardButton .pi-motion{
+  animation-name:inj-home-detail-tick!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #entryTreasuryButton .pi-motion{
+  stroke-dasharray:10 7;
+  animation-name:inj-home-detail-orbit!important;
+}
+/* Special Home destinations keep their own SVG animation systems intact:
+   Market Events' symbol, Financial Freedom's emblem, B Capital's orbit. */
+@media (prefers-reduced-motion:reduce){
+  html[data-inj-page="index"] body #entryGate#entryGate
+  .entry-actions.entry-flat-v44 > .entry-action .inj-luxury-icon .pi-motion {
+    animation:none!important;translate:none!important;scale:1!important;
+    rotate:0deg!important;opacity:1!important;
+  }
+}
+
+
+/* ./inj-inter-light-20261029.css?v=interlight-global-1 */
+/* INJ NODE — Inter Light typography, entire application
+   2026-10-29 | Layout-safe layer: font families/weights only.
+   Loaded last on all application pages; no dimensions, data, navigation,
+   chart drawing, translations, animations or event handlers are modified. */
+
+
+:root {
+  --inj-inter-light-font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  --inj-minimal-font:var(--inj-inter-light-font);
+  --inj-node-terminal-font:var(--inj-inter-light-font);
+  --inj-home-title-face:var(--inj-inter-light-font);
+  --inj-home-description-face:var(--inj-inter-light-font);
+  --inj-editorial-face:var(--inj-inter-light-font);
+  /* Keep machine identifiers/code monospaced to avoid confusing characters. */
+  --inj-minimal-mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+}
+html, html body {
+  font-family:var(--inj-inter-light-font)!important;
+  font-weight:300!important;
+  font-variant-numeric:tabular-nums lining-nums;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+/* Higher specificity than the historical Supply Mono/editorial resets.
+   Exclude SVG and icon fonts so graph axes and pictograms stay unchanged.
+   Do not alter size, line height, wrapping, shadows or box layout. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font) {
+  font-family:var(--inj-inter-light-font)!important;
+  font-weight:300!important;
+  font-synthesis-weight:none;
+  font-variant-numeric:tabular-nums lining-nums;
+  -webkit-font-smoothing:antialiased;
+}
+/* Retain regular-weight detail at very small sizes for contrast on phones
+   and dense trading tables. Labels/figures remain Inter, never bold. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):is(
+  button,input,textarea,select,option,label,small,
+  .inj-tile-description,.inj-events-next-text,
+  .caption,.subtitle,.description,.hint,.note,
+  .market-asset-price,.market-ticker,.market-table,
+  .market-heatmap-card,.heatmap-card,.heatmap-card *,
+  .levels,.levels *, .book-meta,.columns,
+  .ws-data-value,.ws-section-value,.ws-chart-ticks,.ws-book,
+  .focus-display-dialog .focus-display-label,
+  .focus-display-dialog .focus-display-live,
+  .focus-display-dialog .focus-display-wallet,
+  .focus-display-dialog .focus-display-system,
+  .focus-display-dialog .focus-display-stats > div > span,
+  .focus-display-dialog .focus-display-range-copy,
+  .entry-desktop-metrics small,.entry-overview-stats small,
+  .treasury-metric small,.rewards-total-metrics small
+){
+  font-family:var(--inj-inter-light-font)!important;
+  font-weight:400!important;
+  font-synthesis-weight:none;
+}
+/* Slim Inter Light on big quotes, dashboards, Treasury, Market and Live View.
+   Removes the compressed appearance of the previous numerical typography. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):is(
+  #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,
+  #focusDisplayPrice,#focusDisplayWorth,#focusDisplayTotalInj,
+  #chartHeaderPrice,#headerLivePrice,#bookLivePrice,
+  #treasuryTotalMajor,#treasuryTotalDecimals,#treasuryTotalWorth,
+  #treasuryHeaderPrice,#treasuryPnl24Value,
+  #rewardsTotal,#rewardsTotalFiat,
+  #ccLivePrice,#ccNetWorth,#ccTotalInj,#ccTotalPnl,
+  #capSourcePrice,#capProjectedPrice,
+  .app-shell .hero-number,.app-shell .hero-secondary,
+  .app-shell .metric-card .metric-value,
+  .focus-display-dialog .focus-display-primary > strong,
+  .ws-main-price,.ws-price-value,.ws-price-main,.ws-hero-price,
+  .entry-market-mini > strong,.entry-overview-worth > strong,
+  .treasury-total-display > strong,.market-price-line > strong
+){
+  font-weight:300!important;
+  font-stretch:normal!important;
+  letter-spacing:-.008em!important;
+}
+/* Wallet addresses, hashes and technical code must remain distinguishable. */
+html body :is(*,#__injInterLight#__injInterLight#__injInterLight#__injInterLight):is(
+  code,pre,kbd,samp,.tx-hash,.wallet-address,.address-hash,[data-monospace]
+){
+  font-family:var(--inj-minimal-mono)!important;
+  font-weight:400!important;
+  letter-spacing:0!important;
+}
+
+
+/* ./inj-font-switcher-20261029.css?v=geistbold8 */
+/* INJ Node · eight font choices. Official matches the approved Supply Mono / IBM Plex stack and heavier weights.
+   Supply Mono is commercial and is NOT bundled. Remaining four faces are SIL OFL.
+   This stylesheet loads AFTER historical overrides and intentionally wins them. */
+
+@font-face{font-family:"INJ Rubik";src:url("./assets/fonts/inj-rubik.woff2") format("woff2");font-style:normal;font-weight:300 900;font-display:swap}
+@font-face{font-family:"INJ Geist";src:url("./assets/fonts/inj-geist.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:"INJ Space Grotesk";src:url("./assets/fonts/inj-space-grotesk.woff2") format("woff2");font-style:normal;font-weight:400 600;font-display:swap}
+@font-face{font-family:"INJ IBM Plex Mono";src:url("./assets/fonts/inj-ibm-plex-mono-regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"INJ IBM Plex Mono";src:url("./assets/fonts/inj-ibm-plex-mono-medium.woff2") format("woff2");font-style:normal;font-weight:500 600;font-display:swap}
+@font-face{font-family:"INJ Oxanium";src:url("./assets/fonts/inj-oxanium.woff2") format("woff2");font-style:normal;font-weight:400 600;font-display:swap}
+/* The official edition's supply-mono.css uses this exact family stack.
+   Supply Mono is a separately licensed, locally installed font (not bundled).
+   Its normal web fallback IBM Plex Mono is loaded in the 400–700 range. */
+html[data-inj-font="official"]{
+ --inj-chosen-face:"Supply Mono","PP Supply Mono","IBM Plex Mono","INJ IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:700;--inj-chosen-heading:700;--inj-chosen-detail:400;
+}
+html[data-inj-font="original"]{
+ --inj-chosen-face:"Supply Mono","PP Supply Mono","INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:500;
+}
+html[data-inj-font="inter-light"]{
+ --inj-chosen-face:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ --inj-chosen-weight:300;--inj-chosen-emphasis:300;--inj-chosen-heading:400;
+ --inj-chosen-detail:400;
+}
+html[data-inj-font="geist"]{
+ --inj-chosen-face:"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:600;
+}
+/* Full-app Geist Bold. 600 body for readability, 700 for data and headings;
+   detail remains 550 so small iPhone labels don't turn into black blocks. */
+html[data-inj-font="rubik-bold"]{
+ --inj-chosen-face:"INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:500;--inj-chosen-emphasis:700;--inj-chosen-heading:700;--inj-chosen-detail:500;
+}
+html[data-inj-font="geist-bold"]{
+ --inj-chosen-face:"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:600;--inj-chosen-emphasis:700;--inj-chosen-heading:700;
+ --inj-chosen-detail:550;
+}
+html[data-inj-font="space"]{
+ --inj-chosen-face:"INJ Space Grotesk","Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:500;
+}
+html[data-inj-font="plex"]{
+ --inj-chosen-face:"INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:500;
+}
+html[data-inj-font="oxanium"]{
+ --inj-chosen-face:"INJ Oxanium","Oxanium","Inter",sans-serif;
+ --inj-chosen-weight:400;--inj-chosen-emphasis:500;--inj-chosen-heading:600;
+}
+html[data-inj-font]{
+ --inj-inter-light-font:var(--inj-chosen-face);
+ --inj-minimal-font:var(--inj-chosen-face);
+ --inj-minimal-mono:var(--inj-chosen-face);
+ --inj-node-terminal-font:var(--inj-chosen-face);
+ --inj-home-title-face:var(--inj-chosen-face);
+ --inj-home-description-face:var(--inj-chosen-face);
+ --inj-editorial-face:var(--inj-chosen-face);
+ font-family:var(--inj-chosen-face)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace#__injFace):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.iconfont):not(.icon-font){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-weight)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+ -webkit-font-smoothing:antialiased;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace#__injFace):is(
+ h1,h2,h3,h4,h5,h6,strong,b,th,
+ .menu-font-title,.menu-action-copy strong,.entry-action strong,.entry-gate-title,
+ .hero-number,.hero-secondary,.metric-value,.number-roll-text,.number-roll-static-digit,
+ .number-roll-digit,.number-roll-digit-layer,[id$="Price"],[id$="Worth"],[id$="Pnl"],
+ [id$="PnL"],[id$="Value"],.market-price,.ws-main-price,.ws-price-main,
+ .ws-hero-price,.cc-now-price,.cc-price,.treasury-total-display,.rewards-total-value
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-emphasis)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace):is(h1,h2,h3,h4,h5,h6,.home-safe-heading h1,.entry-gate-title){
+ font-weight:var(--inj-chosen-heading)!important;
+}
+html[data-inj-font] body :is(*,#__injFace#__injFace#__injFace#__injFace):is(
+ button,input,textarea,select,option,label,small,.caption,.subtitle,.description,.hint,.note,
+ code,pre,kbd,samp,.tx-hash,.wallet-address,.address-hash,[data-monospace],
+ .market-table,.market-asset-price,.ws-data-value,.ws-section-value,.ws-chart-ticks,.book-meta
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-detail,var(--inj-chosen-weight))!important;
+}
+/* Preserve monospace identifiers in restored Inter Light, as before the redesign. */
+html[data-inj-font="inter-light"] body :is(*,#__injFace#__injFace#__injFace#__injFace#__injFace#__injFace):is(code,pre,kbd,samp,.tx-hash,.wallet-address,.address-hash,[data-monospace]){
+ font-family:"INJ IBM Plex Mono","IBM Plex Mono",ui-monospace,monospace!important;
+ font-weight:400!important;
+}
+
+/* Restore the full-bodied official hierarchy without changing font sizes,
+   positions, cards, chart geometry, or any functional JS. */
+html[data-inj-font="official"] body :is(*,#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial):is(
+ #entryMarketPrice,#entryWalletWorth,#entryInsightPnl,#headerLivePrice,#bookLivePrice,
+ #ccLivePrice,#ccNetWorth,#ccTotalInj,#ccTotalPnl,#treasuryTotalMajor,#treasuryTotalDecimals,
+ #treasuryTotalWorth,#rewardsTotal,#rewardsTotalFiat,.hero-number,.hero-secondary,
+ .ws-main-price,.ws-price-main,.ws-hero-price,.market-price,.metric-value,
+ .number-roll-text,.number-roll-static-digit,.number-roll-digit,.number-roll-digit-layer
+){
+ font-weight:700!important;
+}
+html[data-inj-font="official"] body :is(*,#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial):is(
+ #entryInsightPnl,#treasuryTotalMajor,#rewardsTotal,.entry-price-pnl strong
+){
+ font-weight:800!important;
+}
+html[data-inj-font="official"][data-inj-page="index"] body #entryGate .entry-actions strong.inj-home-tile-title{
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:600!important;
+}
+html[data-inj-font="official"] body :is(*,#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial#__injOfficial):is(
+ .inj-tile-description,.menu-font-description,small,.caption,.subtitle,.description,.hint,.note
+){
+ font-weight:400!important;
+}
+
+/* Change SVG chart text, but never replace SVG icon/path drawing. */
+html[data-inj-font] body svg :is(text,tspan){font-family:var(--inj-chosen-face)!important;font-weight:var(--inj-chosen-weight)!important}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control{
+ width:100%!important;min-width:0!important;grid-column:1/-1!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;margin:0!important;padding:0!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control>summary{list-style:none!important;cursor:pointer!important}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control>summary::-webkit-details-marker{display:none}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control .menu-font-chevron{
+ width:16px;height:16px;flex:0 0 16px;transition:transform .2s ease;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control[open] .menu-font-chevron{transform:rotate(180deg)}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-control .menu-action-copy{flex:1;min-width:0}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-current{
+ color:var(--muted,var(--text,#cedcdd));font-size:10px!important;letter-spacing:0!important;
+ font-weight:400!important;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-options{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px 0 4px;margin:0;
+ background:transparent!important;border:0!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;gap:6px;
+ min-width:0;min-height:102px;padding:11px 10px!important;margin:0!important;text-align:left!important;cursor:pointer;
+ border:1px solid color-mix(in srgb,var(--line,#64747a) 70%,transparent)!important;border-radius:13px!important;
+ background:color-mix(in srgb,var(--surface,#152229) 94%,var(--text,#dbe8e9) 6%)!important;
+ box-shadow:none!important;transition:background-color .2s ease,border-color .2s ease!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option[aria-pressed="true"]{
+ background:color-mix(in srgb,var(--surface,#152229) 90%,var(--accent,#92c6bf) 10%)!important;
+ border-color:color-mix(in srgb,var(--line,#63737a) 30%,var(--accent,#a1cec8) 70%)!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option:focus-visible{outline:2px solid var(--accent,#91beb7);outline-offset:2px}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-name{
+ display:flex;align-items:flex-start;justify-content:space-between;gap:4px;
+ font-size:11.5px!important;line-height:1.2!important;color:var(--text,#edf4f5)!important;overflow-wrap:anywhere;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-check{
+ opacity:0;flex:none;color:var(--accent,#b4d9d5);font-size:14px!important;line-height:1!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-option[aria-pressed="true"] .menu-font-check{opacity:1}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-sample{
+ display:block;max-width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ font-size:16px!important;line-height:1.3!important;letter-spacing:0!important;
+ color:var(--text,#dfe8e8)!important;font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-description{
+ display:block;color:var(--muted,#a9b9bd)!important;font-size:10px!important;line-height:1.4!important;
+ font-weight:400!important;
+}
+html[data-inj-page="index"] body #headerMenuPanel .menu-font-note{
+ color:var(--muted,#a9b9bd)!important;font-size:10px!important;font-weight:400!important;
+ line-height:1.4!important;margin:8px 2px 0!important;padding:0!important;
+}
+@media(max-width:360px){
+ html[data-inj-page="index"] body #headerMenuPanel .menu-font-options{grid-template-columns:1fr}
+ html[data-inj-page="index"] body #headerMenuPanel .menu-font-option{min-height:80px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body #headerMenuPanel .menu-font-control *{transition:none!important}
+}
+
+/* INJ Node · selected-font consistency bridge (2026-11-01) */
+/* Text semantics are shared by Dashboard, Home, Market, all standalone pages
+   and the same-origin Market iframe. Respect the selected Settings font; don't
+   hardcode a second typeface on nested tracker titles or native inputs. */
+html[data-inj-font] body :is(
+  h1,h2,h3,h4,h5,h6,[role="heading"],
+  .section-heading,.section-heading h2,.section-heading .card-label,
+  .tracker-collapse-trigger,.tracker-collapse-trigger h2,.tracker-collapse-trigger .card-label,
+  .card-heading,.card-title,.card-label,.metric-label,.section-label,
+  .tracker-panel,.tracker-panel :is(strong,span,small,p),
+  .entry-action,.inj-home-tile-title,.inj-tile-description,
+  .menu-action,.menu-action-copy,.menu-font-title,
+  .reward-heading-tools,.target-input-label,
+  .market-table,.market-ticker,.market-asset-price,.market-price,
+  .heatmap-card,.ws-card-heading,.ws-section-title,
+  button,input,textarea,select,option,label
+){
+ font-family:var(--inj-chosen-face)!important;
+ font-stretch:normal;
+}
+/* Production rate, Next INJ target and Validator now use the same heading
+   face, weight, kerning and tracking, without changing card geometry. */
+html[data-inj-font] body .analytics-grid .section-heading h2,
+html[data-inj-font] body .app-shell .section-heading :is(h2,h3){
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-heading,var(--inj-chosen-weight,400))!important;
+ font-stretch:normal!important;
+ font-kerning:normal;
+ letter-spacing:.015em!important;
+}
+/* Preserve a separate label hierarchy without introducing another font. */
+html[data-inj-font] body .app-shell .section-heading .card-label,
+html[data-inj-font] body .app-shell .tracker-collapse-trigger .card-label{
+ font-family:var(--inj-chosen-face)!important;
+ font-weight:var(--inj-chosen-detail,var(--inj-chosen-weight,400))!important;
+}
+/* Text drawn by SVG remains readable; do not change SVG icons or paths. */
+html[data-inj-font] body svg :is(text,tspan,textPath){
+ font-family:var(--inj-chosen-face)!important;
+}
+
+/* INJ Node · Production Rate: INJ produced + fiat countervalue side by side.
+   Only presentation changes; values are still calculated by app.js. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:0!important;
+  width:100%;
+  min-width:0;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+  display:grid!important;
+  grid-template-columns:minmax(90px,.85fr) minmax(0,1.35fr) minmax(78px,.8fr)!important;
+  grid-template-rows:auto!important;
+  align-items:center!important;
+  column-gap:clamp(8px,1.25vw,20px)!important;
+  row-gap:0!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:72px!important;
+  box-sizing:border-box!important;
+  padding:clamp(13px,1.4vw,18px) clamp(12px,1.5vw,22px)!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {
+  grid-column:1!important;
+  grid-row:1!important;
+  justify-self:start!important;
+  align-self:center!important;
+  min-width:0!important;
+  margin:0!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-size:clamp(12px,1.1vw,15px)!important;
+  line-height:1.25!important;
+  letter-spacing:.04em!important;
+  color:var(--text,#e9f0f2)!important;
+  opacity:.86!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {
+  grid-column:2!important;
+  grid-row:1!important;
+  display:inline-flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:baseline!important;
+  justify-content:flex-end!important;
+  justify-self:end!important;
+  align-self:center!important;
+  gap:.28em!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  text-align:right!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  font-size:clamp(17px,1.45vw,24px)!important;
+  line-height:1.2!important;
+  letter-spacing:-.02em!important;
+  white-space:nowrap!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+  color:var(--text,#f3f7f8)!important;
+  opacity:1!important;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+/* app.js writes the numeric figure and INJ unit as separate spans;
+   explicitly keep both on one line rather than letting legacy styles stack them. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong.reward-estimate-value > :is(.reward-estimate-number,.reward-estimate-unit) {
+  display:inline!important;
+  position:static!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  line-height:inherit!important;
+  font-family:inherit!important;
+  font-size:1em!important;
+  font-weight:inherit!important;
+  color:inherit!important;
+  opacity:1!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong.reward-estimate-value > .reward-estimate-unit {
+  font-size:1em!important;
+  letter-spacing:0!important;
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {
+  grid-column:3!important;
+  grid-row:1!important;
+  justify-self:end!important;
+  align-self:center!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  text-align:right!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-size:clamp(17px,1.45vw,24px)!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  color:var(--text,#edf4f5)!important;
+  opacity:.9!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+@media (max-width:599px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    grid-template-columns:minmax(66px,.65fr) minmax(0,1.4fr) minmax(0,.88fr)!important;
+    column-gap:7px!important;
+    min-height:67px!important;
+    padding:13px 11px!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {
+    font-size:clamp(10.5px,2.9vw,12px)!important;
+    letter-spacing:.015em!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {
+    font-size:clamp(14px,3.8vw,18px)!important;
+    gap:.2em!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {
+    font-size:clamp(14px,3.8vw,18px)!important;
+  }
+}
+/* On the narrowest phones preserve full figures by moving only the period
+   label above the two amounts; INJ and fiat remain adjacent. */
+@media (max-width:359px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+    row-gap:5px!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {
+    grid-column:1 / -1!important;
+    grid-row:1!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {
+    grid-column:1!important;
+    grid-row:2!important;
+    justify-self:start!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {
+    grid-column:2!important;
+    grid-row:2!important;
+  }
+}
+@media (min-width:1600px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    min-height:80px!important;
+    padding:16px 22px!important;
+  }
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > span {font-size:15px!important}
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong {font-size:24px!important}
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small {font-size:24px!important}
+}
+
+
+/* Production Rate: make fiat countervalue glyphs exactly the same size as INJ.
+   Countervalues are rendered inside a number-roll wrapper whose nested spans
+   may retain legacy reduced font sizes. Set one shared size for both fields. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+  --inj-production-amount-size:clamp(15px,1.3vw,21px);
+}
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > :is(strong,small) {
+  font-size:var(--inj-production-amount-size)!important;
+  line-height:1.2!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+}
+/* Override any reduced size assigned to the USD rolling digits/number span. */
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small,
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > small *,
+html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div > strong.reward-estimate-value > :is(.reward-estimate-number,.reward-estimate-unit) {
+  font-size:var(--inj-production-amount-size)!important;
+  line-height:1.2!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,monospace))!important;
+  font-weight:var(--inj-chosen-emphasis,600)!important;
+  font-style:normal!important;
+}
+@media(max-width:599px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    --inj-production-amount-size:clamp(13px,3.4vw,16px);
+  }
+}
+@media(min-width:1600px) {
+  html[data-inj-page="index"] body .app-shell #yieldCard .reward-rate-grid > div {
+    --inj-production-amount-size:21px;
+  }
+}
+
+
+/* ./home-bottom-tabs-20261030.css?v=20261101-home-fixed5 */
+/* INJ Node · five-tab floating bottom navigation, based on the user's mockup.
+   Theme-aware. Does not edit chart mechanics, wallet data or other screens. */
+html[data-inj-page="index"] body > #injPrimaryBottomNav{
+ display:none!important;
+}
+html[data-inj-page="index"] body.entry-gate-open:not(
+ .boot-loading,.menu-overlay-open,.drawer-open,.inj-section-open,
+ .chart-overlay-open,.focus-display-open,.pulse-view-open,
+ .live-charts-open,.entry-live-launch,.inj-freedom-open
+):has(#entryGate.entry-gate.visible[aria-hidden="false"] .entry-gate-shell:not(.first-access)):not(:has(#injMarketEventsOverlay:not([hidden]),#injMarketPortal:not([hidden]),#injFreedomOverlay:not([hidden]),#converterView.open,#performanceTimelineView.open,dialog[open],.inj-content-frame))
+> #injPrimaryBottomNav{
+ display:grid!important;
+}
+#injPrimaryBottomNav{
+ position:fixed!important;
+ /* The dock stays above the scrolling Home; fullscreen sections are excluded
+    by the visibility selector, and native popover top-layer lifts it out of
+    transformed Safari stacking contexts when supported. */
+ z-index:2147483500!important;
+ left:50%!important;
+ right:auto!important;
+ top:auto!important;
+ bottom:max(10px,env(safe-area-inset-bottom,0px))!important;
+ transform:translateX(-50%)!important;
+ inset-block-start:auto!important;
+ inset-inline-end:auto!important;
+ box-sizing:border-box!important;
+ width:min(530px,calc(100% - 24px))!important;
+ height:72px!important;
+ grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ align-items:stretch!important;
+ gap:3px!important;
+ padding:6px!important;
+ margin:0!important;
+ border:1px solid color-mix(in srgb,var(--accent,#92dbc9) 20%,var(--line,#49605e))!important;
+ border-radius:23px!important;
+ background:color-mix(in srgb,var(--surface-strong,#0b1b1c) 94%,transparent)!important;
+ box-shadow:0 8px 32px rgba(0,0,0,.22),inset 0 1px 0 color-mix(in srgb,var(--text,#f1f9f5) 7%,transparent)!important;
+ -webkit-backdrop-filter:blur(14px)!important;
+ backdrop-filter:blur(14px)!important;
+ pointer-events:auto!important;
+ -webkit-tap-highlight-color:transparent;
+}
+#injPrimaryBottomNav .inj-bottom-tab{
+ display:flex!important;position:relative!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:4px!important;min-width:0!important;min-height:0!important;
+ padding:5px 1px!important;margin:0!important;
+ border:0!important;border-radius:17px!important;
+ background:transparent!important;box-shadow:none!important;
+ color:var(--muted,#a3b6b7)!important;
+ cursor:pointer!important;user-select:none!important;touch-action:manipulation!important;
+ transition:background-color .22s ease,color .22s ease,box-shadow .22s ease,transform .2s ease!important;
+}
+#injPrimaryBottomNav .inj-bottom-tab.is-active{
+ background:color-mix(in srgb,var(--accent,#7edac6) 13%,var(--surface,#112524))!important;
+ box-shadow:inset 0 0 16px color-mix(in srgb,var(--accent,#75e1cf) 5%,transparent)!important;
+ color:var(--accent,#90f1d7)!important;
+}
+#injPrimaryBottomNav .inj-bottom-tab:active{transform:scale(.96)!important}
+#injPrimaryBottomNav .inj-bottom-tab:focus-visible{outline:2px solid var(--accent,#8ceacb)!important;outline-offset:-2px}
+#injPrimaryBottomNav .inj-bottom-tab-icon{display:flex!important;align-items:center!important;justify-content:center!important;width:22px!important;height:22px!important}
+#injPrimaryBottomNav .inj-bottom-tab-icon svg{width:22px!important;height:22px!important;fill:none;stroke:currentColor;flex:none}
+#injPrimaryBottomNav .inj-bottom-tab-label{
+ display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-size:clamp(9.5px,2.75vw,11px)!important;font-weight:500!important;
+ line-height:1.15!important;letter-spacing:0!important;text-align:center!important;
+ white-space:nowrap!important;color:inherit!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+ padding-bottom:calc(122px + env(safe-area-inset-bottom,0px))!important;
+}
+/* Every tab shares the wallet selection rail, but the full wallet valuation,
+   live price card and microstats belong only to Home. */
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate :is(#entryOverview,#entryInsights,#entryDesktopMetrics,#injMarketTicker){
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-wallet-section{
+ margin-bottom:14px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #injTabHeading[hidden]{
+ display:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate #injTabHeading{
+ display:flex!important;align-items:flex-end!important;justify-content:space-between!important;
+ width:100%!important;min-width:0!important;grid-column:1/-1!important;grid-row:auto!important;
+ align-self:stretch!important;justify-self:stretch!important;
+ box-sizing:border-box!important;margin:4px 0 15px!important;padding:3px 1px 12px!important;
+ border-bottom:1px solid color-mix(in srgb,var(--line,#566866) 72%,transparent)!important;
+ background:none!important;
+}
+#injTabHeading .inj-tab-eyebrow{
+ font-size:10px!important;letter-spacing:.13em!important;font-weight:500!important;
+ color:var(--accent,#99d8c8)!important;opacity:.8;
+}
+#injTabHeading h2{
+ margin:7px 0 3px!important;padding:0!important;
+ font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+ font-weight:650!important;font-size:clamp(19px,4.7vw,25px)!important;
+ line-height:1.13!important;letter-spacing:.055em!important;color:var(--text,#f0f6f4)!important;
+}
+#injTabHeading p{
+ margin:0!important;padding:0!important;font-size:clamp(10px,2.9vw,12px)!important;
+ line-height:1.4!important;color:var(--muted-strong,var(--muted,#adc1c0))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ grid-auto-flow:row!important;gap:11px!important;width:100%!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > #entryMacroCalendarButton.entry-action{
+ display:flex!important;position:relative!important;
+ flex-flow:row nowrap!important;align-items:center!important;justify-content:flex-start!important;
+ grid-column:1/-1!important;grid-row:auto!important;
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ height:76px!important;min-height:76px!important;max-height:76px!important;
+ padding:13px 16px!important;margin:0!important;gap:13px!important;
+ border-radius:19px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8ad3c6) 22%,var(--line,#52615f))!important;
+ background:color-mix(in srgb,var(--surface,#102221) 88%,transparent)!important;
+ box-shadow:0 2px 12px rgba(0,0,0,.06)!important;text-align:left!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton > .inj-tile-scene.inj-more-market-symbol{
+ display:flex!important;position:relative!important;inset:auto!important;
+ flex:0 0 40px!important;width:40px!important;min-width:40px!important;
+ max-width:40px!important;height:36px!important;max-height:36px!important;
+ margin:0!important;padding:0!important;transform:none!important;
+ opacity:.9!important;pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton > .inj-macro-calendar-copy{
+ display:flex!important;position:static!important;
+ flex:1 1 auto!important;flex-direction:column!important;
+ align-items:flex-start!important;justify-content:center!important;
+ width:auto!important;min-width:0!important;max-width:100%!important;
+ margin:0!important;padding:0!important;gap:5px!important;text-align:left!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton .inj-home-tile-title{
+ font-size:clamp(13px,3.5vw,16px)!important;text-align:left!important;
+ font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton .inj-tile-description{
+ font-size:clamp(10px,2.8vw,12px)!important;text-align:left!important;font-weight:400!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate
+ #entryMacroCalendarButton .inj-home-tile-title::after{
+ content:none!important;
+}
+/* Category panels retain all original clickable cards, in a breathable grid. */
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:11px!important;grid-auto-flow:row!important;align-items:stretch!important;
+ height:auto!important;max-height:none!important;overflow:visible!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > .entry-action:not(#entryTreasuryButton){
+ min-width:0!important;border-radius:18px!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate#entryGate #injTabMarketEventsShortcut.entry-action{
+ display:flex;align-items:center;justify-content:flex-end;flex-flow:column nowrap;
+ position:relative;box-sizing:border-box;min-width:0;height:96px;min-height:96px;
+ gap:7px;padding:12px 8px;border:1px solid color-mix(in srgb,var(--accent) 23%,var(--line))!important;
+ border-radius:18px;background:color-mix(in srgb,var(--surface) 84%,transparent)!important;
+ color:var(--text);text-align:center;cursor:pointer;
+}
+#injTabMarketEventsShortcut .entry-action-icon{display:flex;align-items:center;justify-content:center;color:var(--accent)}
+#injTabMarketEventsShortcut .entry-action-icon svg{width:31px;height:31px;fill:none;stroke:currentColor}
+#injTabMarketEventsShortcut > span:nth-child(2){display:flex;flex-direction:column;align-items:center;gap:4px;max-width:100%;min-width:0}
+#injTabMarketEventsShortcut .inj-home-tile-title{font-size:12px!important;letter-spacing:.03em!important;line-height:1.1!important;font-weight:600!important}
+#injTabMarketEventsShortcut .inj-tile-description{font-size:10px!important;font-weight:400!important;line-height:1.2!important}
+#injTabMarketEventsShortcut .entry-action-arrow{display:none!important}
+html[data-inj-page="index"] body #entryGate#entryGate #entryNote{display:none!important}
+@media(min-width:800px){
+ #injPrimaryBottomNav{height:75px!important;bottom:19px!important;width:min(600px,calc(100% - 40px))!important}
+ html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate#entryGate #entryTreasuryButton{grid-column:1/-1!important}
+}
+@media(max-width:365px){
+ #injPrimaryBottomNav{width:calc(100% - 16px)!important;height:68px!important;border-radius:19px!important;padding:5px!important}
+ #injPrimaryBottomNav .inj-bottom-tab{border-radius:14px!important}
+ #injPrimaryBottomNav .inj-bottom-tab-label{font-size:9px!important;letter-spacing:-.02em!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #injPrimaryBottomNav *,#injPrimaryBottomNav .inj-bottom-tab{transition:none!important;animation:none!important}
+}
+
+
+/* Dedicated category pages: only title and destination cards survive.
+   No wallet, chart, ticker, first-access shell, settings menu or Home body. */
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access)
+ > :not(.entry-actions):not(#injTabHeading):not(#injEtfTabPanel){display:none!important}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #injHomeBrandFooter{display:none!important}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:auto auto!important;grid-auto-rows:min-content!important;
+ align-content:start!important;justify-items:stretch!important;row-gap:0!important;
+ padding-top:max(24px,calc(env(safe-area-inset-top,0px) + 12px))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate #injTabHeading{
+ grid-column:1!important;grid-row:1!important;
+ align-self:start!important;margin:0 0 14px!important;
+}
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44{
+ grid-column:1!important;grid-row:2!important;
+ align-self:start!important;margin:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-flow:row!important;align-items:stretch!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton){
+ grid-column:auto!important;grid-row:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action{
+ grid-column:1/-1!important;grid-row:auto!important;
+ width:100%!important;min-height:76px!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryMacroCalendarButton.entry-action-macro-calendar{
+ display:flex!important;grid-column:auto!important;grid-row:auto!important;
+ flex-flow:column nowrap!important;align-items:center!important;justify-content:flex-end!important;
+ height:96px!important;min-height:96px!important;max-height:96px!important;
+ padding:8px!important;text-align:center!important;border-radius:17px!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate #entryMacroCalendarButton>.inj-tile-scene.inj-more-market-symbol{
+ display:block!important;position:absolute!important;
+ top:7px!important;left:50%!important;right:auto!important;bottom:auto!important;
+ width:min(68%,84px)!important;max-width:84px!important;height:35px!important;
+ transform:translateX(-50%)!important;pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate #entryMacroCalendarButton>.inj-macro-calendar-copy{
+ display:flex!important;position:relative!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ gap:3px!important;align-self:center!important;text-align:center!important;
+ min-width:0!important;width:100%!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"]
+ body #entryGate#entryGate#entryGate #entryMacroCalendarButton
+ :is(.inj-home-tile-title,.inj-tile-description){text-align:center!important;max-width:100%!important}
+html[data-inj-page="index"]{scroll-behavior:auto!important;overflow-anchor:none!important}
+html[data-inj-page="index"] body #entryGate{overflow-anchor:none!important}
+@media(min-width:800px){
+ html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="home"])
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+  padding-top:clamp(30px,3vw,54px)!important;
+ }
+}
+
+/* A closed manual popover never obstructs the interface. An open one is
+   positioned relative to the visual viewport instead of the scrolling Home. */
+#injPrimaryBottomNav:popover-open{
+ position:fixed!important;
+ inset:auto auto max(10px,env(safe-area-inset-bottom,0px)) 50%!important;
+ margin:0!important;
+ transform:translateX(-50%)!important;
+}
+@media(min-width:800px){
+ #injPrimaryBottomNav:popover-open{
+  bottom:19px!important;
+ }
+}
+
+
+/* HOME REVEAL / END CAP
+   The first Home screen has no bottom dock; it fades into the interface
+   as the user scrolls toward Treasury. All other tabs remain persistent. */
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body #injHomeBrandFooter{display:none!important}
+html[data-inj-page="index"][data-inj-home-tab="home"]
+ body.entry-gate-open #entryGate#entryGate.entry-gate.visible
+ > .entry-gate-shell:not(.first-access){
+ padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))!important;
+}
+/* True opacity/translate entrance. Unlike toggling display or popover
+   visibility, this animates without modifying the scrolling document. */
+html[data-inj-page="index"] body > #injPrimaryBottomNav{
+ opacity:1!important;
+ visibility:visible!important;
+ transition:opacity .46s cubic-bezier(.2,.7,.2,1),
+  transform .52s cubic-bezier(.2,.76,.24,1),
+  visibility .46s!important;
+ will-change:opacity,transform;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-home-nav-visible="true"])
+ body > #injPrimaryBottomNav{
+ opacity:0!important;
+ visibility:hidden!important;
+ transform:translate(-50%,16px)!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body > #injPrimaryBottomNav{
+ opacity:1!important;
+ visibility:visible!important;
+ transform:translate(-50%,0)!important;
+ pointer-events:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-home-nav-visible="true"])
+ body > #injPrimaryBottomNav:popover-open{
+ transform:translate(-50%,16px)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body > #injPrimaryBottomNav:popover-open{
+ transform:translate(-50%,0)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]{
+ overscroll-behavior-y:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body.entry-gate-open{
+ overscroll-behavior-y:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"] body > #injPrimaryBottomNav{
+  transition:none!important;
+  will-change:auto!important;
+ }
+}
+
+/* Screenshot follow-up: end the Home content cleanly at Treasury.
+   Do not expose the secondary branding/footer beneath the dock. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #injHomeBrandFooter,
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate > .inj-home-signature{
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access){
+ padding-bottom:calc(102px + env(safe-area-inset-bottom,0px))!important;
+}
+
+
+/* ETF is the actual INJC page embedded directly in its dedicated navigation
+   tab, not a second launcher. The bottom dock stays in the browser top layer. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>#injEtfTabPanel[hidden]{
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>:not(#injEtfTabPanel){
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access){
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:minmax(0,1fr)!important;
+ align-items:start!important;
+ align-content:start!important;
+ justify-items:stretch!important;
+ padding:0!important;
+ margin-inline:auto!important;
+ height:calc(100dvh - 96px - env(safe-area-inset-bottom,0px))!important;
+ min-height:320px!important;
+ max-height:none!important;
+ overflow:hidden!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>#injEtfTabPanel:not([hidden]){
+ display:block!important;
+ position:relative!important;
+ grid-column:1/-1!important;
+ grid-row:1!important;
+ width:100%!important;
+ max-width:100%!important;
+ height:100%!important;
+ min-height:0!important;
+ padding:0!important;
+ margin:0!important;
+ overflow:hidden!important;
+ border:0!important;
+ border-radius:0!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+}
+html[data-inj-page="index"] body #injEtfTabPanel>.inj-etf-tab-frame{
+ display:block!important;
+ width:100%!important;height:100%!important;
+ border:0!important;outline:0!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+ overflow:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate#entryGate.entry-gate.visible{
+ min-height:100dvh!important;
+}
+/* Keep the legacy INJC home tile absent from the new Altro grid.
+   The original element is retained hidden so its src URL and event handler
+   are still available without changing other navigation machinery. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44>#entryInjcEtfButton{display:none!important}
+/* Home scroll ends naturally after Treasury, with only a small viewport
+   clearance above the dock. No JavaScript scrollTop clamping or snapping. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate.entry-gate.visible>.entry-gate-shell:not(.first-access){
+ padding-bottom:calc(94px + env(safe-area-inset-bottom,0px))!important;
+ min-height:0!important;
+ height:auto!important;
+ grid-auto-rows:min-content!important;
+ align-content:start!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate.entry-gate.visible{
+ min-height:0!important;
+ height:auto!important;
+ max-height:none!important;
+}
+html[data-inj-page="index"] body #injHomeBrandFooter{display:none!important}
+
+
+/* INJC ETF direct tab — the iframe is mounted at body level instead of
+   inside Home's heavily constrained .entry-gate-shell. Earlier nested-grid
+   rules could clip the entire frame to zero height on iOS Safari. */
+html[data-inj-page="index"] body>#injEtfTabPanel[hidden]{
+ display:none!important;
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden]){
+ display:block!important;
+ position:fixed!important;
+ inset:0 0 calc(83px + env(safe-area-inset-bottom,0px)) 0!important;
+ z-index:2147483400!important;
+ width:100%!important;
+ height:auto!important;
+ min-height:0!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+ overflow:hidden!important;
+ visibility:visible!important;
+ opacity:1!important;
+ pointer-events:auto!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden])
+ >.inj-etf-tab-frame{
+ display:block!important;
+ position:relative!important;
+ width:100%!important;
+ height:100%!important;
+ min-height:0!important;
+ border:0!important;
+ opacity:1!important;
+ visibility:visible!important;
+ background:var(--theme-canvas,var(--bg,#09191a))!important;
+ overflow:auto!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body #entryGate.entry-gate.visible{
+ pointer-events:none!important;
+}
+@media(min-width:800px){
+ html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden]){
+  inset-block-end:102px!important;
+ }
+}
+
+/* Desktop Home repair · 2026-11-01.
+   Keep the five primary destinations available from the first viewport.
+   Inner Market pages still use their separate top rail and suppress this dock. */
+@media (min-width:900px){
+ html[data-inj-page="index"][data-inj-home-tab="home"]
+ body.entry-gate-open:not(.boot-loading):not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open) > #injPrimaryBottomNav{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:translate(-50%,0)!important;
+  pointer-events:auto!important;
+ }
+}
+/* Distribute the three Home launchers over the desktop dashboard column
+   instead of leaving a short strip above a large empty block. */
+@media (min-width:1100px){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  align-content:stretch!important;
+  align-items:stretch!important;
+  align-self:start!important;
+  gap:clamp(10px,1vw,18px)!important;
+  min-width:0!important;
+  min-height:clamp(250px,33vh,410px)!important;
+  height:auto!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >:is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+  height:100%!important;
+  min-height:110px!important;
+  max-height:none!important;
+  box-sizing:border-box!important;
+  align-self:stretch!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"] body
+ #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44
+ >#entryTreasuryButton.entry-action{
+  grid-column:1/-1!important;
+  grid-row:2!important;
+ }
+}
+
+
+/* ETF viewport isolation · 2026-11-01
+   The ETF iframe used to end 83–102px above the bottom edge. On overscroll,
+   that exposed the still-mounted Home/Dashboard below. Keep the entire viewport
+   opaque; the ETF document itself remains the sole vertical scroll surface.
+   The floating dock retains its own browser top layer. */
+html[data-inj-page="index"][data-inj-home-tab="etf"]{
+ height:100%!important;
+ overflow:hidden!important;
+ overscroll-behavior-y:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body{
+ height:100dvh!important;
+ max-height:100dvh!important;
+ overflow:hidden!important;
+ overscroll-behavior-y:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#entryGate,
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>.app-shell{
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden]){
+ position:fixed!important;
+ inset:0!important;
+ inset-block-end:0!important;
+ bottom:0!important;
+ width:100%!important;
+ height:100dvh!important;
+ min-height:100dvh!important;
+ max-height:100dvh!important;
+ overflow:hidden!important;
+ contain:layout paint!important;
+ background:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body>#injEtfTabPanel:not([hidden])>.inj-etf-tab-frame{
+ position:absolute!important;
+ inset:0!important;
+ width:100%!important;
+ height:100%!important;
+ max-height:100%!important;
+ display:block!important;
+ border:0!important;
+ overflow:auto!important;
+ -webkit-overflow-scrolling:touch!important;
+ touch-action:pan-y!important;
+ background:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+
+
+/* Always visible on the active Home screen (even without interaction).
+   Hidden screens and dedicated fullscreen overlays preserve existing guards. */
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body.entry-gate-open:not(.boot-loading) > #injPrimaryBottomNav#injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-nav-visible="true"]
+ body.entry-gate-open:not(.boot-loading) > #injPrimaryBottomNav#injPrimaryBottomNav:popover-open{
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transform:translate(-50%,0)!important;
+}
+
+
+/* ./market-tab-navigation-20261031.css?v=marketrail11 */
+/* Market is a destination, not a gallery of clickable tiles.
+   Fixed body-level panel prevents Home's legacy grid and PWA scroll clamps
+   from clipping the embedded Market page on iOS and desktop. */
+html[data-inj-page="index"] body>#injMarketTabHead[hidden]{
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+html[data-inj-page="index"] body>#injMarketTabPanel[hidden]{
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body>#injMarketTabPanel:not([hidden]){
+  display:flex!important;position:fixed!important;
+  inset:calc(max(14px,env(safe-area-inset-top,0px)) + 76px) 0 calc(84px + env(safe-area-inset-bottom,0px)) 0!important;
+  z-index:2147483380!important;
+  flex-direction:column!important;
+  width:100%!important;height:auto!important;min-height:0!important;
+  overflow:hidden!important;box-sizing:border-box!important;
+  padding:0!important;margin:0!important;
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+  color:var(--text,#eef8f4)!important;
+  pointer-events:auto!important;isolation:isolate!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>:is(#injTabHeading,.entry-actions.entry-flat-v44){
+  display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body #entryGate.entry-gate.visible{
+  pointer-events:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body>#injMarketTabHead:not([hidden]){
+  display:block!important;position:fixed!important;
+  top:0!important;left:0!important;right:0!important;bottom:auto!important;
+  height:calc(max(14px,env(safe-area-inset-top,0px)) + 76px)!important;
+  z-index:2147483600!important;
+  pointer-events:auto!important;overflow:hidden!important;
+}
+#injMarketTabHead{
+  position:relative!important;flex:0 0 auto!important;box-sizing:border-box!important;
+  width:100%!important;padding:max(14px,env(safe-area-inset-top,0px)) 0 0!important;
+  background:color-mix(in srgb,var(--surface,#102323) 86%,var(--theme-canvas,#07171a))!important;
+  border-bottom:1px solid color-mix(in srgb,var(--accent,#9dddcf) 15%,var(--line,#375855))!important;
+}
+#injMarketTabHead .inj-market-tab-kicker{
+  display:block!important;padding:0 max(18px,calc((100vw - 1400px)/2)) 12px!important;
+  font-size:10px!important;font-weight:600!important;letter-spacing:.15em!important;
+  line-height:1.2!important;color:var(--muted-strong,var(--muted,#a5b8b7))!important;
+}
+#injMarketTabHead .inj-market-tab-rail{
+  display:flex!important;align-items:stretch!important;
+  flex-wrap:nowrap!important;gap:5px!important;
+  box-sizing:border-box!important;
+  padding:0 max(12px,calc((100vw - 1400px)/2)) 8px!important;
+  overflow-x:auto!important;overflow-y:hidden!important;
+  scrollbar-width:none!important;overscroll-behavior-x:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important;
+  scroll-snap-type:x proximity!important;
+}
+#injMarketTabHead .inj-market-tab-rail::-webkit-scrollbar{display:none!important}
+#injMarketTabHead .inj-market-tab-link{
+  position:relative!important;display:inline-flex!important;
+  flex:0 0 auto!important;align-items:center!important;justify-content:center!important;
+  box-sizing:border-box!important;min-height:38px!important;
+  margin:0!important;padding:8px clamp(12px,3vw,17px)!important;
+  border:1px solid transparent!important;border-radius:12px!important;
+  background:transparent!important;box-shadow:none!important;
+  color:var(--muted-strong,var(--muted,#a1b6b1))!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:clamp(11px,2.8vw,13px)!important;font-weight:550!important;
+  letter-spacing:0!important;line-height:1.25!important;
+  white-space:nowrap!important;cursor:pointer!important;
+  scroll-snap-align:center!important;touch-action:manipulation!important;
+  transition:background .2s,color .2s,border-color .2s!important;
+}
+#injMarketTabHead .inj-market-tab-link.is-active{
+  color:var(--text,#eafff7)!important;
+  background:color-mix(in srgb,var(--accent,#8bdfce) 12%,var(--surface,#102323))!important;
+  border-color:color-mix(in srgb,var(--accent,#8bdfce) 23%,transparent)!important;
+}
+#injMarketTabHead .inj-market-tab-link.is-active::after{
+  content:"";position:absolute;left:20%;right:20%;bottom:2px;height:2px;
+  background:var(--accent,#8cddc9);border-radius:5px;
+}
+#injMarketTabHead .inj-market-tab-link:focus-visible{
+  outline:2px solid var(--accent,#8bdfce)!important;outline-offset:-2px!important;
+}
+#injMarketTabPanel .inj-market-tab-content{
+  display:flex!important;position:relative!important;flex:1 1 auto!important;
+  min-height:0!important;width:100%!important;overflow:hidden!important;
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+}
+#injMarketTabPanel .inj-market-tab-loading{
+  position:absolute;inset:0;display:grid;place-items:center;
+  color:var(--muted-strong,var(--muted,#9dadab));font-size:12px;
+  letter-spacing:.22em;pointer-events:none;
+}
+#injMarketTabPanel .inj-market-tab-frame{
+  position:relative!important;display:block!important;
+  width:100%!important;height:100%!important;flex:1 1 auto!important;
+  min-height:0!important;margin:0!important;padding:0!important;
+  border:0!important;outline:0!important;
+  background:transparent!important;overflow:auto!important;
+  visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+#injMarketTabPanel .inj-market-tab-content.is-ready>.inj-market-tab-frame{
+  opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+}
+#injMarketTabPanel .inj-market-tab-content.is-ready>.inj-market-tab-loading{
+  display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body.inj-section-open>#injMarketTabPanel,
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body:has(#injMarketEventsOverlay:not([hidden]))>#injMarketTabPanel,
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body:has(#performanceTimelineView:not([hidden]))>#injMarketTabPanel{
+  visibility:hidden!important;pointer-events:none!important;
+}
+@media(min-width:800px){
+  html[data-inj-page="index"][data-inj-home-tab="mercato"] body>#injMarketTabPanel:not([hidden]){
+    bottom:104px!important;top:calc(max(20px,env(safe-area-inset-top,0px)) + 80px)!important;
+  }
+  #injMarketTabHead{padding-top:max(20px,env(safe-area-inset-top,0px))!important;height:calc(max(20px,env(safe-area-inset-top,0px)) + 80px)!important}
+  #injMarketTabHead .inj-market-tab-kicker{padding-bottom:14px!important}
+  #injMarketTabHead .inj-market-tab-rail{gap:9px!important;padding-bottom:12px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #injMarketTabHead .inj-market-tab-link{transition:none!important}
+}
+/* The same Market rail remains available over native Calendar and Performance.
+   Only the content pane is covered; switching tabs closes the native overlay. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body #injMarketEventsOverlay:not([hidden]){
+  padding-top:calc(max(14px,env(safe-area-inset-top,0px)) + 85px)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView:not([hidden]) .performance-timeline-shell{
+  padding-top:calc(max(14px,env(safe-area-inset-top,0px)) + 86px)!important;
+}
+
+
+/* MARKET IMMERSIVE / AUTO-REVEAL · 31 October 2026
+   The tab body is viewport-sized when controls disappear; there are no
+   fixed blank bands above the chart or underneath the order book. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ > #injMarketTabPanel:not([hidden]){
+  top:calc(max(14px,env(safe-area-inset-top,0px)) + 76px)!important;
+  bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;
+  left:0!important;right:0!important;
+  transition:top .34s ease,bottom .34s ease!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="hidden"] body
+ > #injMarketTabPanel:not([hidden]){
+  top:0!important;bottom:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ > #injMarketTabHead:not([hidden]){
+  transition:opacity .30s ease,transform .34s ease,visibility .34s ease!important;
+  opacity:1!important;visibility:visible!important;transform:translateY(0)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="hidden"] body
+ > #injMarketTabHead:not([hidden]){
+  opacity:0!important;visibility:hidden!important;
+  transform:translateY(-105%)!important;
+  pointer-events:none!important;
+}
+/* The base dock stylesheet intentionally hides itself for other immersive
+   modes. Only Market overrides it while the user browses these six views. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body.entry-gate-open:not(
+  .boot-loading,.menu-overlay-open,.drawer-open,.inj-section-open
+) > #injPrimaryBottomNav{
+  display:grid!important;opacity:1!important;visibility:visible!important;
+  pointer-events:auto!important;
+  transition:opacity .30s ease,transform .34s ease,visibility .34s ease!important;
+  transform:translate(-50%,0)!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="hidden"]
+ body.entry-gate-open > #injPrimaryBottomNav{
+  display:grid!important;opacity:0!important;visibility:hidden!important;
+  pointer-events:none!important;transform:translate(-50%,19px)!important;
+}
+/* Performance is an existing native Home overlay, not an iframe.
+   Raise it above Market's content; otherwise the chart seems to open
+   underneath the previous page. Leave the Market rail and dock higher. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]){
+  display:flex!important;position:fixed!important;flex-direction:column!important;
+  top:calc(max(14px,env(safe-area-inset-top,0px)) + 76px)!important;
+  bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;
+  left:0!important;right:0!important;
+  width:100%!important;height:auto!important;min-height:0!important;
+  max-height:none!important;margin:0!important;
+  opacity:1!important;visibility:visible!important;
+  z-index:2147483480!important;
+  overflow:hidden!important;
+  background:var(--theme-canvas,var(--bg,#09191a))!important;
+  transition:top .34s ease,bottom .34s ease!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="hidden"]
+ body #performanceTimelineView.open:not([hidden]){
+  top:0!important;bottom:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]) > .performance-timeline-shell{
+  display:flex!important;flex-direction:column!important;
+  flex:1 1 auto!important;width:100%!important;height:100%!important;
+  min-height:0!important;max-height:100%!important;
+  box-sizing:border-box!important;
+  padding-top:0!important;
+  overflow:hidden!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]) .performance-timeline-main{
+  flex:1 1 auto!important;min-height:0!important;
+  overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]) #entryPnlTimeline{
+  min-height:0!important;width:100%!important;
+}
+/* The real macro-events overlay should remain readable below the controls;
+   with them hidden, it can use its own full height again. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="shown"]
+ body #injMarketEventsOverlay:not([hidden]){
+  padding-top:calc(max(14px,env(safe-area-inset-top,0px)) + 85px)!important;
+  padding-bottom:calc(85px + env(safe-area-inset-bottom,0px))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="hidden"]
+ body #injMarketEventsOverlay:not([hidden]){
+  padding-top:calc(env(safe-area-inset-top,0px) + 12px)!important;
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 16px)!important;
+}
+@media(min-width:800px){
+ html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+  >#injMarketTabPanel:not([hidden]){top:calc(max(20px,env(safe-area-inset-top,0px)) + 80px)!important;bottom:104px!important}
+ html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+  #performanceTimelineView.open:not([hidden]){top:calc(max(20px,env(safe-area-inset-top,0px)) + 80px)!important;bottom:104px!important}
+ html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="hidden"] body
+  >#injMarketTabPanel:not([hidden]),
+ html[data-inj-page="index"][data-inj-home-tab="mercato"][data-inj-market-chrome="hidden"] body
+  #performanceTimelineView.open:not([hidden]){top:0!important;bottom:0!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+  :is(#injMarketTabPanel,#injMarketTabHead,#injPrimaryBottomNav,#performanceTimelineView){
+  transition:none!important;
+ }
+}
+
+
+/* MARKET · TOP-ONLY NAVIGATION · 31 Oct 2026
+   The primary five-tab dock disappears completely inside Market.
+   A dedicated Home icon is the first control, pinned to the left of the
+   horizontal rail; the six market destinations remain swipeable. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav,
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav:popover-open{
+ display:none!important;opacity:0!important;visibility:hidden!important;
+ pointer-events:none!important;
+}
+#injMarketTabHead .inj-market-tab-row{
+ display:flex!important;align-items:center!important;gap:7px!important;
+ width:100%!important;min-width:0!important;box-sizing:border-box!important;
+ padding:0 max(12px,calc((100vw - 1400px)/2))!important;
+}
+#injMarketTabHead #injMarketHomeLink{
+ display:inline-flex!important;position:relative!important;
+ align-items:center!important;justify-content:center!important;
+ flex:0 0 41px!important;width:41px!important;height:39px!important;
+ min-width:41px!important;min-height:39px!important;
+ margin:0 0 8px!important;padding:0!important;
+ color:var(--text,#e8f5f2)!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8bdfce) 22%,var(--line,#48615c))!important;
+ border-radius:12px!important;
+ background:color-mix(in srgb,var(--accent,#8bdfce) 10%,var(--surface,#0a2528))!important;
+ box-shadow:none!important;
+ cursor:pointer!important;touch-action:manipulation!important;
+ -webkit-tap-highlight-color:transparent!important;
+ transition:background .2s ease,color .2s ease,border-color .2s ease!important;
+}
+#injMarketTabHead #injMarketHomeLink svg{
+ display:block!important;width:20px!important;height:20px!important;
+ flex:none!important;stroke:currentColor!important;fill:none!important;
+}
+#injMarketTabHead #injMarketHomeLink:active{
+ background:color-mix(in srgb,var(--accent,#8bdfce) 20%,var(--surface,#0a2528))!important;
+}
+#injMarketTabHead #injMarketHomeLink:focus-visible{
+ outline:2px solid var(--accent,#8bdfce)!important;outline-offset:2px!important;
+}
+#injMarketTabHead .inj-market-tab-row > .inj-market-tab-rail{
+ flex:1 1 auto!important;width:auto!important;min-width:0!important;
+ padding:0 0 8px 0!important;
+}
+/* Every Market subpage can use the entire screen below the top rail;
+   no phantom gap is reserved for the now-absent bottom navigation. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ > #injMarketTabPanel:not([hidden]){
+ bottom:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]){
+ bottom:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #injMarketEventsOverlay:not([hidden]){
+ padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;
+}
+/* Single Home icon in Market's main rail replaces the old close/back glyphs
+   on native Performance and the macro-event calendar. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView #closePerformanceTimelineButton,
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #injMarketEventsOverlay #injEventsClose{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+@media(min-width:800px){
+ html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+  >#injMarketTabPanel:not([hidden]),
+ html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+  #performanceTimelineView.open:not([hidden]){
+  bottom:0!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #injMarketTabHead #injMarketHomeLink{transition:none!important}
+}
+
+
+/* MARKET · SINGLE SECTION HEADING · 31 Oct 2026
+   The persistent swipeable rail is the section title. The embedded pages
+   hide only their redundant header; these two native views follow suit. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #injMarketEventsOverlay:not([hidden]) .inj-events-header{
+ display:none!important;
+ height:0!important;min-height:0!important;
+ margin:0!important;padding:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]) .performance-timeline-header{
+ display:none!important;
+ height:0!important;min-height:0!important;
+ margin:0!important;padding:0!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]) .entry-pnl-heading-copy>span{
+ display:none!important;
+}
+/* Old side-navigation shell applied a separate top gap inside Performance:
+   that gap is no longer needed with the unified Market rail. */
+html[data-inj-page="index"][data-inj-home-tab="mercato"] body
+ #performanceTimelineView.open:not([hidden]) >.performance-timeline-shell{
+ padding-top:0!important;
+}
+
+
+/* Market · live chart price shares the same always-visible tab label. */
+#injMarketTabHead .inj-market-tab-link[data-market-destination="charts"]{
+  gap:8px!important;
+}
+#injMarketTabHead .inj-market-tab-link .inj-market-tab-price{
+  display:none!important;white-space:nowrap!important;flex:0 0 auto!important;
+  font-size:clamp(10px,2.5vw,12px)!important;line-height:1.1!important;
+  font-weight:650!important;font-variant-numeric:tabular-nums!important;
+  letter-spacing:-.02em!important;color:var(--accent,#8bdfce)!important;
+}
+#injMarketTabHead .inj-market-tab-link.is-active .inj-market-tab-price{
+  display:inline-block!important;
+}
+
+
+/* Always-on INJ USD quote, anchored above the horizontally swipeable Market
+   destinations so the price remains readable on every page. */
+#injMarketTabHead .inj-market-kicker-row{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  box-sizing:border-box!important;
+  width:100%!important;min-width:0!important;
+  padding:0 max(13px,calc((100vw - 1400px)/2)) 9px!important;
+  gap:6px!important;
+}
+#injMarketTabHead .inj-market-kicker-row .inj-market-tab-kicker{
+  flex:0 1 auto!important;min-width:0!important;
+  display:block!important;padding:0!important;margin:0!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  font-size:clamp(8px,2vw,10px)!important;letter-spacing:.12em!important;
+}
+#injMarketTabHead .inj-market-persistent-quote{
+  display:inline-flex!important;align-items:baseline!important;justify-content:flex-end!important;
+  flex:0 0 auto!important;max-width:63%!important;
+  gap:clamp(4px,1vw,8px)!important;
+  white-space:nowrap!important;font-variant-numeric:tabular-nums!important;
+  font-family:var(--inj-chosen-face,var(--inj-node-terminal-font,system-ui,sans-serif))!important;
+  font-size:clamp(10px,2.6vw,13px)!important;
+  color:var(--text,#e8f5f2)!important;
+}
+#injMarketTabHead .inj-market-persistent-quote .inj-quote-symbol{
+  font-size:9px!important;color:var(--muted,#a5bbb7)!important;
+  letter-spacing:.05em!important;
+}
+#injMarketTabHead .inj-market-persistent-quote .inj-quote-value{
+  font-weight:700!important;color:inherit!important;
+  font-size:clamp(12px,3vw,16px)!important;letter-spacing:-.018em!important;
+}
+#injMarketTabHead .inj-market-persistent-quote .inj-quote-day{
+  color:inherit!important;font-size:clamp(9px,2.3vw,11px)!important;
+  font-weight:600!important;
+}
+#injMarketTabHead .inj-market-persistent-quote[data-tone="up"],
+#injMarketTabHead .inj-market-tab-price[data-tone="up"]{color:var(--positive,#35d69b)!important}
+#injMarketTabHead .inj-market-persistent-quote[data-tone="down"],
+#injMarketTabHead .inj-market-tab-price[data-tone="down"]{color:var(--negative,#ff738b)!important}
+#injMarketTabHead .inj-market-persistent-quote[data-tone="neutral"],
+#injMarketTabHead .inj-market-tab-price[data-tone="neutral"]{color:var(--muted-strong,var(--text,#e8f5f2))!important}
+#injMarketTabHead .inj-market-persistent-quote[data-stale="true"]{opacity:.63!important}
+@media(max-width:370px){
+ #injMarketTabHead .inj-market-kicker-row{padding-inline:10px!important}
+ #injMarketTabHead .inj-market-persistent-quote{gap:4px!important}
+ #injMarketTabHead .inj-market-persistent-quote .inj-quote-symbol{display:none!important}
+ #injMarketTabHead .inj-market-kicker-row .inj-market-tab-kicker{letter-spacing:.06em!important}
+}
+
+
+/* ./my-reward-20261101.css?v=1 */
+/* INJ Node · My Reward · minimal wallet-scoped live reward surface. */
+html[data-inj-page="index"] body #entryGate #injMyRewardPanel[hidden],
+html[data-inj-page="index"][data-inj-home-tab]:not([data-inj-home-tab="reward"]) body #entryGate #injMyRewardPanel{display:none!important}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+ display:block!important;grid-column:1!important;width:100%!important;min-width:0!important;
+ overflow:visible!important;padding:0!important;min-height:0!important
+}
+html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate #injMyRewardPanel{
+ display:block!important;width:100%!important;grid-column:1/-1!important;min-width:0!important;max-width:1140px!important;
+ margin:0 auto!important;padding:0 0 20px!important;box-sizing:border-box!important
+}
+#injMyRewardPanel [hidden]{display:none!important}
+#injMyRewardPanel *,#entryMyRewardButton *{box-sizing:border-box}
+#injMyRewardPanel{color:var(--text,#e8f5ef)}
+#injMyRewardPanel .inj-myreward-pages{
+ display:flex;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
+ -webkit-overflow-scrolling:touch;touch-action:pan-x;
+ gap:7px;padding:2px 1px 16px;white-space:nowrap;
+}
+#injMyRewardPanel .inj-myreward-pages::-webkit-scrollbar{display:none}
+#injMyRewardPanel .inj-myreward-pages button{
+ flex:0 0 auto;min-height:39px;padding:9px 13px;cursor:pointer;
+ border-radius:13px;background:color-mix(in srgb,var(--surface,#112a28) 82%,transparent);
+ color:var(--muted-strong,#acc5bf);border:1px solid color-mix(in srgb,var(--text,#f0fbf6) 10%,transparent);
+ font:500 clamp(11px,2.8vw,13px) var(--inj-chosen-face,system-ui,sans-serif);
+}
+#injMyRewardPanel .inj-myreward-pages button.is-active{
+ background:color-mix(in srgb,var(--accent,#96e3c9) 13%,var(--surface,#112a28));
+ border-color:color-mix(in srgb,var(--accent,#96e3c9) 40%,transparent);color:var(--accent,#9be6cc);
+}
+#injMyRewardPanel .inj-myreward-viewport{min-width:0;width:100%;overflow:visible}
+#injMyRewardPanel .inj-myreward-overview{width:100%;display:grid;gap:14px;padding-bottom:8px}
+#injMyRewardPanel .inj-myreward-wallet-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+ gap:12px;padding:8px 1px}
+#injMyRewardPanel .inj-myreward-wallet-title{display:grid;gap:5px;min-width:0;max-width:100%}
+#injMyRewardPanel .inj-myreward-wallet-title small,#injMyRewardPanel .inj-myreward-picker>span{
+ color:var(--muted-strong,#a2c3bc);font-size:10px;letter-spacing:.1em}
+#injMyRewardPanel .inj-myreward-wallet-title strong{font-size:clamp(15px,3.2vw,20px);font-weight:650;overflow:hidden;text-overflow:ellipsis}
+#injMyRewardPanel #injMyRewardAddress{font-size:11px;color:var(--muted,#8aa7a0);font-variant-numeric:tabular-nums}
+#injMyRewardPanel .inj-myreward-picker{display:grid;gap:6px;min-width:min(100%,240px)}
+#injMyRewardPanel .inj-myreward-picker select{max-width:100%;height:40px;border-radius:11px;padding:8px 10px;
+ border:1px solid color-mix(in srgb,var(--accent,#9ce8d2) 24%,transparent);
+ background:var(--surface,#102424);color:var(--text,#effcf5);font-size:13px}
+#injMyRewardPanel .inj-myreward-stake-card{position:relative;overflow:hidden;isolation:isolate;
+ border:1px solid color-mix(in srgb,var(--accent,#89dcc8) 22%,var(--line,#54665f));
+ background:linear-gradient(142deg,color-mix(in srgb,var(--surface,#112521) 95%,transparent),
+ color-mix(in srgb,var(--accent,#89dcc8) 4%,var(--surface,#112521)));
+ border-radius:23px;box-shadow:0 9px 28px rgba(0,0,0,.09);
+ padding:clamp(22px,5vw,42px);display:flex;flex-direction:column;align-items:flex-start;
+ min-height:310px
+}
+#injMyRewardPanel .inj-myreward-card-top{width:100%;display:flex;align-items:center;justify-content:space-between;
+ gap:10px;flex-wrap:wrap;margin-bottom:14px}
+#injMyRewardPanel .inj-myreward-card-top>span:first-child,#injMyRewardPanel .inj-myreward-reward-label{
+ color:var(--muted-strong,#a2bdb7);font-size:clamp(10px,2.5vw,12px);letter-spacing:.11em;font-weight:600}
+#injMyRewardPanel .inj-myreward-status{font-size:10px;letter-spacing:.07em;
+ color:var(--muted,#b0c1c1);display:inline-flex;align-items:center;gap:7px}
+#injMyRewardPanel .inj-myreward-status::before{content:'';width:6px;height:6px;flex:none;border-radius:50%;
+ background:currentColor;opacity:.75}
+#injMyRewardPanel .inj-myreward-status[data-state="live"]{color:var(--accent,#87e6c6)}
+#injMyRewardPanel .inj-myreward-status[data-state="stale"]{color:#e8a98a}
+#injMyRewardPanel .inj-myreward-staked{
+ font-size:clamp(30px,6.8vw,64px);line-height:1.14;font-weight:650;letter-spacing:-.035em;
+ font-variant-numeric:tabular-nums;overflow-wrap:anywhere;max-width:100%}
+#injMyRewardPanel .inj-myreward-fiat{font-size:clamp(17px,3.5vw,28px);font-weight:500;
+ color:var(--accent,#9de8d0);margin-top:7px;font-variant-numeric:tabular-nums}
+#injMyRewardPanel .inj-myreward-separator{height:1px;width:100%;margin:28px 0 24px;
+ background:linear-gradient(90deg,color-mix(in srgb,var(--text,#edf8f5) 20%,transparent),transparent)}
+#injMyRewardPanel .inj-myreward-accrued{
+ display:block;font-size:clamp(22px,5.3vw,44px);font-weight:600;line-height:1.3;
+ letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;
+ max-width:100%;margin-top:9px}
+#injMyRewardPanel .inj-myreward-reward-fiat{font-size:clamp(12px,2.8vw,18px);
+ color:var(--muted-strong,#b4c9c3);font-variant-numeric:tabular-nums;margin-top:5px}
+#injMyRewardPanel .inj-myreward-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#injMyRewardPanel .inj-myreward-meta>div{border:1px solid color-mix(in srgb,var(--text,#edf8f5) 9%,transparent);
+ background:color-mix(in srgb,var(--surface,#142725) 85%,transparent);
+ border-radius:16px;padding:15px 18px;display:grid;gap:7px;min-width:0}
+#injMyRewardPanel .inj-myreward-meta small{font-size:10px;color:var(--muted,#97a9a8);letter-spacing:.08em}
+#injMyRewardPanel .inj-myreward-meta strong{font-size:clamp(14px,3vw,20px);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#injMyRewardPanel .inj-myreward-updated,#injMyRewardPanel .inj-myreward-explanation{
+ margin:0;color:var(--muted,#9bb1aa);font-size:11px;line-height:1.6}
+#injMyRewardPanel .inj-myreward-frame-host{display:block;width:100%;min-width:0;
+ height:calc(100dvh - 168px);min-height:480px;max-height:1080px;overflow:hidden;
+ border-radius:17px;border:1px solid color-mix(in srgb,var(--text,#e6f9f2) 9%,transparent);
+ background:var(--bg,#07141e)}
+#injMyRewardPanel .inj-myreward-frame{width:100%;height:100%;border:0;display:block;
+ overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+html[data-inj-page="index"] body #entryGate #entryMyRewardButton.entry-action{grid-column:auto!important;
+ min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate .entry-actions > #entryMyRewardButton{
+ order:3!important}
+html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate .entry-actions > #entryTreasuryButton{
+ order:4!important}
+html[data-inj-page="index"] body.privacy-on #injMyRewardPanel .private,
+html[data-inj-page="index"] body.privacy-on #injMyRewardPanel .inj-myreward-meta strong{
+ filter:blur(8px)!important;user-select:none!important}
+@media(min-width:1100px){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate.entry-gate.visible
+ >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44{
+  grid-template-rows:auto auto auto!important;min-height:0!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryMyRewardButton.entry-action{height:92px!important;min-height:92px!important;max-height:92px!important;grid-column:1/-1!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44
+ > #entryTreasuryButton.entry-action{grid-row:auto!important;grid-column:1/-1!important}
+}
+@media(max-width:520px){
+ #injMyRewardPanel .inj-myreward-wallet-head{align-items:stretch}
+ #injMyRewardPanel .inj-myreward-picker{min-width:100%}
+ #injMyRewardPanel .inj-myreward-frame-host{height:calc(100dvh - 138px);min-height:380px}
+ #injMyRewardPanel .inj-myreward-stake-card{min-height:290px}
+}
+@media(prefers-reduced-motion:reduce){
+ #injMyRewardPanel *{scroll-behavior:auto!important}
+}
+
+
+/* ./home-card-reorder-20261030.css?v=order1 */
+/* Hold-to-sort existing INJ Node Home/Market/Reward/More cards. */
+html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44>.entry-action{
+ -webkit-touch-callout:none;
+}
+html[data-inj-page="index"].inj-card-dragging,
+html[data-inj-page="index"].inj-card-dragging body{
+ -webkit-user-select:none!important;user-select:none!important;
+}
+html[data-inj-page="index"].inj-card-dragging body #entryGate .entry-actions.entry-flat-v44{
+ touch-action:none!important;
+}
+html[data-inj-page="index"] body #entryGate .entry-actions.entry-flat-v44
+ >.entry-action.inj-card-drag-source{
+ opacity:.28!important;
+ outline:1px dashed var(--accent,#8de2c9)!important;
+ outline-offset:-3px!important;
+ transition:none!important;
+}
+body>.inj-card-reorder-ghost{
+ display:flex!important;align-items:center;justify-content:center;
+ position:fixed!important;
+ z-index:2147483450!important;
+ transform:translate(-50%,-50%)!important;
+ box-sizing:border-box!important;
+ width:min(190px,42vw)!important;min-height:59px!important;
+ padding:10px 14px!important;
+ border:1px solid color-mix(in srgb,var(--accent,#8de2c9) 62%,transparent)!important;
+ border-radius:17px!important;
+ background:color-mix(in srgb,var(--surface-strong,#102221) 93%,transparent)!important;
+ color:var(--text,#eafaf6)!important;
+ font-family:var(--inj-chosen-face,ui-monospace,monospace)!important;
+ font-size:12px!important;font-weight:600!important;text-align:center!important;
+ box-shadow:0 16px 34px rgba(0,0,0,.24)!important;
+ opacity:.95!important;
+ pointer-events:none!important;
+ -webkit-user-select:none!important;user-select:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body>.inj-card-reorder-ghost{transition:none!important}
+}
+
+
+/* ./home-ticker-tight-20261030.css?v=ticker1 */
+/* INJ Node — compact vertical spacing surrounding Home crypto ticker.
+   Mobile returning-user Home only; do not alter ticker animation or wallet touch controls. */
+@media(max-width:700px){
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) .entry-wallet-section
+ >.home-safe-heading.inj-terminal-hero-arranged{
+  margin-bottom:4px!important;
+  padding-bottom:3px!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) .entry-wallet-section
+ >#injMarketTicker.inj-market-ticker.inj-market-ticker-quotes-only{
+  box-sizing:border-box!important;
+  height:32px!important;min-height:32px!important;max-height:32px!important;
+  margin:2px 0 5px!important;padding-block:0!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"] body #entryGate#entryGate
+ .entry-gate-shell:not(.first-access) .entry-wallet-section>.entry-wallet-heading{
+  margin-top:1px!important;
+  margin-bottom:7px!important;
+  padding-block:0!important;
+ }
+}
+
+
+/* ./home-market-launcher-uniform-20261030.css?v=marketpolish2 */
+/* INJ NODE — Market launcher naming and visual consistency.
+   Standalone scoped styling: links remain semantic anchors and functional. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton){
+ text-decoration:none!important;
+ text-decoration-line:none!important;
+ text-decoration-color:transparent!important;
+ -webkit-text-decoration:none!important;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton):is(:link,:visited,:hover,:focus,:active),
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton) :is(.inj-home-tile-title,.inj-tile-description){
+ text-decoration:none!important;
+ text-decoration-line:none!important;
+ border-bottom:0!important;
+ box-shadow:none;
+}
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryGlobalMarketsButton,#entryGlobalCryptoButton,#entryMarketButton,#entryMarketFavoritesButton)
+ :is(.inj-home-tile-title,.inj-tile-description)::after{
+ text-decoration:none!important;
+}
+/* The INJ Intelligence artwork is a dedicated fine-line network glyph,
+   drawn by the shared icon renderer in exactly the same size as its peers. */
+html[data-inj-page="index"] body #entryGate#entryGate
+ .entry-actions.entry-flat-v44 > #entryMarketButton > .inj-tile-scene.inj-luxury-icon{
+ pointer-events:none!important;
+}
+
+
+/* ./android-native-scroll-20261101.css?v=android-scroll1 */
+/* INJ Node | Android native scroll, 2026-11-01.
+   Android Home/Reward/More uses ONE scroll owner (the document). Previously
+   both html and body were overflow:auto and Home also had its own 100dvh box.
+   Respect real overlays; keep Market/ETF and horizontal wallet controls intact. */
+
+html[data-inj-page="index"][data-inj-platform="android"]
+  body.entry-gate-open:not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open) {
+  overscroll-behavior-y:auto!important;
+}
+
+/* Only the visible Home or tabbed launcher, never a modal/immersive page. */
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"]):has(>body.entry-gate-open:not(.boot-loading):not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open)):not(:has(.inj-content-frame,dialog[open],#injMarketPortal:not([hidden]),#injMarketEventsOverlay:not([hidden]),#injFreedomOverlay:not([hidden]),#converterView.open,#performanceTimelineView.open)) {
+  position:static!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open:not(.boot-loading):not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open) {
+  position:static!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:auto!important;
+  -webkit-overflow-scrolling:auto!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open:not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open):not(.entry-live-launch)
+  #entryGate#entryGate.entry-gate.visible[aria-hidden="false"]:not(.immersive-underlay):not(.dashboard-underlay) {
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+  contain:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open #entryGate.entry-gate.visible[aria-hidden="false"]
+  >.entry-gate-shell:not(.first-access) {
+  position:relative!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  touch-action:auto!important;
+  align-content:start!important;
+  contain:none!important;
+}
+
+html[data-inj-page="index"][data-inj-platform="android"]:not([data-inj-home-tab="mercato"]):not([data-inj-home-tab="etf"])
+  body.entry-gate-open #entryGate.entry-gate.visible[aria-hidden="false"]
+  >.entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44 {
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* Native Dashboard after closing Home; never unlock a real overlay. */
+html[data-inj-page="index"][data-inj-platform="android"][data-inj-scroll="dashboard"]:not(:has(#entryGate.visible[aria-hidden="false"],.inj-content-frame,dialog[open],#injMarketPortal:not([hidden]),#converterView.open,#performanceTimelineView.open)) {
+  position:static!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  touch-action:auto!important;
+}
+html[data-inj-page="index"][data-inj-platform="android"][data-inj-scroll="dashboard"]
+  body.dashboard-scroll-ready:not(.entry-gate-open):not(.menu-overlay-open):not(.inj-section-open):not(.chart-overlay-open):not(.focus-display-open):not(.pulse-view-open):not(.live-charts-open) {
+  position:static!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+  touch-action:auto!important;
+}
+
+
+/* ./inj-local-access-lock-20261101.css?v=1 */
+html[data-inj-lock-pending="1"] body > :not(#injAccessShield){visibility:hidden!important}
+#injAccessShield[hidden]{display:none!important}
+#injAccessShield{
+ position:fixed!important;inset:0!important;z-index:2147483647!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;padding:24px 16px!important;overflow-y:auto!important;
+ background:radial-gradient(ellipse at 50% 18%,#193d3b 0%,#091b21 47%,#050b13 100%)!important;
+ color:#e6f2f1!important;visibility:visible!important;
+}
+#injAccessShield *{box-sizing:border-box!important;font-family:var(--inj-chosen-face,system-ui,sans-serif)!important}
+#injAccessShield .inj-access-card{
+ display:grid;gap:13px;max-width:390px;width:100%;padding:34px 28px;
+ border:1px solid #335451;border-radius:24px;background:#0a1a20;
+ box-shadow:0 18px 55px rgba(0,0,0,.25);text-align:center;
+}
+#injAccessShield .inj-access-emblem{font-size:44px;line-height:1.15;color:#a1e5d1}
+#injAccessShield .inj-access-eyebrow{font-size:10px;letter-spacing:.19em;color:#8ca9a5}
+#injAccessShield h2{font-size:clamp(22px,5vw,28px);font-weight:600;letter-spacing:.07em;margin:2px 0}
+#injAccessShield p{font-size:13px;color:#a2b7b7;margin:0 0 12px}
+#injAccessShield label{font-size:12px;text-align:left;color:#b5cbcb}
+#injAccessShield input{width:100%;height:48px;border-radius:12px;border:1px solid #496561;background:#0e2a30;
+ color:#f7fffa;font-size:19px;text-align:center;letter-spacing:.21em;outline-offset:2px}
+#injAccessShield button{width:100%;min-height:46px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.05em}
+#injAccessShield .inj-access-primary{background:#b4ecd8;color:#0b2024;border:0}
+#injAccessShield .inj-access-biometric{background:transparent;color:#b4ecd8;border:1px solid #496561}
+#injAccessShield .inj-access-message{font-size:12px;min-height:16px;color:#f5bfaa}
+#injAccessShield small{font-size:10px;line-height:1.5;color:#8ea9a5}
+@media(max-width:480px){#injAccessShield .inj-access-card{padding:28px 20px;border-radius:18px}}
