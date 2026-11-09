@@ -1,7 +1,6 @@
 'use strict';
 
 const INJ_DECIMALS = 1e18;
-const OFFICIAL_APR_ENDPOINT = 'https://api.ui.injective.network/api/v1/cache/stats/apr';
 const LCD_ENDPOINTS = [
   'https://sentry.lcd.injective.network:443',
   'https://lcd.injective.network',
@@ -1916,7 +1915,7 @@ function render() {
   const data = state.data;
   setLiveValue('treasuryHeaderPrice', state.price > 0 ? money(state.price,state.price<10?4:3) : '—', state.price || NaN, true);
   if (!data) { renderWalletOwnership();renderSparkline(); renderWorthSparkline(); return; }
-  const total=number(data.total),available=number(data.available),staked=number(data.staked),rewards=number(data.rewards),apr=number(data.apr),worth=total*state.price;
+  const total=number(data.total),available=number(data.available),staked=number(data.staked),rewards=number(data.rewards),apr=state.aprUpdatedAt&&data.apr!=null&&Date.now()-state.aprUpdatedAt<window.INJ_STAKING_APR.maxCacheMs&&Number.isFinite(Number(data.apr))?Number(data.apr):NaN,worth=total*state.price;
   const allocation=treasuryAllocationPercentages(staked,available,rewards,2);
   const stakedPct=allocation.display.staked,availablePct=allocation.display.available,rewardsPct=allocation.display.rewards;
   const daily=staked>0&&apr>0?staked*(apr/100)/365:0;
@@ -1942,7 +1941,7 @@ function render() {
   setLiveValue('treasuryStakeRatio',`${stakedPct.toFixed(2)}%`,stakedPct,true);setLiveValue('treasuryStakedPct',`${stakedPct.toFixed(2)}%`,stakedPct,true);setLiveValue('treasuryAvailablePct',`${availablePct.toFixed(2)}%`,availablePct,true);setLiveValue('treasuryRewardsPct',`${rewardsPct.toFixed(2)}%`,rewardsPct,true);
   renderAllocationPie(staked,available,rewards,total,allocation);
   renderWalletOwnership();
-  setLiveValue('treasuryApr',apr>0?`APR RETE ${apr.toFixed(3)}%`:'APR —',apr||NaN,true);
+  setLiveValue('treasuryApr',Number.isFinite(apr)?`APR NETTO ${apr.toFixed(3)}%`:'APR NETTO —',apr,true);
   setLiveValue('treasuryRewardHour',treasuryInj(rv.hour,5),rv.hour,true);setLiveValue('treasuryRewardDay',treasuryInj(rv.day,4),rv.day,true);setLiveValue('treasuryRewardMonth',treasuryInj(rv.month,3),rv.month,true);setLiveValue('treasuryRewardYear',treasuryInj(rv.year,2),rv.year,true);
   setLiveValue('treasuryRewardHourWorth',state.price>0?money(rv.hour*state.price,2):'—',state.price>0?rv.hour*state.price:NaN,true);setLiveValue('treasuryRewardDayWorth',state.price>0?money(rv.day*state.price,2):'—',state.price>0?rv.day*state.price:NaN,true);setLiveValue('treasuryRewardMonthWorth',state.price>0?money(rv.month*state.price,2):'—',state.price>0?rv.month*state.price:NaN,true);setLiveValue('treasuryRewardYearWorth',state.price>0?money(rv.year*state.price,2):'—',state.price>0?rv.year*state.price:NaN,true);
   setLiveValue('treasuryMilestoneTitle',`${m.next.toLocaleString('it-IT')} INJ`,m.next,true);setLiveValue('treasuryMilestonePct',`${m.progress.toFixed(1)}%`,m.progress,true);$('treasuryMilestoneBar').style.width=`${m.progress}%`;setLiveValue('treasuryMilestoneCurrent',`${total.toLocaleString('it-IT',{maximumFractionDigits:2})} INJ`,total,true);setLiveValue('treasuryMilestoneRemaining',`${m.remaining.toLocaleString('it-IT',{maximumFractionDigits:2})} INJ mancanti`,m.remaining,true);
@@ -2160,25 +2159,22 @@ async function refreshTreasuryChainRewards(force=false){
 }
 let aprRequest=null;
 async function loadApr(force=false){
-  const cached=number(state.data?.apr);
-  if(!force&&cached>0&&state.aprUpdatedAt&&Date.now()-state.aprUpdatedAt<60000)return cached;
+  // Treasury must show the same weighted NET APR as Reward for these wallets.
+  if(!force&&state.aprUpdatedAt&&Date.now()-state.aprUpdatedAt<120000&&
+     state.data?.apr!=null&&Number.isFinite(Number(state.data.apr)))
+    return Number(state.data.apr);
   if(aprRequest)return aprRequest;
   aprRequest=(async()=>{
-    try{
-      const official=await fetchJson(OFFICIAL_APR_ENDPOINT,4200).catch(()=>null);
-      const verified=aprPercent(official?.apr);
-      if(verified>0){state.aprUpdatedAt=Date.now();return verified;}
-      const [annual,pool,distribution]=await Promise.all([
-        lcd('/cosmos/mint/v1beta1/annual_provisions').catch(()=>null),
-        lcd('/cosmos/staking/v1beta1/pool').catch(()=>null),
-        lcd('/cosmos/distribution/v1beta1/params').catch(()=>null)
-      ]);
-      const provisions=number(annual?.annual_provisions),bonded=number(pool?.pool?.bonded_tokens);
-      const tax=rate(distribution?.params?.community_tax);
-      const fallback=bonded>0?provisions/bonded*100*Math.max(0,1-tax):0;
-      if(fallback>0){state.aprUpdatedAt=Date.now();return fallback;}
-    }catch(_){}
-    return cached;
+    const rates=await Promise.all(TREASURY_ADDRESSES.map(address=>
+      window.INJ_STAKING_APR.wallet(address,force)));
+    if(rates.some(row=>!row||row.stale||
+        (row.staked>0&&!Number.isFinite(row.apr))))return null;
+    const staked=rates.reduce((sum,row)=>sum+row.staked,0);
+    if(!(staked>0))return null;
+    const weighted=rates.reduce((sum,row)=>sum+(row.apr||0)*row.staked,0)/staked;
+    if(!Number.isFinite(weighted)||weighted<0)return null;
+    state.aprUpdatedAt=Date.now();
+    return weighted;
   })();
   try{return await aprRequest;}finally{aprRequest=null;}
 }
@@ -2189,12 +2185,17 @@ async function loadTreasury(force=false) {
   const badge=$('treasuryLiveBadge');badge.classList.add('sync');badge.classList.remove('error');
   try {
     const batchStartedAt=Date.now();
-    let latestApr=number(state.data?.apr);
+    let latestApr=state.aprUpdatedAt&&state.data?.apr!=null&&
+      Date.now()-state.aprUpdatedAt<window.INJ_STAKING_APR.maxCacheMs?
+      Number(state.data.apr):null;
     // APR is optional for balances: a slow APR host cannot blank the Treasury.
     void loadApr().then(next=>{
-      if(number(next)>0){
-        latestApr=number(next);
+      if(Number.isFinite(next)&&next>=0){
+        latestApr=next;
         if(state.data){state.data.apr=latestApr;render();}
+      }else if(state.data){
+        state.data.apr=null;
+        render();
       }
     }).catch(()=>{});
     const rows=await loadRows();

@@ -7,11 +7,11 @@
 <title>Market Cap Comparison · INJ Node</title>
 <style>html,body{margin:0;min-height:100%;background:#020708}html[data-theme="black"],html[data-theme="black"] body{background:#000}html[data-theme="light"],html[data-theme="light"] body{background:#eef5ff;color-scheme:light}html[data-theme="amber"],html[data-theme="amber"] body{background:#060a10}html[data-theme="velvet"],html[data-theme="velvet"] body{background:#0a1024}html[data-theme="aqua"],html[data-theme="aqua"] body{background:#d7e9ef;color-scheme:light}</style>
 <script>try{const theme=localStorage.getItem('inj_monitor_theme');document.documentElement.dataset.theme=['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(theme)?theme:'navy';document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it'}catch(_){}</script>
-<link rel="stylesheet" href="./comparison.css?v=160095">
+<link rel="stylesheet" href="./comparison.css?v=20261109-marketcap-reliability1">
 <link rel="stylesheet" href="./top-clarity.css?v=16.00.90">
 <link rel="stylesheet" href="./navigation.css?v=160090">
 <script defer src="./navigation.js?v=families30-classic-v2"></script>
-<script defer src="./comparison.js?v=20261028logos1"></script>
+<script defer src="./comparison.js?v=20261109-marketcap-reliability1"></script>
 
 <link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
 <link rel="stylesheet" href="./comparison-ab.css?v=20261028logos1">
@@ -75,7 +75,7 @@
    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7"/><path d="M6.5 10v9h11v-9M10 19v-5h4v5"/></svg>
   </button>
   <div class="cap-heading inj-location-title" data-i18n-skip="true"><strong class="inj-location-name">INJ Node</strong><span class="inj-location-section" data-inj-section-name="comparison">Market Cap Comparison</span></div>
-  <div id="comparisonStatus" class="cap-connection"><i></i><span id="comparisonStatusText">SYNC</span></div>
+  <div id="comparisonStatus" class="cap-connection"><i></i><span id="comparisonStatusText">SYNC</span><button type="button" id="comparisonRetry" aria-label="Ricarica dati market cap" title="Ricarica dati">↻</button></div>
  </header>
  <main class="cap-main">
   <section class="cap-intro">

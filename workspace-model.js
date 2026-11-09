@@ -94,7 +94,9 @@ function aggregate(rows){
  if(!rows.length||!rows.every(r=>r&&['staked','available','rewards'].every(k=>typeof r[k]==='number'&&Number.isFinite(r[k])&&r[k]>=0)))return null;
  const sum=k=>rows.reduce((a,r)=>a+r[k],0),staked=sum('staked'),available=sum('available'),rewards=sum('rewards');
  const total=rows.reduce((a,r)=>a+(Number.isFinite(r.total)?r.total:r.staked+r.available+r.rewards+(Number.isFinite(r.unbonding)?r.unbonding:0)),0);
- const aprComplete=rows.every(r=>r.staked===0||(typeof r.personalApr==='number'&&Number.isFinite(r.personalApr)&&r.personalApr>0));
+ const aprComplete=rows.every(r=>r.staked===0||
+  (typeof r.personalApr==='number'&&Number.isFinite(r.personalApr)&&r.personalApr>=0&&
+   Number(r.aprUpdated)>0&&Date.now()-Number(r.aprUpdated)<30*60_000));
  const daily=aprComplete?rows.reduce((s,r)=>s+r.staked*(r.personalApr||0)/100/365,0):null;
  return {staked,available,rewards,total,daily,at:Math.min(...rows.map(r=>r.updated||0)),verified:rows.every(r=>r.verified)};
 }

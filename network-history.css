@@ -1,0 +1,39 @@
+/* INJ Node · Status Network historical uptime bars, aligned with current theme. */
+.uptime-panel{padding:clamp(15px,3vw,22px);overflow:hidden}
+.uptime-controls{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:21px}
+.uptime-live{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:850;letter-spacing:.1em;color:var(--muted)}
+.uptime-live i{display:block;width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.uptime-live[data-live="true"] i{background:var(--green);box-shadow:0 0 11px var(--green);animation:ns-live-pulse 2s ease-in-out infinite}
+.uptime-switch{display:flex;gap:3px;border:1px solid var(--border);border-radius:11px;padding:3px;background:var(--sub)}
+.uptime-switch button{border:0;border-radius:8px;padding:8px 16px;background:transparent;color:var(--muted);font-weight:850;font-size:12px;letter-spacing:.06em}
+.uptime-switch button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:0 1px 5px #0002}
+.uptime-bars{display:grid;grid-template-columns:repeat(var(--segments,48),minmax(0,1fr));gap:3px;height:55px;width:100%;align-items:stretch}
+.uptime-bar{position:relative;padding:0;border:0;border-radius:4px;min-width:0;height:100%;background:var(--border);transform-origin:bottom center;transition:filter .15s,transform .15s;cursor:pointer}
+.uptime-bar[data-level="online"]{background:linear-gradient(0deg,color-mix(in srgb,var(--green) 77%,#000),var(--green))}
+.uptime-bar[data-level="degraded"]{background:linear-gradient(0deg,color-mix(in srgb,var(--amber) 78%,#000),var(--amber))}
+.uptime-bar[data-level="halted"]{background:linear-gradient(0deg,color-mix(in srgb,var(--red) 78%,#000),var(--red))}
+.uptime-bar[data-level="unknown"]{background:repeating-linear-gradient(135deg,var(--border) 0px,var(--border) 4px,var(--sub) 4px,var(--sub) 7px)}
+.uptime-bar[data-provider="true"]::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;border-radius:3px 3px 0 0;background:var(--amber);box-shadow:0 0 5px color-mix(in srgb,var(--amber) 28%,transparent);z-index:1}
+.uptime-bar[data-current="true"]::after{content:'';position:absolute;inset:auto 0 0;height:5px;border-radius:2px;background:var(--accent);opacity:.9}
+.uptime-bar:hover{filter:brightness(1.16);transform:scaleY(1.06)}
+.uptime-bar[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:2px;z-index:2}
+.uptime-axis{display:flex;justify-content:space-between;gap:8px;margin-top:10px;color:var(--muted);font-size:10px;font-weight:650}
+.uptime-axis span:last-child{text-align:right}
+.uptime-legend{display:flex;flex-wrap:wrap;gap:9px 15px;margin-top:16px}
+.uptime-key{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:10px}
+.uptime-key i{width:8px;height:8px;border-radius:2px;display:inline-block;flex:none}
+.uptime-key[data-level="online"] i{background:var(--green)}
+.uptime-key[data-level="degraded"] i{background:var(--amber)}
+.uptime-key[data-level="halted"] i{background:var(--red)}
+.uptime-key[data-level="unknown"] i{background:var(--border);outline:1px solid var(--muted)}
+.uptime-stats{display:flex;justify-content:space-between;gap:13px;align-items:center;border-top:1px solid var(--border);padding-top:15px;margin-top:18px;flex-wrap:wrap}
+.uptime-coverage{color:var(--text);font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.uptime-coverage-note{font-size:10px;color:var(--muted);max-width:460px;line-height:1.45}
+.uptime-selection{padding:14px;background:var(--sub);border:1px solid var(--border);border-radius:13px;margin-top:13px;min-height:84px}
+.uptime-selection strong{font-size:13px;display:block;letter-spacing:-.02em}
+.uptime-selection p{color:var(--muted);font-size:11px;margin:6px 0 0;line-height:1.55}
+.uptime-selection a{display:inline-block;margin-top:7px;font-size:11px;color:var(--accent)}
+.uptime-source-note{color:var(--muted);font-size:10px;margin:13px 1px 0;line-height:1.5}
+@keyframes ns-live-pulse{50%{opacity:.45}}
+@media(max-width:440px){.uptime-bar{border-radius:2px}.uptime-bars{gap:2px;height:48px}.uptime-switch button{padding:7px 14px}.uptime-controls{margin-bottom:17px}.uptime-legend{gap:8px 10px}.uptime-key{font-size:9px}.uptime-coverage-note{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.uptime-live[data-live="true"] i{animation:none}.uptime-bar{transition:none}}

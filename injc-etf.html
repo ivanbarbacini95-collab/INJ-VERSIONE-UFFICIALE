@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07121b">
-<meta name="description" content="INJC ETF Terminal — quotazione Nasdaq INJC, grafico automatico, volumi, performance e flussi verificati.">
+<meta name="description" content="INJC ETF Terminal — quotazione Nasdaq INJC, grafico automatico, storico dei volumi e performance.">
 <title>INJC ETF Terminal · INJ Node</title>
 <script>
 try {
@@ -173,7 +173,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
 <link rel="stylesheet" href="./injc-etf-market-terminal-20261105.css?v=etf-session-inspect-20261106a">
 <link rel="stylesheet" href="./injc-etf-live-refinement-20261106.css?v=compact-live-quote-final2">
-<link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=netflow-volume-20261106value2">
+<link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=20261109-history-only1">
 </head>
 <body>
 <div class="etf-shell">
@@ -264,40 +264,16 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
  </div>
  <p class="injc-foot" id="etfVolumeFootnote" data-it="Il volume scambiato misura la negoziazione delle quote, non il capitale entrato nel fondo." data-en="Trading volume tracks ETF share trading, not cash flowing into the fund.">Il volume scambiato misura la negoziazione delle quote, non il capitale entrato nel fondo.</p>
 </section>
-<section aria-label="Flussi ETF">
- <div class="injc-title-row"><h2 data-it="Flussi del fondo" data-en="Fund Flows">Flussi del fondo</h2><small data-it="RILEVAZIONE GIORNALIERA · NON IN TEMPO REALE" data-en="DAILY REPORTING · NOT REAL TIME">RILEVAZIONE GIORNALIERA · NON IN TEMPO REALE</small></div>
- <div class="injc-panel injc-flow-body">
-  <div class="injc-flow-net">
-   <div><div class="injc-caption">NET FLOW · USD</div><span id="etfFlowNetLabel" data-it="Ultima seduta verificata" data-en="Latest verified session">Ultima seduta verificata</span></div><strong id="etfNetFlow">—</strong>
-  </div>
-  <div class="injc-flow-totals">
-   <div><span data-it="INFLOW · SEDUTA ODIERNA" data-en="INFLOW · TODAY">INFLOW · SEDUTA ODIERNA</span><strong id="etfInflowValue">—</strong></div>
-   <div><span data-it="OUTFLOW · SEDUTA ODIERNA" data-en="OUTFLOW · TODAY">OUTFLOW · SEDUTA ODIERNA</span><strong id="etfOutflowValue">—</strong></div>
-  </div>
-  <div class="injc-flow-history-top">
-   <div><strong data-it="Storico dei flussi" data-en="Historical Fund Flows">Storico dei flussi</strong><small id="etfFlowsSummary">—</small></div>
-   <div class="injc-flow-legend"><span><i class="injc-legend-dot inflow"></i> INFLOW</span><span><i class="injc-legend-dot outflow"></i> OUTFLOW</span><span><i class="injc-legend-dot pending"></i> <span data-it="IN ATTESA" data-en="PENDING">IN ATTESA</span></span></div>
-  </div>
-  <div class="injc-flow-graph" id="etfFlowGraph" aria-label="Grafico dei flussi INJC con linea zero centrale">
-    <div class="injc-flow-zero-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="injc-flow-scroller" id="etfFlowHistory" tabindex="0" role="region" aria-label="Flussi ETF INJC per seduta, scorrimento orizzontale" title="Scorri per consultare le sedute precedenti"></div>
-    <div class="injc-flow-right-axis" id="etfFlowRightAxis" aria-label="Scala USD dei flussi">
-      <span data-y-axis>—</span><span data-y-axis>—</span><span data-y-axis>0</span><span data-y-axis>—</span><span data-y-axis>—</span>
-    </div>
-    <div class="injc-flow-tooltip" id="etfFlowTooltip" hidden aria-live="off">
-      <strong class="injc-tip-date"></strong><span class="injc-tip-body"></span>
-    </div>
-  </div>
-  <div class="injc-flow-scale-row"><span data-it="Zero centrale · afflussi sopra · deflussi sotto" data-en="Center zero · inflows above · outflows below">Zero centrale · afflussi sopra · deflussi sotto</span><span id="etfFlowScaleNote">—</span></div>
-  <div class="injc-flow-axis-note" data-it="Ogni coppia di colonne rappresenta una seduta Nasdaq. Le colonne si compilano solo con flussi pubblicati e verificati. Scorri per vedere lo storico." data-en="Each pair of vertical columns represents one Nasdaq session. Bars fill only with verified published flows. Scroll for earlier sessions.">Ogni coppia di colonne rappresenta una seduta Nasdaq. Le colonne si compilano solo con flussi pubblicati e verificati. Scorri per vedere lo storico.</div>
+<section aria-label="Trading Volume ETF">
+ <div class="injc-title-row"><h2 data-it="Trading Volume" data-en="Trading Volume">Trading Volume</h2><small data-it="STORICO QUOTE INJC · NASDAQ" data-en="INJC SHARE HISTORY · NASDAQ">STORICO QUOTE INJC · NASDAQ</small></div>
+ <div class="injc-panel injc-volume-only">
   <div class="injc-volume-section" id="etfVolumeSection">
     <div class="injc-volume-heading">
       <div><strong data-it="Trading Volume · quote INJC" data-en="Trading Volume · INJC shares">Trading Volume · quote INJC</strong>
         <small id="etfVolumeSummary" data-it="Storico dei volumi scambiati" data-en="Trading-volume history">Storico dei volumi scambiati</small>
       </div>
       <div class="injc-volume-controls" role="group" aria-label="Visualizzazione volume INJC">
-        <button type="button" class="active" data-injc-volume-mode="session" aria-pressed="true" data-it="SESSIONE" data-en="SESSION">SESSIONE</button>
-        <button type="button" data-injc-volume-mode="history" aria-pressed="false" data-it="STORICO" data-en="HISTORY">STORICO</button>
+        <span class="injc-volume-unit">HISTORY</span>
         <span class="injc-volume-unit">SHARES · NASDAQ</span>
       </div>
     </div>
@@ -324,23 +300,20 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
      <p class="injc-volume-valuation-note" id="etfVolumeValuationNote" data-it="Stima: numero di quote × prezzo INJC rilevato nella stessa seduta. Non è il controvalore effettivo degli scambi né un afflusso al fondo." data-en="Estimate: shares × INJC reference price from the same session. Not actual traded turnover or fund inflows.">Stima: numero di quote × prezzo INJC rilevato nella stessa seduta. Non è il controvalore effettivo degli scambi né un afflusso al fondo.</p>
      <div class="injc-volume-foot"><small id="etfVolumeSourceLabel" data-it="In attesa dei dati sulle quote negoziate" data-en="Awaiting share trading volume">In attesa dei dati sulle quote negoziate</small><small data-it="Quote negoziate sul mercato · non afflussi del fondo" data-en="Exchange-traded shares · not fund inflows">Quote negoziate sul mercato · non afflussi del fondo</small></div>
   </div>
-  <div class="injc-flow-foot"><span id="etfFlowVerified" aria-live="polite" data-it="In attesa di report ufficiale dei flussi" data-en="Awaiting verified flows report">In attesa di report ufficiale dei flussi</span> <a id="etfFlowsSource" href="https://canaryetfs.com/injc/" target="_blank" rel="noopener noreferrer" hidden data-it="FONTE ↗" data-en="SOURCE ↗">FONTE ↗</a>
-   <div data-it="Inflow/outflow indicano nuove sottoscrizioni e rimborsi, non acquisti e vendite sul mercato secondario. Le barre si valorizzano soltanto con una fonte giornaliera verificata." data-en="Inflows/outflows reflect creations and redemptions, not secondary-market buying and selling. Bars populate only from verified daily fund flow reports.">Inflow/outflow indicano nuove sottoscrizioni e rimborsi, non acquisti e vendite sul mercato secondario. Le barre si valorizzano soltanto con una fonte giornaliera verificata.</div>
-  </div>
  </div>
 </section>
 <section aria-label="Scheda del fondo">
  <div class="injc-title-row"><h2 data-it="Dettagli fondo" data-en="Fund Details">Dettagli fondo</h2><small>CANARY STAKED INJ ETF</small></div>
  <div class="injc-fund"><div><span>SPONSOR</span><strong>Canary Capital</strong></div><div><span data-it="COMMISSIONE ANNUA" data-en="ANNUAL FEE">COMMISSIONE ANNUA</span><strong>1,10%</strong></div><div><span data-it="SOTTOSTANTE" data-en="UNDERLYING">SOTTOSTANTE</span><strong>Injective (INJ)</strong></div><div><span>EXCHANGE</span><strong>Nasdaq</strong></div></div>
 </section>
-<div class="injc-foot"><p data-it="Il prezzo INJC usa prima la quotazione pubblica Nasdaq.com quando disponibile; per storico e backup usa provider terzi. L'orario dello scambio è mostrato e i dati possono essere ritardati. La sessione Nasdaq e i flussi del fondo sono due flussi informativi distinti. Nessun valore inventato." data-en="INJC price prefers Nasdaq.com's public quote when available; chart history and backup use third-party providers. The trade timestamp is shown and quotes can be delayed. Nasdaq share trading and fund capital flows are separate datasets. No invented figures.">I dati di mercato provengono da provider terzi e possono essere ritardati o temporaneamente indisponibili. La sessione Nasdaq e i flussi del fondo sono due flussi informativi distinti. Nessun valore inventato.</p>
+<div class="injc-foot"><p data-it="Il prezzo INJC usa prima la quotazione pubblica Nasdaq.com quando disponibile; per storico e backup usa provider terzi. L'orario dello scambio è mostrato e i dati possono essere ritardati. Il volume rappresenta le quote INJC negoziate sul mercato, non gli INJ sottostanti. Nessun dato inventato." data-en="INJC price prefers Nasdaq.com's public quote when available; chart history and backup use third-party providers. The trade timestamp is shown and quotes can be delayed. Trading volume represents INJC shares traded on the exchange, not the underlying INJ tokens. No fabricated figures.">I dati di mercato provengono da provider terzi e possono essere ritardati o temporaneamente indisponibili. Il volume rappresenta le quote INJC negoziate sul mercato, non gli INJ sottostanti. Nessun dato inventato.</p>
  <div class="links"><a href="https://canaryetfs.com/injc/" target="_blank" rel="noopener noreferrer">CANARY CAPITAL</a><a href="https://www.nasdaqtrader.com/TraderNews.aspx?id=ETP2026-179" target="_blank" rel="noopener noreferrer">NASDAQ</a><a href="https://finance.yahoo.com/quote/INJC/" target="_blank" rel="noopener noreferrer">YAHOO FINANCE</a><a href="https://www.tradingview.com/symbols/NASDAQ-INJC/" target="_blank" rel="noopener noreferrer">TRADINGVIEW</a></div>
 </div>
 <footer class="brand-footer"><strong>INJ NODE</strong> / BY B CAPITAL GROUP</footer>
 </main>
 </div>
-<script defer src="./injc-etf-flows-volume-20261106.js?v=netflow-volume-20261106value2"></script>
-<script defer src="./injc-etf-market-terminal-20261105.js?v=compact-live-quote-final2"></script>
+<script defer src="./injc-etf-flows-volume-20261106.js?v=20261109-history-only1"></script>
+<script defer src="./injc-etf-market-terminal-20261105.js?v=20261109-flow-report-state-v1"></script>
 <script defer src="./injc-etf-session-inspector-20261106.js?v=etf-session-inspect-20261106a"></script>
 
 </body>

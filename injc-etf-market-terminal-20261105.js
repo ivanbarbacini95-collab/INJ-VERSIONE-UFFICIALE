@@ -649,9 +649,17 @@
    changeClass('etfNetFlow',net);
    setText('etfFlowVerified',lastVerified
      ?tr('Ultima seduta verificata · '+lastVerified.date+' · flussi giornalieri','Latest verified session · '+lastVerified.date+' · daily fund flows')
-     :tr('Flussi non pubblicati/verificati · nuove colonne per ogni seduta Nasdaq','Fund flows not yet published/verified · one new set of columns each Nasdaq session'));
-   $('etfFlowsSource').hidden=!lastVerified;
-   if(lastVerified)$('etfFlowsSource').href=lastVerified.source;
+     :tr('Report INJC non disponibile · i valori mancanti non indicano flusso zero',
+         'INJC flow report unavailable · missing values do not mean zero flow'));
+   setText('etfFlowNetLabel',lastVerified
+     ?tr('Ultima seduta verificata','Latest verified session')
+     :tr('Dato non pubblicato','Not reported'));
+   const flowSource=$('etfFlowsSource');
+   if(flowSource){
+     flowSource.hidden=false;
+     flowSource.href=lastVerified?lastVerified.source:'https://canaryetfs.com/injc/';
+     flowSource.textContent=lastVerified?tr('FONTE ↗','SOURCE ↗'):tr('SITO EMITTENTE ↗','ISSUER WEBSITE ↗');
+   }
    // Signed flow renderer uses verified daily fund reports only.
    // Price and traded-share volume are intentionally separate data streams.
    if(typeof window.__injcEtfFlowsRender==='function'){

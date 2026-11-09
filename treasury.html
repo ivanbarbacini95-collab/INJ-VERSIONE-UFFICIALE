@@ -143,6 +143,7 @@
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
+<link rel="stylesheet" href="./cash-reserve.css?v=20261109alloverview1">
 </head>
 <body>
   <div class="treasury-shell">
@@ -190,6 +191,7 @@
         </div>
       </section>
 
+      
       <section class="treasury-grid">
         <article class="treasury-panel treasury-allocation-panel">
           <header><div><span>ALLOCATION</span><strong>Composizione Treasury</strong></div><small id="treasuryWalletCount">—</small></header>
@@ -325,11 +327,119 @@
           </div>
         </article>
       </section>
+
+      <!-- Cash Reserve: wallet asset inventory and verified staking positions, separate from managed Treasury. -->
+      <section class="cash-reserve-panel" id="cashReservePanel" aria-label="Cash Reserve · stablecoin Injective e Solana">
+        <div class="cash-reserve-head">
+          <div class="cash-reserve-title-row">
+            <span class="cash-reserve-shield" aria-hidden="true">⬡</span>
+            <div><h2>CASH RESERVE</h2><p data-cash-it="Riserva patrimoniale · Injective + Solana" data-cash-en="Capital reserve · Injective + Solana">Riserva patrimoniale · Injective + Solana</p></div>
+          </div>
+          <div class="cash-reserve-actions">
+            <span id="cashStatus" class="cash-pill is-idle" role="status" aria-live="polite">In attesa</span>
+            <button id="cashPrivacy" type="button" aria-label="Privacy" aria-pressed="false" title="Nascondi o mostra importi">◉</button>
+            <button id="cashSync" type="button">Sincronizza</button>
+          </div>
+        </div>
+        <div class="cash-reserve-top">
+          <div><span class="cash-reserve-eyebrow" data-cash-it="VALORE NOMINALE DELLA RISERVA" data-cash-en="NOMINAL RESERVE VALUE">VALORE NOMINALE DELLA RISERVA</span>
+            <strong id="cashTotal" class="cash-reserve-total" aria-live="polite">—</strong></div>
+          <select id="cashCurrency" aria-label="Valuta della riserva">
+            <option value="USD">USD</option><option value="EUR">EUR</option>
+          </select>
+        </div>
+        <div class="cash-reserve-assets">
+          <div class="cash-reserve-asset"><span class="cash-reserve-asset-label"><img class="cash-reserve-static-logo" src="https://assets-cdn.trustwallet.com/blockchains/solana/assets/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png" alt="" loading="lazy">USDC · INJ</span><strong id="cashUsdc">—</strong><small>Circle · Injective nativo</small></div>
+          <div class="cash-reserve-asset"><span class="cash-reserve-asset-label"><img class="cash-reserve-static-logo" src="https://assets-cdn.trustwallet.com/blockchains/solana/assets/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png" alt="" loading="lazy">USDC · SOL</span><strong id="cashUsdcSol">—</strong><small id="cashSolanaEarnDetail">Circle · Solana</small></div>
+          <div class="cash-reserve-asset"><span class="cash-reserve-asset-label"><img class="cash-reserve-static-logo" src="https://assets-cdn.trustwallet.com/blockchains/solana/assets/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.png" alt="" loading="lazy">USDT · SOL</span><strong id="cashUsdtSol">—</strong><small>Tether · Solana</small></div>
+        </div>
+        <div class="cash-reserve-networks" aria-label="Portafoglio completo per blockchain">
+          <section class="cash-network-card" aria-label="Token disponibili su Injective">
+            <header class="cash-network-head">
+              <div><small>ON-CHAIN WALLET</small><h3>Injective</h3></div>
+              <span class="cash-network-badge" id="cashInjAssetsStatus">SYNC</span>
+            </header>
+            <div class="cash-token-list" id="cashInjectiveTokens" aria-live="polite">
+              <p class="cash-token-empty">Sincronizzazione asset…</p>
+            </div>
+          </section>
+          <section class="cash-network-card" aria-label="Token disponibili su Solana">
+            <header class="cash-network-head">
+              <div><small>ON-CHAIN WALLET</small><h3>Solana</h3></div>
+              <span class="cash-network-badge" id="cashSolAssetsStatus">SYNC</span>
+            </header>
+            <div class="cash-token-list" id="cashSolanaTokens" aria-live="polite">
+              <p class="cash-token-empty">Sincronizzazione asset…</p>
+            </div>
+            <p class="cash-network-note" id="cashSolAssetsNote"></p>
+          </section>
+        </div>
+        <section class="cash-reserve-yield" aria-label="Posizioni staking e rendite verificabili">
+          <div class="cash-yield-section-head">
+            <div><small>YIELD MONITOR</small><h3>Staking &amp; DeFi</h3></div>
+            <span id="cashTokenCount" class="cash-token-count">—</span>
+          </div>
+          <div id="cashYieldList" class="cash-yield-list" aria-live="polite">
+            <p class="cash-token-empty">Lettura delle posizioni e delle ricompense…</p>
+          </div>
+        </section>
+        <div class="cash-reserve-grid">
+          <div class="cash-reserve-box">
+            <div class="cash-reserve-goal-head"><strong data-cash-it="Obiettivo di accumulo" data-cash-en="Savings target">Obiettivo di accumulo</strong><span id="cashGoalTotal">—</span></div>
+            <form id="cashGoalForm" class="cash-reserve-goal-form">
+              <input id="cashGoalAmount" type="number" min="0" step="0.01" inputmode="decimal" aria-label="Obiettivo riserva in USD" placeholder="Imposta un obiettivo in USD" />
+              <button type="submit" data-cash-it="Salva" data-cash-en="Save">Salva</button>
+            </form>
+            <div class="cash-reserve-progress"><div id="cashProgressBar"></div></div>
+            <div class="cash-reserve-goal-bottom"><span id="cashGoalProgress">Nessun obiettivo impostato</span><span>USD</span></div>
+          </div>
+          <div class="cash-reserve-box">
+            <div class="cash-reserve-chart-head">
+              <strong data-cash-it="Evoluzione riserva" data-cash-en="Reserve history">Evoluzione riserva</strong>
+              <div class="cash-reserve-chart-ranges" role="group" aria-label="Periodo grafico">
+                <button type="button" data-cash-range="1D" aria-pressed="false">1D</button>
+                <button type="button" data-cash-range="1M" aria-pressed="false">1M</button>
+                <button type="button" data-cash-range="1Y" aria-pressed="false">1Y</button>
+                <button type="button" data-cash-range="ALL" aria-pressed="true" data-cash-it="Totale" data-cash-en="All">Totale</button>
+              </div>
+            </div>
+            <div class="cash-chart-overview" aria-live="polite">
+              <div class="cash-chart-overview-total"><span data-cash-it="TOTALE RISERVA" data-cash-en="TOTAL RESERVE">TOTALE RISERVA</span><strong id="cashChartTotal">—</strong></div>
+              <span id="cashChartPeriodInfo" class="cash-chart-period-info">—</span>
+            </div>
+            <div class="cash-chart-scroll" id="cashChartScroll" aria-label="Scorri il grafico per visitare le rilevazioni precedenti">
+              <svg id="cashHistoryChart" class="cash-reserve-chart-svg" viewBox="0 0 660 180" preserveAspectRatio="none" role="img" tabindex="0" aria-label="Storico Cash Reserve interattivo, usa le frecce sinistra e destra per navigare"></svg>
+            </div>
+            <div class="cash-chart-history-tools">
+              <div class="cash-chart-navigation" aria-label="Navigazione nello storico">
+                <button type="button" id="cashChartPrev" aria-label="Rilevazione precedente" title="Rilevazione precedente">‹</button>
+                <button type="button" id="cashChartNext" aria-label="Rilevazione successiva" title="Rilevazione successiva">›</button>
+                <button type="button" id="cashChartLatest" data-cash-it="Adesso" data-cash-en="Latest">Adesso</button>
+              </div>
+              <span data-cash-it="Scorri e tocca i punti · verde ingresso, rosso uscita" data-cash-en="Scroll and tap points · green increase, red decrease">Scorri e tocca i punti · verde ingresso, rosso uscita</span>
+            </div>
+            <div id="cashChartDetail" class="cash-chart-detail" aria-live="polite"></div>
+            <p id="cashChartEmpty" class="cash-reserve-chart-empty" data-cash-it="Lo storico si formerà da questo dispositivo a partire dalle prossime sincronizzazioni." data-cash-en="History starts on this device with the next successful syncs.">Lo storico si formerà da questo dispositivo a partire dalle prossime sincronizzazioni.</p>
+            <div class="cash-reserve-chart-dates"><span id="cashChartFirst">—</span><span id="cashChartLast">—</span></div>
+          </div>
+        </div>
+        <div class="cash-reserve-statusline">
+          <span id="cashSyncInfo">In attesa</span>
+          <span data-cash-it="Sola lettura · saldo on-chain · nessuna firma richiesta" data-cash-en="Read-only · on-chain balance · no wallet signature required">Sola lettura · saldo on-chain · nessuna firma richiesta</span>
+        </div>
+        <p class="cash-reserve-note" id="cashFxNote">Valore nominale: 1 stablecoin = 1 USD. Non è una quotazione di mercato né un capitale assicurato.</p>
+        <p class="cash-reserve-note" data-cash-it="Le stablecoin verificate, disponibili o in Jupiter Earn, sono conteggiate nella riserva; gli altri token restano separati." data-cash-en="Verified stablecoins, liquid or in Jupiter Earn, count toward the reserve; other tokens are separate.">Le stablecoin verificate, disponibili o in Jupiter Earn, sono conteggiate nella riserva; gli altri token restano separati.</p>
+        <p class="cash-reserve-error" id="cashError" role="alert"></p>
+      </section>
+
     <footer class="inj-long-page-signature inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
 </main>
   </div>
-  <script src="./treasury.js?v=20261102-chainfix1" defer></script>
+  <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
+  <script src="./treasury.js?v=20261109-shared2" defer></script>
 
 
+  <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
+  <script defer src="./cash-reserve.js?v=20261109-shared2"></script>
 </body>
 </html>
