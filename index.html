@@ -386,7 +386,6 @@
 
 
 <script defer src="./home-bottom-tabs-20261030.js?v=20261110-live-night-isolation2"></script>
-<link rel="stylesheet" href="./live-view-night-toggle.css?v=20261110-live-night-isolation2">
 
 <script defer src="./market-tab-navigation-20261031.js?v=marketrail14"></script>
 
@@ -795,7 +794,7 @@
 </button>
 <button class="entry-action" id="entryLiveButton" type="button">
 <span aria-hidden="true" class="entry-action-icon inj-pro-launcher-symbol"><svg class="inj-pro-launcher-art inj-pro-icon-live" viewBox="0 0 64 64" focusable="false" aria-hidden="true"><rect class="inj-pro-icon-frame" x="7.8" y="9.5" width="48.4" height="45" rx="7"/><path class="inj-pro-icon-muted" d="M13 23h38M13 43h38"/><path class="inj-pro-icon-detail inj-pro-live-scan" d="M13 17h38"/><path class="inj-pro-icon-bright inj-pro-live-wave" d="M13 34h7l5-10 6 19 7-13 5 6 5-7 3 3"/><circle class="inj-pro-icon-accent inj-pro-live-beacon" cx="51" cy="32" r="2.4"/></svg></span>
-<span><strong class="inj-home-tile-title" data-it="Live View" data-en="Live View">Live View</strong><small class="inj-tile-description" data-it="Dati live del wallet" data-en="Live wallet data">Dati live del wallet</small></span>
+<span><strong class="inj-home-tile-title" data-it="Live View" data-en="Live View">Live View</strong><small class="inj-tile-description" data-it="Prezzo, staking e reward live" data-en="Live price, staking and rewards">Prezzo, staking e reward live</small></span>
 <svg aria-hidden="true" class="entry-action-arrow" viewbox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
 </button>
 
@@ -1348,51 +1347,6 @@
 <div class="system-status-foot"><span>Ultimo controllo</span><strong id="systemStatusChecked">—</strong><button id="systemStatusRefreshButton" type="button">Aggiorna</button></div>
 </div>
 </dialog>
-<div aria-label="Live View Injective" aria-modal="true" class="focus-display-dialog" hidden="" id="focusDisplayDialog" role="dialog">
-<div class="focus-display-shell">
-<div class="focus-display-controls" id="focusDisplayControls">
-<button aria-label="Chiudi Live View e torna al menu" class="focus-display-close focus-display-control" id="closeFocusDisplayButton" title="Menu" type="button">
-<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg>
-</button>
-</div>
-
-<div class="focus-display-status-stack">
-<div aria-hidden="true" class="focus-display-live"><i></i><span>LIVE VIEW</span></div>
-<time aria-label="Ora locale" class="focus-display-clock" id="focusDisplayClock">--:--</time>
-</div>
-<div class="focus-display-content">
-<div class="focus-display-price-block focus-display-primary">
-<span class="focus-display-label">INJ / USDT</span>
-<strong id="focusDisplayPrice">—</strong>
-<span class="focus-display-change neutral" id="focusDisplayChange24h">— · 24H</span>
-</div>
-<div aria-hidden="true" class="focus-display-divider"></div>
-<div class="focus-display-worth-block focus-display-primary">
-<span class="focus-display-wallet" id="focusDisplayWallet">Wallet</span>
-<strong class="private" id="focusDisplayWorth">—</strong>
-<span class="focus-display-total private" id="focusDisplayTotalInj">—</span>
-<span class="focus-display-reward private" id="focusDisplayDailyReward">—</span>
-</div>
-<div class="focus-display-range" id="focusDisplayRange">
-<div class="focus-display-range-copy">
-<span>Min 24H <b id="focusDisplayRangeMin">—</b></span>
-<span>Max 24H <b id="focusDisplayRangeMax">—</b></span>
-</div>
-<div aria-label="Posizione prezzo nel range 24 ore" class="focus-display-range-track">
-<i class="focus-display-range-fill" id="focusDisplayRangeFill"></i>
-<i class="focus-display-range-marker" id="focusDisplayRangeMarker"></i>
-</div>
-</div>
-<div aria-label="Dati staking live" class="focus-display-stats private">
-<div><span>APR NETTO</span><strong id="focusDisplayApr">—</strong></div>
-<div><span>IN STAKING</span><strong id="focusDisplayStaked">—</strong></div>
-<div class="reward-accent-frame reward-accent-inline"><span>REWARD</span><strong id="focusDisplayRewards">—</strong></div>
-</div>
-<button aria-label="Apri stato rete e API" class="focus-display-system" id="focusDisplaySystemButton" type="button"><i id="focusDisplaySystemDot"></i><span id="focusDisplaySystemText">SYSTEM · —</span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg></button>
-</div>
-<footer class="inj-brand-credit inj-liveview-credit" data-i18n-skip="true"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
-</div>
-</div>
 <div aria-label="Grafico Injective" aria-modal="true" class="chart-dialog native-chart-dialog" hidden="" id="chartDialog" role="dialog">
 <div class="chart-dialog-shell">
 <article class="market-terminal-card native-market-terminal" id="marketTerminalCard">
@@ -1467,8 +1421,7 @@
 </section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
 <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-<script defer src="app.js?v=20261109-shared2"></script>
-<script defer src="./live-view-night-toggle.js?v=20261110-live-night-isolation2"></script>
+<script defer src="app.js?v=20261110-liveview-one-layout3"></script>
 <script defer src="./morning-brief.js?v=160737"></script>
 <script>
 (function(){
