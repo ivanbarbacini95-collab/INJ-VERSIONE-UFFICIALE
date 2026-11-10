@@ -370,12 +370,15 @@
    if(volumeLoading||document.hidden)return;
    volumeLoading=true;
    try{
-     const source='https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/INJC?range=1y&interval=1d&includePrePost=false';
+     const loadYahoo=async(range,interval)=>{
+       try{return await fetchJson('./api/injc-market-data?provider=yahoo&range='+range+'&interval='+interval,8500);}
+       catch(_){return await fetchJson('https://proxy.cors.dev/https://query2.finance.yahoo.com/v8/finance/chart/INJC?range='+range+'&interval='+interval+'&includePrePost=false',10500);}
+     };
      const results=await Promise.allSettled([
-       fetchJson(source,10500),
+       loadYahoo('1y','1d'),
        fetchJson('./market-data/injc-etf-volume.json?t='+Date.now(),8000),
        fetchJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000),
-       fetchJson('https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/INJC?range=5d&interval=5m&includePrePost=false',10500)
+       loadYahoo('5d','5m')
      ]);
      if(results[1].status==='fulfilled'){
        const d=results[1].value;
@@ -453,7 +456,7 @@
    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshVolume();});
    window.addEventListener('pageshow',refreshVolume);
    refreshVolume();
-   setInterval(()=>{if(!document.hidden)refreshVolume();},120000);
+   setInterval(()=>{if(!document.hidden)refreshVolume();},30000);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
  else bind();
