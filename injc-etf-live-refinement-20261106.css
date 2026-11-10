@@ -55,7 +55,11 @@
  background:color-mix(in srgb,var(--injc-up) 7%,var(--etf-card));
  border-color:color-mix(in srgb,var(--injc-up) 29%,var(--etf-line));
 }
-.injc-feed-indicator[data-feed="offline"]{color:var(--injc-down)}
+.injc-feed-indicator[data-feed="closed"]{
+ color:var(--etf-muted);
+ background:color-mix(in srgb,var(--etf-muted) 5%,var(--etf-card));
+ border-color:color-mix(in srgb,var(--etf-muted) 22%,var(--etf-line));
+}
 .injc-price-compact .injc-market-countdown{
  flex:0 1 auto;
  display:flex;
