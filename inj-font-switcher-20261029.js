@@ -3,8 +3,8 @@
 'use strict';
 const STORE='inj_node_font_v1',root=document.documentElement;
 const fonts=[
- {id:'slim',name:'Slim',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Sottile, essenziale · peso 300',subtitleEn:'Light, minimal · weight 300',weight:300},
- {id:'bold',name:'Bold',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Marcato, definito · peso 750',subtitleEn:'Distinct, strong · weight 750',weight:750}
+ {id:'slim',name:'Slim',font:'"INJ Rubik Unified","INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Sottile, essenziale · peso 400',subtitleEn:'Light, minimal · weight 400',weight:400},
+ {id:'bold',name:'Bold',font:'"INJ Rubik Unified","INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Marcato, definito · peso 700',subtitleEn:'Distinct, strong · weight 700',weight:700}
 ];
 const byId=Object.fromEntries(fonts.map(f=>[f.id,f]));
 let active='bold';
@@ -44,8 +44,8 @@ function refresh(){
  if(caption)caption.textContent=(en?'Selected: ':'Selezionato: ')+byId[active].name;
  const note=holder.querySelector('.menu-font-note');
  if(note)note.textContent=en?
-  'Two distinct styles: Slim (300) and Bold (750). Your choice is saved on this device.':
-  'Solo due stili ben distinti: Slim (300) e Bold (750). La scelta viene salvata sul dispositivo.';
+  'Two distinct styles: Slim (400) and Bold (700). Your choice is saved on this device.':
+  'Solo due stili ben distinti: Slim (400) e Bold (700). La scelta viene salvata sul dispositivo.';
  holder.setAttribute('aria-label',en?'Interface font':'Font interfaccia');
  holder.querySelectorAll('[data-inj-font-choice]').forEach(button=>{
   const f=byId[button.getAttribute('data-inj-font-choice')];
