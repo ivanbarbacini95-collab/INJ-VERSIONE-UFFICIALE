@@ -224,10 +224,17 @@
     const green=styles.getPropertyValue('--mc-green').trim()||'#00eb8b';
     const red=styles.getPropertyValue('--mc-red').trim()||'#ff415c';
     const accent=styles.getPropertyValue('--mc-accent').trim()||green;
-    const left=expanded?12:5,right=width-(expanded?57:45);
-    const top=expanded?14:7,bottom=height-(expanded?29:21);
+    // External portrait/landscape displays use a dedicated candle geometry.
+    // Keep phone canvases and their original 7px candle cap unchanged.
+    const externalDisplay=window.innerWidth>=700 && window.innerHeight>=650 && width>=550;
+    const portraitDisplay=window.innerHeight>window.innerWidth;
+    const left=expanded?12:5,right=width-(externalDisplay? (expanded?80:72) : (expanded?57:45));
+    const top=expanded?14:7,bottom=height-(externalDisplay? (expanded?36:30) : (expanded?29:21));
     const plotW=Math.max(1,right-left),plotH=Math.max(1,bottom-top);
-    const maxBars=Math.max(12,Math.min(expanded?90:62,Math.floor(plotW/(expanded?8:5))));
+    const maxBars=externalDisplay
+      ? Math.max(24,Math.min(expanded?(portraitDisplay?56:76):(portraitDisplay?48:72),
+          Math.floor(plotW/(portraitDisplay?12:13))))
+      : Math.max(12,Math.min(expanded?90:62,Math.floor(plotW/(expanded?8:5))));
     const shown=rows.slice(-maxBars);
     let hi=-Infinity,lo=Infinity;
     for(const p of shown){hi=Math.max(hi,p.h);lo=Math.min(lo,p.l);}
@@ -248,11 +255,17 @@
       shown.forEach((p,i)=>{const x=left+(i+.5)*step,y=mapY(p.c);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
       ctx.stroke();
     }else{
-      const bodyWidth=Math.max(1,Math.min(expanded?10:7,step*.66));
+      // Scale candle bodies with their slot: the previous hard 7px cap
+      // made them look like spaced-out needles on external monitors.
+      // Preserve a visible gutter and a crisp wick at every resolution.
+      const bodyWidth=externalDisplay
+        ? Math.max(3,Math.min(30,step*.84))
+        : Math.max(1,Math.min(expanded?10:7,step*.66));
       shown.forEach((p,i)=>{
         const x=left+(i+.5)*step,up=p.c>=p.o;
         ctx.strokeStyle=up?green:red;ctx.fillStyle=up?green:red;
-        ctx.lineWidth=Math.max(1,Math.min(1.5,step*.18));
+        ctx.lineWidth=externalDisplay?Math.max(1.5,Math.min(2.5,step*.14))
+          :Math.max(1,Math.min(1.5,step*.18));
         ctx.beginPath();ctx.moveTo(x,mapY(p.h));ctx.lineTo(x,mapY(p.l));ctx.stroke();
         const y1=mapY(Math.max(p.o,p.c)),y2=mapY(Math.min(p.o,p.c));
         ctx.fillRect(x-bodyWidth/2,y1,bodyWidth,Math.max(1.2,y2-y1));
@@ -266,11 +279,11 @@
       ctx.setLineDash([3,4]);ctx.strokeStyle=priceLine;ctx.lineWidth=.9;ctx.globalAlpha=.82;
       ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
       ctx.setLineDash([]);ctx.globalAlpha=1;
-      ctx.font=(expanded?'11':'9')+'px system-ui,sans-serif';
+      ctx.font=(externalDisplay?(expanded?'14':'12'):(expanded?'11':'9'))+'px system-ui,sans-serif';
       ctx.textAlign='left';ctx.textBaseline='middle';
       ctx.fillStyle=ink;ctx.fillText(priceLabel(last.c),right+3,Math.max(top+5,Math.min(bottom-5,y)));
     }
-    ctx.font=(expanded?'11':'9')+'px system-ui,sans-serif';
+    ctx.font=(externalDisplay?(expanded?'14':'12'):(expanded?'11':'9'))+'px system-ui,sans-serif';
     ctx.fillStyle=dim;ctx.textBaseline='middle';ctx.textAlign='left';
     ctx.fillText(priceLabel(hi),right+3,top+5);
     ctx.fillText(priceLabel(lo),right+3,bottom-5);
