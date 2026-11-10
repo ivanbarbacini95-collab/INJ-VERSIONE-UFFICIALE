@@ -1,0 +1,22 @@
+/* INJ Node - Only if a real compact Home cannot fit above the fixed dock.
+   Keep the three actions fully scrollable/tappable, not hidden under popover. */
+@media screen and (max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-dock-clearance="scroll"]
+ body #entryGate#entryGate.entry-gate{
+  height:100dvh!important;max-height:100dvh!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-dock-clearance="scroll"]
+ body #entryGate#entryGate .entry-gate-shell:not(.first-access){
+  min-height:100dvh!important;height:auto!important;max-height:none!important;
+  overflow:visible!important;
+  padding-bottom:calc(var(--inj-home-dock-space,125px) + env(safe-area-inset-bottom,0px))!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-dock-clearance="scroll"]
+ body #entryGate#entryGate .entry-actions.entry-flat-v44{
+  position:relative!important;z-index:1!important;
+  margin-bottom:8px!important;
+ }
+}
