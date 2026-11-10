@@ -144,6 +144,15 @@
    el.title=details;
    textNode.title=details;
    el.setAttribute('aria-label',details);
+   const stamp=$('etfLastTradeStamp');
+   if(stamp){
+     stamp.textContent=lastQuote?.quoteTime
+       ?tr('Ultimo scambio','Last trade')+' · '+nyKey(new Date(lastQuote.quoteTime))+' '+
+        time+(age!==null?' · '+tr('età dato','data age')+' '+age+' min':'')+
+        ' · '+(lastQuote.providerRealTime===true?tr('provider segnala real-time','provider marks real-time'):tr('feed pubblico potenzialmente ritardato','public feed may be delayed'))
+       :tr('In attesa di uno scambio INJC verificato','Awaiting a verified INJC trade');
+     stamp.title=details;
+   }
  }
  function changeClass(id,value){const el=$(id);if(!el)return;el.classList.toggle('up',Number.isFinite(value)&&value>0);el.classList.toggle('down',Number.isFinite(value)&&value<0);}
  function status(value,extra){
@@ -179,7 +188,11 @@
  }
  function yahooUrl(range,interval,host='query1.finance.yahoo.com'){
    const u='https://'+host+'/v8/finance/chart/INJC?range='+encodeURIComponent(range)+'&interval='+encodeURIComponent(interval)+'&includePrePost='+((range==='1d'||range==='5d')?'true':'false')+'&cacheBust='+Date.now();
-   return 'https://proxy.cors.dev/'+u;
+   // Browser requests prefer the same-origin official API (no third-party CORS proxy).
+   // Public proxy fallback remains available on static-only hosting.
+   return host==='query1.finance.yahoo.com'
+     ?'./api/injc-market-data?provider=yahoo&range='+encodeURIComponent(range)+'&interval='+encodeURIComponent(interval)
+     :'https://proxy.cors.dev/'+u;
  }
  async function getJson(url,timeout=12500){
    const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),timeout);
@@ -289,6 +302,7 @@
    // Polling frequently cannot remove the latency of a delayed upstream market feed.
    try{
      return await Promise.any([
+       getJson('./api/injc-market-data?provider=nasdaq',5800).then(parseNasdaq),
        getJson(nasdaqUrl(),4600).then(parseNasdaq),
        getJson(nasdaqUrl(true),5600).then(parseNasdaq)
      ]);
@@ -441,7 +455,7 @@
    if(!incoming&&period==='1d'){
      try{
        const fallback=await getJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000);
-       if(fallback?.ticker==='INJC'&&Array.isArray(fallback.points)){
+       if(period==='1d'&&fallback?.ticker==='INJC'&&Array.isArray(fallback.points)){
          incoming=parsePriceRangeFromBars(fallback.points.map(p=>({
            time:Date.parse(p.time),close:numeric(p.close),open:numeric(p.open),
            high:numeric(p.high),low:numeric(p.low)
@@ -543,7 +557,15 @@
  }
  function displayQuote(data,source){
    const prevTime=lastQuote?.quoteTime||0;
-   if(prevTime&&data.quoteTime<prevTime&&timeframe==='1d')return;
+   // A delayed request (including one caused by changing chart periods) cannot
+   // replace a newer verified exchange trade.
+   if(prevTime&&data.quoteTime<prevTime){
+     if(timeframe!=='1d'&&Array.isArray(data.points)&&data.points.length){
+       graphPoints=data.points.filter(p=>Number.isFinite(p?.time)&&Number.isFinite(p?.close)&&p.close>0);
+       drawGraph();
+     }
+     return;
+   }
    lastQuote=data;quoteSource=source;lastGoodAt=Date.now();
    const pre=data.session==='pre'&&nyKey(new Date(data.quoteTime))===nyKey(new Date());
    setText('etfQuotePrice',usd(data.price));
@@ -616,7 +638,7 @@
      const incoming=await getQuote();
      if(!incoming.cacheOnly)lastFeedSuccessAt=Date.now();
      displayQuote(incoming.data,incoming.source);
-     const stale=Date.now()-incoming.data.quoteTime>15*60000;
+     const stale=Date.now()-(lastQuote?.quoteTime||0)>15*60000;
      setText('etfSyncLabel',incoming.cacheOnly
        ?tr('ULTIMO DATO MEMORIZZATO','LAST STORED QUOTE')
        :stale?tr('DATI RITARDATI','DELAYED DATA'):tr('QUOTAZIONE AGGIORNATA','QUOTE UPDATED'));
