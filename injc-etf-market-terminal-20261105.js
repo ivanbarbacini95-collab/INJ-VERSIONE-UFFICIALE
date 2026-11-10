@@ -113,6 +113,7 @@
  let timeframe='1d', busy=false, lastQuote=null, lastGoodAt=0, quoteSource='', graphPoints=[], refreshTimer=null, marketPulseTimer=null, flowsHistory=[], flowDayKey=null, plottedFlowsFirstTime=true;
  let lastChartPhase=null, lastFeedSuccessAt=0, lastFeedFailureAt=0, fastQuoteBusy=false;
  let observedPrePrints=[], observedPreDay='';
+ let currentDisplayedSession=nyKey(new Date());
  const ranges={ '1d':['1d','1m'],'5d':['5d','5m'],'1mo':['1mo','30m'],'3mo':['3mo','1d'],'1y':['1y','1d'] };
  // Price-range rail is independent from the main chart timeframe.
  const priceRangeConfig={
@@ -128,31 +129,12 @@
  function renderFeedIndicator(){
    const el=$('etfFeedIndicator'),textNode=$('etfQuoteFreshness');
    if(!el||!textNode)return;
-   const active=lastFeedSuccessAt>0&&Date.now()-lastFeedSuccessAt<35000;
-   const online=active;
-   el.dataset.feed=online?'online':'offline';
-   const label=online?'ONLINE':'OFFLINE';
-   if(textNode.textContent!==label)textNode.textContent=label;
-   const age=lastQuote?.quoteTime?Math.max(0,Math.floor((Date.now()-lastQuote.quoteTime)/60000)):null;
-   const time=lastQuote?.quoteTime?fmtTime(lastQuote.quoteTime)+' NY':'—';
-   const source=quoteSource||tr('Nessun provider verificato','No verified provider');
-   const details=online
-     ?tr('Feed disponibile','Data feed reachable')+' · '+source+' · '+
-       tr('ultimo scambio','last trade')+' '+time+(age!==null?' · '+age+' min':'')
-     :tr('Feed non disponibile o aggiornamento non riuscito','Data feed unavailable or update failed')+
-       (lastQuote?.quoteTime?' · '+tr('ultimo dato','last quote')+' '+time:'');
-   el.title=details;
-   textNode.title=details;
-   el.setAttribute('aria-label',details);
-   const stamp=$('etfLastTradeStamp');
-   if(stamp){
-     stamp.textContent=lastQuote?.quoteTime
-       ?tr('Ultimo scambio','Last trade')+' · '+nyKey(new Date(lastQuote.quoteTime))+' '+
-        time+(age!==null?' · '+tr('età dato','data age')+' '+age+' min':'')+
-        ' · '+(lastQuote.providerRealTime===true?tr('provider segnala real-time','provider marks real-time'):tr('feed pubblico potenzialmente ritardato','public feed may be delayed'))
-       :tr('In attesa di uno scambio INJC verificato','Awaiting a verified INJC trade');
-     stamp.title=details;
-   }
+   const open=marketState()==='open';
+   el.dataset.feed=open?'online':'closed';
+   textNode.textContent=open?'OPEN':'CLOSE';
+   const details=open?tr('Nasdaq aperto · New York','Nasdaq open · New York'):
+     tr('Nasdaq chiuso · New York','Nasdaq closed · New York');
+   el.title=details;textNode.title=details;el.setAttribute('aria-label',details);
  }
  function changeClass(id,value){const el=$(id);if(!el)return;el.classList.toggle('up',Number.isFinite(value)&&value>0);el.classList.toggle('down',Number.isFinite(value)&&value<0);}
  function status(value,extra){
@@ -166,6 +148,12 @@
  }
  function renderStatus(){
    const now=new Date(),state=marketState(),nowKey=nyKey(now);
+   if(currentDisplayedSession!==nowKey){
+     currentDisplayedSession=nowKey;observedPreDay=nowKey;observedPrePrints=[];
+     if(timeframe==='1d'){graphPoints=[];drawGraph();}
+     if(selectedPriceRange==='1d'){priceRangeSnapshot=null;priceRangeLastFetched=0;renderPriceRange();}
+     if(!document.hidden){refreshMarket();refreshPriceRange(true);}
+   }
    const current=Boolean(lastQuote?.quoteTime&&nyKey(new Date(lastQuote.quoteTime))===nowKey&&Date.now()-lastQuote.quoteTime<1200000);
    const fresh=Boolean(current&&lastQuote?.providerRealTime===true&&Date.now()-lastQuote.quoteTime<90000&&Date.now()-lastGoodAt<180000);
    status(state,state==='open'&&lastQuote?.session!=='regular'?'pending':fresh?'fresh':'stale');
@@ -217,9 +205,7 @@
    const priorClose=allRegular.filter(p=>nyKey(new Date(p.time))<nowKey).at(-1);
    const lastRegularDay=allRegular.length?nyKey(new Date(allRegular.at(-1).time)):null;
    const points=timeframe==='1d'
-     ?(dayRegular.length?dayRaw.filter(p=>p.session==='regular'||p.session==='pre')
-       :dayPre.length?[...(priorClose?[{...priorClose,session:'close-anchor'}]:[]),...dayPre]
-       :allRegular.filter(p=>nyKey(new Date(p.time))===lastRegularDay))
+     ?dayRaw.filter(p=>p.session==='regular'||p.session==='pre')
      :allRegular;
    const selected=(session==='pre'?dayPre.at(-1):dayRegular.at(-1))??raw.filter(p=>p.session==='regular').at(-1)??raw.at(-1);
    // A real extended-hours trade is required: never substitute a regular-market close for a fictitious pre-market quote.
@@ -309,19 +295,24 @@
    }catch(_){return null;}
  }
  function withChart(quote,reference){
-   if(!reference)return quote;
-   const sameDay=nyKey(new Date(quote.quoteTime))===nyKey(new Date(reference.quoteTime));
-   const points=reference.points.slice();
-   if(sameDay&&timeframe==='1d'&&quote.quoteTime>(points.at(-1)?.time||0)
-     &&points.length&&quote.quoteTime-(points.at(-1)?.time||0)<1800000){
-     points.push({time:quote.quoteTime,close:quote.price,open:null,high:null,low:null,volume:null,session:pointSession(quote.quoteTime)});
+   const quoteDay=nyKey(new Date(quote.quoteTime));
+   const sameDay=Boolean(reference&&quoteDay===nyKey(new Date(reference.quoteTime)));
+   let points=Array.isArray(reference?.points)?reference.points.slice():[];
+   if(timeframe==='1d'){
+     points=points.filter(p=>Number.isFinite(p?.time)&&nyKey(new Date(p.time))===quoteDay&&
+       ['pre','regular'].includes(pointSession(p.time)));
+     if(['pre','regular'].includes(pointSession(quote.quoteTime)))
+       points.push({time:quote.quoteTime,close:quote.price,open:null,high:null,low:null,volume:null,
+         session:pointSession(quote.quoteTime)});
+     const unique=new Map();
+     for(const p of points)unique.set(p.time,p);
+     points=[...unique.values()].sort((a,b)=>a.time-b.time);
    }
    return {...quote,points,
      open:sameDay?reference.open:null,high:sameDay?reference.high:null,
      low:sameDay?reference.low:null,volume:sameDay?reference.volume:null,
-     previous:Number.isFinite(quote.previous)?quote.previous:reference.previous};
+     previous:Number.isFinite(quote.previous)?quote.previous:reference?.previous??null};
  }
-
  function parseSnapshot(data){
    if(data?.schemaVersion!==1||data?.ticker!=='INJC'||!data?.quote)throw Error('No valid backup');
    const q=data.quote,price=numeric(q.price),quoteTime=Date.parse(q.quoteTime);
@@ -370,11 +361,8 @@
      if(regular.length)return {points:regular,premarket:false};
      const pre=day.filter(p=>pointSession(p.time)==='pre');
      if(pre.length)return {points:pre,premarket:true};
-     // When markets are closed, keep the last verified trading session.
-     const lastDay=raw.filter(p=>pointSession(p.time)==='regular').at(-1);
-     return lastDay
-       ?{points:raw.filter(p=>nyKey(new Date(p.time))===nyKey(new Date(lastDay.time))&&pointSession(p.time)==='regular'),premarket:false}
-       :{points:[],premarket:false};
+     // Never reuse the prior day for today's 1D range.
+     return {points:[],premarket:false};
    }
    return {points:raw.filter(p=>p.time>=start),premarket:false};
  }
@@ -401,7 +389,9 @@
    return parsePriceRangeFromBars(bars,period);
  }
  function renderPriceRange(){
-   const data=priceRangeSnapshot?.period===selectedPriceRange?priceRangeSnapshot:null;
+   const data=priceRangeSnapshot?.period===selectedPriceRange&&
+     (selectedPriceRange!=='1d'||priceRangeSnapshot.dayKey===nyKey(new Date()))
+       ?priceRangeSnapshot:null;
    const noData=!data;
    setText('etfPriceRangeLow',noData?'—':usd(data.low));
    setText('etfPriceRangeHigh',noData?'—':usd(data.high));
@@ -466,7 +456,7 @@
    // Ignore a slower response to an earlier timeframe selection.
    if(request!==priceRangeRequest)return;
    priceRangeSyncing=false;
-   if(incoming){priceRangeSnapshot=incoming;priceRangeLastFetched=Date.now();}
+   if(incoming){priceRangeSnapshot={...incoming,dayKey:nyKey(new Date())};priceRangeLastFetched=Date.now();}
    else{
      if(priceRangeSnapshot?.period!==period)priceRangeSnapshot=null;
      if(lastError)console.warn('INJC price range unavailable:',lastError.message);
@@ -475,11 +465,16 @@
  }
  function drawGraph(){
    const wrap=$('etfSvgWrap');if(!wrap)return;
-   const points=graphPoints.filter(p=>Number.isFinite(p.close)&&p.close>0);
+   const sessionKey=nyKey(new Date());
+   const points=graphPoints.filter(p=>Number.isFinite(p?.close)&&p.close>0&&
+     (timeframe!=='1d'||nyKey(new Date(p.time))===sessionKey));
    if(!points.length){
      wrap.replaceChildren();
      $('etfChartWaiting')?.classList.remove('hidden');
-     setText('etfChartDataLabel',tr('In attesa di scambi verificati · aggiornamento automatico','Awaiting verified trades · automatic updates'));
+     setText('etfChartDataLabel',timeframe==='1d'
+        ?tr('Seduta '+sessionKey+' · in attesa di nuovi scambi INJC verificati',
+            'Session '+sessionKey+' · awaiting verified INJC trades')
+        :tr('In attesa di scambi verificati · aggiornamento automatico','Awaiting verified trades · automatic updates'));
      return;
    }
    $('etfChartWaiting')?.classList.add('hidden');
