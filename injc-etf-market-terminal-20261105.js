@@ -150,6 +150,11 @@
    const now=new Date(),state=marketState(),nowKey=nyKey(now);
    if(currentDisplayedSession!==nowKey){
      currentDisplayedSession=nowKey;observedPreDay=nowKey;observedPrePrints=[];
+     renderPerformance();
+     const caption=$('etfQuoteCaption');
+     if(caption&&lastQuote?.quoteTime)
+       caption.textContent=tr('ULTIMO PREZZO · '+nyKey(new Date(lastQuote.quoteTime))+' · USD',
+         'LAST REPORTED PRICE · '+nyKey(new Date(lastQuote.quoteTime))+' · USD');
      if(timeframe==='1d'){graphPoints=[];drawGraph();}
      if(selectedPriceRange==='1d'){priceRangeSnapshot=null;priceRangeLastFetched=0;renderPriceRange();}
      if(!document.hidden){refreshMarket();refreshPriceRange(true);}
@@ -550,6 +555,21 @@
        (hasOvernightTail?' · yellow dashed = last close, not new trades':'')+' · public market feeds may be delayed'
    ));
  }
+ function renderPerformance(){
+   const data=lastQuote, today=nyKey(new Date());
+   const sameDay=Boolean(data?.quoteTime&&nyKey(new Date(data.quoteTime))===today);
+   const regular=sameDay&&data?.session==='regular';
+   setText('etfVolume',regular?count(data.volume):'—');
+   setText('etfNotional',regular&&Number.isFinite(data.volume)?shortUsd(data.volume*data.price):'—');
+   setText('etfDayHigh',regular?usd(data.high):'—');
+   setText('etfDayLow',regular?usd(data.low):'—');
+   setText('etfDayOpen',regular?usd(data.open):'—');
+   setText('etfPreviousClose',sameDay?usd(data.previous):'—');
+   setText('etfPerformanceSessionLabel',regular
+     ?tr('SEDUTA '+today+' · NASDAQ','SESSION '+today+' · NASDAQ')
+     :tr('SEDUTA '+today+' · IN ATTESA DI SCAMBI',
+         'SESSION '+today+' · AWAITING TRADES'));
+ }
  function displayQuote(data,source){
    const prevTime=lastQuote?.quoteTime||0;
    const quoteDay=nyKey(new Date(data.quoteTime)),today=nyKey(new Date());
@@ -576,6 +596,13 @@
        }else graphPoints=valid;
        drawGraph();
      }
+     if(sameQuoteDay&&prior){
+       // Older OHLC history can fill missing same-session metrics without
+       // rolling back the newer last-sale price.
+       lastQuote={...prior,open:data.open,high:data.high,low:data.low,
+         volume:data.volume,previous:Number.isFinite(prior.previous)?prior.previous:data.previous};
+       renderPerformance();
+     }
      return;
    }
    lastQuote=data;quoteSource=source;lastGoodAt=Date.now();
@@ -593,13 +620,7 @@
    changeClass('etfQuoteChange',pre?null:data.change);
    changeClass('etfQuoteDelta',pre?null:data.price-data.previous);
    renderFeedIndicator();
-   const currentRegular=quoteDay===today&&data.session==='regular';
-   setText('etfVolume',currentRegular?count(data.volume):'—');
-   setText('etfNotional',currentRegular&&Number.isFinite(data.volume)?shortUsd(data.volume*data.price):'—');
-   setText('etfDayHigh',currentRegular?usd(data.high):'—');
-   setText('etfDayLow',currentRegular?usd(data.low):'—');
-   setText('etfDayOpen',currentRegular?usd(data.open):'—');
-   setText('etfPreviousClose',quoteDay===today?usd(data.previous):'—');
+   renderPerformance();
    setText('etfVolumeFootnote',tr('Volumi di quote nella sessione regolare, non afflussi netti nel fondo. Controvalore indicativo = volume × ultimo prezzo.','Regular-session share volume, not net fund inflows. Indicative turnover = volume × last share price.'));
    const nowDay=nyKey(new Date());
    if(observedPreDay!==nowDay){observedPreDay=nowDay;observedPrePrints=[];}
