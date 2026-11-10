@@ -25,10 +25,12 @@
    gate?.classList.contains('visible') && gate.getAttribute('aria-hidden')!=='true' &&
    !!gate.querySelector('.entry-gate-shell:not(.first-access)');
  };
+ // Ignore temporary visual viewport shifts while Safari chrome settles.
+ // Dock position itself is still remeasured on visualViewport changes.
  const sizeKey=()=>[
    Math.round(document.documentElement.clientWidth||innerWidth),
    Math.round(innerHeight),
-   Math.round(window.visualViewport?.height||innerHeight)
+   media.matches?'portrait':'other'
   ].join('x');
  function setLevel(level){
   const value=String(level);
@@ -119,6 +121,14 @@
     attributes:true,attributeFilter:['popover','style']
    });
   }
+  // Previous Home versions could restore a saved vertical offset even when
+  // CSS disallows touch scrolling. Explicitly keep its origin at zero.
+  gate.addEventListener('scroll',()=>{
+   if(root.dataset.injHomeStatic==='true'&&gate.scrollTop!==0)gate.scrollTop=0;
+  },{passive:true});
+  window.addEventListener('scroll',()=>{
+   if(root.dataset.injHomeStatic==='true'&&window.scrollY!==0)window.scrollTo(0,0);
+  },{passive:true});
   for(const event of ['pageshow','resize','orientationchange','focus'])
    window.addEventListener(event,schedule,{passive:true});
   document.addEventListener('visibilitychange',schedule,{passive:true});
