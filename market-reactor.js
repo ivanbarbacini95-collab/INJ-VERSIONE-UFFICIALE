@@ -11,7 +11,7 @@
   '1W':{interval:'1h',limit:220,count:168},
   '1M':{interval:'4h',limit:240,count:180}
  };
- const config={range:'1D',candles:[],candlesAt:0,price:null,priceAt:0,wsAt:0,change:null,changeAt:0,book:null,bookAt:0,feed:null,ws:null,wsFailures:0,polling:false,requestId:0,displayAt:0,graph:[],lastScore:null};
+ const config={range:'1D',candles:[],candlesAt:0,price:null,priceAt:0,wsAt:0,change:null,changeAt:0,book:null,bookAt:0,benchmark:null,benchmarkAt:0,feed:null,ws:null,wsFailures:0,polling:false,requestId:0,displayAt:0,graph:[],lastScore:null};
  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
  const finite=v=>Number.isFinite(v);
  const isEn=()=>root.lang==='en';
@@ -142,8 +142,10 @@
   const info=technical(list,list.length-1);
   if(!info)return null;
   const bookOk=config.book&&Date.now()-config.bookAt<70000;
-  const score=clamp(Math.round(info.base+(bookOk?10*config.book.balance:0)),0,100);
-  return {...info,score,bookOk:!!bookOk};
+  const benchmarkOk=!!config.benchmark&&Date.now()-config.benchmarkAt<120000;
+  const broad=benchmarkOk?clamp((config.benchmark.btc+config.benchmark.eth)/8,-1,1):0;
+  const score=clamp(Math.round(info.base+(bookOk?10*config.book.balance:0)+6*broad),0,100);
+  return {...info,score,bookOk:!!bookOk,benchmarkOk};
  }
  const interpret=x=>x>.23?tr('Rialzista','Bullish'):x<-.23?tr('Ribassista','Bearish'):tr('Laterale','Sideways');
  function paint(){
@@ -166,6 +168,7 @@
    $('mrState').textContent=tr('DATI NON DISPONIBILI','DATA UNAVAILABLE');
    $('mrDescription').textContent=tr('Attendo dati di mercato aggiornati','Waiting for fresh market data');
    for(const id of ['mrTrend','mrVolume','mrMomentum','mrBook'])$(id).textContent='—';
+   $('mrBenchmark').textContent='BTC / ETH · —';
    $('mrQuality').textContent=tr('Punteggio non verificabile','Score not verifiable');
    $('mrUpdated').textContent=config.candlesAt?when(config.candlesAt):'—';
    config.lastScore=null;
@@ -181,7 +184,10 @@
   $('mrMomentum').textContent=interpret(indicator.momentum);
   $('mrVolume').textContent=indicator.volumeRatio===null?'—':indicator.volumeRatio>=1.4?tr('Elevato','High'):indicator.volumeRatio<=.7?tr('Basso','Low'):tr('Normale','Normal');
   $('mrBook').textContent=indicator.bookOk?tr('Bid ','Bids ')+fmt(config.book.bidPct,0)+'%':tr('N/D','N/A');
-  $('mrQuality').textContent=indicator.bookOk?tr('4/4 indicatori · spot','4/4 inputs · spot'):tr('3/4 indicatori · order book assente','3/4 inputs · no order book');
+  const signed=n=>(n>=0?'+':'')+fmt(n,2)+'%';
+  $('mrBenchmark').textContent=indicator.benchmarkOk?'BTC 24H '+signed(config.benchmark.btc)+' · ETH 24H '+signed(config.benchmark.eth):tr('Contesto BTC/ETH non disponibile','BTC/ETH context unavailable');
+  const available=3+Number(indicator.bookOk)+Number(indicator.benchmarkOk);
+  $('mrQuality').textContent=available+'/5 '+tr('indicatori · spot Binance','inputs · Binance spot');
   $('mrUpdated').textContent=tr('Aggiornato ','Updated ')+when(config.candlesAt);
  }
  function buildHistory(){
@@ -240,7 +246,9 @@
   const candleTask=getJson('/api/v3/klines?symbol=INJUSDT&interval='+encodeURIComponent(opt.interval)+'&limit='+opt.limit);
   const quoteTask=getJson('/api/v3/ticker/24hr?symbol=INJUSDT');
   const bookTask=getJson('/api/v3/depth?symbol=INJUSDT&limit=100');
-  const responses=await Promise.allSettled([candleTask,quoteTask,bookTask]);
+  const btcTask=getJson('/api/v3/ticker/24hr?symbol=BTCUSDT');
+  const ethTask=getJson('/api/v3/ticker/24hr?symbol=ETHUSDT');
+  const responses=await Promise.allSettled([candleTask,quoteTask,bookTask,btcTask,ethTask]);
   if(token!==config.requestId){config.polling=false;return}
   const time=Date.now();
   if(responses[0].status==='fulfilled'){
@@ -254,6 +262,11 @@
   if(responses[2].status==='fulfilled'){
    try{config.book=parseBook(responses[2].value);config.bookAt=time}catch(_){config.book=null;config.bookAt=0}
   }else{config.book=null;config.bookAt=0}
+  if(responses[3].status==='fulfilled'&&responses[4].status==='fulfilled'){
+   const btc=Number(responses[3].value?.priceChangePercent),eth=Number(responses[4].value?.priceChangePercent);
+   if(finite(btc)&&finite(eth)){config.benchmark={btc,eth};config.benchmarkAt=time}
+   else{config.benchmark=null;config.benchmarkAt=0}
+  }else{config.benchmark=null;config.benchmarkAt=0}
   config.polling=false;
   paint();
  }
