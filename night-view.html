@@ -64,52 +64,98 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 @media(min-width:900px) and (orientation:landscape){.content{gap:clamp(10px,2.4vh,24px)}.price-value{font-size:clamp(80px,10vw,130px)}.ambient{height:32px}}
 @media(prefers-reduced-motion:reduce){.ambient path,.live-indicator .live-dot{animation:none!important}html,body{transition:none!important}}
 
-/* Portrait display: spread Live View vertically and enlarge the dashboard data. */
-@media (min-width:650px) and (min-height:900px) and (orientation:portrait){
+/* External display distance-readable mode: oversized typography in both rotations.
+   Isolated from the small-screen mobile layout. */
+@media (min-width:700px) and (min-height:650px){
  .shell{
-  width:min(100%,1080px);
-  height:100dvh;
-  min-height:100dvh;
-  padding:calc(env(safe-area-inset-top) + clamp(20px,2.4vh,40px)) clamp(26px,5vw,64px) calc(env(safe-area-inset-bottom) + clamp(20px,2.4vh,40px));
-  gap:clamp(14px,1.8vh,28px);
+  width:min(100%,1850px);height:100dvh;min-height:100dvh;
+  padding:calc(env(safe-area-inset-top) + clamp(14px,2vh,34px)) clamp(26px,3.5vw,76px) calc(env(safe-area-inset-bottom) + clamp(14px,2vh,34px));
+  gap:clamp(5px,.8vh,15px);
  }
- .top{min-height:52px}
- .brand h1{font-size:clamp(24px,3.5vw,32px)}
- .back,.night-toggle{width:46px;height:46px}
+ .top{min-height:clamp(48px,5.8vh,72px)}
+ .brand h1{font-size:clamp(29px,3.8vh,48px)}
+ .back,.night-toggle{width:clamp(48px,5.8vh,68px);height:clamp(48px,5.8vh,68px);border-radius:16px}
+ .back svg,.night-toggle svg{width:clamp(25px,3vh,34px);height:clamp(25px,3vh,34px)}
  .content{
-  width:100%;
-  display:grid;
-  grid-template-columns:minmax(0,1fr);
-  grid-template-rows:minmax(0,1.05fr) minmax(36px,.18fr) minmax(0,1fr) minmax(0,1.05fr);
-  row-gap:clamp(10px,1.5vh,25px);
-  justify-items:center;
-  align-items:center;
-  justify-content:stretch;
+  width:100%;flex:1;min-height:0;
+  display:grid;grid-template-columns:minmax(0,1fr);
+  grid-template-rows:minmax(0,1.16fr) minmax(22px,.15fr) minmax(0,.90fr) minmax(0,1fr);
+  row-gap:clamp(5px,.7vh,17px);align-items:center;justify-items:center;justify-content:stretch;
   padding:0;
  }
  .price,.holdings,.reward{width:100%;margin-inline:auto}
- .price-label{font-size:clamp(14px,1.7vw,18px);letter-spacing:.13em}
- .price-value{font-size:clamp(88px,12vw,138px);line-height:1.08;margin:clamp(10px,1.4vh,22px) 0 9px}
- .price-sub{font-size:clamp(16px,2vw,21px);gap:24px;min-height:32px}
- .live-indicator{font-size:clamp(13px,1.5vw,16px)}
- .live-dot{width:8px;height:8px}
- .ambient{width:min(100%,930px);height:clamp(36px,4.5vh,64px)}
- .holdings{max-width:930px}
- .holding{padding:clamp(8px,1.8vh,25px) clamp(13px,3vw,36px)}
- .eyebrow{font-size:clamp(15px,1.9vw,19px);margin-bottom:clamp(11px,1.5vh,22px)}
- .holding strong{font-size:clamp(35px,4.8vw,55px);line-height:1.15}
- .holding .fiat{font-size:clamp(14px,1.8vw,18px);margin-top:12px;line-height:1.4}
- .reward{padding:clamp(12px,2vh,30px) 0 0}
- .reward:before{width:min(100%,880px);margin:-7px auto clamp(20px,2.8vh,42px)}
- .reward .eyebrow{margin-bottom:clamp(8px,1.2vh,17px)}
- .reward strong{font-size:clamp(52px,7.4vw,82px);line-height:1.13}
- .reward small{font-size:clamp(15px,1.9vw,19px);margin-top:12px}
- .reward .estimated{font-size:clamp(12px,1.5vw,15px);margin-top:7px}
- .footer{width:min(100%,930px);padding-top:clamp(16px,2vh,28px);gap:12px}
- .foot-item small{font-size:clamp(13px,1.7vw,17px);margin-bottom:8px}
- .foot-item strong{font-size:clamp(16px,2.2vw,22px)}
- .data-note{font-size:clamp(11px,1.4vw,14px);margin-top:9px}
+ .price-label{font-size:clamp(20px,2.7vh,33px);font-weight:600;letter-spacing:.10em}
+ .price-value{font-size:clamp(122px,min(21.7vh,13vw),238px);line-height:1.02;margin:clamp(4px,.7vh,12px) 0 clamp(6px,.8vh,13px);letter-spacing:-.065em}
+ .price-sub{font-size:clamp(21px,3vh,35px);gap:clamp(20px,2.8vw,46px);min-height:36px;font-weight:600}
+ .live-indicator{font-size:clamp(18px,2.5vh,29px);font-weight:600;letter-spacing:.07em}
+ .live-dot{width:clamp(9px,1.1vh,13px);height:clamp(9px,1.1vh,13px)}
+ .ambient{width:min(100%,1550px);height:clamp(24px,4.3vh,58px)}
+ .ambient path{stroke-width:1.65;opacity:.72}
+ .holdings{max-width:1550px;align-items:center}
+ .holding{padding:clamp(6px,1vh,15px) clamp(12px,2.7vw,46px)}
+ .eyebrow{font-size:clamp(21px,2.9vh,33px);font-weight:600;margin-bottom:clamp(6px,1.1vh,17px);line-height:1.25}
+ .holding strong{font-size:clamp(52px,7.9vh,92px);font-weight:750;line-height:1.12;overflow-wrap:normal}
+ .holding .fiat{font-size:clamp(21px,2.8vh,31px);font-weight:500;margin-top:clamp(5px,.8vh,12px)}
+ .unit{font-size:.44em}
+ .reward{padding:clamp(6px,1vh,18px) 0 0}
+ .reward:before{width:min(100%,1400px);margin:-4px auto clamp(8px,1.6vh,25px)}
+ .reward .eyebrow{margin-bottom:clamp(5px,.8vh,13px)}
+ .reward strong{font-size:clamp(73px,11.2vh,142px);line-height:1.09}
+ .reward small{font-size:clamp(21px,2.7vh,30px);font-weight:500;margin-top:clamp(5px,.7vh,13px)}
+ .reward .estimated{font-size:clamp(16px,1.9vh,22px);font-weight:500;margin-top:clamp(3px,.5vh,8px)}
+ .footer{width:min(100%,1550px);padding-top:clamp(8px,1.35vh,22px);gap:10px}
+ .foot-item small{font-size:clamp(18px,2.3vh,26px);font-weight:600;margin-bottom:clamp(4px,.6vh,10px)}
+ .foot-item strong{font-size:clamp(23px,3vh,34px);line-height:1.15}
+ .data-note{font-size:clamp(16px,1.9vh,22px);margin-top:clamp(4px,.6vh,9px);min-height:1.2em}
 }
+/* Tall external monitors: use the full height without crushing the wallet row. */
+@media (min-width:650px) and (min-height:900px) and (orientation:portrait){
+ .shell{width:min(100%,1280px);padding:calc(env(safe-area-inset-top) + clamp(20px,2.1vh,38px)) clamp(28px,4vw,66px) calc(env(safe-area-inset-bottom) + clamp(20px,2.1vh,38px))}
+ .content{grid-template-rows:minmax(0,1.12fr) minmax(34px,.15fr) minmax(0,.95fr) minmax(0,1fr);row-gap:clamp(12px,1.3vh,25px)}
+ .price-label{font-size:clamp(22px,2.7vw,32px)}
+ .price-value{font-size:clamp(119px,17.7vw,212px)}
+ .price-sub{font-size:clamp(22px,2.85vw,34px)}
+ .live-indicator{font-size:clamp(19px,2.3vw,28px)}
+ .ambient{width:min(100%,1120px);height:clamp(38px,4.2vh,72px)}
+ .holdings{max-width:1120px}
+ .eyebrow{font-size:clamp(21px,2.65vw,32px)}
+ .holding strong{font-size:clamp(52px,6.5vw,84px)}
+ .holding .fiat{font-size:clamp(20px,2.4vw,30px)}
+ .reward strong{font-size:clamp(79px,10.3vw,134px)}
+ .reward small{font-size:clamp(21px,2.65vw,32px)}
+ .reward .estimated{font-size:clamp(16px,1.95vw,23px)}
+ .footer{max-width:1120px}
+ .foot-item small{font-size:clamp(19px,2.2vw,27px)}
+ .foot-item strong{font-size:clamp(23px,2.75vw,34px)}
+ .data-note{font-size:clamp(16px,1.85vw,22px)}
+}
+/* Short landscape windows: preserve the complete screen and bottom status row. */
+@media (min-width:900px) and (min-height:650px) and (max-height:850px) and (orientation:landscape){
+ .shell{padding-top:calc(env(safe-area-inset-top) + 12px);padding-bottom:calc(env(safe-area-inset-bottom) + 10px);gap:4px}
+ .top{min-height:45px}
+ .back,.night-toggle{width:45px;height:45px}
+ .brand h1{font-size:clamp(27px,3.5vh,33px)}
+ .content{grid-template-rows:minmax(0,1.2fr) minmax(20px,.12fr) minmax(0,.88fr) minmax(0,.95fr);row-gap:3px}
+ .price-label{font-size:clamp(19px,2.7vh,25px)}
+ .price-value{font-size:clamp(112px,min(20vh,12.5vw),169px);margin:2px 0 4px}
+ .price-sub{font-size:clamp(20px,3vh,26px);min-height:25px}
+ .live-indicator{font-size:clamp(16px,2.45vh,22px)}
+ .ambient{height:24px}
+ .eyebrow{font-size:clamp(19px,2.7vh,25px);margin-bottom:5px}
+ .holding{padding-top:3px;padding-bottom:3px}
+ .holding strong{font-size:clamp(47px,7.3vh,66px)}
+ .holding .fiat{font-size:clamp(19px,2.6vh,24px);margin-top:4px}
+ .reward{padding-top:3px}
+ .reward:before{margin:-3px auto 8px}
+ .reward strong{font-size:clamp(66px,10.3vh,92px)}
+ .reward small{font-size:clamp(18px,2.5vh,23px);margin-top:3px}
+ .reward .estimated{font-size:clamp(14px,1.9vh,18px);margin-top:2px}
+ .footer{padding-top:8px}
+ .foot-item small{font-size:clamp(16px,2.3vh,21px);margin-bottom:3px}
+ .foot-item strong{font-size:clamp(20px,2.8vh,27px)}
+ .data-note{font-size:clamp(14px,1.8vh,18px);margin-top:4px}
+}
+
 </style>
 <script defer src="./night-view.js?v=20261110-liveview-one-layout3"></script>
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
