@@ -50,6 +50,32 @@
   return card;
  }
  ensureNetworkStatusLauncher();
+ // Night View Ambient: standalone OLED display and an accessible Tools launcher.
+ function ensureNightViewLauncher(){
+  let tile=document.getElementById('entryNightViewButton');
+  if(!tile){tile=document.createElement('a');tile.id='entryNightViewButton';}
+  if(tile.parentElement!==actions){
+   const after=document.getElementById('entryNetworkStatusButton');
+   if(after&&after.parentElement===actions)after.after(tile);else actions.prepend(tile);
+  }
+  tile.className='entry-action entry-action-night-view';
+  tile.href='./night-view.html?v=20261110-night-ambient1';
+  tile.setAttribute('aria-label','Apri Night View');
+  tile.innerHTML='<span><strong class="inj-home-tile-title" data-it="Night View" data-en="Night View">Night View</strong><small class="inj-tile-description" data-it="Display OLED per prezzo, stake e reward" data-en="OLED view for price, staking and rewards">Display OLED per prezzo, stake e reward</small></span><span aria-hidden="true" data-premium-artwork="luxury-b" class="inj-tile-scene inj-precision-icon inj-luxury-icon inj-tools-art inj-night-art"><svg viewBox="0 0 120 68" xmlns="http://www.w3.org/2000/svg" focusable="false"><path class="pi-strong" d="M69 11a21 21 0 1 0 22 30A21 21 0 0 1 69 11Z"/><path class="pi-detail inj-night-wave" d="M13 49c20-13 30 11 49 1s33-4 45-13"/><circle class="pi-led inj-night-dot" cx="96" cy="18" r="2"/></svg></span><svg aria-hidden="true" class="entry-action-arrow" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>';
+  tile.addEventListener('click',event=>{
+   if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+   if(typeof window.INJ_OPEN_SECTION!=='function')return;
+   event.preventDefault();window.INJ_OPEN_SECTION(tile.href);
+  },{once:false});
+  return tile;
+ }
+ ensureNightViewLauncher();
+ if(!document.getElementById('injNightViewToolsStyle')){
+  const style=document.createElement('style');style.id='injNightViewToolsStyle';
+  style.textContent='html[data-inj-page="index"] #entryNightViewButton,html[data-inj-page="index"] #entryNightViewButton:link,html[data-inj-page="index"] #entryNightViewButton:visited{text-decoration:none!important}#entryNightViewButton .inj-home-tile-title{text-decoration:none!important;border:0!important}#entryNightViewButton .inj-home-tile-title::after{content:none!important;display:none!important}html[data-inj-page="index"][data-inj-home-tab="altro"] body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44 > #entryNightViewButton > .inj-night-art{display:block!important;visibility:visible!important;opacity:.97!important;position:absolute!important;z-index:1!important;pointer-events:none!important;top:7px!important;left:50%!important;right:auto!important;width:80px!important;height:43px!important;transform:translateX(-50%)!important;color:var(--tile-accent,var(--accent,#8bc9ba))!important}#entryNightViewButton .inj-night-art svg{width:100%!important;height:100%!important;display:block!important;overflow:visible!important;fill:none!important}#entryNightViewButton .inj-night-wave{stroke-dasharray:42 16;animation:injNightWave 8s linear infinite}#entryNightViewButton .inj-night-dot{animation:injNightDot 5s ease-in-out infinite}@keyframes injNightWave{to{stroke-dashoffset:-58}}@keyframes injNightDot{0%,100%{opacity:.3}50%{opacity:1}}@media(min-width:800px){html[data-inj-page="index"][data-inj-home-tab="altro"] body #entryGate#entryGate#entryGate .entry-actions.entry-flat-v44 > #entryNightViewButton > .inj-night-art{top:50%!important;left:auto!important;right:17px!important;width:77px!important;height:49px!important;transform:translateY(-50%)!important}}@media(prefers-reduced-motion:reduce){#entryNightViewButton .inj-night-wave,#entryNightViewButton .inj-night-dot{animation:none!important}}';
+  document.head.append(style);
+ }
+
  if(!document.getElementById('injNetworkStatusToolsTileStyle')){
   const style=document.createElement('style');
   style.id='injNetworkStatusToolsTileStyle';
@@ -164,7 +190,7 @@ html[data-inj-page="index"] body #entryGate
   {id:'etf',it:'ETF',en:'ETF',titleIt:'',titleEn:'',subIt:'',subEn:'',ids:[],icon:'<rect x="5" y="3.5" width="14" height="17" rx="2.7"/><path d="M9 8h6M9 11.5h4m-4 5.9 2.2-2.4 2 1.5 2.8-3.1"/>'},
   {id:'home',it:'Home',en:'Home',titleIt:'',titleEn:'',subIt:'',subEn:'',ids:['entryDashboardButton','entryLiveButton','entryTreasuryButton'],icon:'<path d="m3.5 10 8.5-6.6 8.5 6.6v9.3a1.2 1.2 0 0 1-1.2 1.2h-4.9v-6.1H9.6v6.1H4.7a1.2 1.2 0 0 1-1.2-1.2z"/>'},
   {id:'reward',it:'My Reward',en:'My Reward',titleIt:'MY REWARD',titleEn:'MY REWARD',subIt:'Staking e ricompense del wallet selezionato',subEn:'Selected wallet staking and rewards',ids:[],icon:'<circle cx="12" cy="12" r="8.5"/><path d="M15.1 9.3c-.6-.9-1.6-1.4-3-1.4-1.8 0-3 .8-3 2.1 0 2.8 6 1 6 3.7 0 1.3-1.2 2.2-3 2.2-1.5 0-2.6-.6-3.2-1.6M12 5.8v2M12 16.2v2"/>'},
-  {id:'altro',it:'Tools',en:'Tools',titleIt:'TOOLS',titleEn:'TOOLS',subIt:'Simulazioni, libertà finanziaria e altri strumenti',subEn:'Simulations, financial freedom and other tools',ids:['entryMultiChartButton','entryAllTransactionsButton','entryNetworkStatusButton','entryComparisonButton','entryVisualizeWealthButton','entryFreedomButton','entryWorkspaceButton','entryConverterButton','entryCommandCenterButton'],icon:'<path d="M4 6h8m4 0h4M4 12h3m4 0h9M4 18h11m4 0h1"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>'}
+  {id:'altro',it:'Tools',en:'Tools',titleIt:'TOOLS',titleEn:'TOOLS',subIt:'Simulazioni, libertà finanziaria e altri strumenti',subEn:'Simulations, financial freedom and other tools',ids:['entryMultiChartButton','entryAllTransactionsButton','entryNetworkStatusButton','entryNightViewButton','entryComparisonButton','entryVisualizeWealthButton','entryFreedomButton','entryWorkspaceButton','entryConverterButton','entryCommandCenterButton'],icon:'<path d="M4 6h8m4 0h4M4 12h3m4 0h9M4 18h11m4 0h1"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>'}
  ];
  const originalDisplay=new WeakMap();
  const heading=document.createElement('header');

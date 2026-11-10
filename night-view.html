@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="it" data-inj-page="night-view" data-inj-font="bold">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Night View · INJ Node</title>
+<script defer src="./page-zoom-lock-20261110.js?v=1"></script>
+<style>
+@font-face{font-family:INJRubik;src:url("./assets/fonts/inj-rubik.woff2") format("woff2");font-display:swap}
+:root{color-scheme:dark;--nv-bg:#000;--nv-text:#dce6e4;--nv-muted:#85938f;--nv-accent:#8bc9ba;--nv-up:#90d5b3;--nv-down:#cf8c8e;--nv-line:#202d2c}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;width:100%;background:#000!important;overscroll-behavior:none}
+body{min-height:100dvh;color:var(--nv-text);font:500 15px/1.4 INJRubik,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased}
+html[data-inj-font="slim"] body{font-weight:400}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
+.shell{width:min(100%,1040px);min-height:100dvh;margin:auto;padding:calc(env(safe-area-inset-top) + 14px) clamp(16px,4vw,42px) calc(env(safe-area-inset-bottom) + 20px);display:flex;flex-direction:column;gap:12px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:44px}
+.back{width:40px;height:40px;display:grid;place-items:center;background:transparent;border:1px solid #26302e;border-radius:13px;color:var(--nv-text)}
+.back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.brand{min-width:0;text-align:center}.brand small{display:block;color:var(--nv-muted);font-size:10px;letter-spacing:.17em}.brand strong{font-size:15px;letter-spacing:.03em}
+.top-spacer{width:40px}
+.content{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(13px,3.4vh,34px);padding:8px 0}
+.intro{text-align:center}.intro h1{font-size:clamp(22px,4vw,30px);font-weight:750;letter-spacing:-.035em;margin:0}.moon{font-size:19px;color:var(--nv-accent);vertical-align:2px;margin-right:8px}
+.intro p{margin:5px 0 0;color:var(--nv-muted);font-size:clamp(11px,2vw,13px)}
+.price{text-align:center;width:100%}
+.price-label{color:var(--nv-muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
+.price-value{display:block;color:var(--nv-text);font-size:clamp(65px,13vw,142px);line-height:1.12;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.075em;white-space:nowrap;margin:8px 0 4px;text-shadow:0 0 22px rgba(126,192,178,.055)}
+.price-sub{display:flex;align-items:center;justify-content:center;gap:17px;min-height:25px;font-size:14px}
+.change{color:var(--nv-muted);font-variant-numeric:tabular-nums}.change[data-direction="up"]{color:var(--nv-up)}.change[data-direction="down"]{color:var(--nv-down)}
+.live-indicator{display:inline-flex;align-items:center;gap:7px;color:var(--nv-muted);font-size:11px;letter-spacing:.12em}
+.live-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.65}
+.live-indicator[data-status="live"]{color:var(--nv-accent)}.live-indicator[data-status="live"] .live-dot{animation:breath 3.6s ease-in-out infinite}
+.ambient{width:100%;height:clamp(24px,5vh,54px);display:block;overflow:visible}
+.ambient path{fill:none;stroke:url(#ambientStroke);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.57;animation:ambientBreath 12s ease-in-out infinite}
+.holdings{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}
+.holding{text-align:center;min-width:0;padding:7px clamp(7px,2.3vw,30px)}
+.holding+.holding{border-left:1px solid var(--nv-line)}
+.eyebrow{display:block;font-size:clamp(11px,2vw,13px);color:var(--nv-muted);margin-bottom:10px}
+.holding strong{display:block;font-size:clamp(20px,4.5vw,42px);font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.unit{font-size:.48em;font-weight:500;letter-spacing:0;color:var(--nv-muted);white-space:nowrap}
+.reward{text-align:center;width:100%;padding:clamp(11px,2.5vh,22px) 0 0;position:relative}
+.reward:before{content:"";height:1px;width:min(100%,760px);display:block;margin:-7px auto clamp(17px,3vh,30px);background:linear-gradient(90deg,transparent,#1a302b 50%,transparent)}
+.reward .eyebrow{margin-bottom:5px}
+.reward strong{display:block;color:var(--nv-accent);font-weight:750;font-size:clamp(37px,7vw,69px);line-height:1.22;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.reward .unit{color:#659e90}
+.reward small{display:block;color:var(--nv-muted);font-size:clamp(11px,1.8vw,13px);margin-top:6px}
+.reward .estimated{font-size:10px;margin-top:3px;color:var(--nv-muted)}
+.footer{width:min(100%,880px);margin:0 auto;border-top:1px solid var(--nv-line);padding-top:clamp(13px,2.3vh,23px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.foot-item{text-align:center;min-width:0}.foot-item+.foot-item{border-left:1px solid var(--nv-line)}
+.foot-item small{display:block;font-size:clamp(9px,1.6vw,11px);color:var(--nv-muted);margin-bottom:4px}
+.foot-item strong{display:block;font-size:clamp(11px,2.1vw,15px);font-weight:600;font-variant-numeric:tabular-nums}
+.foot-item strong[data-status="online"]{color:var(--nv-accent)}
+.data-note{text-align:center;color:#586a65;font-size:10px;min-height:14px;margin-top:7px}
+@keyframes ambientBreath{0%,100%{opacity:.36;transform:translateY(0)}50%{opacity:.64;transform:translateY(-2px)}}
+@keyframes breath{0%,100%{opacity:.35}50%{opacity:1}}
+@media(max-width:380px){.shell{padding-left:12px;padding-right:12px}.price-value{font-size:clamp(52px,12.8vw,70px)}.holding strong{font-size:19px}.reward strong{font-size:34px}}
+@media(max-height:700px){.content{gap:11px}.intro p{display:none}.price-value{font-size:clamp(60px,11vh,98px)}.ambient{height:24px}.reward:before{margin-bottom:13px}.reward{padding-top:8px}.reward strong{font-size:clamp(31px,6.5vh,51px)}}
+@media(min-width:900px) and (orientation:landscape){.content{gap:clamp(10px,2.4vh,24px)}.price-value{font-size:clamp(80px,10vw,130px)}.ambient{height:32px}}
+@media(prefers-reduced-motion:reduce){.ambient path,.live-indicator .live-dot{animation:none!important}}
+</style>
+<script defer src="./night-view.js?v=20261110-night-ambient1"></script>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+ <button class="back" id="nightBack" type="button" aria-label="Torna a Tools"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
+ <div class="brand"><small>INJ NODE / TOOLS</small><strong>Night View</strong></div>
+ <span class="top-spacer" aria-hidden="true"></span>
+</header>
+<div class="content">
+ <div class="intro"><h1><span class="moon" aria-hidden="true">☾</span>Night View</h1><p data-it="Panoramica live di INJ e del tuo staking" data-en="Live view of INJ and your staking">Panoramica live di INJ e del tuo staking</p></div>
+ <section class="price" aria-label="Prezzo Injective in tempo reale">
+  <span class="price-label">INJ / Injective</span>
+  <output id="nightPrice" class="price-value" aria-live="off">—</output>
+  <div class="price-sub"><span id="nightChange" class="change" data-direction="flat">— (24h)</span><span class="live-indicator" id="nightFeed" data-status="sync"><i class="live-dot" aria-hidden="true"></i><span id="nightFeedText">SYNC</span></span></div>
+ </section>
+ <svg class="ambient" viewBox="0 0 900 54" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="ambientStroke"><stop offset="0" stop-color="#0a2420" stop-opacity="0"/><stop offset=".22" stop-color="#5aafa0" stop-opacity=".55"/><stop offset=".50" stop-color="#8bc9ba" stop-opacity=".8"/><stop offset=".78" stop-color="#5aafa0" stop-opacity=".55"/><stop offset="1" stop-color="#0a2420" stop-opacity="0"/></linearGradient></defs><path d="M0 34 C85 38 170 9 260 22 S400 45 480 31 S640 10 710 24 S830 43 900 23"/></svg>
+ <section class="holdings" aria-label="Bilanci Injective">
+  <div class="holding"><span class="eyebrow" data-it="INJ in stake" data-en="INJ staked">INJ in stake</span><strong id="nightStaked">—</strong></div>
+  <div class="holding"><span class="eyebrow" data-it="INJ non in stake" data-en="INJ available">INJ non in stake</span><strong id="nightAvailable">—</strong></div>
+ </section>
+ <section class="reward" aria-label="Reward staking in tempo reale">
+  <span class="eyebrow" data-it="Reward live" data-en="Live rewards">Reward live</span>
+  <strong id="nightReward">—</strong>
+  <small id="nightRewardFiat">—</small>
+  <span id="nightRewardConfidence" class="estimated" aria-live="polite"></span>
+ </section>
+</div>
+<footer>
+ <div class="footer">
+  <div class="foot-item"><small data-it="APR staking" data-en="Staking APR">APR staking</small><strong id="nightApr">—</strong></div>
+  <div class="foot-item"><small data-it="Stato rete" data-en="Network status">Stato rete</small><strong id="nightNetwork">—</strong></div>
+  <div class="foot-item"><small data-it="Ultimo aggiornamento" data-en="Last update">Ultimo aggiornamento</small><strong id="nightUpdated">—</strong></div>
+ </div>
+ <div class="data-note" id="nightNote"></div>
+</footer>
+</main>
+</body></html>
