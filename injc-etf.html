@@ -172,8 +172,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
 <link rel="stylesheet" href="./injc-etf-market-terminal-20261105.css?v=etf-session-inspect-20261106a">
-<link rel="stylesheet" href="./injc-etf-live-refinement-20261106.css?v=compact-live-quote-final2">
-<style>.injc-last-trade-stamp{display:block;margin-top:10px;color:var(--etf-muted);font-size:10px;line-height:1.55;letter-spacing:.015em;overflow-wrap:anywhere}</style>
+<link rel="stylesheet" href="./injc-etf-live-refinement-20261106.css?v=20261110-session-rollover2">
 <link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=20261109-history-only1">
 </head>
 <body>
@@ -190,13 +189,13 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 </section>
 <section class="injc-price-card injc-price-compact" aria-label="Quotazione INJC">
   <div class="injc-quote-primary">
-    <div class="injc-caption" data-it="PREZZO QUOTA · USD" data-en="ETF SHARE PRICE · USD">PREZZO QUOTA · USD</div>
+    <div class="injc-caption" id="etfQuoteCaption" data-it="PREZZO QUOTA · USD" data-en="ETF SHARE PRICE · USD">PREZZO QUOTA · USD</div>
     <div class="injc-price" id="etfQuotePrice" aria-live="polite">—</div>
     <div class="injc-price-line"><span class="injc-change" id="etfQuoteChange">—</span><span class="injc-delta" id="etfQuoteDelta">—</span></div>
     <div class="injc-quote-bottom">
-      <div class="injc-feed-indicator" id="etfFeedIndicator" data-feed="offline" title="Connessione al feed · non indica necessariamente prezzi in tempo reale">
+      <div class="injc-feed-indicator" id="etfFeedIndicator" data-feed="closed" title="Stato orario del mercato Nasdaq · indipendente dal feed prezzi">
         <i class="injc-feed-dot" aria-hidden="true"></i>
-        <strong id="etfQuoteFreshness" aria-live="polite">OFFLINE</strong>
+        <strong id="etfQuoteFreshness" aria-live="polite">CLOSE</strong>
       </div>
       <div class="injc-market-countdown" id="etfCountdownBox" data-session="closed" aria-live="off" title="Orario ufficiale Nasdaq · New York">
         <span id="etfCountdownLabel" data-it="APRE TRA" data-en="OPENS IN">APRE TRA</span>
@@ -204,7 +203,6 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
         <small>NY</small>
       </div>
     </div>
-    <small id="etfLastTradeStamp" class="injc-last-trade-stamp" aria-live="off">In attesa di scambi verificati</small>
   </div>
   <div class="injc-quote-reference">
     <p id="etfReferenceNav" data-it="NAV iniziale 04/11/2026: $25,00 · riferimento del fondo, non prezzo di un primo scambio." data-en="Initial NAV 11/04/2026: $25.00 · fund reference, not an executed first-trade price.">NAV iniziale 04/11/2026: $25,00 · riferimento del fondo, non prezzo di un primo scambio.</p>
@@ -255,7 +253,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
  </div>
 </section>
 <section aria-label="Performance ETF">
- <div class="injc-title-row"><h2>Performance</h2><small data-it="SESSIONE NASDAQ · DATI QUOTA INJC" data-en="NASDAQ SESSION · INJC SHARE DATA">SESSIONE NASDAQ · DATI QUOTA INJC</small></div>
+ <div class="injc-title-row"><h2>Performance</h2><small id="etfPerformanceSessionLabel">SEDUTA NASDAQ · IN ATTESA DI SCAMBI</small></div>
  <div class="injc-stat-grid">
   <div class="injc-stat"><span data-it="Volume scambiato" data-en="Shares traded">Volume scambiato</span><strong id="etfVolume">—</strong><small data-it="Quote negoziate" data-en="Shares traded">Quote negoziate</small></div>
   <div class="injc-stat"><span data-it="Controvalore indicativo" data-en="Indicative turnover">Controvalore indicativo</span><strong id="etfNotional">—</strong><small>USD · volume × last</small></div>
@@ -315,7 +313,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 </main>
 </div>
 <script defer src="./injc-etf-flows-volume-20261106.js?v=20261110-official-feed1"></script>
-<script defer src="./injc-etf-market-terminal-20261105.js?v=20261110-official-feed1"></script>
+<script defer src="./injc-etf-market-terminal-20261105.js?v=20261110-session-rollover2"></script>
 <script defer src="./injc-etf-session-inspector-20261106.js?v=etf-session-inspect-20261106a"></script>
 
 </body>
