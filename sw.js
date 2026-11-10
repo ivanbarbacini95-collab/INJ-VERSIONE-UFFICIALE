@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261110-live-night-isolation2';
+const CACHE_NAME = 'inj-node-v20261110-liveview-one-layout3';
 const BOOT_ASSETS = [
   './index.html',
   './page-zoom-lock-20261110.js?v=1',
@@ -13,18 +13,16 @@ const BOOT_ASSETS = [
   './my-reward-portrait-20261110.js?v=portrait-desktop1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=20261109-shared2',
+  './app.js?v=20261110-liveview-one-layout3',
   './navigation.js?v=20261109-tools-return-motion1',
-  './home-bottom-tabs-20261030.js?v=20261110-live-night-isolation2',
+  './home-bottom-tabs-20261030.js?v=20261110-liveview-one-layout3',
   './network-status.html?v=20261110-uptime-history1',
   './network-history.js?v=20261110-uptime-history1',
   './network-live-ws.js?v=20261109-uptime-ws1',
   './network-history.css?v=20261110-uptime-history1',
   './all-transactions.html?v=20261109-tools-return-motion1',
-  './night-view.html?v=20261110-live-night-isolation2',
-  './night-view.js?v=20261110-live-night-isolation2',
-  './live-view-night-toggle.js?v=20261110-live-night-isolation2',
-  './live-view-night-toggle.css?v=20261110-live-night-isolation2'
+  './night-view.html?v=20261110-liveview-one-layout3',
+  './night-view.js?v=20261110-liveview-one-layout3'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
 
