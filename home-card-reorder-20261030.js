@@ -11,7 +11,7 @@
   home:['entryDashboardButton','entryLiveButton','entryTreasuryButton'],
   mercato:['entryGlobalMarketsButton','entryGlobalCryptoButton','entryMacroCalendarButton','entryLiveChartsButton','entryOrderBookButton','entryPerformanceButton'],
   reward:['entryLiveRewardsButton','entryComparisonButton','entryVisualizeWealthButton','entryRewardLadderButton','entryFreedomButton'],
-  altro:['entryMultiChartButton','entryAllTransactionsButton','entryComparisonButton','entryVisualizeWealthButton','entryFreedomButton','entryWorkspaceButton','entryConverterButton','entryCommandCenterButton']
+  altro:['entryMultiChartButton','entryMarketReactorButton','entryAllTransactionsButton','entryComparisonButton','entryVisualizeWealthButton','entryFreedomButton','entryWorkspaceButton','entryConverterButton','entryCommandCenterButton']
  };
  const prefix='inj_node_launcher_order_v1_';
  const original=new Map(),live=new Map();
