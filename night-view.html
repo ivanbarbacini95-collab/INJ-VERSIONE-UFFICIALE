@@ -21,11 +21,9 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:44px}
 .back{width:40px;height:40px;display:grid;place-items:center;background:transparent;border:1px solid #26302e;border-radius:13px;color:var(--nv-text)}
 .back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.brand{min-width:0;text-align:center}.brand small{display:block;color:var(--nv-muted);font-size:10px;letter-spacing:.17em}.brand strong{font-size:15px;letter-spacing:.03em}
+.brand{min-width:0;flex:1;text-align:center;display:flex;justify-content:center;align-items:center;gap:9px}.brand h1{margin:0;color:var(--nv-text);font-size:clamp(20px,4.8vw,26px);line-height:1.15;font-weight:750;letter-spacing:-.035em}.brand .moon{color:var(--nv-accent);font-size:clamp(23px,5vw,29px);line-height:1}
 .top-spacer{width:40px}
 .content{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(13px,3.4vh,34px);padding:8px 0}
-.intro{text-align:center}.intro h1{font-size:clamp(22px,4vw,30px);font-weight:750;letter-spacing:-.035em;margin:0}.moon{font-size:19px;color:var(--nv-accent);vertical-align:2px;margin-right:8px}
-.intro p{margin:5px 0 0;color:var(--nv-muted);font-size:clamp(11px,2vw,13px)}
 .price{text-align:center;width:100%}
 .price-label{color:var(--nv-muted);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
 .price-value{display:block;color:var(--nv-text);font-size:clamp(65px,13vw,142px);line-height:1.12;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.075em;white-space:nowrap;margin:8px 0 4px;text-shadow:0 0 22px rgba(126,192,178,.055)}
@@ -34,7 +32,7 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 .live-indicator{display:inline-flex;align-items:center;gap:7px;color:var(--nv-muted);font-size:11px;letter-spacing:.12em}
 .live-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.65}
 .live-indicator[data-status="live"]{color:var(--nv-accent)}.live-indicator[data-status="live"] .live-dot{animation:breath 3.6s ease-in-out infinite}
-.ambient{width:100%;height:clamp(24px,5vh,54px);display:block;overflow:visible}
+.ambient{display:block;width:min(100%,880px);height:clamp(24px,5vh,54px);flex:0 0 auto;margin-inline:auto;overflow:visible;transform:translateX(0)}
 .ambient path{fill:none;stroke:url(#ambientStroke);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.57;animation:ambientBreath 12s ease-in-out infinite}
 .holdings{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}
 .holding{text-align:center;min-width:0;padding:7px clamp(7px,2.3vw,30px)}
@@ -69,17 +67,16 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 <main class="shell">
 <header class="top">
  <button class="back" id="nightBack" type="button" aria-label="Torna a Tools"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
- <div class="brand"><small>INJ NODE / TOOLS</small><strong>Night View</strong></div>
+ <div class="brand"><span class="moon" aria-hidden="true">☾</span><h1>Night View</h1></div>
  <span class="top-spacer" aria-hidden="true"></span>
 </header>
 <div class="content">
- <div class="intro"><h1><span class="moon" aria-hidden="true">☾</span>Night View</h1><p data-it="Panoramica live di INJ e del tuo staking" data-en="Live view of INJ and your staking">Panoramica live di INJ e del tuo staking</p></div>
  <section class="price" aria-label="Prezzo Injective in tempo reale">
   <span class="price-label">INJ / Injective</span>
   <output id="nightPrice" class="price-value" aria-live="off">—</output>
   <div class="price-sub"><span id="nightChange" class="change" data-direction="flat">— (24h)</span><span class="live-indicator" id="nightFeed" data-status="sync"><i class="live-dot" aria-hidden="true"></i><span id="nightFeedText">SYNC</span></span></div>
  </section>
- <svg class="ambient" viewBox="0 0 900 54" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="ambientStroke"><stop offset="0" stop-color="#0a2420" stop-opacity="0"/><stop offset=".22" stop-color="#5aafa0" stop-opacity=".55"/><stop offset=".50" stop-color="#8bc9ba" stop-opacity=".8"/><stop offset=".78" stop-color="#5aafa0" stop-opacity=".55"/><stop offset="1" stop-color="#0a2420" stop-opacity="0"/></linearGradient></defs><path d="M0 34 C85 38 170 9 260 22 S400 45 480 31 S640 10 710 24 S830 43 900 23"/></svg>
+ <svg class="ambient" viewBox="0 0 880 54" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="ambientStroke"><stop offset="0" stop-color="#0a2420" stop-opacity="0"/><stop offset=".22" stop-color="#5aafa0" stop-opacity=".55"/><stop offset=".50" stop-color="#8bc9ba" stop-opacity=".8"/><stop offset=".78" stop-color="#5aafa0" stop-opacity=".55"/><stop offset="1" stop-color="#0a2420" stop-opacity="0"/></linearGradient></defs><path d="M0 29 C90 29 130 39 220 39 C310 39 350 15 440 15 C530 15 570 39 660 39 C750 39 790 29 880 29"/></svg>
  <section class="holdings" aria-label="Bilanci Injective">
   <div class="holding"><span class="eyebrow" data-it="INJ in stake" data-en="INJ staked">INJ in stake</span><strong id="nightStaked">—</strong><small class="fiat" id="nightStakedFiat">—</small></div>
   <div class="holding"><span class="eyebrow" data-it="INJ non in stake" data-en="INJ available">INJ non in stake</span><strong id="nightAvailable">—</strong><small class="fiat" id="nightAvailableFiat">—</small></div>
