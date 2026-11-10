@@ -7,7 +7,7 @@
   "unit": "ETF shares",
   "note": "Reported daily INJC ETF shares traded and same-session reported close used only for indicative valuation. Not fund flows. Latest session may be partial.",
   "source": "Yahoo Finance · daily quote bars · potentially delayed",
-  "generatedAt": "2026-11-10T03:56:45.937Z",
+  "generatedAt": "2026-11-10T19:14:16.317Z",
   "sessions": [
     {
       "date": "2026-11-05",
@@ -21,8 +21,13 @@
     },
     {
       "date": "2026-11-09",
-      "volume": 5158,
-      "close": 26.00659942626953
+      "volume": 5200,
+      "close": 26.010000228881836
+    },
+    {
+      "date": "2026-11-10",
+      "volume": 1538,
+      "close": 24.790000915527344
     }
   ]
 }
