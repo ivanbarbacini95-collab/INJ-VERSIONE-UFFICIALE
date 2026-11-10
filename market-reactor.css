@@ -1,5 +1,5 @@
 /* Market Reactor · INJ Node · immersive, theme-aware read-only monitor */
-:root{--mr-bg:#060b11;--mr-fg:#f0f5fa;--mr-muted:#97a6b4;--mr-surface:#101a25;--mr-border:#293947;--mr-pulse:#e8bd67;--signal:#e8bd67;--signal-rgb:232,189,103;--mr-speed:22s;--mr-strength:.24;color-scheme:dark}
+:root{--mr-bg:#060b11;--mr-fg:#f0f5fa;--mr-muted:#97a6b4;--mr-surface:#101a25;--mr-border:#293947;--mr-pulse:#e8bd67;--signal:#e8bd67;--signal-rgb:232,189,103;--mr-speed:22s;--mr-speed-b:33s;--mr-speed-c:44s;--mr-strength:.24;color-scheme:dark}
 html[data-theme="arctic"]{--mr-bg:#edf5fa;--mr-fg:#142937;--mr-muted:#566f83;--mr-surface:#ffffff;--mr-border:#c5d8e3;color-scheme:light}
 html[data-theme="classic-white"]{--mr-bg:#fff;--mr-fg:#16191c;--mr-muted:#606a74;--mr-surface:#f3f5f7;--mr-border:#d9e0e5;color-scheme:light}
 html[data-theme="orbit"]{--mr-bg:#080b1a;--mr-fg:#eceeff;--mr-muted:#9ea9bf;--mr-surface:#12182c;--mr-border:#323c5b}
@@ -42,6 +42,7 @@ html[data-theme="arctic"] .mr-core,html[data-theme="classic-white"] .mr-core{bac
 .mr-score-denom{color:var(--mr-muted);font-size:clamp(13px,1.3vw,19px);font-weight:650;letter-spacing:.1em}
 .mr-state{font-size:clamp(19px,2.9vw,36px);font-weight:850;color:var(--signal);letter-spacing:.055em;line-height:1.17;transition:color .35s}
 .mr-description{margin:4px 0 0;font-size:clamp(12px,1.4vw,18px);font-weight:550;color:var(--mr-muted)}
+.mr-benchmark{margin:4px 0 0;color:var(--mr-muted);font-size:clamp(11px,1vw,15px);font-weight:600;letter-spacing:.03em}
 .mr-price{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:clamp(9px,1.6vh,20px);font-size:clamp(20px,3.5vw,42px);line-height:1.1;font-weight:800;font-variant-numeric:tabular-nums}
 .mr-price-change{color:var(--mr-muted);font-size:.55em;font-weight:700}.mr-price-change[data-dir="up"]{color:#37b685}.mr-price-change[data-dir="down"]{color:#e15d76}
 .mr-components{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:min(100%,1000px);gap:clamp(7px,1.2vw,16px);margin:clamp(18px,2.8vh,36px) auto 4px}
