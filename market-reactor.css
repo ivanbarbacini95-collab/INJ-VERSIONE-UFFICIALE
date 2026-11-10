@@ -30,8 +30,8 @@ button:focus-visible{outline:2px solid var(--signal);outline-offset:4px}
 .mr-orbit{position:absolute;border:1px solid rgba(var(--signal-rgb),.32);border-radius:50%;aspect-ratio:1;box-shadow:0 0 28px rgba(var(--signal-rgb),.09);pointer-events:none}
 .mr-orbit-a{width:min(76%,435px);animation:mr-spin var(--mr-speed) linear infinite}
 .mr-orbit-a::before{content:"";position:absolute;inset:-2px;border-radius:inherit;border:2px solid transparent;border-top-color:var(--signal);border-left-color:rgba(var(--signal-rgb),.25);filter:drop-shadow(0 0 8px var(--signal))}
-.mr-orbit-b{width:min(65%,375px);border-style:dashed;opacity:.65;animation:mr-spin calc(var(--mr-speed) * 1.5) linear infinite reverse}
-.mr-orbit-c{width:min(88%,505px);border-color:rgba(var(--signal-rgb),.12);border-style:dotted;opacity:.65;animation:mr-spin calc(var(--mr-speed) * 2) linear infinite}
+.mr-orbit-b{width:min(65%,375px);border-style:dashed;opacity:.65;animation:mr-spin var(--mr-speed-b) linear infinite reverse}
+.mr-orbit-c{width:min(88%,505px);border-color:rgba(var(--signal-rgb),.12);border-style:dotted;opacity:.65;animation:mr-spin var(--mr-speed-c) linear infinite}
 .mr-satellite{position:absolute;border-radius:100%;width:5px;height:5px;background:var(--signal);box-shadow:0 0 12px 4px rgba(var(--signal-rgb),.45)}
 .mr-sat-one{transform:translate(170px,-130px)}.mr-sat-two{transform:translate(-163px,125px);opacity:.55}
 .mr-core{position:relative;width:min(54%,305px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 34% 25%,rgba(var(--signal-rgb),.45),rgba(var(--signal-rgb),.10) 32%,rgba(12,20,30,.95) 71%),#070c14;border:1px solid rgba(var(--signal-rgb),.65);box-shadow:0 0 30px rgba(var(--signal-rgb),.21),inset 0 0 42px rgba(var(--signal-rgb),.18),0 0 85px rgba(var(--signal-rgb),.11);animation:mr-breathe 5s ease-in-out infinite}
