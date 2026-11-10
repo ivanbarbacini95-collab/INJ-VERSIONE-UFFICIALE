@@ -41,6 +41,7 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 .holding+.holding{border-left:1px solid var(--nv-line)}
 .eyebrow{display:block;font-size:clamp(11px,2vw,13px);color:var(--nv-muted);margin-bottom:10px}
 .holding strong{display:block;font-size:clamp(20px,4.5vw,42px);font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.holding .fiat{display:block;min-height:1.3em;margin-top:7px;color:var(--nv-muted);font-size:clamp(11px,1.8vw,13px);font-weight:400;line-height:1.3;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .unit{font-size:.48em;font-weight:500;letter-spacing:0;color:var(--nv-muted);white-space:nowrap}
 .reward{text-align:center;width:100%;padding:clamp(11px,2.5vh,22px) 0 0;position:relative}
 .reward:before{content:"";height:1px;width:min(100%,760px);display:block;margin:-7px auto clamp(17px,3vh,30px);background:linear-gradient(90deg,transparent,#1a302b 50%,transparent)}
@@ -62,7 +63,7 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 @media(min-width:900px) and (orientation:landscape){.content{gap:clamp(10px,2.4vh,24px)}.price-value{font-size:clamp(80px,10vw,130px)}.ambient{height:32px}}
 @media(prefers-reduced-motion:reduce){.ambient path,.live-indicator .live-dot{animation:none!important}}
 </style>
-<script defer src="./night-view.js?v=20261110-night-ambient1"></script>
+<script defer src="./night-view.js?v=20261110-night-ambient-fiat2"></script>
 </head>
 <body>
 <main class="shell">
@@ -80,8 +81,8 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
  </section>
  <svg class="ambient" viewBox="0 0 900 54" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="ambientStroke"><stop offset="0" stop-color="#0a2420" stop-opacity="0"/><stop offset=".22" stop-color="#5aafa0" stop-opacity=".55"/><stop offset=".50" stop-color="#8bc9ba" stop-opacity=".8"/><stop offset=".78" stop-color="#5aafa0" stop-opacity=".55"/><stop offset="1" stop-color="#0a2420" stop-opacity="0"/></linearGradient></defs><path d="M0 34 C85 38 170 9 260 22 S400 45 480 31 S640 10 710 24 S830 43 900 23"/></svg>
  <section class="holdings" aria-label="Bilanci Injective">
-  <div class="holding"><span class="eyebrow" data-it="INJ in stake" data-en="INJ staked">INJ in stake</span><strong id="nightStaked">—</strong></div>
-  <div class="holding"><span class="eyebrow" data-it="INJ non in stake" data-en="INJ available">INJ non in stake</span><strong id="nightAvailable">—</strong></div>
+  <div class="holding"><span class="eyebrow" data-it="INJ in stake" data-en="INJ staked">INJ in stake</span><strong id="nightStaked">—</strong><small class="fiat" id="nightStakedFiat">—</small></div>
+  <div class="holding"><span class="eyebrow" data-it="INJ non in stake" data-en="INJ available">INJ non in stake</span><strong id="nightAvailable">—</strong><small class="fiat" id="nightAvailableFiat">—</small></div>
  </section>
  <section class="reward" aria-label="Reward staking in tempo reale">
   <span class="eyebrow" data-it="Reward live" data-en="Live rewards">Reward live</span>
