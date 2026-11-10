@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261109-network-rpc-verified2';
+const CACHE_NAME = 'inj-node-v20261110-uptime-history1';
 const BOOT_ASSETS = [
   './index.html',
   './manifest.webmanifest?v=20261102litepro1',
@@ -11,10 +11,10 @@ const BOOT_ASSETS = [
   './app.js?v=20261109-shared2',
   './navigation.js?v=20261109-tools-return-motion1',
   './home-bottom-tabs-20261030.js?v=20261109-tools-return-motion1',
-  './network-status.html?v=20261109-network-rpc-verified2',
-  './network-history.js?v=20261109-uptime-rpc2',
+  './network-status.html?v=20261110-uptime-history1',
+  './network-history.js?v=20261110-uptime-history1',
   './network-live-ws.js?v=20261109-uptime-ws1',
-  './network-history.css?v=20261109-uptime-rpc2',
+  './network-history.css?v=20261110-uptime-history1',
   './all-transactions.html?v=20261109-tools-return-motion1'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
