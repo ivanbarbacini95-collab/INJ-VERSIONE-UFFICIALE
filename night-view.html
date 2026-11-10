@@ -59,9 +59,12 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 @media(max-width:380px){.shell{padding-left:12px;padding-right:12px}.price-value{font-size:clamp(52px,12.8vw,70px)}.holding strong{font-size:19px}.reward strong{font-size:34px}}
 @media(max-height:700px){.content{gap:11px}.intro p{display:none}.price-value{font-size:clamp(60px,11vh,98px)}.ambient{height:24px}.reward:before{margin-bottom:13px}.reward{padding-top:8px}.reward strong{font-size:clamp(31px,6.5vh,51px)}}
 @media(min-width:900px) and (orientation:landscape){.content{gap:clamp(10px,2.4vh,24px)}.price-value{font-size:clamp(80px,10vw,130px)}.ambient{height:32px}}
+html[data-night-embedded="live"] .top .back,html[data-night-embedded="live"] .top .moon{display:none!important}
+html[data-night-embedded="live"] .top .brand{justify-content:center}
+html[data-night-embedded="live"] .top .brand h1{font-size:clamp(20px,4.8vw,26px)}
 @media(prefers-reduced-motion:reduce){.ambient path,.live-indicator .live-dot{animation:none!important}}
 </style>
-<script defer src="./night-view.js?v=20261110-night-ambient-fiat2"></script>
+<script defer src="./night-view.js?v=20261110-liveview-night-toggle1"></script>
 </head>
 <body>
 <main class="shell">

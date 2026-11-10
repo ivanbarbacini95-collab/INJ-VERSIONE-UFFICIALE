@@ -4,6 +4,11 @@
 (() => {
  'use strict';
  if(document.documentElement.dataset.injPage!=='night-view')return;
+ if(new URLSearchParams(location.search).get('embedded')==='live'){
+  document.documentElement.dataset.nightEmbedded='live';
+  const title=document.querySelector('.brand h1');
+  if(title)title.textContent='Live View';
+ }
  const $=id=>document.getElementById(id);
  const msYear=365.25*86400000;
  const num=v=>v===null||v===undefined||v===''?null:(Number.isFinite(Number(v))?Number(v):null);
@@ -81,7 +86,9 @@
    (!usd?tr('Prezzo in sincronizzazione','Synchronizing price'):'');
  }
  function back(){
-  if(parent!==window){parent.postMessage({type:'injnode:section:tools'},location.origin);}
+  if(document.documentElement.dataset.nightEmbedded==='live'){
+   parent.postMessage({type:'injnode:live-view:normal'},location.origin);
+  }else if(parent!==window){parent.postMessage({type:'injnode:section:tools'},location.origin);}
   else location.href='./index.html?tab=tools';
  }
  $('nightBack').addEventListener('click',back);
