@@ -55,6 +55,11 @@
   const privacy=!!snap.privacy;
   note('nightStaked',privacy?'••••':walletVerified?unit(staked,2):'—');
   note('nightAvailable',privacy?'••••':available!==null?unit(available,2):'—');
+  // Both balances use the exact same recent quote and currency as the rewards.
+  // Preserve privacy and avoid presenting missing prices as zero.
+  const fiatQuantity=(quantity)=>privacy?'••••':(quantity!==null&&usd>0?'≈ '+money(quantity*usd*rate,currency,2):'—');
+  $('nightStakedFiat').textContent=fiatQuantity(walletVerified?staked:null);
+  $('nightAvailableFiat').textContent=fiatQuantity(available);
   // Interpolation is an estimate, limited to 20s after an on-chain snapshot.
   const mayEstimate=walletFresh&&age<35000&&apr!==null&&apr>0&&staked>0;
   const estimated=mayEstimate?staked*apr/100*Math.min(age,20000)/msYear:0;
