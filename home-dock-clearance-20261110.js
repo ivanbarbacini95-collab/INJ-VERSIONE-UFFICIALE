@@ -10,7 +10,7 @@
  const root=document.documentElement;
  const portrait=matchMedia('(max-width:700px) and (orientation:portrait)');
  const varName='--inj-home-fit-chart-height';
- const clearance=16; // breathing room between destination cards and bottom nav
+ const clearance=22; // minimum visible gap between the launcher row and floating dock
  const minChartHeight=218; // preserve readable price, time axis and P/L
  let scheduled=false,secondFrame=0,measuredWidth=0,permanentScroll=false;
  const $=id=>document.getElementById(id);
@@ -36,8 +36,11 @@
  }
  function finishWithScroll(nav){
   permanentScroll=true;
+  // Reserve the actual floating dock footprint, even with iOS safe-area changes.
+  const rect=nav.getBoundingClientRect();
+  const bottomGap=Math.max(10,Math.ceil(window.innerHeight-rect.bottom));
   root.style.setProperty('--inj-home-dock-space',
-    Math.ceil(nav.getBoundingClientRect().height+26)+'px');
+    Math.ceil(rect.height+bottomGap+clearance)+'px');
   root.dataset.injHomeDockClearance='scroll';
  }
  function measure(){
@@ -54,7 +57,12 @@
   if(dock.width<200||dock.height<45||dock.top<100||buttons.height<25)return;
   // Compare real viewport geometry after the top-layer popover and fonts settle.
   const overlap=Math.ceil(buttons.bottom-(dock.top-clearance));
-  if(permanentScroll){return;}
+  if(permanentScroll){
+   // The single-screen fitter may restore a cached true flag after return.
+   // Preserve the scroll safety state until a genuine screen-width change.
+   root.dataset.injHomeDockClearance='scroll';
+   return;
+  }
   if(overlap<=0){
    if(root.dataset.injHomeDockClearance==='scroll')delete root.dataset.injHomeDockClearance;
    return;
@@ -112,10 +120,16 @@
   }
   // Popover visibility changes do not mutate its attributes on iOS Safari.
   nav.addEventListener('toggle',schedule,{passive:true});
-  ['pageshow','orientationchange','resize'].forEach(type=>
+  ['pageshow','orientationchange','resize','focus'].forEach(type=>
    window.addEventListener(type,schedule,{passive:true}));
   window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+  window.visualViewport?.addEventListener('scroll',schedule,{passive:true});
+  document.addEventListener('visibilitychange',schedule,{passive:true});
   document.fonts?.ready?.then(schedule,()=>{});
+  // Safari may restore the PWA viewport after its first layout/paint.
+  // Lightweight rechecks cover that delayed transition without changing
+  // an already fitting single-screen Home.
+  window.setInterval(()=>{if(eligible()&&!document.hidden)schedule()},2500);
   requestAnimationFrame(schedule);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
