@@ -46,3 +46,15 @@ html[data-inj-font="slim"] :is(.mc-heading strong,.mc-card-label,.mc-card-change
 
 /* Price guide contrast on INJ Node light themes. */
 html[data-theme="arctic"],html[data-theme="classic-white"]{--mc-price-line:#b98700}
+
+/* External monitor typography: follow the larger, denser candles. */
+@media screen and (min-width:700px) and (min-height:650px){
+ .mc-card-head{min-height:43px;padding:10px 13px 5px;gap:12px}
+ .mc-card-label{font-size:clamp(15px,1.2vw,20px);letter-spacing:.045em}
+ .mc-card-change{font-size:clamp(13px,1.02vw,17px)}
+ .mc-expand{width:32px;height:30px}
+ .mc-expand svg{width:17px;height:17px}
+ .mc-canvas-wrap{padding:0 4px 5px}
+ .mc-footer{min-height:47px}
+ .mc-range-heading{font-size:clamp(13px,1.15vw,17px)}
+}
