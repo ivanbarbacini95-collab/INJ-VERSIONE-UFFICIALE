@@ -552,17 +552,38 @@
  }
  function displayQuote(data,source){
    const prevTime=lastQuote?.quoteTime||0;
+   const quoteDay=nyKey(new Date(data.quoteTime)),today=nyKey(new Date());
+   const prior=lastQuote;
+   const sameQuoteDay=Boolean(prior&&nyKey(new Date(prior.quoteTime))===quoteDay);
+   if(sameQuoteDay){
+     const prefer=(a,b)=>Number.isFinite(a)?a:b;
+     data={...data,
+       open:prefer(data.open,prior.open),
+       high:Number.isFinite(data.high)&&Number.isFinite(prior.high)?Math.max(data.high,prior.high):prefer(data.high,prior.high),
+       low:Number.isFinite(data.low)&&Number.isFinite(prior.low)?Math.min(data.low,prior.low):prefer(data.low,prior.low),
+       volume:Number.isFinite(data.volume)&&Number.isFinite(prior.volume)?Math.max(data.volume,prior.volume):prefer(data.volume,prior.volume),
+       previous:prefer(data.previous,prior.previous)};
+   }
    // A delayed request (including one caused by changing chart periods) cannot
    // replace a newer verified exchange trade.
    if(prevTime&&data.quoteTime<prevTime){
-     if(timeframe!=='1d'&&Array.isArray(data.points)&&data.points.length){
-       graphPoints=data.points.filter(p=>Number.isFinite(p?.time)&&Number.isFinite(p?.close)&&p.close>0);
+     if(Array.isArray(data.points)&&data.points.length){
+       const valid=data.points.filter(p=>Number.isFinite(p?.time)&&Number.isFinite(p?.close)&&p.close>0);
+       if(timeframe==='1d'){
+         const combined=new Map([...graphPoints,...valid]
+           .filter(p=>nyKey(new Date(p.time))===today).map(p=>[p.time,p]));
+         graphPoints=[...combined.values()].sort((a,b)=>a.time-b.time);
+       }else graphPoints=valid;
        drawGraph();
      }
      return;
    }
    lastQuote=data;quoteSource=source;lastGoodAt=Date.now();
    const pre=data.session==='pre'&&nyKey(new Date(data.quoteTime))===nyKey(new Date());
+   const priceCaption=$('etfQuoteCaption');
+   if(priceCaption)priceCaption.textContent=quoteDay===today
+     ?tr('PREZZO QUOTA · USD','ETF SHARE PRICE · USD')
+     :tr('ULTIMO PREZZO · '+quoteDay+' · USD','LAST REPORTED PRICE · '+quoteDay+' · USD');
    setText('etfQuotePrice',usd(data.price));
    setText('etfQuoteChange',Number.isFinite(data.change)?(data.change>0?'+':'')+fmt(data.change,2)+'%':'—');
    setText('etfQuoteDelta',Number.isFinite(data.previous)?(data.price-data.previous>=0?'+':'')+usd(data.price-data.previous)+' '+tr('vs chiusura prec.','vs previous close'):'—');
@@ -572,12 +593,15 @@
    changeClass('etfQuoteChange',pre?null:data.change);
    changeClass('etfQuoteDelta',pre?null:data.price-data.previous);
    renderFeedIndicator();
-   setText('etfVolume',count(data.volume));
-   setText('etfNotional',Number.isFinite(data.volume)?shortUsd(data.volume*data.price):'—');
-   setText('etfDayHigh',usd(data.high));setText('etfDayLow',usd(data.low));
-   setText('etfDayOpen',usd(data.open));setText('etfPreviousClose',usd(data.previous));
+   const currentRegular=quoteDay===today&&data.session==='regular';
+   setText('etfVolume',currentRegular?count(data.volume):'—');
+   setText('etfNotional',currentRegular&&Number.isFinite(data.volume)?shortUsd(data.volume*data.price):'—');
+   setText('etfDayHigh',currentRegular?usd(data.high):'—');
+   setText('etfDayLow',currentRegular?usd(data.low):'—');
+   setText('etfDayOpen',currentRegular?usd(data.open):'—');
+   setText('etfPreviousClose',quoteDay===today?usd(data.previous):'—');
    setText('etfVolumeFootnote',tr('Volumi di quote nella sessione regolare, non afflussi netti nel fondo. Controvalore indicativo = volume × ultimo prezzo.','Regular-session share volume, not net fund inflows. Indicative turnover = volume × last share price.'));
-   const nowDay=nyKey(new Date()),quoteDay=nyKey(new Date(data.quoteTime));
+   const nowDay=nyKey(new Date());
    if(observedPreDay!==nowDay){observedPreDay=nowDay;observedPrePrints=[];}
    if(quoteDay===nowDay&&pointSession(data.quoteTime)==='pre'&&Number.isFinite(data.price)&&data.price>0){
      // Only timestamped, actually reported pre-market trades are added.
@@ -589,20 +613,20 @@
      observedPrePrints.sort((a,b)=>a.time-b.time);
      if(observedPrePrints.length>400)observedPrePrints=observedPrePrints.slice(-400);
    }
-   const rows=(Array.isArray(data.points)&&data.points.length?data.points:graphPoints).filter(p=>Number.isFinite(p?.time)&&Number.isFinite(p?.close)&&p.close>0);
-   if(timeframe==='1d'&&observedPrePrints.length){
-     const preRows=rows.filter(p=>p.session==='pre'&&nyKey(new Date(p.time))===nowDay);
-     const regularRows=rows.filter(p=>p.session==='regular'&&nyKey(new Date(p.time))===nowDay);
-     let lastPrior=rows.filter(p=>p.session==='close-anchor'||(p.session==='regular'&&nyKey(new Date(p.time))<nowDay)).at(-1);
-     if(!lastPrior)lastPrior=graphPoints.filter(p=>p.session==='close-anchor'||(p.session==='regular'&&nyKey(new Date(p.time))<nowDay)).at(-1);
-     const actualRegular=(quoteDay===nowDay&&pointSession(data.quoteTime)==='regular')
-       ?[{time:data.quoteTime,close:data.price,session:'regular',open:null,high:null,low:null,volume:null}]
-       :[];
-     const merged=[...(lastPrior?[{...lastPrior,session:'close-anchor'}]:[]),...preRows,...observedPrePrints,...regularRows,...actualRegular];
+   const incomingRows=(Array.isArray(data.points)?data.points:[])
+     .filter(p=>Number.isFinite(p?.time)&&Number.isFinite(p?.close)&&p.close>0);
+   if(timeframe==='1d'){
+     const rows=[...graphPoints,...incomingRows,...observedPrePrints]
+       .filter(p=>nyKey(new Date(p.time))===today&&['pre','regular'].includes(pointSession(p.time)));
+     if(quoteDay===today&&['pre','regular'].includes(pointSession(data.quoteTime)))
+       rows.push({time:data.quoteTime,close:data.price,session:pointSession(data.quoteTime),
+         open:null,high:null,low:null,volume:null});
      const byTime=new Map();
-     for(const p of merged)byTime.set(p.time,p);
-     graphPoints=[...byTime.values()].sort((a,b)=>a.time-b.time);
-   }else graphPoints=rows;
+     for(const p of rows)byTime.set(p.time,p);
+     graphPoints=[...byTime.values()].sort((a,b)=>a.time-b.time).slice(-600);
+   }else if(incomingRows.length){
+     graphPoints=incomingRows;
+   }
    drawGraph();
    renderStatus();
    renderPriceRange();
