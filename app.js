@@ -2645,9 +2645,16 @@ function enterLiveViewFromGate() {
   const wallet = activateEntrySelection();
   if (!wallet) return;
 
-  // Keep Home physically rendered underneath instead of closing/recreating it.
-  parkEntryGateUnderImmersive();
-  openFocusDisplay();
+  // Live View now uses the single Night View layout; its moon button toggles
+  // between the selected INJ Node theme and the all-black OLED palette.
+  // Do not mount or render the previous immersive Live View interface.
+  setHeaderMenuOpen(false);
+  setSearchOpen(false);
+  if (typeof window.INJ_OPEN_SECTION === 'function') {
+    window.INJ_OPEN_SECTION('./night-view.html?embedded=live&v=20261110-liveview-one-layout3');
+  } else {
+    location.href = './night-view.html?embedded=live&v=20261110-liveview-one-layout3';
+  }
 }
 
 function enterPulseViewFromGate() {
