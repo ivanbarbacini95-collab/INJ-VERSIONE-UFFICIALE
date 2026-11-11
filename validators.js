@@ -397,7 +397,7 @@
   const v=valByOp(op);
   if(!v)return;
   if(state.rankAbort)state.rankAbort.abort();
-  state.activeOperator=op;state.rankShown=25;state.rankRows=[];state.rankLoading=false;
+  state.activeOperator=op;state.rankShown=25;state.rankRows=[];state.rankVerified=false;state.rankLoading=false;
   $('detailTitle').textContent=v.description?.moniker||short(op);
   $('operatorAddress').textContent=op;
   $('myRank').hidden=true;$('delegatorList').replaceChildren();
@@ -406,13 +406,14 @@
   setText('rankStatus',t('Preparazione classifica on-chain…','Preparing on-chain ranking…'));
   fillDetailMetrics(v);queueCount(op);
   const dialog=$('validatorDetail');if(!dialog.open)dialog.showModal();
+  renderSavedPins();
   void loadRanking(op);
  }
  async function loadRanking(op){
   if(state.rankLoading)return;
   const cached=state.rankCache.get(op);
   if(cached&&Date.now()-cached.at<RANK_REFRESH){
-   state.rankRows=cached.rows;state.rankLoadedAt=cached.at;renderRanking();return;
+   state.rankRows=cached.rows;state.rankLoadedAt=cached.at;state.rankVerified=true;renderRanking();return;
   }
   state.rankLoading=true;
   const ctrl=new AbortController();state.rankAbort=ctrl;
@@ -436,58 +437,84 @@
    sorted.forEach((row,i)=>{row.rank=lastAmount!==null&&row.balance===lastAmount?prevRank:i+1;lastAmount=row.balance;prevRank=row.rank});
    const at=Date.now();
    state.rankCache.set(op,{at,rows:sorted});
-   state.rankRows=sorted;state.rankLoadedAt=at;
+   state.rankRows=sorted;state.rankLoadedAt=at;state.rankVerified=true;
    state.counts.set(op,{value:sorted.length,at});
    fillDetailMetrics(valByOp(op));
    renderRanking();
   }catch(e){
    if(!ctrl.signal.aborted&&state.activeOperator===op){
-    state.rankRows=[];setText('rankStatus',t('Classifica non verificabile: il nodo non ha restituito tutte le deleghe. Riprova più tardi.','Ranking unavailable: the node did not return all delegations. Please retry later.'));
+    state.rankRows=[];state.rankVerified=false;renderSavedPins();setText('rankStatus',t('Classifica non verificabile: il nodo non ha restituito tutte le deleghe. Riprova più tardi.','Ranking unavailable: the node did not return all delegations. Please retry later.'));
    }
   }finally{if(state.rankAbort===ctrl)state.rankAbort=null;state.rankLoading=false}
  }
- function renderRanking(){
-  const rows=state.rankRows;
+ function renderSavedPins(){
   const op=state.activeOperator;
   if(!op||!$('validatorDetail').open)return;
-  syncSavedWallet();
-  const mybox=$('myRank');mybox.replaceChildren();
-  const targets=[];
-  if(state.savedWallet)targets.push({address:state.savedWallet,saved:true});
-  if(state.wallet&&state.wallet!==state.savedWallet)targets.push({address:state.wallet,saved:false});
-  for(const target of targets){
-   const matched=rows.find(r=>r.address===target.address);
-   const entry=document.createElement('div');entry.className='my-rank-entry'+(target.saved?' saved':' searched');
+  const box=$('myRank');box.replaceChildren();
+  const verifiedByAddress=new Map(state.rankRows.map(row=>[row.address,row]));
+  const fallback=state.savedDelegations.get(op)||new Map();
+  const entries=[];
+  for(const saved of state.savedWallets){
+   const exact=verifiedByAddress.get(saved.address);
+   const amountWei=state.rankVerified?(exact?.balance||0n):(exact?.balance||fallback.get(saved.address)||0n);
+   if(amountWei>0n)entries.push({address:saved.address,label:saved.label,balance:amountWei,rank:exact?.rank||null,saved:true});
+  }
+  // An explicitly searched address remains separate from the saved-wallet set.
+  if(state.wallet&&!state.savedWallets.some(w=>w.address===state.wallet)){
+   const searched=verifiedByAddress.get(state.wallet);
+   if(searched)entries.push({address:searched.address,label:t('Wallet cercato','Searched wallet'),balance:searched.balance,rank:searched.rank,saved:false});
+  }
+  for(const item of entries){
+   const card=document.createElement('div');card.className='my-rank-entry '+(item.saved?'saved':'searched');
    const left=document.createElement('div');left.className='my-rank-main';
    const label=document.createElement('span');label.className='my-rank-label';
-   label.textContent=target.saved?t('IL TUO WALLET SALVATO','YOUR SAVED WALLET'):t('WALLET CERCATO','SEARCHED WALLET');
-   const rank=document.createElement('strong');rank.textContent=matched?'#'+fi(matched.rank):'—';
-   const addr=document.createElement('code');addr.className='saved-address';addr.textContent=target.address;
-   left.append(label,rank,addr);
-   const right=document.createElement('div');right.className='my-rank-balance';
-   right.textContent=matched?balanceWithFiat(matched.balance):t('Nessuna delega a questo validatore','No delegation to this validator');
-   entry.append(left,right);mybox.append(entry);
+   label.textContent=item.saved?t('WALLET SALVATO','SAVED WALLET')+' · '+item.label:t('WALLET CERCATO','SEARCHED WALLET');
+   const number=document.createElement('strong');
+   number.textContent=item.rank?'#'+fi(item.rank):t('Posizione in verifica','Rank pending');
+   const address=document.createElement('code');address.className='saved-address';address.textContent=item.address;
+   left.append(label,number,address);
+   const value=document.createElement('div');value.className='my-rank-balance';value.dataset.balanceWei=String(item.balance);value.textContent=balanceWithFiat(item.balance);
+   card.append(left,value);box.append(card);
   }
-  mybox.hidden=!targets.length;
-  setText('rankStatus',fi(rows.length)+' '+t('delegatori ordinati per INJ delegati.','delegators ranked by delegated INJ.'));
+  box.hidden=entries.length===0;
+  if($('savedWalletStatus')){
+   const count=entries.filter(v=>v.saved).length;
+   let message='';
+   if(!state.savedWallets.length)message=t('Nessun wallet salvato in INJ Node.','No wallets saved in INJ Node.');
+   else if(count)message=fi(count)+' '+t('wallet salvati delegano a questo validatore.','saved wallets delegate to this validator.');
+   else if(!state.rankVerified&&!state.savedVerified)message=t('Verifica in corso dei wallet salvati…','Checking saved wallets…');
+   else if(state.rankVerified||state.savedVerified)message=t('Nessun wallet salvato delega a questo validatore.','No saved wallet delegates to this validator.');
+   else message=t('Deleghe salvate non ancora verificabili.','Saved delegations not yet verifiable.');
+   setText('savedWalletStatus',message);
+  }
+ }
+ function renderRanking(){
+  const op=state.activeOperator;
+  if(!op||!$('validatorDetail').open)return;
+  renderSavedPins();
+  setText('rankStatus',fi(state.rankRows.length)+' '+t('delegatori ordinati per INJ delegati.','delegators ranked by delegated INJ.'));
   setText('rankingAge',new Date(state.rankLoadedAt).toLocaleTimeString(en?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit'}));
   updatePriceStatus();
+  const savedSet=new Set(state.savedWallets.map(w=>w.address));
   const host=$('delegatorList');host.replaceChildren();
   const fragment=document.createDocumentFragment();
-  rows.slice(0,state.rankShown).forEach(row=>{
-   const saved=Boolean(state.savedWallet&&row.address===state.savedWallet);
-   const searched=Boolean(state.wallet&&row.address===state.wallet);
+  state.rankRows.slice(0,state.rankShown).forEach(row=>{
+   const saved=savedSet.has(row.address),searched=Boolean(state.wallet===row.address);
    const node=document.createElement('div');node.className='delegator-row'+(saved?' saved':searched?' mine':'');
    const rank=document.createElement('span');rank.className='rank';rank.textContent='#'+fi(row.rank);
    const addressBox=document.createElement('div');addressBox.className='delegator-address';
-   const address=document.createElement('code');address.textContent=saved?row.address:short(row.address);address.title=row.address;
+   const address=document.createElement('code');address.textContent=row.address;address.title=row.address;
    addressBox.append(address);
-   if(saved){const tag=document.createElement('span');tag.className='saved-badge';tag.textContent=t('SALVATO','SAVED');addressBox.append(tag)}
+   if(saved){
+    const name=state.savedWallets.find(w=>w.address===row.address)?.label||'Wallet';
+    const tag=document.createElement('span');tag.className='saved-badge';tag.textContent=t('SALVATO','SAVED')+' · '+name;
+    addressBox.append(tag);
+   }
    const balance=document.createElement('b');balance.className='delegator-balance';balance.dataset.balanceWei=String(row.balance);balance.textContent=balanceWithFiat(row.balance);
    node.append(rank,addressBox,balance);fragment.append(node);
   });
   host.append(fragment);
-  $('moreDelegators').hidden=rows.length<=state.rankShown;
+  $('moreDelegators').hidden=state.rankRows.length<=state.rankShown;
  }
  function exitTools(){
   try{sessionStorage.setItem('inj_node_return_tools','1')}catch(_){}
