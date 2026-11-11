@@ -21,18 +21,22 @@
  const validWallet=a=>/^inj1[0-9a-z]{38,60}$/.test(String(a||'').toLowerCase());
  const currency=()=>{try{return localStorage.getItem('inj_monitor_currency')==='EUR'?'EUR':'USD'}catch(_){return 'USD'}};
  function savedWalletsFromStorage(){
-  const all=[],seen=new Set();
+  const all=[],seen=new Set();let hasWalletList=false;
   try{
-   const rows=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'[]');
-   if(Array.isArray(rows))for(const [i,item] of rows.entries()){
-    const address=String(item?.address||'').trim().toLowerCase();
-    if(!validWallet(address)||seen.has(address))continue;
-    seen.add(address);all.push({address,label:String(item?.label||'Wallet '+(i+1)).trim().slice(0,28)});
+   const rows=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'null');
+   if(Array.isArray(rows)){
+    hasWalletList=true;
+    for(const [i,item] of rows.entries()){
+     const address=String(item?.address||'').trim().toLowerCase();
+     if(!validWallet(address)||seen.has(address))continue;
+     seen.add(address);all.push({address,label:String(item?.label||'Wallet '+(i+1)).trim().slice(0,28)});
+    }
    }
   }catch(_){}
-  try{
+  // Backward compatibility only: legacy address is NOT another selected wallet.
+  if(!hasWalletList)try{
    const address=String(localStorage.getItem('inj_monitor_address')||'').trim().toLowerCase();
-   if(validWallet(address)&&!seen.has(address))all.push({address,label:'Wallet'});
+   if(validWallet(address))all.push({address,label:'Wallet'});
   }catch(_){}
   return all;
  }
