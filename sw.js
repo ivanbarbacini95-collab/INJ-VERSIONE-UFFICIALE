@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261111-validators-all-saved1';
+const CACHE_NAME = 'inj-node-v20261111-live-price-home1';
 const BOOT_ASSETS = [
   './index.html',
   './inj-rubik-unified-20261110.css?v=rubik-ui1',
@@ -14,7 +14,7 @@ const BOOT_ASSETS = [
   './my-reward-portrait-20261110.js?v=portrait-desktop1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=20261110-liveview-one-layout3',
+  './app.js?v=20261111-home-price1',
   './navigation.js?v=20261109-tools-return-motion1',
   './home-bottom-tabs-20261030.js?v=20261110-liveview-one-layout3',
   './validators-launcher.js?v=20261111e',
@@ -26,8 +26,8 @@ const BOOT_ASSETS = [
   './network-live-ws.js?v=20261109-uptime-ws1',
   './network-history.css?v=20261110-uptime-history1',
   './all-transactions.html?v=20261109-tools-return-motion1',
-  './night-view.html?v=20261110-liveview-one-layout3',
-  './night-view.js?v=20261110-liveview-one-layout3'
+  './night-view.html?v=20261111-home-price1',
+  './night-view.js?v=20261111-home-price1'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
 
