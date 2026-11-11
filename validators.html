@@ -15,11 +15,11 @@ try {
  document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';
 } catch (_) {}
 </script>
-<link rel="stylesheet" href="./validators.css?v=20261111b">
+<link rel="stylesheet" href="./validators.css?v=20261111d">
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 <script defer src="./page-zoom-lock-20261110.js?v=1"></script>
 <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-<script defer src="./validators.js?v=20261111c"></script>
+<script defer src="./validators.js?v=20261111d"></script>
 </head>
 <body>
 <main class="shell">
@@ -35,7 +35,7 @@ try {
   <div class="hero-copy">
    <span class="eyebrow">INJECTIVE MAINNET · STAKING INTELLIGENCE</span>
    <h2 data-it="Ogni validatore. Dati verificabili." data-en="Every validator. Verifiable data.">Ogni validatore. Dati verificabili.</h2>
-   <p data-it="Commissioni on-chain, APR netto e delegatori. Cerca un wallet per individuare il suo posto nella classifica." data-en="On-chain commissions, net APR and delegators. Search a wallet to find its exact rank.">Commissioni on-chain, APR netto e delegatori. Cerca un wallet per individuare il suo posto nella classifica.</p>
+   <p data-it="Commissioni, APR netto e classifica. Tutti i wallet salvati sono riconosciuti automaticamente." data-en="On-chain commissions, net APR and rankings. Every saved wallet is detected automatically.">Commissioni on-chain, APR netto e delegatori. Cerca un wallet per individuare il suo posto nella classifica.</p>
   </div>
   <div class="orbit-illustration" aria-hidden="true"><svg viewBox="0 0 150 130"><ellipse cx="75" cy="66" rx="61" ry="35" transform="rotate(-26 75 66)"/><ellipse cx="75" cy="66" rx="47" ry="27" transform="rotate(30 75 66)"/><circle cx="75" cy="66" r="17"/><circle class="satellite" cx="128" cy="43" r="5"/><circle class="satellite-two" cx="44" cy="92" r="3.5"/><path d="M75 49v34M58 66h34"/></svg></div>
  </section>
@@ -52,7 +52,7 @@ try {
    <input id="walletAddress" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="inj1..." maxlength="100" required aria-describedby="walletHelp">
    <button type="submit" id="walletSubmit" data-it="Trova wallet" data-en="Find wallet">Trova wallet</button>
   </form>
-  <p id="walletHelp" class="help" data-it="Ricerca pubblica on-chain: mostriamo i validatori a cui il wallet delega e la sua posizione per INJ delegati." data-en="Public on-chain lookup: we show the validators a wallet stakes with and its rank by delegated INJ.">Ricerca pubblica on-chain: mostriamo i validatori a cui il wallet delega e la sua posizione per INJ delegati.</p>
+  <p id="walletHelp" class="help" data-it="La ricerca manuale è facoltativa. I wallet salvati vengono rilevati ed evidenziati automaticamente in ogni validatore." data-en="Manual lookup is optional. Every saved wallet is detected and highlighted automatically within validators.">Ricerca pubblica on-chain: mostriamo i validatori a cui il wallet delega e la sua posizione per INJ delegati.</p>
   <div id="walletResult" class="wallet-result" hidden aria-live="polite"></div>
  </section>
  <section class="directory">
@@ -79,6 +79,7 @@ try {
   <div class="detail-rank-head"><div><span class="eyebrow">DELEGATORS RANKING</span><h3 id="rankTitle" data-it="Classifica delegatori" data-en="Delegator ranking">Classifica delegatori</h3></div><span id="rankingAge" class="ranking-age"></span></div>
   <p id="rankStatus" class="rank-status" aria-live="polite" role="status"></p>
   <p id="priceStatus" class="price-status" aria-live="polite"></p>
+  <p id="savedWalletStatus" class="saved-wallet-status" aria-live="polite"></p>
   <div id="myRank" class="my-rank" hidden></div>
   <div id="delegatorList" class="delegator-list"></div>
   <button id="moreDelegators" class="more" type="button" hidden data-it="Mostra altri delegatori" data-en="Show more delegators">Mostra altri delegatori</button>
