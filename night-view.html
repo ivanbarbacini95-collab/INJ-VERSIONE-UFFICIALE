@@ -174,12 +174,9 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
  pointer-events:none;
  transition:opacity .16s ease,color .16s ease;
 }
-.price-value[data-inj-quote-direction="up"]{
- color:#28d997;
-}
-.price-value[data-inj-quote-direction="down"]{
- color:#f15b64;
-}
+.price-value .nv-price-digit{color:inherit;display:inline}
+.price-value .nv-price-digit.nv-digit-up{color:#28d997}
+.price-value .nv-price-digit.nv-digit-down{color:#f15b64}
 .price-value[data-inj-quote-direction="up"]::after{
  content:"↑";
  color:#28d997;
@@ -190,16 +187,11 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
  color:#f15b64;
  opacity:1;
 }
-@keyframes nvQuoteRise{0%{filter:brightness(1.25)}100%{filter:brightness(1)}}
-.price-value.nv-price-tick-up,.price-value.nv-price-tick-down{
- animation:nvQuoteRise .55s ease-out;
-}
 @media(prefers-reduced-motion:reduce){
  .price-value,.price-value::after{transition:none!important}
- .price-value.nv-price-tick-up,.price-value.nv-price-tick-down{animation:none!important}
 }
 </style>
-<script defer src="./night-view.js?v=20261111-home-price1"></script>
+<script defer src="./night-view.js?v=20261111-digits-only1"></script>
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 </head>
 <body>
