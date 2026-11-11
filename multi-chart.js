@@ -29,7 +29,7 @@
   // desktop / external screens the same eight chart canvases form a
   // single grid, with no duplicate feeds or sockets.
   const overviewMedia = window.matchMedia(
-    '(min-width:1100px) and (min-height:650px), (min-width:780px) and (min-height:1000px) and (orientation:portrait)'
+    '(min-width:1100px) and (min-height:650px), (min-width:780px) and (min-height:900px) and (orientation:portrait), (min-width:640px) and (min-height:800px) and (orientation:portrait) and (pointer:fine)'
   );
   const overview = () => overviewMedia.matches;
   const activeDefs = () => overview() ? defs : groups[state.page];
@@ -495,10 +495,25 @@
     cards.forEach(card=>state.resizeObserver.observe(card.canvas.parentElement));
     state.resizeObserver.observe($('mcZoomCanvas').parentElement);
   }else window.addEventListener('resize',()=>queueDraw(true),{passive:true});
-  window.addEventListener('resize',()=>{
-    if(!overview())rail.scrollTo({left:rail.clientWidth*state.page,behavior:'auto'});
+  // Rotation, external display changes and window resizing all keep the
+  // grid mode and chart canvases synchronized without reloading the page.
+  let previousOverview=overview();
+  function syncResponsiveLayout(){
+    const expanded=overview();
+    const switched=expanded!==previousOverview;
+    previousOverview=expanded;
+    if(!expanded){
+      const alignRail=()=>rail.scrollTo({left:rail.clientWidth*state.page,behavior:'auto'});
+      if(switched)requestAnimationFrame(alignRail);
+      else alignRail();
+    }
     setPage(state.page,false);
-  },{passive:true});
+    queueDraw(true);
+  }
+  if(overviewMedia.addEventListener)overviewMedia.addEventListener('change',syncResponsiveLayout);
+  else if(overviewMedia.addListener)overviewMedia.addListener(syncResponsiveLayout);
+  window.addEventListener('resize',syncResponsiveLayout,{passive:true});
+  window.addEventListener('orientationchange',syncResponsiveLayout,{passive:true});
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){closeSocket();return;}
     connectSocket();ensureCurrent(true);queueDraw(true);
