@@ -166,7 +166,7 @@
  }
  async function refresh(force){
   if(state.refreshing)return;
-  if(!force&&Date.now()-state.updatedAt<LIST_REFRESH&&state.validators.length)return;
+  if(!force&&Date.now()-state.updatedAt<LIST_REFRESH-10_000&&state.validators.length)return;
   state.refreshing=true;$('refresh').disabled=true;
   try{
    const list=await paged('/cosmos/staking/v1beta1/validators','150',20);
