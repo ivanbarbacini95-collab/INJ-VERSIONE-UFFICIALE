@@ -25,6 +25,14 @@
   };
   const rail = $('mcRail');
   const zoom = $('mcZoom');
+  // Keep the original swipe-based 2-chart pages on phones. On large
+  // desktop / external screens the same eight chart canvases form a
+  // single grid, with no duplicate feeds or sockets.
+  const overviewMedia = window.matchMedia(
+    '(min-width:1100px) and (min-height:650px), (min-width:780px) and (min-height:1000px) and (orientation:portrait)'
+  );
+  const overview = () => overviewMedia.matches;
+  const activeDefs = () => overview() ? defs : groups[state.page];
   const en = () => document.documentElement.lang === 'en';
   const text = (it,english) => en() ? english : it;
   const visible = () => !document.hidden && !state.closed;
@@ -72,6 +80,7 @@
       if(empty.dataset.error==='true')empty.textContent=text('DATI NON DISPONIBILI','DATA UNAVAILABLE');
     }
     if(state.zoom)updateZoomText();
+    if(overview())$('mcRangeHeading').textContent=text('TUTTI GLI 8 TIMEFRAME','ALL 8 TIMEFRAMES');
     updateFeed();
   }
 
@@ -88,7 +97,9 @@
   function setPage(page,move){
     const next=Math.max(0,Math.min(groups.length-1,page));
     state.page=next;
-    $('mcRangeHeading').textContent=['1m · 5m','15m · 1H','4H · 1D','1W · 1M'][next];
+    $('mcRangeHeading').textContent=overview()
+      ? text('TUTTI GLI 8 TIMEFRAME','ALL 8 TIMEFRAMES')
+      : ['1m · 5m','15m · 1H','4H · 1D','1W · 1M'][next];
     $('mcPrev').disabled=next===0;
     $('mcNext').disabled=next===groups.length-1;
     document.querySelectorAll('.mc-dots button').forEach(button=>{
@@ -96,8 +107,8 @@
       button.classList.toggle('active',current);
       if(current)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
     });
-    if(move)rail.scrollTo({left:rail.clientWidth*next,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
-    ensureGroup(next);
+    if(move&&!overview())rail.scrollTo({left:rail.clientWidth*next,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    ensureCurrent();
     queueDraw(true);
   }
 
@@ -194,6 +205,23 @@
     await Promise.all([worker(),worker()]);
   }
 
+  async function ensureOverview(force=false){
+    if(!visible()||!overview())return;
+    // All eight cards stay live on large screens. Only two historical
+    // requests are inflight at once; a single trade websocket updates all.
+    let cursor=0;
+    async function worker(){
+      while(cursor<defs.length&&visible()&&overview()){
+        const def=defs[cursor++];
+        await ensureSeries(def,force);
+      }
+    }
+    await Promise.all([worker(),worker()]);
+  }
+  function ensureCurrent(force=false){
+    return overview()?ensureOverview(force):ensureGroup(state.page,force);
+  }
+
   function updateChange(def){
     const card=cards.get(def.id),arr=state.series.get(def.id);
     if(!card)return;
@@ -226,7 +254,8 @@
     const accent=styles.getPropertyValue('--mc-accent').trim()||green;
     // External portrait/landscape displays use a dedicated candle geometry.
     // Keep phone canvases and their original 7px candle cap unchanged.
-    const externalDisplay=window.innerWidth>=700 && window.innerHeight>=650 && width>=550;
+    const externalDisplay=(window.innerWidth>=700 && window.innerHeight>=650 && width>=550)
+      || (overview() && !expanded && width>=230);
     const portraitDisplay=window.innerHeight>window.innerWidth;
     const left=expanded?12:5,right=width-(externalDisplay? (expanded?80:72) : (expanded?57:45));
     const top=expanded?14:7,bottom=height-(externalDisplay? (expanded?36:30) : (expanded?29:21));
@@ -301,7 +330,7 @@
   function drawVisible(){
     if(!visible())return;
     paintQuote();
-    for(const def of groups[state.page]){
+    for(const def of activeDefs()){
       const card=cards.get(def.id);
       if(card){updateChange(def);draw(card.canvas,def);}
     }
@@ -311,7 +340,7 @@
     if(!visible())return;
     if(state.drawFrame)return;
     const now=performance.now();
-    const wait=force?0:Math.max(0,200-(now-state.lastDraw));
+    const wait=force?0:Math.max(0,(overview()?350:200)-(now-state.lastDraw));
     if(wait){
       state.drawFrame=setTimeout(()=>{
         state.drawFrame=0;state.lastDraw=performance.now();drawVisible();
@@ -450,11 +479,13 @@
     button.addEventListener('click',()=>setPage(Number(button.dataset.page),true));
   });
   rail.addEventListener('scroll',()=>{
+    if(overview())return;
     const page=Math.round(rail.scrollLeft/Math.max(1,rail.clientWidth));
     if(page!==state.page)setPage(page,false);
   },{passive:true});
   rail.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+    if(overview())return;
+    if(e.key='ArrowRight'||e.key==='ArrowLeft'){
       e.preventDefault();setPage(state.page+(e.key==='ArrowRight'?1:-1),true);
     }
   });
@@ -465,16 +496,16 @@
     state.resizeObserver.observe($('mcZoomCanvas').parentElement);
   }else window.addEventListener('resize',()=>queueDraw(true),{passive:true});
   window.addEventListener('resize',()=>{
-    rail.scrollTo({left:rail.clientWidth*state.page,behavior:'auto'});
-    queueDraw(true);
+    if(!overview())rail.scrollTo({left:rail.clientWidth*state.page,behavior:'auto'});
+    setPage(state.page,false);
   },{passive:true});
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){closeSocket();return;}
-    connectSocket();ensureGroup(state.page,true);queueDraw(true);
+    connectSocket();ensureCurrent(true);queueDraw(true);
   });
-  window.addEventListener('online',()=>{connectSocket();ensureGroup(state.page,true);updateFeed();});
+  window.addEventListener('online',()=>{connectSocket();ensureCurrent(true);updateFeed();});
   window.addEventListener('offline',()=>{closeSocket();updateFeed();});
-  window.addEventListener('pageshow',()=>{state.closed=false;connectSocket();ensureGroup(state.page);});
+  window.addEventListener('pageshow',()=>{state.closed=false;connectSocket();ensureCurrent();});
   window.addEventListener('pagehide',()=>{state.closed=true;closeSocket();if(state.quoteResetTimer){clearTimeout(state.quoteResetTimer);state.quoteResetTimer=0;}});
   window.addEventListener('message',event=>{
     if(event.origin!==location.origin)return;
@@ -501,8 +532,8 @@
   setInterval(()=>{
     if(!visible())return;
     updateFeed();
-    const stale=groups[state.page].some(d=>Date.now()-(state.lastLoad.get(d.id)||0)>90000);
-    if(stale)ensureGroup(state.page,true);
+    const stale=activeDefs().some(d=>Date.now()-(state.lastLoad.get(d.id)||0)>90000);
+    if(stale)ensureCurrent(true);
     if(!state.socket||state.socket.readyState===WebSocket.CLOSED)connectSocket();
   },30000);
 })();
