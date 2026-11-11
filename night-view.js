@@ -241,6 +241,33 @@
   if(parent!==window)parent.postMessage({type:'injnode:section:home'},location.origin);
   else location.href='./index.html';
  }
+ // Immersive wall display: reveal navigation on interaction, then keep the
+ // screen visually clean after 3 seconds of genuine user inactivity.
+ let navIdleTimer=0;
+ let lastNavActivity=0;
+ function revealNavControls(){
+  if(document.hidden)return;
+  document.documentElement.classList.remove('nv-controls-idle');
+  clearTimeout(navIdleTimer);
+  navIdleTimer=setTimeout(()=>{
+   document.documentElement.classList.add('nv-controls-idle');
+  },3000);
+ }
+ function onNavActivity(){
+  const now=Date.now();
+  if(now-lastNavActivity<120)return;
+  lastNavActivity=now;
+  revealNavControls();
+ }
+ ['pointermove','pointerdown','touchstart','keydown'].forEach(type=>{
+  document.addEventListener(type,onNavActivity,{passive:true});
+ });
+ document.addEventListener('focusin',revealNavControls);
+ document.addEventListener('visibilitychange',()=>{
+  clearTimeout(navIdleTimer);
+  if(!document.hidden)revealNavControls();
+ });
+ revealNavControls();
  $('nightBack').addEventListener('click',back);
  $('nightModeToggle').addEventListener('click',()=>{
   nightEnabled=!nightEnabled;
