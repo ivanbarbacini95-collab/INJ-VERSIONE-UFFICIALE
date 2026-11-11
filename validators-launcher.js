@@ -12,7 +12,7 @@
   else actions.append(card);
  }
  card.className='entry-action entry-action-validators';
- card.href='./validators.html?v=20261111b';
+ card.href='./validators.html?v=20261111c';
  card.setAttribute('aria-label','Apri Validators Injective');
  card.innerHTML='<span><strong class="inj-home-tile-title" data-it="Validators" data-en="Validators">Validators</strong><small class="inj-tile-description" data-it="APR netto, commissioni e delegatori" data-en="Net APR, fees and delegators">APR netto, commissioni e delegatori</small></span><span aria-hidden="true" data-premium-artwork="luxury-b" class="inj-tile-scene inj-precision-icon inj-luxury-icon inj-tools-art inj-validators-art"><svg viewBox="0 0 120 68" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><circle class="pi-panel" cx="60" cy="34" r="23"/><path class="pi-hair" d="M60 11v46M37 34h46M44 18l32 32M76 18 44 50"/><circle class="pi-led v-node v-a" cx="60" cy="11" r="4"/><circle class="pi-led v-node v-b" cx="82" cy="34" r="4"/><circle class="pi-led v-node v-c" cx="44" cy="50" r="4"/><circle class="pi-strong" cx="60" cy="34" r="8"/><circle class="pi-detail" cx="60" cy="34" r="3"/></svg></span><svg aria-hidden="true" class="entry-action-arrow" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>';
  if(!document.getElementById('injValidatorsTileStyle')){
