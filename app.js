@@ -2651,9 +2651,9 @@ function enterLiveViewFromGate() {
   setHeaderMenuOpen(false);
   setSearchOpen(false);
   if (typeof window.INJ_OPEN_SECTION === 'function') {
-    window.INJ_OPEN_SECTION('./night-view.html?embedded=live&v=20261111-home-price1');
+    window.INJ_OPEN_SECTION('./night-view.html?embedded=live&v=20261111-digits-only1');
   } else {
-    location.href = './night-view.html?embedded=live&v=20261111-home-price1';
+    location.href = './night-view.html?embedded=live&v=20261111-digits-only1';
   }
 }
 
