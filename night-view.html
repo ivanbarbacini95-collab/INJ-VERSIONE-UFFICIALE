@@ -156,8 +156,50 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
  .data-note{font-size:clamp(14px,1.8vh,18px);margin-top:4px}
 }
 
+
+/* Live View price: same temporary green/red tick indication as Home. */
+.price-value{
+ transition:color .18s ease;
+}
+.price-value::after{
+ content:"↑";
+ display:inline-block;
+ vertical-align:.15em;
+ margin-inline-start:.13em;
+ width:.45em;
+ font:750 .32em/1 INJRubik,system-ui,-apple-system,sans-serif;
+ letter-spacing:0;
+ color:var(--nv-muted);
+ opacity:0;
+ pointer-events:none;
+ transition:opacity .16s ease,color .16s ease;
+}
+.price-value[data-inj-quote-direction="up"]{
+ color:#28d997;
+}
+.price-value[data-inj-quote-direction="down"]{
+ color:#f15b64;
+}
+.price-value[data-inj-quote-direction="up"]::after{
+ content:"↑";
+ color:#28d997;
+ opacity:1;
+}
+.price-value[data-inj-quote-direction="down"]::after{
+ content:"↓";
+ color:#f15b64;
+ opacity:1;
+}
+@keyframes nvQuoteRise{0%{filter:brightness(1.25)}100%{filter:brightness(1)}}
+.price-value.nv-price-tick-up,.price-value.nv-price-tick-down{
+ animation:nvQuoteRise .55s ease-out;
+}
+@media(prefers-reduced-motion:reduce){
+ .price-value,.price-value::after{transition:none!important}
+ .price-value.nv-price-tick-up,.price-value.nv-price-tick-down{animation:none!important}
+}
 </style>
-<script defer src="./night-view.js?v=20261110-liveview-one-layout3"></script>
+<script defer src="./night-view.js?v=20261111-home-price1"></script>
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 </head>
 <body>
