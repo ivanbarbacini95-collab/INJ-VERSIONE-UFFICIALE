@@ -5,7 +5,7 @@
  const en=document.documentElement.lang==='en';
  const t=(it,english)=>en?english:it;
  const LCDS=['https://sentry.lcd.injective.network:443','https://lcd.injective.network','https://1rpc.io/inj-lcd'];
- const LIST_REFRESH=60_000,COUNT_REFRESH=180_000,RANK_REFRESH=240_000;
+ const LIST_REFRESH=60_000,COUNT_REFRESH=180_000,RANK_REFRESH=240_000,PRICE_REFRESH=25_000,PRICE_MAX_AGE=120_000;
  const nf=new Intl.NumberFormat(en?'en-US':'it-IT',{maximumFractionDigits:2});
  const pf=new Intl.NumberFormat(en?'en-US':'it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
  const fi=n=>new Intl.NumberFormat(en?'en-US':'it-IT',{maximumFractionDigits:0}).format(n);
@@ -15,9 +15,107 @@
  const status=v=>String(v?.status||'');
  const active=v=>['BOND_STATUS_BONDED','3'].includes(status(v))&&!v.jailed;
  const fee=v=>Number(v?.commission?.commission_rates?.rate);
- const state={validators:[],updatedAt:0,apr:null,counts:new Map(),countFail:new Map(),countQueue:[],countPending:new Set(),countActive:0,visible:30,wallet:'',walletDelegations:new Map(),activeOperator:'',rankCache:new Map(),rankAbort:null,rankRows:[],rankLoadedAt:0,rankShown:25,rankLoading:false,refreshing:false,observer:null};
+ const state={validators:[],updatedAt:0,apr:null,counts:new Map(),countFail:new Map(),countQueue:[],countPending:new Set(),countActive:0,visible:30,wallet:'',savedWallet:'',walletDelegations:new Map(),activeOperator:'',rankCache:new Map(),rankAbort:null,rankRows:[],rankLoadedAt:0,rankShown:25,rankLoading:false,refreshing:false,observer:null,priceUsd:null,priceAt:0,priceSource:'',pricePending:null,eurRate:null,eurAt:0,eurPending:null};
  const safeStore='inj_node_validators_verified_v1';
  const NUM_LIMIT=300000;
+ const validWallet=a=>/^inj1[0-9a-z]{38,60}$/.test(String(a||'').toLowerCase());
+ const currency=()=>{try{return localStorage.getItem('inj_monitor_currency')==='EUR'?'EUR':'USD'}catch(_){return 'USD'}};
+ function selectedSavedWallet(){
+  try{
+   const saved=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'[]');
+   const known=Array.isArray(saved)?saved.map(v=>String(v?.address||'').trim().toLowerCase()).filter(validWallet):[];
+   const legacy=String(localStorage.getItem('inj_monitor_address')||'').trim().toLowerCase();
+   if(validWallet(legacy)&&!known.includes(legacy))known.push(legacy);
+   const selected=String(localStorage.getItem('inj_node_comparison_selected_wallet_v1')||'').trim().toLowerCase();
+   return known.includes(selected)?selected:known.includes(legacy)?legacy:known[0]||'';
+  }catch(_){return ''}
+ }
+ function syncSavedWallet(){
+  const saved=selectedSavedWallet();
+  if(state.savedWallet===saved)return false;
+  const oldSaved=state.savedWallet;
+  state.savedWallet=saved;
+  if(!state.wallet||state.wallet===oldSaved)state.wallet=saved;
+  if(saved&&!$('walletAddress').value.trim())$('walletAddress').value=saved;
+  return true;
+ }
+ async function priceJson(url,timeout=6500){
+  const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),timeout);
+  try{
+   const response=await fetch(url,{cache:'no-store',signal:ctrl.signal});
+   if(!response.ok)throw new Error('Market quote HTTP '+response.status);
+   return await response.json();
+  }finally{clearTimeout(timer)}
+ }
+ function moneyFromInj(wei){
+  const usd=state.priceUsd;
+  if(!(usd>0)||Date.now()-state.priceAt>PRICE_MAX_AGE)return '';
+  const fiat=currency();
+  const conversion=fiat==='EUR'?state.eurRate:1;
+  if(!(conversion>0)||fiat==='EUR'&&Date.now()-state.eurAt>24*3600_000)return '';
+  const value=Number(wei)/1e18*usd*conversion;
+  if(!Number.isFinite(value)||value<0)return '';
+  return '≈ '+new Intl.NumberFormat(fiat==='EUR'?'it-IT':'en-US',{
+   style:'currency',currency:fiat,maximumFractionDigits:2,minimumFractionDigits:2
+  }).format(value);
+ }
+ const balanceWithFiat=wei=>amount(wei)+' INJ'+(moneyFromInj(wei)?' · '+moneyFromInj(wei):'');
+ function updatePriceStatus(){
+  const priceFresh=state.priceUsd>0&&Date.now()-state.priceAt<=PRICE_MAX_AGE;
+  const value=priceFresh?moneyFromInj(1000000000000000000n):'';
+  setText('priceStatus',value
+   ?t('Controvalori indicativi · 1 INJ ','Indicative values · 1 INJ ')+value.replace(/^≈ /,'')+' · '+new Date(state.priceAt).toLocaleTimeString(en?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
+   :t('Controvalore in aggiornamento: prezzo/cambio live non disponibile.','Estimated value unavailable: live price or FX quote pending.'));
+ }
+ async function updateFx(force=false){
+  if(currency()!=='EUR')return;
+  if(state.eurPending)return state.eurPending;
+  if(!force&&state.eurRate>0&&Date.now()-state.eurAt<3600_000)return;
+  state.eurPending=(async()=>{
+   const data=await priceJson('https://api.frankfurter.app/latest?from=USD&to=EUR');
+   const rate=Number(data?.rates?.EUR);
+   if(!(rate>0&&rate<3))throw new Error('Invalid USD/EUR conversion rate');
+   state.eurRate=rate;state.eurAt=Date.now();
+   try{localStorage.setItem('inj_monitor_eur_rate',String(rate))}catch(_){}
+  })().catch(()=>{}).finally(()=>{state.eurPending=null});
+  return state.eurPending;
+ }
+ async function updatePrice(force=false){
+  if(state.pricePending)return state.pricePending;
+  if(!force&&state.priceUsd>0&&Date.now()-state.priceAt<PRICE_REFRESH)return;
+  state.pricePending=(async()=>{
+   let usd=null,source='';
+   const endpoints=[
+    ['https://api.binance.com/api/v3/ticker/price?symbol=INJUSDT','Binance'],
+    ['https://data-api.binance.vision/api/v3/ticker/price?symbol=INJUSDT','Binance'],
+    ['https://api.coingecko.com/api/v3/simple/price?ids=injective-protocol&vs_currencies=usd','CoinGecko']
+   ];
+   for(const [url,name] of endpoints){
+    try{
+     const response=await priceJson(url);
+     const n=Number(name==='CoinGecko'?response?.['injective-protocol']?.usd:response?.price);
+     if(n>0&&Number.isFinite(n)){usd=n;source=name;break}
+    }catch(_){}
+   }
+   if(!(usd>0))return;
+   state.priceUsd=usd;state.priceAt=Date.now();state.priceSource=source;
+  })().finally(()=>{
+   state.pricePending=null;
+   if($('validatorDetail').open&&state.rankRows.length)renderRanking();
+   updatePriceStatus();
+   document.querySelectorAll('[data-balance-wei]').forEach(node=>{
+    const wei=raw(node.dataset.balanceWei);
+    node.textContent=balanceWithFiat(wei);
+   });
+  });
+  return state.pricePending;
+ }
+ async function refreshMarket(force=false){
+  await Promise.allSettled([updatePrice(force),updateFx(force)]);
+  if($('validatorDetail').open&&state.rankRows.length)renderRanking();
+  updatePriceStatus();
+ }
+
  const valByOp=op=>state.validators.find(v=>v.operator_address===op);
  const commission=v=>Number.isFinite(fee(v))?pf.format(fee(v)*100)+'%':'—';
  const netApr=v=>{
@@ -209,14 +307,14 @@
     if(op){state.walletDelegations.set(op,(state.walletDelegations.get(op)||0n)+raw(row.balance?.amount))}
    }
    const total=Array.from(state.walletDelegations.values()).reduce((a,b)=>a+b,0n);
-   info.textContent=fi(state.walletDelegations.size)+' '+t('validatori trovati','validators found')+' · '+amount(total)+' INJ';
+   info.textContent=fi(state.walletDelegations.size)+' '+t('validatori trovati','validators found')+' · '+balanceWithFiat(total);
    if(!state.walletDelegations.size){
     const p=document.createElement('p');p.className='help';p.textContent=t('Nessuna delega attiva trovata su Injective.','No active Injective delegations found.');host.append(p);
    }
    for(const [op,balance] of state.walletDelegations){
     const r=document.createElement('div');r.className='wallet-item';
     const name=document.createElement('strong');name.textContent=valByOp(op)?.description?.moniker||short(op);
-    const st=document.createElement('span');st.textContent=amount(balance)+' INJ';
+    const st=document.createElement('span');st.dataset.balanceWei=String(balance);st.textContent=balanceWithFiat(balance);
     const b=document.createElement('button');b.type='button';b.textContent=t('Vedi posizione','View rank');b.addEventListener('click',()=>openDetail(op));
     r.append(name,st,b);host.append(r);
    }
@@ -296,27 +394,41 @@
   const rows=state.rankRows;
   const op=state.activeOperator;
   if(!op||!$('validatorDetail').open)return;
-  const my=rows.find(r=>r.address===state.wallet);
-  const mybox=$('myRank');
-  mybox.replaceChildren();
-  if(state.wallet){
-   mybox.hidden=false;
-   const text=document.createElement('div');const l=document.createElement('span');l.textContent=t('POSIZIONE WALLET','WALLET RANK');
-   const v=document.createElement('strong');v.textContent=my?'#'+fi(my.rank):'—';
-   text.append(l,v);
-   const amountEl=document.createElement('span');amountEl.textContent=my?amount(my.balance)+' INJ':t('Nessuna delega per questo validatore','Not delegated to this validator');
-   mybox.append(text,amountEl);
-  }else{mybox.hidden=true}
+  syncSavedWallet();
+  const mybox=$('myRank');mybox.replaceChildren();
+  const targets=[];
+  if(state.savedWallet)targets.push({address:state.savedWallet,saved:true});
+  if(state.wallet&&state.wallet!==state.savedWallet)targets.push({address:state.wallet,saved:false});
+  for(const target of targets){
+   const matched=rows.find(r=>r.address===target.address);
+   const entry=document.createElement('div');entry.className='my-rank-entry'+(target.saved?' saved':' searched');
+   const left=document.createElement('div');left.className='my-rank-main';
+   const label=document.createElement('span');label.className='my-rank-label';
+   label.textContent=target.saved?t('IL TUO WALLET SALVATO','YOUR SAVED WALLET'):t('WALLET CERCATO','SEARCHED WALLET');
+   const rank=document.createElement('strong');rank.textContent=matched?'#'+fi(matched.rank):'—';
+   const addr=document.createElement('code');addr.className='saved-address';addr.textContent=target.address;
+   left.append(label,rank,addr);
+   const right=document.createElement('div');right.className='my-rank-balance';
+   right.textContent=matched?balanceWithFiat(matched.balance):t('Nessuna delega a questo validatore','No delegation to this validator');
+   entry.append(left,right);mybox.append(entry);
+  }
+  mybox.hidden=!targets.length;
   setText('rankStatus',fi(rows.length)+' '+t('delegatori ordinati per INJ delegati.','delegators ranked by delegated INJ.'));
   setText('rankingAge',new Date(state.rankLoadedAt).toLocaleTimeString(en?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit'}));
+  updatePriceStatus();
   const host=$('delegatorList');host.replaceChildren();
   const fragment=document.createDocumentFragment();
   rows.slice(0,state.rankShown).forEach(row=>{
-   const node=document.createElement('div');node.className='delegator-row'+(row.address===state.wallet?' mine':'');
+   const saved=Boolean(state.savedWallet&&row.address===state.savedWallet);
+   const searched=Boolean(state.wallet&&row.address===state.wallet);
+   const node=document.createElement('div');node.className='delegator-row'+(saved?' saved':searched?' mine':'');
    const rank=document.createElement('span');rank.className='rank';rank.textContent='#'+fi(row.rank);
-   const address=document.createElement('code');address.textContent=short(row.address);address.title=row.address;
-   const balance=document.createElement('b');balance.textContent=amount(row.balance)+' INJ';
-   node.append(rank,address,balance);fragment.append(node);
+   const addressBox=document.createElement('div');addressBox.className='delegator-address';
+   const address=document.createElement('code');address.textContent=saved?row.address:short(row.address);address.title=row.address;
+   addressBox.append(address);
+   if(saved){const tag=document.createElement('span');tag.className='saved-badge';tag.textContent=t('SALVATO','SAVED');addressBox.append(tag)}
+   const balance=document.createElement('b');balance.className='delegator-balance';balance.dataset.balanceWei=String(row.balance);balance.textContent=balanceWithFiat(row.balance);
+   node.append(rank,addressBox,balance);fragment.append(node);
   });
   host.append(fragment);
   $('moreDelegators').hidden=rows.length<=state.rankShown;
@@ -329,6 +441,8 @@
  }
  function initialize(){
   document.querySelectorAll('[data-it][data-en]').forEach(el=>{el.textContent=el.getAttribute(en?'data-en':'data-it')});
+  syncSavedWallet();
+  updatePriceStatus();
   $('back').addEventListener('click',exitTools);
   $('refresh').addEventListener('click',()=>refreshAll(true));
   $('walletForm').addEventListener('submit',walletLookup);
@@ -345,9 +459,21 @@
    if(Array.isArray(c?.validators)&&Date.now()-Number(c.at)<12*3600_000){state.validators=c.validators;state.updatedAt=Number(c.at);renderList();updateTop()}
   }catch(_){}
   void refreshAll(true);
+  void refreshMarket(true);
   setInterval(()=>{if(!document.hidden)void refreshAll(false)},LIST_REFRESH);
+  setInterval(()=>{if(!document.hidden)void refreshMarket(false)},PRICE_REFRESH);
   setInterval(()=>{if(!document.hidden&&$('validatorDetail').open&&state.activeOperator&&!state.rankLoading&&Date.now()-state.rankLoadedAt>RANK_REFRESH)void loadRanking(state.activeOperator)},60_000);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refreshAll(false)});
+  document.addEventListener('visibilitychange',()=>{
+   if(!document.hidden){
+    if(syncSavedWallet()){if($('validatorDetail').open&&state.rankRows.length)renderRanking();renderList()}
+    void refreshAll(false);void refreshMarket(false);
+   }
+  });
+  window.addEventListener('storage',event=>{
+   if(!['inj_monitor_wallets_v1','inj_monitor_address','inj_node_comparison_selected_wallet_v1','inj_monitor_currency'].includes(event.key))return;
+   if(syncSavedWallet()){if($('validatorDetail').open&&state.rankRows.length)renderRanking();renderList()}
+   void refreshMarket(true);
+  });
   window.addEventListener('online',()=>void refreshAll(true));
  }
  initialize();
