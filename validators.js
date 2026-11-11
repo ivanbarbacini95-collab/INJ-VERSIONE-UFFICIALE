@@ -72,22 +72,30 @@
   state.savedVerified=false;
   state.savedPending=(async()=>{
    const fresh=new Map();let failures=0;
-   for(const wallet of saved){
-    if(generation!==state.savedGeneration)return;
-    try{
-     const rows=await paged('/cosmos/staking/v1beta1/delegations/'+encodeURIComponent(wallet.address),'500',100,null);
-     const delegations=new Map();
-     for(const row of rows){
-      const op=String(row?.delegation?.validator_address||'');
-      if(op)delegations.set(op,(delegations.get(op)||0n)+raw(row.balance?.amount));
+   const work=saved.slice();
+   async function worker(){
+    while(work.length&&generation===state.savedGeneration){
+     const wallet=work.shift();
+     try{
+      const rows=await paged('/cosmos/staking/v1beta1/delegations/'+encodeURIComponent(wallet.address),'500',100,null);
+      const delegations=new Map();
+      for(const row of rows){
+       const op=String(row?.delegation?.validator_address||'');
+       if(op)delegations.set(op,(delegations.get(op)||0n)+raw(row.balance?.amount));
+      }
+      fresh.set(wallet.address,{delegations,at:Date.now()});
+     }catch(_){
+      failures++;
+      const old=state.savedWalletData.get(wallet.address);
+      if(old&&Date.now()-old.at<240000)fresh.set(wallet.address,old);
      }
-     fresh.set(wallet.address,{delegations,at:Date.now()});
-    }catch(_){
-     failures++;
-     const old=state.savedWalletData.get(wallet.address);
-     if(old&&Date.now()-old.at<240000)fresh.set(wallet.address,old);
+     if(generation===state.savedGeneration){
+      state.savedWalletData=new Map(fresh);rebuildSavedDelegations();
+      renderList();if($('validatorDetail').open)renderSavedPins();
+     }
     }
    }
+   await Promise.all(Array.from({length:Math.min(3,saved.length)},()=>worker()));
    if(generation!==state.savedGeneration)return;
    state.savedWalletData=fresh;rebuildSavedDelegations();
    state.savedAt=Date.now()-(failures?135000:0);state.savedVerified=failures===0;
