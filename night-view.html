@@ -24,6 +24,11 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
 .night-toggle svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .night-toggle[aria-pressed="true"]{background:var(--nv-control-bg,#07110e);color:var(--nv-accent);border-color:var(--nv-accent)}
 .back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* Navigation fades out without removing its layout space or blocking the live data. */
+.top > .back,.top > .night-toggle{transition:opacity .25s ease,visibility .25s ease,color .22s ease,background .22s ease,border-color .22s ease}
+html.nv-controls-idle .top > .back,html.nv-controls-idle .top > .night-toggle{opacity:0;visibility:hidden;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.top > .back,.top > .night-toggle{transition:none!important}}
+
 .brand{min-width:0;flex:1;text-align:center;display:flex;justify-content:center;align-items:center;gap:9px}.brand h1{margin:0;color:var(--nv-text);font-size:clamp(20px,4.8vw,26px);line-height:1.15;font-weight:750;letter-spacing:-.035em}.brand .moon{color:var(--nv-accent);font-size:clamp(23px,5vw,29px);line-height:1}
 .top-spacer{width:40px}
 .content{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(13px,3.4vh,34px);padding:8px 0}
@@ -191,7 +196,7 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
  .price-value,.price-value::after{transition:none!important}
 }
 </style>
-<script defer src="./night-view.js?v=20261111-stable-price1"></script>
+<script defer src="./night-view.js?v=20261111-idle-nav1"></script>
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 </head>
 <body>
