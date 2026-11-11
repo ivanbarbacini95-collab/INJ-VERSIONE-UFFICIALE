@@ -82,7 +82,36 @@
   }catch(_){return {wallets:[],selectedAddress:'',price:null,priceAt:0,currency:'USD',privacy:false}}
  }
  function snapshot(){return app()||fallback()}
- // Same decimal precision and tick-direction behavior as Home, not 24h momentum.
+ // Match Home: only digits whose visible values change flash green/red.
+ // Currency symbols, separators and unaffected digits keep their normal color.
+ function renderPriceDigits(node,oldText,newText,direction){
+  const previousDigits=Array.from(String(oldText||'')).filter(char=>/\d/.test(char));
+  const nextDigits=Array.from(String(newText||'')).filter(char=>/\d/.test(char));
+  let digitIndex=0;
+  const offset=previousDigits.length-nextDigits.length;
+  const fragment=document.createDocumentFragment();
+  for(const char of newText){
+   if(!/\d/.test(char)){fragment.append(document.createTextNode(char));continue}
+   const originalIndex=digitIndex+offset;
+   const previous=originalIndex>=0&&originalIndex<previousDigits.length?previousDigits[originalIndex]:'';
+   const digit=document.createElement('span');
+   digit.className='nv-price-digit';
+   if(direction&&previous!==char)digit.classList.add('nv-digit-'+direction);
+   digit.textContent=char;
+   fragment.append(digit);
+   digitIndex++;
+  }
+  node.replaceChildren(fragment);
+  clearTimeout(node._digitClearTimer);
+  if(direction){
+   node._digitClearTimer=setTimeout(()=>{
+    node.querySelectorAll('.nv-digit-up,.nv-digit-down').forEach(digit=>{
+     digit.classList.remove('nv-digit-up','nv-digit-down');
+    });
+    node._digitClearTimer=null;
+   },430);
+  }
+ }
  function renderHomeStylePrice(usd,currency,rate){
   const node=$('nightPrice');
   if(!node)return;
@@ -90,29 +119,29 @@
   const digits=usd>0?(usd<10?4:3):2;
   const text=current!==null?money(current,currency,digits):'—';
   const previous=state.lastDisplayedPrice;
+  const oldText=state.lastDisplayedText;
   const sameCurrency=state.lastDisplayedCurrency===currency;
-  const changed=state.lastDisplayedText&&state.lastDisplayedText!==text;
+  const changed=Boolean(oldText&&oldText!==text);
+  let direction='';
   if(current!==null&&previous!==null&&sameCurrency&&changed){
    const delta=usd-previous;
-   if(Math.abs(delta)>Math.max(1e-10,Math.abs(previous)*1e-11)){
-    const direction=delta>0?'up':'down';
-    node.dataset.injQuoteDirection=direction;
-    node.classList.remove('nv-price-tick-up','nv-price-tick-down');
-    void node.offsetWidth;
-    node.classList.add(direction==='up'?'nv-price-tick-up':'nv-price-tick-down');
-    clearTimeout(state.directionTimer);
-    state.directionTimer=setTimeout(()=>{
-     node.removeAttribute('data-inj-quote-direction');
-     node.classList.remove('nv-price-tick-up','nv-price-tick-down');
-     fitPriceToWidth();
-    },1050);
-   }
+   if(Math.abs(delta)>Math.max(1e-10,Math.abs(previous)*1e-11))
+    direction=delta>0?'up':'down';
+  }
+  if(changed||!oldText){
+   renderPriceDigits(node,oldText,text,direction);
+  }
+  if(direction){
+   node.dataset.injQuoteDirection=direction;
+   clearTimeout(state.directionTimer);
+   state.directionTimer=setTimeout(()=>{
+    node.removeAttribute('data-inj-quote-direction');
+    fitPriceToWidth();
+   },1050);
   }else if(current===null||!sameCurrency){
    clearTimeout(state.directionTimer);
    node.removeAttribute('data-inj-quote-direction');
-   node.classList.remove('nv-price-tick-up','nv-price-tick-down');
   }
-  if(node.textContent!==text)node.textContent=text;
   state.lastDisplayedPrice=current!==null?usd:null;
   state.lastDisplayedCurrency=currency;
   state.lastDisplayedText=text;
