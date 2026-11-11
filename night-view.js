@@ -148,23 +148,38 @@
   fitPriceToWidth();
  }
  let fitQueued=false;
- function fitPriceToWidth(){
+ let lastFitSignature='';
+ // Fit once for each viewport / price format, not on each market tick.
+ // Tabular digits have equal widths, so changing their values must never
+ // enlarge or shrink the price. Refit only when the number format changes.
+ function fitPriceToWidth(force=false){
+  const node=$('nightPrice'),frame=node?.parentElement;
+  if(!node||!frame)return;
+  const signature=frame.clientWidth+'|'+node.textContent.replace(/\d/g,'8');
+  if(!force&&signature===lastFitSignature)return;
   if(fitQueued)return;
   fitQueued=true;
   requestAnimationFrame(()=>{
    fitQueued=false;
-   const node=$('nightPrice'),frame=node?.parentElement;
-   if(!node||!frame)return;
-   node.style.fontSize='';
-   const css=getComputedStyle(node),maxFont=parseFloat(css.fontSize);
-   const available=frame.clientWidth-12;
-   if(!(maxFont>0&&available>0))return;
-   const canvas=fitPriceToWidth.canvas||(fitPriceToWidth.canvas=document.createElement('canvas'));
-   const ctx=canvas.getContext('2d');
-   if(!ctx)return;
-   ctx.font=css.fontWeight+' '+css.fontSize+' '+css.fontFamily;
-   const span=ctx.measureText(node.textContent).width+(node.dataset.injQuoteDirection?maxFont*.48:0);
-   if(span>available)node.style.fontSize=Math.max(22,maxFont*available/span)+'px';
+   const output=$('nightPrice'),container=output?.parentElement;
+   if(!output||!container)return;
+   output.style.fontSize='';
+   const css=getComputedStyle(output),maxFont=parseFloat(css.fontSize);
+   const available=container.clientWidth-12;
+   if(maxFont>0&&available>0){
+    // A DOM Range measures the real Rubik font with tabular numerals,
+    // including the actual letter-spacing (unlike canvas.measureText).
+    const range=document.createRange();
+    range.selectNodeContents(output);
+    const textWidth=range.getBoundingClientRect().width;
+    // The direction arrow always occupies .45em + .13em, even when hidden.
+    // Leave a little extra space to prevent rounding-related overflow.
+    const required=textWidth+maxFont*.65;
+    if(required>available){
+     output.style.fontSize=Math.max(22,maxFont*available/required)+'px';
+    }
+   }
+   lastFitSignature=container.clientWidth+'|'+output.textContent.replace(/\d/g,'8');
   });
  }
  function paint(){
