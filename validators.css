@@ -45,3 +45,21 @@ button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:wa
  .delegator-row .delegator-balance{font-size:11px}
  .delegator-row.saved{padding-left:8px}
 }
+
+/* 2026-11-11 · Every saved wallet, full address and persistent validator highlighting */
+.saved-wallet-status{font-size:11px;color:var(--muted);padding:6px 0 10px;line-height:1.5}
+.my-rank .my-rank-entry.saved{background:color-mix(in srgb,var(--green) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--green) 48%,var(--border))}
+.my-rank .my-rank-main .saved-address{font-size:12px;line-height:1.55;white-space:normal;overflow-wrap:anywhere;word-break:break-all}
+.my-rank-entry.saved .my-rank-label{line-height:1.45;overflow-wrap:anywhere}
+.delegator-row{grid-template-columns:38px minmax(0,1.5fr) minmax(128px,1fr);align-items:start}
+.delegator-row .delegator-address{min-width:0}
+.delegator-row .delegator-address code,
+.delegator-row.saved .delegator-address code{display:block;min-width:0;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:break-all!important;font-size:11px;line-height:1.5}
+.delegator-row.saved{border-left:3px solid var(--green)}
+@media(max-width:640px){
+ .delegator-row{grid-template-columns:29px minmax(0,1fr);grid-template-rows:auto auto;align-items:start;gap:5px 10px;padding:13px 6px}
+ .delegator-row .rank{grid-row:1;grid-column:1}
+ .delegator-row .delegator-address{grid-row:1;grid-column:2;min-width:0}
+ .delegator-row .delegator-balance{grid-row:2;grid-column:2;text-align:left;min-width:0;font-size:12px;overflow-wrap:anywhere}
+ .delegator-row.saved{padding-left:9px}
+}
