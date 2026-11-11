@@ -15,11 +15,11 @@ try {
  document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';
 } catch (_) {}
 </script>
-<link rel="stylesheet" href="./validators.css?v=20261111a">
+<link rel="stylesheet" href="./validators.css?v=20261111b">
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 <script defer src="./page-zoom-lock-20261110.js?v=1"></script>
 <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-<script defer src="./validators.js?v=20261111b"></script>
+<script defer src="./validators.js?v=20261111c"></script>
 </head>
 <body>
 <main class="shell">
@@ -78,6 +78,7 @@ try {
   <div class="detail-address"><code id="operatorAddress"></code><button id="copyOperator" type="button" aria-label="Copia indirizzo">COPY</button></div>
   <div class="detail-rank-head"><div><span class="eyebrow">DELEGATORS RANKING</span><h3 id="rankTitle" data-it="Classifica delegatori" data-en="Delegator ranking">Classifica delegatori</h3></div><span id="rankingAge" class="ranking-age"></span></div>
   <p id="rankStatus" class="rank-status" aria-live="polite" role="status"></p>
+  <p id="priceStatus" class="price-status" aria-live="polite"></p>
   <div id="myRank" class="my-rank" hidden></div>
   <div id="delegatorList" class="delegator-list"></div>
   <button id="moreDelegators" class="more" type="button" hidden data-it="Mostra altri delegatori" data-en="Show more delegators">Mostra altri delegatori</button>
