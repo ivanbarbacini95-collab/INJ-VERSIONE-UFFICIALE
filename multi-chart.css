@@ -65,7 +65,8 @@ html[data-theme="arctic"],html[data-theme="classic-white"]{--mc-price-line:#b987
    at once. Phone layout, swipe navigation and 2-charts-per-page are untouched.
    display:contents flattens only the presentation, not the DOM or chart IDs. */
 @media screen and (min-width:1100px) and (min-height:650px),
-       screen and (min-width:780px) and (min-height:1000px) and (orientation:portrait) {
+       screen and (min-width:780px) and (min-height:900px) and (orientation:portrait),
+       screen and (min-width:640px) and (min-height:800px) and (orientation:portrait) and (pointer:fine) {
   .mc-main{min-height:0;overflow:hidden}
   .mc-rail{
     display:grid;
@@ -89,9 +90,32 @@ html[data-theme="arctic"],html[data-theme="classic-white"]{--mc-price-line:#b987
   .mc-range-heading{font-size:clamp(11px,.85vw,14px);letter-spacing:.07em}
   .mc-footer{display:none}
 }
-@media screen and (min-width:780px) and (min-height:1000px) and (orientation:portrait) {
+@media screen and (min-width:780px) and (min-height:900px) and (orientation:portrait),
+       screen and (min-width:640px) and (min-height:800px) and (orientation:portrait) and (pointer:fine) {
   .mc-rail{
     grid-template-columns:repeat(2,minmax(0,1fr));
     grid-template-rows:repeat(4,minmax(0,1fr));
   }
+}
+
+
+/* Portrait monitor refinement: preserve 2x4 overview across rotations and
+   adapt labels, gaps and chart heights to the actual available viewport. */
+@media screen and (min-width:780px) and (min-height:900px) and (orientation:portrait),
+       screen and (min-width:640px) and (min-height:800px) and (orientation:portrait) and (pointer:fine) {
+  .mc-app{min-height:0;height:100dvh}
+  .mc-header{min-height:clamp(48px,5.4dvh,76px);padding-block:clamp(6px,.8dvh,13px)}
+  .mc-controls{padding-block:clamp(5px,.7dvh,12px)}
+  .mc-main{flex:1;min-height:0}
+  .mc-rail{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:repeat(4,minmax(0,1fr));
+    gap:clamp(6px,.7dvh,14px);
+    padding:clamp(6px,.7dvh,16px);
+  }
+  .mc-card-head{min-height:clamp(27px,3.8dvh,43px);padding:clamp(4px,.6dvh,9px) clamp(6px,.8vw,14px) 2px}
+  .mc-card-label{font-size:clamp(11px,1.35vw,18px)}
+  .mc-card-change{font-size:clamp(10px,1.1vw,15px)}
+  .mc-canvas-wrap{min-height:0;flex:1;padding:0 2px 3px}
+  .mc-range-heading{font-size:clamp(10px,1.1vw,15px)}
 }
