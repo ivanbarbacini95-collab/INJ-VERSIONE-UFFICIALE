@@ -54,7 +54,7 @@
   do{
    if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
    const join=path.includes('?')?'&':'?';
-   const q=path+join+'pagination.limit='+key+'&pagination.count_total='+(page===0?'true':'false')+(next?'&pagination.key='+encodeURIComponent(next):'');
+   const q=path+join+'pagination.limit='+key+'&pagination.count_total='+(page===0?'true':'false')+(page===0?'&pagination.offset=0':'')+(next?'&pagination.key='+encodeURIComponent(next):'');
    const data=await json(q,signal);
    if(!Array.isArray(data[key==='150'?'validators':'delegation_responses']))throw new Error('Unexpected staking response');
    const rows=data[key==='150'?'validators':'delegation_responses'];
@@ -149,7 +149,7 @@
  function drainCountQueue(){
   while(state.countActive<3&&state.countQueue.length){
    const op=state.countQueue.shift();state.countActive++;state.countPending.add(op);
-   json('/cosmos/staking/v1beta1/validators/'+encodeURIComponent(op)+'/delegations?pagination.limit=1&pagination.count_total=true')
+   json('/cosmos/staking/v1beta1/validators/'+encodeURIComponent(op)+'/delegations?pagination.limit=1&pagination.offset=0&pagination.count_total=true')
     .then(data=>{
      const count=Number(data?.pagination?.total);
      if(Number.isSafeInteger(count)&&count>=0){
@@ -222,7 +222,7 @@
    }
    renderList();
    if($('validatorDetail').open&&state.rankRows.length)renderRanking();
-  }catch(_){info.textContent=t('Impossibile verificare le deleghe: dati non disponibili.','Unable to verify delegations: data unavailable.');state.walletDelegations.clear();renderList()}
+  }catch(_){info.textContent=t('Impossibile verificare le deleghe: dati non disponibili.','Unable to verify delegations: data unavailable.');state.walletDelegations.clear();state.wallet='';renderList()}
   finally{$('walletSubmit').disabled=false}
  }
  function fillDetailMetrics(v){
