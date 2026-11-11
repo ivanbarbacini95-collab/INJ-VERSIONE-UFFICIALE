@@ -524,10 +524,10 @@
  }
  function initialize(){
   document.querySelectorAll('[data-it][data-en]').forEach(el=>{el.textContent=el.getAttribute(en?'data-en':'data-it')});
-  syncSavedWallet();
+  syncSavedWallets();
   updatePriceStatus();
   $('back').addEventListener('click',exitTools);
-  $('refresh').addEventListener('click',()=>refreshAll(true));
+  $('refresh').addEventListener('click',()=>{void refreshAll(true);void refreshSavedDelegations(true);void refreshMarket(true)});
   $('walletForm').addEventListener('submit',walletLookup);
   $('searchValidator').addEventListener('input',()=>{state.visible=30;renderList()});
   for(const id of ['statusFilter','sortFilter'])$(id).addEventListener('change',()=>{state.visible=30;renderList()});
@@ -542,22 +542,37 @@
    if(Array.isArray(c?.validators)&&Date.now()-Number(c.at)<12*3600_000){state.validators=c.validators;state.updatedAt=Number(c.at);renderList();updateTop()}
   }catch(_){}
   void refreshAll(true);
+  void refreshSavedDelegations(true);
   void refreshMarket(true);
   setInterval(()=>{if(!document.hidden)void refreshAll(false)},LIST_REFRESH);
   setInterval(()=>{if(!document.hidden)void refreshMarket(false)},PRICE_REFRESH);
+  setInterval(()=>{if(!document.hidden)void refreshSavedDelegations(false)},60_000);
   setInterval(()=>{if(!document.hidden&&$('validatorDetail').open&&state.activeOperator&&!state.rankLoading&&Date.now()-state.rankLoadedAt>RANK_REFRESH)void loadRanking(state.activeOperator)},60_000);
-  document.addEventListener('visibilitychange',()=>{
-   if(!document.hidden){
-    if(syncSavedWallet()){if($('validatorDetail').open&&state.rankRows.length)renderRanking();renderList()}
-    void refreshAll(false);void refreshMarket(false);
+  function resyncSavedWallets(){
+   if(syncSavedWallets()){
+    renderList();
+    if($('validatorDetail').open){
+     if(state.rankVerified)renderRanking();
+     else renderSavedPins();
+    }
    }
+   void refreshSavedDelegations(false);
+  }
+  document.addEventListener('visibilitychange',()=>{
+   if(!document.hidden){resyncSavedWallets();void refreshAll(false);void refreshMarket(false)}
   });
+  window.addEventListener('pageshow',resyncSavedWallets);
+  window.addEventListener('focus',resyncSavedWallets,{passive:true});
   window.addEventListener('storage',event=>{
-   if(!['inj_monitor_wallets_v1','inj_monitor_address','inj_node_comparison_selected_wallet_v1','inj_monitor_currency'].includes(event.key))return;
-   if(syncSavedWallet()){if($('validatorDetail').open&&state.rankRows.length)renderRanking();renderList()}
-   void refreshMarket(true);
+   if(['inj_monitor_wallets_v1','inj_monitor_address'].includes(event.key)){
+    resyncSavedWallets();
+    return;
+   }
+   if(event.key==='inj_monitor_currency')void refreshMarket(true);
   });
-  window.addEventListener('online',()=>void refreshAll(true));
+  window.addEventListener('online',()=>{
+   resyncSavedWallets();void refreshAll(true);void refreshSavedDelegations(true);void refreshMarket(true);
+  });
  }
  initialize();
 })();
