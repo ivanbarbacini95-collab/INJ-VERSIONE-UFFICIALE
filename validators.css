@@ -16,3 +16,32 @@ button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:wa
 @media(max-width:800px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.table-heading{display:none}.validator{grid-template-columns:minmax(0,1fr) auto auto;grid-template-rows:auto auto;gap:8px 13px;padding:16px}.validator-name{grid-column:1/4}.validator-value{font-size:13px}.validator-value.fee{grid-column:1}.validator-value.net{grid-column:2}.delegator-count{grid-column:3;grid-row:2;font-size:10px}.validator-arrow{display:none}.metric{padding:15px}.orbit-illustration{width:96px;position:absolute;right:-15px;top:8px;opacity:.32}.hero-copy{padding-right:20px}.filters{flex-wrap:wrap}.filter-search{flex-basis:100%}.filters select{flex:1;max-width:none;min-width:0}}
 @media(max-width:440px){.shell{padding-left:14px;padding-right:14px}.live-indicator{font-size:9px}.page-header{gap:8px}.icon-button{width:39px;height:39px;min-width:39px}.hero{min-height:0}.hero p{font-size:12px}.wallet-form{flex-direction:column}.wallet-form button{min-height:45px}.metric strong{font-size:21px}.detail-metric strong{font-size:17px}.detail-shell{padding-left:14px;padding-right:14px}.validator{gap:7px 10px}.delegator-count{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.pulse{animation:none!important}}
+/* 2026-11-11 · Saved wallet in every validator and real-time fiat equivalence */
+.price-status{margin:4px 0 13px;color:var(--muted);font-size:11px;line-height:1.55}
+.my-rank{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:12px}
+.my-rank-entry{width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-radius:12px;padding:13px 14px;background:var(--sub)}
+.my-rank-entry.saved{border:1px solid color-mix(in srgb,var(--green) 48%,var(--border));background:color-mix(in srgb,var(--green) 9%,var(--surface))}
+.my-rank-entry.searched{border:1px solid var(--border)}
+.my-rank-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.my-rank-entry .my-rank-label{font-size:10px;letter-spacing:.09em;font-weight:850;color:var(--green)}
+.my-rank-entry.searched .my-rank-label{color:var(--accent)}
+.my-rank-main strong{display:block;font-size:23px;line-height:1.15;color:var(--green)}
+.my-rank-entry.searched .my-rank-main strong{color:var(--accent)}
+.my-rank-main .saved-address{font-size:11px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--green);white-space:normal;overflow-wrap:anywhere;word-break:break-all;max-width:100%;font-weight:700}
+.my-rank-entry.searched .saved-address{color:var(--accent)}
+.my-rank-balance{font-size:12px;color:var(--text);font-weight:800;font-variant-numeric:tabular-nums;flex:none;max-width:100%;text-align:right;overflow-wrap:anywhere}
+.delegator-row{grid-template-columns:35px minmax(0,1fr) minmax(115px,1fr);min-width:0}
+.delegator-row.saved{border-left:3px solid var(--green);border-radius:9px;background:color-mix(in srgb,var(--green) 8%,var(--surface));padding-left:11px}
+.delegator-address{display:flex;flex-direction:column;gap:3px;min-width:0}
+.delegator-address code{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.delegator-row.saved .delegator-address code{font-size:11px;font-weight:800;color:var(--green);white-space:normal;overflow-wrap:anywhere;word-break:break-all}
+.saved-badge{color:var(--green);font-size:9px;font-weight:850;letter-spacing:.08em}
+.delegator-row .delegator-balance{display:block;min-width:0;max-width:100%;font-size:12px;line-height:1.5;text-align:right;color:var(--text);white-space:normal;overflow-wrap:anywhere;word-break:normal}
+.delegator-row.saved .delegator-balance,.delegator-row.saved .rank{color:var(--green)}
+@media(max-width:540px){
+ .my-rank-entry{flex-direction:column;align-items:stretch;gap:7px}
+ .my-rank-balance{text-align:left}
+ .delegator-row{grid-template-columns:29px minmax(0,1fr) minmax(105px,1fr);gap:8px}
+ .delegator-row .delegator-balance{font-size:11px}
+ .delegator-row.saved{padding-left:8px}
+}
