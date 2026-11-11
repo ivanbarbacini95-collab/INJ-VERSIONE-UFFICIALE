@@ -72,7 +72,7 @@
  const unit=(v,d=2)=>fmt(v,d)+' <span class="unit">INJ</span>';
  const note=(id,value)=>{const node=$(id);if(node&&node.innerHTML!==value)node.innerHTML=value};
  const app=()=>{try{return parent!==window && parent.location.origin===location.origin && typeof parent.INJ_FINANCIAL_FREEDOM_SOURCE==='function'?parent.INJ_FINANCIAL_FREEDOM_SOURCE():null}catch(_){return null}};
- const state={price:null,tradeAt:0,lastTick:null,priceAt:0,change:null,tickerAt:0,networkAt:0,networkOk:null,networkAge:0,ws:null,wsRetry:0,walletAt:0,selected:'',timer:0,fetching:false};
+ const state={price:null,tradeAt:0,lastTick:null,priceAt:0,change:null,tickerAt:0,networkAt:0,networkOk:null,networkAge:0,ws:null,wsRetry:0,walletAt:0,selected:'',timer:0,fetching:false,lastDisplayedPrice:null,lastDisplayedCurrency:'',lastDisplayedText:'',directionTimer:0};
  function fallback(){
   try{
    const wallets=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'[]');
@@ -82,6 +82,62 @@
   }catch(_){return {wallets:[],selectedAddress:'',price:null,priceAt:0,currency:'USD',privacy:false}}
  }
  function snapshot(){return app()||fallback()}
+ // Same decimal precision and tick-direction behavior as Home, not 24h momentum.
+ function renderHomeStylePrice(usd,currency,rate){
+  const node=$('nightPrice');
+  if(!node)return;
+  const current=usd>0?usd*rate:null;
+  const digits=usd>0?(usd<10?4:3):2;
+  const text=current!==null?money(current,currency,digits):'—';
+  const previous=state.lastDisplayedPrice;
+  const sameCurrency=state.lastDisplayedCurrency===currency;
+  const changed=state.lastDisplayedText&&state.lastDisplayedText!==text;
+  if(current!==null&&previous!==null&&sameCurrency&&changed){
+   const delta=usd-previous;
+   if(Math.abs(delta)>Math.max(1e-10,Math.abs(previous)*1e-11)){
+    const direction=delta>0?'up':'down';
+    node.dataset.injQuoteDirection=direction;
+    node.classList.remove('nv-price-tick-up','nv-price-tick-down');
+    void node.offsetWidth;
+    node.classList.add(direction==='up'?'nv-price-tick-up':'nv-price-tick-down');
+    clearTimeout(state.directionTimer);
+    state.directionTimer=setTimeout(()=>{
+     node.removeAttribute('data-inj-quote-direction');
+     node.classList.remove('nv-price-tick-up','nv-price-tick-down');
+     fitPriceToWidth();
+    },1050);
+   }
+  }else if(current===null||!sameCurrency){
+   clearTimeout(state.directionTimer);
+   node.removeAttribute('data-inj-quote-direction');
+   node.classList.remove('nv-price-tick-up','nv-price-tick-down');
+  }
+  if(node.textContent!==text)node.textContent=text;
+  state.lastDisplayedPrice=current!==null?usd:null;
+  state.lastDisplayedCurrency=currency;
+  state.lastDisplayedText=text;
+  fitPriceToWidth();
+ }
+ let fitQueued=false;
+ function fitPriceToWidth(){
+  if(fitQueued)return;
+  fitQueued=true;
+  requestAnimationFrame(()=>{
+   fitQueued=false;
+   const node=$('nightPrice'),frame=node?.parentElement;
+   if(!node||!frame)return;
+   node.style.fontSize='';
+   const css=getComputedStyle(node),maxFont=parseFloat(css.fontSize);
+   const available=frame.clientWidth-12;
+   if(!(maxFont>0&&available>0))return;
+   const canvas=fitPriceToWidth.canvas||(fitPriceToWidth.canvas=document.createElement('canvas'));
+   const ctx=canvas.getContext('2d');
+   if(!ctx)return;
+   ctx.font=css.fontWeight+' '+css.fontSize+' '+css.fontFamily;
+   const span=ctx.measureText(node.textContent).width+(node.dataset.injQuoteDirection?maxFont*.48:0);
+   if(span>available)node.style.fontSize=Math.max(22,maxFont*available/span)+'px';
+  });
+ }
  function paint(){
   const now=Date.now(),snap=snapshot(),rows=Array.isArray(snap.wallets)?snap.wallets:[],
    selected=rows.find(w=>w.address===snap.selectedAddress)||rows[0]||null;
@@ -91,7 +147,7 @@
   const usd=tradeValid && (!parentValid||state.tradeAt>=parentPriceAt)?state.price:(parentValid?parentPrice:null);
   const eur=num(snap.eurRate),fx=snap.currency==='EUR'&&snap.fxVerified&&eur>0;
   const currency=fx?'EUR':'USD',rate=fx?eur:1;
-  $('nightPrice').textContent=usd>0?money(usd*rate,currency,2):'—';
+  renderHomeStylePrice(usd,currency,rate);
   let direction='flat',change='— (24h)';
   if(state.change!==null&&now-state.tickerAt<180000){
     direction=state.change>=0?'up':'down';
@@ -218,6 +274,8 @@
   else{paint();connect();ticker();checkNetwork();}
  });
  window.addEventListener('online',()=>{connect();ticker();checkNetwork()});
+ window.addEventListener('resize',fitPriceToWidth,{passive:true});
+ document.fonts?.ready?.then(fitPriceToWidth);
  window.addEventListener('offline',()=>{state.ws?.close();state.ws=null;paint()});
  translate();connect();ticker();checkNetwork();paint();
  setInterval(()=>{if(!document.hidden)paint()},1000);
