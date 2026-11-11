@@ -15,29 +15,84 @@
  const status=v=>String(v?.status||'');
  const active=v=>['BOND_STATUS_BONDED','3'].includes(status(v))&&!v.jailed;
  const fee=v=>Number(v?.commission?.commission_rates?.rate);
- const state={validators:[],updatedAt:0,apr:null,counts:new Map(),countFail:new Map(),countQueue:[],countPending:new Set(),countActive:0,visible:30,wallet:'',savedWallet:'',walletDelegations:new Map(),activeOperator:'',rankCache:new Map(),rankAbort:null,rankRows:[],rankLoadedAt:0,rankShown:25,rankLoading:false,refreshing:false,observer:null,priceUsd:null,priceAt:0,priceSource:'',pricePending:null,eurRate:null,eurAt:0,eurPending:null};
+ const state={validators:[],updatedAt:0,apr:null,counts:new Map(),countFail:new Map(),countQueue:[],countPending:new Set(),countActive:0,visible:30,wallet:'',savedWallets:[],savedDelegations:new Map(),savedWalletData:new Map(),savedAt:0,savedPending:null,savedGeneration:0,savedVerified:false,rankVerified:false,walletDelegations:new Map(),activeOperator:'',rankCache:new Map(),rankAbort:null,rankRows:[],rankLoadedAt:0,rankShown:25,rankLoading:false,refreshing:false,observer:null,priceUsd:null,priceAt:0,priceSource:'',pricePending:null,eurRate:null,eurAt:0,eurPending:null};
  const safeStore='inj_node_validators_verified_v1';
  const NUM_LIMIT=300000;
  const validWallet=a=>/^inj1[0-9a-z]{38,60}$/.test(String(a||'').toLowerCase());
  const currency=()=>{try{return localStorage.getItem('inj_monitor_currency')==='EUR'?'EUR':'USD'}catch(_){return 'USD'}};
- function selectedSavedWallet(){
+ function savedWalletsFromStorage(){
+  const all=[],seen=new Set();
   try{
-   const saved=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'[]');
-   const known=Array.isArray(saved)?saved.map(v=>String(v?.address||'').trim().toLowerCase()).filter(validWallet):[];
-   const legacy=String(localStorage.getItem('inj_monitor_address')||'').trim().toLowerCase();
-   if(validWallet(legacy)&&!known.includes(legacy))known.push(legacy);
-   const selected=String(localStorage.getItem('inj_node_comparison_selected_wallet_v1')||'').trim().toLowerCase();
-   return known.includes(selected)?selected:known.includes(legacy)?legacy:known[0]||'';
-  }catch(_){return ''}
+   const rows=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'[]');
+   if(Array.isArray(rows))for(const [i,item] of rows.entries()){
+    const address=String(item?.address||'').trim().toLowerCase();
+    if(!validWallet(address)||seen.has(address))continue;
+    seen.add(address);all.push({address,label:String(item?.label||'Wallet '+(i+1)).trim().slice(0,28)});
+   }
+  }catch(_){}
+  try{
+   const address=String(localStorage.getItem('inj_monitor_address')||'').trim().toLowerCase();
+   if(validWallet(address)&&!seen.has(address))all.push({address,label:'Wallet'});
+  }catch(_){}
+  return all;
  }
- function syncSavedWallet(){
-  const saved=selectedSavedWallet();
-  if(state.savedWallet===saved)return false;
-  const oldSaved=state.savedWallet;
-  state.savedWallet=saved;
-  if(!state.wallet||state.wallet===oldSaved)state.wallet=saved;
-  if(saved&&!$('walletAddress').value.trim())$('walletAddress').value=saved;
-  return true;
+ function rebuildSavedDelegations(){
+  const map=new Map();
+  for(const wallet of state.savedWallets){
+   const record=state.savedWalletData.get(wallet.address);
+   if(!record)continue;
+   for(const [op,balance] of record.delegations){
+    if(!(balance>0n))continue;
+    if(!map.has(op))map.set(op,new Map());
+    map.get(op).set(wallet.address,balance);
+   }
+  }
+  state.savedDelegations=map;
+ }
+ function syncSavedWallets(){
+  const next=savedWalletsFromStorage();
+  if(JSON.stringify(next)===JSON.stringify(state.savedWallets))return false;
+  state.savedWallets=next;state.savedGeneration++;state.savedAt=0;
+  for(const address of state.savedWalletData.keys())if(!next.some(w=>w.address===address))state.savedWalletData.delete(address);
+  rebuildSavedDelegations();return true;
+ }
+ async function refreshSavedDelegations(force=false){
+  if(state.savedPending)return state.savedPending;
+  if(!force&&state.savedAt&&Date.now()-state.savedAt<180000)return;
+  const generation=state.savedGeneration,saved=state.savedWallets.slice();
+  if(!saved.length){
+   state.savedWalletData.clear();state.savedDelegations.clear();
+   state.savedVerified=true;state.savedAt=Date.now();
+   renderList();if($('validatorDetail').open)renderSavedPins();return;
+  }
+  state.savedVerified=false;
+  state.savedPending=(async()=>{
+   const fresh=new Map();let failures=0;
+   for(const wallet of saved){
+    if(generation!==state.savedGeneration)return;
+    try{
+     const rows=await paged('/cosmos/staking/v1beta1/delegations/'+encodeURIComponent(wallet.address),'500',100,null);
+     const delegations=new Map();
+     for(const row of rows){
+      const op=String(row?.delegation?.validator_address||'');
+      if(op)delegations.set(op,(delegations.get(op)||0n)+raw(row.balance?.amount));
+     }
+     fresh.set(wallet.address,{delegations,at:Date.now()});
+    }catch(_){
+     failures++;
+     const old=state.savedWalletData.get(wallet.address);
+     if(old&&Date.now()-old.at<240000)fresh.set(wallet.address,old);
+    }
+   }
+   if(generation!==state.savedGeneration)return;
+   state.savedWalletData=fresh;rebuildSavedDelegations();
+   state.savedAt=Date.now()-(failures?135000:0);state.savedVerified=failures===0;
+   renderList();if($('validatorDetail').open)renderSavedPins();
+  })().finally(()=>{
+   state.savedPending=null;
+   if(generation!==state.savedGeneration&&!document.hidden)void refreshSavedDelegations(true);
+  });
+  return state.savedPending;
  }
  async function priceJson(url,timeout=6500){
   const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),timeout);
@@ -216,7 +271,8 @@
    const logo=document.createElement('div');logo.className='validator-logo';logo.textContent=String(v.description?.moniker||'V').trim().slice(0,2).toUpperCase();
    const texts=document.createElement('div');texts.className='validator-text';
    const title=document.createElement('strong');title.textContent=v.description?.moniker||short(op);
-   const stake=document.createElement('small');stake.textContent=escapeStatus(v)+' · '+amount(v.tokens)+' INJ'+(state.walletDelegations.has(op)?' · '+t('WALLET PRESENTE','WALLET FOUND'):'');
+   const savedCount=state.savedDelegations.get(op)?.size||0;
+   const stake=document.createElement('small');stake.textContent=escapeStatus(v)+' · '+amount(v.tokens)+' INJ'+(savedCount?' · '+fi(savedCount)+' '+t('wallet salvati','saved wallets'):'');
    const dot=document.createElement('i');dot.className='state-dot'+(v.jailed?' jailed':active(v)?'':' inactive');
    stake.prepend(dot);texts.append(title,stake);lead.append(logo,texts);
    const c=document.createElement('span');c.className='validator-value fee';c.textContent=commission(v);
