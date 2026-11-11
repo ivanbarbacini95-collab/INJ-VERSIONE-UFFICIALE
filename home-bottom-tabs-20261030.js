@@ -51,26 +51,8 @@
  }
  ensureNetworkStatusLauncher();
 
- function ensureMarketReactorLauncher(){
-  let card=document.getElementById('entryMarketReactorButton');
-  if(!card){card=document.createElement('a');card.id='entryMarketReactorButton';}
-  if(card.parentElement!==actions){
-   const first=document.getElementById('entryMultiChartButton');
-   if(first&&first.parentElement===actions)first.after(card);else actions.prepend(card);
-  }
-  card.className='entry-action entry-action-market-reactor';
-  card.href='./market-reactor.html?v=20261110-core1';
-  card.setAttribute('aria-label','Apri Market Reactor');
-  card.innerHTML="<span><strong class=\"inj-home-tile-title\" data-it=\"Market Reactor\" data-en=\"Market Reactor\">Market Reactor</strong><small class=\"inj-tile-description\" data-it=\"Forza e momentum live\" data-en=\"Live market strength and momentum\">Forza e momentum live</small></span><span class=\"inj-tile-scene inj-tools-art inj-reactor-art\" aria-hidden=\"true\"><svg viewBox=\"0 0 120 68\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" focusable=\"false\"><circle class=\"inj-reactor-ring outer\" cx=\"60\" cy=\"34\" r=\"25\"/><circle class=\"inj-reactor-ring middle\" cx=\"60\" cy=\"34\" r=\"18\"/><circle class=\"inj-reactor-core\" cx=\"60\" cy=\"34\" r=\"11\"/><path class=\"inj-reactor-glint\" d=\"M57 30Q60 27 64 30\"/><circle class=\"inj-reactor-dot\" cx=\"60\" cy=\"9\" r=\"2.6\"/></svg></span><svg aria-hidden=\"true\" class=\"entry-action-arrow\" viewBox=\"0 0 24 24\"><path d=\"m9 6 6 6-6 6\"/></svg>";
-  return card;
- }
- ensureMarketReactorLauncher();
- if(!document.getElementById('injMarketReactorToolsTileStyle')){
-  const style=document.createElement('style');
-  style.id='injMarketReactorToolsTileStyle';
-  style.textContent="\nhtml[data-inj-page=\"index\"] body #entryGate #entryMarketReactorButton,\nhtml[data-inj-page=\"index\"] body #entryGate #entryMarketReactorButton:link,\nhtml[data-inj-page=\"index\"] body #entryGate #entryMarketReactorButton:visited{\n text-decoration:none!important;text-decoration-line:none!important;\n}\nhtml[data-inj-page=\"index\"] body #entryGate #entryMarketReactorButton .inj-home-tile-title{\n text-decoration:none!important;border-bottom:0!important;box-shadow:none!important;\n}\nhtml[data-inj-page=\"index\"] body #entryGate #entryMarketReactorButton .inj-home-tile-title::after{\n display:none!important;content:none!important;\n}\nhtml[data-inj-page=\"index\"][data-inj-home-tab=\"altro\"] body #entryGate#entryGate#entryGate\n .entry-actions.entry-flat-v44 > #entryMarketReactorButton > .inj-reactor-art{\n display:block!important;position:absolute!important;z-index:1!important;\n visibility:visible!important;opacity:1!important;pointer-events:none!important;\n box-sizing:border-box!important;top:7px!important;left:50%!important;right:auto!important;bottom:auto!important;\n width:80px!important;height:43px!important;max-width:80px!important;min-width:0!important;\n margin:0!important;padding:0!important;transform:translateX(-50%)!important;\n color:var(--accent,#94dacf)!important;overflow:visible!important;\n}\nhtml[data-inj-page=\"index\"] body #entryGate #entryMarketReactorButton .inj-reactor-art svg{\n display:block!important;width:100%!important;height:100%!important;overflow:visible!important;\n fill:none!important;visibility:visible!important;opacity:1!important;stroke:currentColor!important;\n}\n#entryMarketReactorButton .inj-reactor-ring{fill:none;stroke:currentColor;stroke-width:1.3;opacity:.7;transform-box:fill-box;transform-origin:center;animation:injReactorTileSpin 7s linear infinite}\n#entryMarketReactorButton .inj-reactor-ring.outer{stroke-dasharray:29 10;animation-duration:8s}\n#entryMarketReactorButton .inj-reactor-ring.middle{stroke-dasharray:19 8;animation-direction:reverse;animation-duration:6s;opacity:.48}\n#entryMarketReactorButton .inj-reactor-core{fill:color-mix(in srgb,currentColor 24%,transparent);stroke:currentColor;stroke-width:1.1;animation:injReactorTilePulse 3s ease-in-out infinite}\n#entryMarketReactorButton .inj-reactor-glint{stroke:#fff;stroke-width:1.3;stroke-linecap:round;opacity:.7}\n#entryMarketReactorButton .inj-reactor-dot{fill:currentColor;stroke:none;animation:injReactorTilePulse 2.8s ease-in-out infinite}\n@keyframes injReactorTileSpin{to{transform:rotate(360deg)}}\n@keyframes injReactorTilePulse{0%,100%{opacity:.45;transform:scale(.87)}50%{opacity:1;transform:scale(1.16)}}\n@media(min-width:800px){\n html[data-inj-page=\"index\"][data-inj-home-tab=\"altro\"] body #entryGate#entryGate#entryGate\n .entry-actions.entry-flat-v44 > #entryMarketReactorButton > .inj-reactor-art{\n  top:50%!important;bottom:auto!important;left:auto!important;right:17px!important;\n  width:77px!important;max-width:77px!important;height:49px!important;\n  transform:translateY(-50%)!important;\n }\n}\n@media(prefers-reduced-motion:reduce){\n #entryMarketReactorButton .inj-reactor-ring,#entryMarketReactorButton .inj-reactor-core,#entryMarketReactorButton .inj-reactor-dot{\n animation:none!important;transform:none!important}\n}\n";
-  document.head.appendChild(style);
- }
+ // Remove any Market Reactor tile retained by an older cached Home shell.
+ document.getElementById('entryMarketReactorButton')?.remove();
 
  // Night View has moved into Live View; remove any pre-existing Tools tile.
  document.getElementById('entryNightViewButton')?.remove();
@@ -188,7 +170,7 @@ html[data-inj-page="index"] body #entryGate
   {id:'etf',it:'ETF',en:'ETF',titleIt:'',titleEn:'',subIt:'',subEn:'',ids:[],icon:'<rect x="5" y="3.5" width="14" height="17" rx="2.7"/><path d="M9 8h6M9 11.5h4m-4 5.9 2.2-2.4 2 1.5 2.8-3.1"/>'},
   {id:'home',it:'Home',en:'Home',titleIt:'',titleEn:'',subIt:'',subEn:'',ids:['entryDashboardButton','entryLiveButton','entryTreasuryButton'],icon:'<path d="m3.5 10 8.5-6.6 8.5 6.6v9.3a1.2 1.2 0 0 1-1.2 1.2h-4.9v-6.1H9.6v6.1H4.7a1.2 1.2 0 0 1-1.2-1.2z"/>'},
   {id:'reward',it:'My Reward',en:'My Reward',titleIt:'MY REWARD',titleEn:'MY REWARD',subIt:'Staking e ricompense del wallet selezionato',subEn:'Selected wallet staking and rewards',ids:[],icon:'<circle cx="12" cy="12" r="8.5"/><path d="M15.1 9.3c-.6-.9-1.6-1.4-3-1.4-1.8 0-3 .8-3 2.1 0 2.8 6 1 6 3.7 0 1.3-1.2 2.2-3 2.2-1.5 0-2.6-.6-3.2-1.6M12 5.8v2M12 16.2v2"/>'},
-  {id:'altro',it:'Tools',en:'Tools',titleIt:'TOOLS',titleEn:'TOOLS',subIt:'Simulazioni, libertà finanziaria e altri strumenti',subEn:'Simulations, financial freedom and other tools',ids:['entryMultiChartButton','entryMarketReactorButton','entryAllTransactionsButton','entryNetworkStatusButton','entryComparisonButton','entryVisualizeWealthButton','entryFreedomButton','entryWorkspaceButton','entryConverterButton','entryCommandCenterButton'],icon:'<path d="M4 6h8m4 0h4M4 12h3m4 0h9M4 18h11m4 0h1"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>'}
+  {id:'altro',it:'Tools',en:'Tools',titleIt:'TOOLS',titleEn:'TOOLS',subIt:'Simulazioni, libertà finanziaria e altri strumenti',subEn:'Simulations, financial freedom and other tools',ids:['entryMultiChartButton','entryAllTransactionsButton','entryNetworkStatusButton','entryComparisonButton','entryVisualizeWealthButton','entryFreedomButton','entryWorkspaceButton','entryConverterButton','entryCommandCenterButton'],icon:'<path d="M4 6h8m4 0h4M4 12h3m4 0h9M4 18h11m4 0h1"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>'}
  ];
  const originalDisplay=new WeakMap();
  const heading=document.createElement('header');
