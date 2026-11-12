@@ -674,7 +674,7 @@ async function repairLegacyWorthEstimates(){
   }
 }
 async function repairWorthHistoryAfterResume(){
-  if(state.worthBackfillRunning||!state.priceReady||!state.treasuryReady||!state.historyReady)return;
+  if(state.worthBackfillRunning||legacyWorthRepriceRunning||!state.priceReady||!state.treasuryReady||!state.historyReady)return;
   const gap=newestWorthGap();
   if(!gap){void repairLegacyWorthEstimates();return;}
   // Avoid repeated history API requests on every live price websocket tick.
@@ -1705,6 +1705,7 @@ function renderWorthSparkline() {
   const hasEstimatedWorth=rawSamples.some(row=>row.estimated===true);
   syncWorthRangeControls();
   if (rawSamples.length < 2) {
+    if(estimateNote)estimateNote.hidden=true;
     state.worthPlot = null;
     svg.innerHTML = '<path class="treasury-worth-line" d="M0 48 L320 48" opacity=".18"></path>';
     placeTreasuryLiveDot('treasuryWorthLiveDot',null);
