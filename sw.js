@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261112-official-responsive-trend2';
+const CACHE_NAME = 'inj-node-v20261112-official-growth-observations1';
 const BOOT_ASSETS = [
   './index.html',
   './inj-rubik-unified-20261110.css?v=optical-responsive2',
@@ -29,8 +29,8 @@ const BOOT_ASSETS = [
   './night-view.html?v=20261112-totem-pro1',
   './night-view.js?v=20261112-totem-pro1',
   './live-view-totem-pro-20261112.css?v=totem-pro1',
-  './treasury.html?v=20261112-optical-trend1',
-  './treasury.js?v=20261112-optical-trend1',
+  './treasury.html?v=20261112-growth-realpoints1',
+  './treasury.js?v=20261112-growth-realpoints1',
   './injc-etf.html?v=20261112-all-history1'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
