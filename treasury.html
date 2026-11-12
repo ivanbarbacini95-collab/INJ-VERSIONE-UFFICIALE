@@ -311,6 +311,30 @@
     }
   }
 </style>
+
+<style id="treasury-worth-historical-integrity-20261112">
+  /* Historical INJ price candles paired with last verified wallet holdings:
+     dashed when balance is estimated; no visual jump across offline gaps. */
+  html[data-inj-page="treasury"] .treasury-worth-sparkline
+  path.treasury-worth-line.treasury-worth-estimated{
+    stroke-dasharray:4.2 3.8!important;
+    stroke-width:1.95!important;
+    stroke-opacity:.68!important;
+    stroke-linejoin:round!important;
+    fill:none!important;
+    filter:none!important;
+  }
+  html[data-inj-page="treasury"] #treasuryReconstructedNote:not([hidden]){
+    display:block;
+    color:var(--muted-strong);
+    font-size:clamp(11px,.95vw,14px);
+    font-weight:500;
+    line-height:1.45;
+    letter-spacing:0;
+    opacity:.98;
+    overflow-wrap:break-word;
+  }
+</style>
 </head>
 <body>
   <div class="treasury-shell">
@@ -464,7 +488,7 @@
               <span id="treasuryWorthMax">MAX —</span>
             </div>
           </div>
-          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Andamento storico del patrimonio totale. Tocca o trascina per leggere valore e data nel tempo.">
+          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Patrimonio totale: prezzi INJ e saldo Treasury nel tempo. I tratti tratteggiati indicano saldi stimati, le lacune non vengono interpolate. Tocca o trascina per data e valore.">
             <svg class="treasury-sparkline treasury-worth-sparkline" id="treasuryWorthSparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
             <span class="treasury-worth-axis" aria-hidden="true"><b id="treasuryWorthAxisTop">—</b><b id="treasuryWorthAxisBottom">—</b></span>
             <span class="treasury-chart-live-dot treasury-worth-end-dot" id="treasuryWorthLiveDot" hidden aria-hidden="true"></span>
