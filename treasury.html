@@ -15,7 +15,7 @@
       document.querySelector('meta[name=\"theme-color\"]')?.setAttribute('content', (themeColors[theme] || '#080d12'));
     } catch (_) {}
   </script>
-  <link rel="stylesheet" href="./treasury.css?v=20261102-resume-growth2">
+  <link rel="stylesheet" href="./treasury.css?v=20261112-worth-trend2">
 <script>document.addEventListener('DOMContentLoaded',()=>{const c=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <link rel="stylesheet" href="viewport.css?v=16.00.74">
 <script defer src="viewport.js?v=20261111-scrollperf1"></script>
@@ -313,22 +313,7 @@
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
 
-<style id="treasury-price-direction-restored-20261112">
-  /* Last real INJ price movement controls the displayed total worth. */
-  html[data-inj-page="treasury"] #treasuryTotalWorth.treasury-price-up,
-  html[data-inj-page="treasury"] #treasuryNetWorthCurrent.treasury-price-up {
-    color:var(--up)!important;
-  }
-  html[data-inj-page="treasury"] #treasuryTotalWorth.treasury-price-down,
-  html[data-inj-page="treasury"] #treasuryNetWorthCurrent.treasury-price-down {
-    color:var(--down)!important;
-  }
-  /* Prevent number-roll digits from displaying a direction unrelated to price. */
-  html[data-inj-page="treasury"] #treasuryTotalWorth:is(.treasury-price-up,.treasury-price-down) .number-change-digit,
-  html[data-inj-page="treasury"] #treasuryNetWorthCurrent:is(.treasury-price-up,.treasury-price-down) .number-change-digit {
-    color:inherit!important;
-  }
-</style>
+
 </head>
 <body>
   <div class="treasury-shell">
@@ -489,7 +474,6 @@
             <span class="treasury-spark-cursor" id="treasuryWorthCursor" hidden aria-hidden="true"><i></i></span>
             <span class="treasury-spark-tooltip" id="treasuryWorthTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
           </div>
-          <small class="treasury-backfill-note" id="treasuryReconstructedNote" hidden>Storico ricostruito con prezzi reali · valori intermedi stimati</small>
           <footer><span id="treasuryWorthHistoryStart">Prima lettura</span><span id="treasuryWorthHistoryEnd">Ora</span></footer>
         </article>
 
@@ -621,7 +605,7 @@
 </main>
   </div>
   <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-  <script src="./treasury.js?v=20261112-countervalue-market1" defer></script>
+  <script src="./treasury.js?v=20261112-worth-trend2" defer></script>
 
 
   <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
