@@ -8,8 +8,6 @@
  const API='https://api.coingecko.com/api/v3';
  const COIN_CACHE='inj_node_comparison_coins_v1';
  const QUERY_CACHE='inj_node_comparison_recent_v1';
- const STOCK_CACHE='inj_node_comparison_us_caps_v2';
- const INDEX_CACHE='inj_node_comparison_index_caps_v1';
  const SELECTED_KEY='inj_node_comparison_selected_wallet_v1';
  const NASDAQ_URL='https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/tickers/all.csv';
  const usMarketCaps=new Map(),usStockNames=new Map(), estimatedIndexCaps=new Map();
@@ -64,7 +62,7 @@
    source:{...SOURCE_DEFAULT},target:{...TARGET_DEFAULT},kind:'crypto',
    quotes:new Map(),lastRemote:0,busy:false,chosenWallet:null,walletSnapshotSignature:'',
    sourceSearchTimer:0,targetSearchTimer:0,searchTicket:{source:0,target:0},
-   quoteError:'',quoteRetryAfter:0,quoteFailures:0,queuedForce:false,activeQuoteKey:'',resultAge:0,results:{source:[],target:[]},language:'it'
+   quoteError:'',resultAge:0,results:{source:[],target:[]},language:'it'
  };
  const translations={
   subTitle:['Confronta market cap e valore del wallet','Compare market caps and wallet value'],
@@ -173,7 +171,7 @@
   try{
    const cache=JSON.parse(localStorage.getItem(COIN_CACHE)||'null');
    if(!cache||!Array.isArray(cache.rows))return;
-   if(!cache.savedAt||Date.now()-cache.savedAt>24*3600000)return;
+   if(!cache.savedAt||Date.now()-cache.savedAt>12*3600000)return;
    for(const row of cache.rows){
     if(row&&positive(row.cap)&&positive(row.price))state.quotes.set(row.id,{...row,fromCache:true});
    }
@@ -183,46 +181,26 @@
   try{localStorage.setItem(COIN_CACHE,JSON.stringify({savedAt:Date.now(),rows:[...state.quotes.values()].slice(0,30)}));}catch(_){}
  }
  async function refreshQuotes(force=false){
-  const ids=[...new Set([state.source.id,'injective-protocol',...(state.kind==='crypto'?[state.target.id]:[])])].filter(Boolean);
-  const requestKey=ids.join('|');
-  // Changing selection during a previous request must not silently drop the new asset.
-  if(state.busy){
-   if(requestKey!==state.activeQuoteKey)state.queuedForce=true;
-   return;
-  }
-  const stale=ids.some(id=>!state.quotes.has(id)||Date.now()-state.quotes.get(id).updated>180000);
+  if(state.busy)return;
+  const allIds=[state.source.id,'injective-protocol'];
+  if(state.kind==='crypto')allIds.push(state.target.id);
+  const ids=[...new Set(allIds)].filter(Boolean);
+  const stale=ids.some(id=>!state.quotes.has(id)||Date.now()-state.quotes.get(id).updated>100000);
   if(!force&&!stale)return;
-  if(!force&&Date.now()<state.quoteRetryAfter)return;
-  state.busy=true;state.activeQuoteKey=requestKey;state.quoteError='';
+  state.busy=true;
+  state.quoteError='';
   renderStatus();
   try{
    const uri=API+'/coins/markets?vs_currency=usd&ids='+encodeURIComponent(ids.join(','))+'&order=market_cap_desc&per_page=20&page=1&sparkline=false';
    const result=await fetchJson(uri);
    if(!Array.isArray(result)||!result.length)throw Error('No CoinGecko market quotes');
-   let matched=0;
    for(const row of result){
     const normalized=normalizeMarket(row);
-    if(normalized){state.quotes.set(normalized.id,normalized);if(ids.includes(normalized.id))matched++;}
+    if(normalized)state.quotes.set(normalized.id,normalized);
    }
-   if(!matched)throw Error('No matching CoinGecko market quotes');
-   state.quoteFailures=0;state.quoteRetryAfter=0;
    state.lastRemote=Date.now();persistQuotes();
-  }catch(error){
-   state.quoteError=String(error?.message||error);
-   state.quoteFailures++;
-   const delay=/429|rate limit/i.test(state.quoteError)?90000:
-     Math.min(90000,6000*Math.pow(2,Math.min(4,state.quoteFailures-1)));
-   state.quoteRetryAfter=Date.now()+delay;
-   // Keep previous verified quotes in place while retrying a failing feed.
-   setTimeout(()=>{if(!document.hidden)void refreshQuotes();},delay+250);
-  }finally{
-   state.busy=false;render();
-   const latest=[...new Set([state.source.id,'injective-protocol',...(state.kind==='crypto'?[state.target.id]:[])])].filter(Boolean).join('|');
-   if(latest!==requestKey||state.queuedForce){
-    state.queuedForce=false;
-    void refreshQuotes(true);
-   }
-  }
+  }catch(error){state.quoteError=String(error?.message||error);}
+  finally{state.busy=false;render();}
  }
  function quote(id){return state.quotes.get(id)||null;}
  function recentCrypto(id){const q=quote(id);return q&&Date.now()-q.updated<180000&&!q.fromCache;}
@@ -233,49 +211,12 @@
   const status=$('comparisonStatus');
   status.classList.toggle('live',fresh);
   status.classList.toggle('cache',!fresh&&cached);
-  set('comparisonStatusText',state.busy?'SYNC':fresh?'LIVE':cached?t('SALVATO','CACHED'):
-   state.quoteError?t('RIPROVA','RETRY'):t('ATTESA','WAITING'));
-  status.title=state.quoteError?t('Feed temporaneamente non disponibile · premi ↻ per riprovare','Feed temporarily unavailable · press ↻ to retry'):'';
+  set('comparisonStatusText',state.busy?'SYNC':fresh?'LIVE':cached?t('SALVATO','CACHED'):t('ATTESA','WAITING'));
  }
 
  function tickerKey(symbol){return String(symbol||'').trim().toUpperCase().replace(/\./g,'/');}
  function isUsEquity(){
   return state.kind==='stock'&&manualPicked?.kind==='stock';
- }
- // Preserve the most recent verified daily Nasdaq snapshot across reloads and outages.
- function restoreUsStockCaps(){
-  try{
-   const saved=JSON.parse(localStorage.getItem(STOCK_CACHE)||'null');
-   if(!saved||!Number.isFinite(saved.savedAt)||Date.now()-saved.savedAt>48*3600000||!Array.isArray(saved.rows))return;
-   let count=0;
-   for(const item of saved.rows){
-    if(!Array.isArray(item))continue;
-    const symbol=tickerKey(item[0]),cap=Number(item[1]);
-    if(!symbol||!positive(cap))continue;
-    usMarketCaps.set(symbol,cap);usStockNames.set(symbol,String(item[2]||symbol));count++;
-   }
-   if(count>=100)usCapUpdated=saved.savedAt;
-  }catch(_){}
- }
- function persistUsStockCaps(){
-  try{
-   const rows=[...usMarketCaps].sort((a,b)=>b[1]-a[1]).slice(0,3000)
-     .map(([symbol,cap])=>[symbol,cap,usStockNames.get(symbol)||symbol]);
-   localStorage.setItem(STOCK_CACHE,JSON.stringify({savedAt:usCapUpdated,rows}));
-  }catch(_){}
- }
- function restoreIndexCaps(){
-  try{
-   const saved=JSON.parse(localStorage.getItem(INDEX_CACHE)||'null');
-   if(!saved||!Array.isArray(saved.rows))return;
-   for(const [symbol,row] of saved.rows){
-    if(INDEX_DATASETS[symbol]&&row&&positive(row.cap)&&Number.isFinite(row.updated)
-       &&Date.now()-row.updated<48*3600000)estimatedIndexCaps.set(symbol,row);
-   }
-  }catch(_){}
- }
- function persistIndexCaps(){
-  try{localStorage.setItem(INDEX_CACHE,JSON.stringify({rows:[...estimatedIndexCaps]}));}catch(_){}
  }
  // Public Nasdaq screener snapshot, republished on weekdays via GitHub.
  // This is updated daily, not a live exchange tick.
@@ -299,11 +240,7 @@
     usMarketCaps.clear();usStockNames.clear();
     for(const [symbol,cap] of fresh)usMarketCaps.set(symbol,cap);
     for(const [symbol,name] of names)usStockNames.set(symbol,name);
-    usCapUpdated=Date.now();usCapFailure='';persistUsStockCaps();
-   }catch(error){
-    // Never erase previously verified stock data when the external feed fails.
-    if(usMarketCaps.size<100)throw error;
-    usCapFailure='Using last saved Nasdaq snapshot';
+    usCapUpdated=Date.now();usCapFailure='';
    }finally{clearTimeout(timer);usCapDownload=null;}
   })();
   return usCapDownload;
@@ -353,7 +290,7 @@
    if(matched/symbols.length<.85)throw Error('Insufficient coverage');
    const cap=[...unique.values()].reduce((sum,v)=>sum+v,0);
    if(!positive(cap))throw Error('Empty capitalization');
-   estimatedIndexCaps.set(selected.symbol,{cap,matched,total:symbols.length,updated:Date.now()});persistIndexCaps();
+   estimatedIndexCaps.set(selected.symbol,{cap,matched,total:symbols.length,updated:Date.now()});
   }catch(error){if(request===indexRequestSeq)indexError=String(error?.message||error);}
   finally{if(request===indexRequestSeq){indexPending=false;render();}}
  }
@@ -723,13 +660,7 @@
  }
 
  function boot(){
-  restoreQuotes();restoreUsStockCaps();restoreIndexCaps();localize();setKind('crypto');render();
-  $('comparisonRetry')?.addEventListener('click',()=>{
-   state.quoteRetryAfter=0;
-   void refreshQuotes(true);
-   if(isUsEquity())void updateUsStock();
-   else if(state.kind==='index')void estimateIndex();
-  });
+  restoreQuotes();localize();setKind('crypto');render();
   $('comparisonBack').addEventListener('click',event=>{
    event.preventDefault();
    if(window.parent!==window&&window.parent.location.origin===location.origin){

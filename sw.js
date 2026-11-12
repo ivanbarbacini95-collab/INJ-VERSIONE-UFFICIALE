@@ -1,40 +1,13 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261112-treasury-classic-type1';
+const CACHE_NAME = 'inj-node-v20261106-cross-platform-lean1';
 const BOOT_ASSETS = [
   './index.html',
-  './inj-responsive-typography-20261112.css?v=20261112-adaptive1',
-  './inj-rubik-unified-20261110.css?v=optical-responsive2',
-  './page-zoom-lock-20261110.js?v=1',
   './manifest.webmanifest?v=20261102litepro1',
   './style.css?v=16.01.44',
   './inj-home-overrides-20261106.css?v=perf1',
-  './home-dock-clearance-20261110.js?v=ios-dock-clearance1',
-  './home-dock-clearance-20261110.css?v=ios-dock-clearance1',
-  './my-reward-portrait-20261110.js?v=portrait-desktop1',
-  './my-reward-portrait-20261110.css?v=portrait-desktop1',
-  './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=20261111-digits-only1',
-  './navigation.js?v=20261109-tools-return-motion1',
-  './home-bottom-tabs-20261030.js?v=20261110-liveview-one-layout3',
-  './validators-launcher.js?v=20261111e',
-  './validators.html?v=20261111e',
-  './validators.css?v=20261111e',
-  './validators.js?v=20261111e',
-  './network-status.html?v=20261110-uptime-history1',
-  './network-history.js?v=20261110-uptime-history1',
-  './network-live-ws.js?v=20261109-uptime-ws1',
-  './network-history.css?v=20261110-uptime-history1',
-  './all-transactions.html?v=20261109-tools-return-motion1',
-  './night-view.html?v=20261112-totem-pro1',
-  './night-view.js?v=20261112-totem-pro1',
-  './live-view-totem-pro-20261112.css?v=totem-pro1',
-  './treasury.html?v=20261112-worth-tooltip-only1',
-  './treasury-mobile-density-20261112.css?v=20261112-phone-density2',
-  './treasury-classic-typography-20261112.css?v=classic-monitor1',
-  './treasury.js?v=20261112-worth-tooltip-only1',
-  './injc-etf.html?v=20261112-all-history1'
+  './app.js?v=wallet-single-card-20261105c'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
 

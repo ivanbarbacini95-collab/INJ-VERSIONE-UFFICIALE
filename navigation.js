@@ -189,7 +189,7 @@ window.INJ_OPEN_SECTION=function(url){
 };
 if(main){
  document.addEventListener('click',event=>{
-  const link=event.target.closest('#entryMultiChartButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryTreasuryButton,#entryLiveRewardsButton,#entryRewardLadderButton,#entryComparisonButton,#entryVisualizeWealthButton,#injAdminInsightsMenuButton,#injCloudSyncMenuButton');
+  const link=event.target.closest('#entryInjcEtfButton,#entryWorkspaceButton,#entryTreasuryButton,#entryLiveRewardsButton,#entryRewardLadderButton,#entryComparisonButton,#entryVisualizeWealthButton,#injAdminInsightsMenuButton,#injCloudSyncMenuButton');
   if(!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;
   event.preventDefault();event.stopImmediatePropagation();window.INJ_OPEN_SECTION(link.href);
  },true);
@@ -197,10 +197,6 @@ if(main){
   if(event.origin!==location.origin)return;
   const fromSection=event.source===section?.contentWindow;
   if(fromSection && event.data?.type==='injnode:section:home')closeSection();
-  if(fromSection && event.data?.type==='injnode:section:tools'){
-   closeSection();window.INJ_BOTTOM_NAV?.select('altro');
-   try{sessionStorage.removeItem('inj_node_return_tools');}catch(_){}
-  }
  });
  window.addEventListener('popstate',()=>{if(history.state?.injGestureShield)return;if(section && !history.state?.injSection)closeSection(true);});
  window.addEventListener('keydown',event=>{if(section && event.key==='Escape')closeSection();});

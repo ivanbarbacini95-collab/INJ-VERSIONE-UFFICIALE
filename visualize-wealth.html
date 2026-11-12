@@ -1,13 +1,12 @@
 <!doctype html>
-<html lang="it" data-inj-page="visualize-wealth" data-theme="obsidian">
+<html lang="it" data-inj-page="visualize-wealth" data-theme="navy">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<script defer src="./page-zoom-lock-20261110.js?v=1"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#020708">
 <title>Valore Potenziale · INJ Node</title>
 <script>
-try{const t=localStorage.getItem('inj_monitor_theme');const valid=['obsidian','arctic','orbit','classic-black','classic-white'];const legacy={navy:'obsidian',black:'classic-black',light:'classic-white',amber:'obsidian',aqua:'arctic',velvet:'orbit'};document.documentElement.dataset.theme=valid.includes(t)?t:(legacy[t]||'obsidian');document.documentElement.dataset.injThemeMotion='static';document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it'}catch(_){}
+try{const t=localStorage.getItem('inj_monitor_theme');const valid=['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'];document.documentElement.dataset.theme=valid.includes(t)?t:'navy'}catch(_){}
 </script>
 <link rel="stylesheet" href="./visualize-wealth.css?v=160502">
 <link rel="stylesheet" href="./ocean-aurora.css?v=160109">
@@ -64,40 +63,6 @@ try{const t=localStorage.getItem('inj_monitor_theme');const valid=['obsidian','a
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
-<style id="inj-potential-value-repair-20261109">
-/* Restored Potential Value layout · native scrolling and modern INJ Node themes. */
-html[data-inj-page="visualize-wealth"]{--panel:var(--surface,#101923);--panel-strong:var(--surface-strong,#15212e);height:auto!important;min-height:100%!important;max-height:none!important;overflow-x:hidden!important;overflow-y:auto!important;background:var(--theme-canvas,var(--bg))!important}
-html[data-inj-page="visualize-wealth"] body{position:static!important;display:block!important;width:100%!important;min-width:0!important;min-height:100dvh!important;max-height:none!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;background:var(--page-gradient,var(--bg))!important;color:var(--text)!important}
-html[data-inj-page="visualize-wealth"] .wealth-shell{position:relative!important;width:min(100%,1020px)!important;max-width:100%!important;min-height:100dvh!important;height:auto!important;overflow:visible!important;margin:0 auto!important;padding-inline:clamp(12px,4vw,38px)!important;padding-bottom:max(35px,env(safe-area-inset-bottom,0px))!important}
-html[data-inj-page="visualize-wealth"] .wealth-header{max-width:100%;min-width:0;flex-wrap:nowrap}
-html[data-inj-page="visualize-wealth"] .wealth-main{display:block!important;max-width:810px!important;min-width:0!important;width:100%!important;overflow:visible!important;margin:0 auto!important}
-html[data-inj-page="visualize-wealth"] .wealth-main>*{max-width:100%!important;min-width:0!important;box-sizing:border-box}
-html[data-inj-page="visualize-wealth"] .wealth-results,html[data-inj-page="visualize-wealth"] .wealth-all,html[data-inj-page="visualize-wealth"] .wealth-income,html[data-inj-page="visualize-wealth"] .wealth-growth{float:none!important;position:relative!important;width:100%!important;min-width:0!important;clear:both!important}
-html[data-inj-page="visualize-wealth"] .wealth-input-shell{width:100%!important;min-width:0!important;max-width:100%!important}
-html[data-inj-page="visualize-wealth"] #wealthPrice{min-width:0!important;max-width:100%!important;font-size:clamp(30px,8vw,70px)!important}
-html[data-inj-page="visualize-wealth"] .wealth-amount{max-width:100%;overflow-wrap:anywhere;word-break:normal;font-variant-numeric:tabular-nums}
-html[data-inj-page="visualize-wealth"] .wealth-all-grid,html[data-inj-page="visualize-wealth"] .wealth-growth-point-grid,html[data-inj-page="visualize-wealth"] .wealth-growth-results,html[data-inj-page="visualize-wealth"] .wealth-growth-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-html[data-inj-page="visualize-wealth"] .wealth-income-grid,html[data-inj-page="visualize-wealth"] .wealth-income-row{max-width:100%;min-width:0}
-html[data-inj-page="visualize-wealth"] .wealth-income-row{grid-template-columns:minmax(35px,.5fr) minmax(0,1.2fr) minmax(0,1.2fr)!important}
-html[data-inj-page="visualize-wealth"] .wealth-growth-chart,html[data-inj-page="visualize-wealth"] #wealthGrowthPlot{display:block;min-width:0;max-width:100%!important;height:auto!important;overflow:visible!important}
-html[data-inj-page="visualize-wealth"] .wealth-growth-period select{max-width:100%;font-size:13px}
-html[data-inj-page="visualize-wealth"] .wealth-extra-head{min-width:0}
-html[data-inj-page="visualize-wealth"] .wealth-growth-summary dd,html[data-inj-page="visualize-wealth"] .wealth-growth-result-value{overflow-wrap:anywhere}
-@media(max-width:620px){
- html[data-inj-page="visualize-wealth"] .wealth-shell{padding-inline:14px!important}
- html[data-inj-page="visualize-wealth"] .wealth-header{padding-top:max(17px,env(safe-area-inset-top,0px))!important;min-height:72px!important}
- html[data-inj-page="visualize-wealth"] .wealth-main{padding-top:24px!important}
- html[data-inj-page="visualize-wealth"] .wealth-intro h1{font-size:clamp(29px,8vw,40px)!important}
- html[data-inj-page="visualize-wealth"] .wealth-income{padding:12px!important}
- html[data-inj-page="visualize-wealth"] .wealth-income-row{column-gap:6px}
- html[data-inj-page="visualize-wealth"] .wealth-income-row:not(:first-child)>strong{font-size:clamp(11px,3.3vw,15px)!important}
- html[data-inj-page="visualize-wealth"] .wealth-growth-toolbar{display:flex!important;gap:9px!important}
- html[data-inj-page="visualize-wealth"] .wealth-growth-period{min-width:0!important}
- html[data-inj-page="visualize-wealth"] .wealth-growth-chart{margin-top:10px}
-}
-</style>
-<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
-<link rel="stylesheet" href="./inj-responsive-typography-20261112.css?v=20261112-adaptive1">
 </head>
 <body>
 <div class="wealth-shell">

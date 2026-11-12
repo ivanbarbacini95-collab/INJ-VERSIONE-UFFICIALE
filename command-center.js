@@ -17,6 +17,7 @@ const INJ_HISTORY_ORIGIN = Date.UTC(2020,0,1); // Before the first listed INJ/US
 const INJ_LISTING_START=Date.UTC(2020,9,21,4); // Binance INJ/USDT trading launch.
 const INJ_DECIMALS = 1e18;
 const LCD_ENDPOINTS = ['https://sentry.lcd.injective.network:443','https://lcd.injective.network','https://1rpc.io/inj-lcd'];
+const APR_ENDPOINT = 'https://api.ui.injective.network/api/v1/cache/stats/apr';
 const privacy = localStorage.getItem('inj_monitor_privacy') === '1';
 const currency = localStorage.getItem('inj_monitor_currency') === 'EUR' ? 'EUR' : 'USD';
 const ranges = {
@@ -144,11 +145,7 @@ function loadLocal(){
     const w=Array.isArray(wallets)?wallets.find(x=>x.address===state.address):null;
     if(w?.label)state.walletLabel=w.label;
   }catch(_){}
-  try{const s=JSON.parse(localStorage.getItem('inj_monitor_summaries_v1')||'{}')[state.address]||{};state.available=n(s.available);state.staked=n(s.staked);state.rewards=n(s.rewards);state.total=n(s.total)||(state.available+state.staked+state.rewards);const age=Date.now()-Number(s.aprUpdated||0);
-  const validApr=age>=0&&age<window.INJ_STAKING_APR.maxCacheMs;
-  state.apr=validApr&&s.personalApr!=null&&Number.isFinite(Number(s.personalApr))?Number(s.personalApr):NaN;
-  state.networkApr=validApr&&s.networkApr!=null&&Number.isFinite(Number(s.networkApr))?Number(s.networkApr):NaN;
-  state.aprSyncAt=validApr?Number(s.aprUpdated):0;state.commission=n(s.weightedCommission);state.validators=Array.isArray(s.validators)?s.validators:[];state.lastSync=n(s.updated)}catch(_){}
+  try{const s=JSON.parse(localStorage.getItem('inj_monitor_summaries_v1')||'{}')[state.address]||{};state.available=n(s.available);state.staked=n(s.staked);state.rewards=n(s.rewards);state.total=n(s.total)||(state.available+state.staked+state.rewards);state.apr=n(s.personalApr);state.networkApr=n(s.networkApr);state.commission=n(s.weightedCommission);state.validators=Array.isArray(s.validators)?s.validators:[];state.lastSync=n(s.updated)}catch(_){}
   try{const a=JSON.parse(localStorage.getItem('inj_monitor_average_buy_price_v1')||'{}');state.avgPrice=n(a[state.address])}catch(_){}
 }
 async function loadFx(){if(currency!=='EUR')return;try{const d=await fetchJson('https://api.frankfurter.app/latest?from=USD&to=EUR',5000);if(n(d?.rates?.EUR)>0)state.eur=n(d.rates.EUR)}catch(_){}}
@@ -157,44 +154,29 @@ async function refreshWallet(){
   if(state.walletLoading)return;
   state.walletLoading=true;setText('ccWalletState','SYNC');setDot('ccDataDot','');
   try{
-    const [bank,reward,staking]=await Promise.all([
+    const now=Date.now();
+    const aprPromise=(!state.aprSyncAt||now-state.aprSyncAt>60000)?fetchJson(APR_ENDPOINT,6500).catch(()=>null):Promise.resolve(null);
+    const [bank,deleg,reward,aprRaw]=await Promise.all([
       lcd(`/cosmos/bank/v1beta1/balances/${state.address}`),
+      lcd(`/cosmos/staking/v1beta1/delegations/${state.address}`),
       lcd(`/cosmos/distribution/v1beta1/delegators/${state.address}/rewards`),
-      window.INJ_STAKING_APR.wallet(state.address)
+      aprPromise
     ]);
-    state.available=findInj(bank?.balances||[]);
-    state.rewards=rewardTotal(reward);
-    if(!staking||staking.stale) {
-      // Keep confirmed balances, but never show an old APR as live.
-      state.apr=NaN;state.networkApr=NaN;state.aprSyncAt=0;
-      state.staked=Number.isFinite(staking?.staked)?staking.staked:state.staked;
-      state.validators=[];
-    }else{
-      state.staked=staking.staked;
-      state.apr=Number.isFinite(staking.apr)?staking.apr:NaN;
-      state.networkApr=staking.networkApr;
-      state.aprSyncAt=staking.aprUpdated;
-      state.commission=Number.isFinite(staking.weightedCommission)?staking.weightedCommission:NaN;
-      state.validators=staking.validators;
-      state.validatorSyncAt=Date.now();
-    }
-    state.total=state.available+state.staked+state.rewards;
-    state.lastSync=Date.now();state.apiOk=true;
-    setText('ccWalletState','ONLINE');setDot('ccDataDot','ok');
-    setText('ccApiState','ONLINE');setDot('ccApiDot','ok');
-    try{
-      const all=JSON.parse(localStorage.getItem('inj_monitor_summaries_v1')||'{}');
-      all[state.address]={
-        ...(all[state.address]||{}),available:state.available,staked:state.staked,
-        rewards:state.rewards,total:state.total,
-        personalApr:Number.isFinite(state.apr)?state.apr:null,
-        networkApr:Number.isFinite(state.networkApr)?state.networkApr:null,
-        weightedCommission:Number.isFinite(state.commission)?state.commission:null,
-        aprUpdated:state.aprSyncAt,aprSource:staking?.source||'',
-        validators:state.validators,updated:state.lastSync
-      };
-      localStorage.setItem('inj_monitor_summaries_v1',JSON.stringify(all));
-    }catch(_){}
+    state.available=findInj(bank?.balances||[]);const rows=delegationRows(deleg);state.staked=rows.reduce((sum,row)=>sum+row.amount,0);state.rewards=rewardTotal(reward);state.total=state.available+state.staked+state.rewards;
+    const official=n(aprRaw?.apr);if(official>0){state.networkApr=official<1?official*100:official;state.aprSyncAt=now;}
+    const validators=await Promise.all(rows.map(async row=>{
+      const cached=state.validatorMeta[row.operator];
+      if(cached&&now-n(cached.updated)<120000)return {...row,...cached};
+      try{
+        const d=await lcd(`/cosmos/staking/v1beta1/validators/${row.operator}`),v=d?.validator||{};
+        const meta={moniker:v?.description?.moniker||shortAddress(row.operator),commission:Math.max(0,Math.min(1,rate(v?.commission?.commission_rates?.rate))),status:v?.status||'',jailed:Boolean(v?.jailed),updated:Date.now()};
+        state.validatorMeta[row.operator]=meta;return {...row,...meta};
+      }catch(_){return cached?{...row,...cached}:{...row,moniker:shortAddress(row.operator),commission:0,status:'',jailed:false}}
+    }));
+    state.validators=validators;state.validatorSyncAt=Date.now();
+    const delegated=validators.reduce((sum,row)=>sum+row.amount,0);state.commission=delegated>0?validators.reduce((sum,row)=>sum+row.amount*n(row.commission),0)/delegated:0;const annual=validators.reduce((sum,row)=>sum+(row.status==='BOND_STATUS_BONDED'&&!row.jailed?row.amount*state.networkApr*Math.max(0,1-n(row.commission))/100:0),0);state.apr=state.staked>0?annual/state.staked*100:state.apr;
+    state.lastSync=Date.now();state.apiOk=true;setText('ccWalletState','ONLINE');setDot('ccDataDot','ok');setText('ccApiState','ONLINE');setDot('ccApiDot','ok');
+    try{const all=JSON.parse(localStorage.getItem('inj_monitor_summaries_v1')||'{}');all[state.address]={...(all[state.address]||{}),available:state.available,staked:state.staked,rewards:state.rewards,total:state.total,personalApr:state.apr,networkApr:state.networkApr,weightedCommission:state.commission,validators:state.validators,updated:state.lastSync};localStorage.setItem('inj_monitor_summaries_v1',JSON.stringify(all))}catch(_){}
   }catch(_){setText('ccWalletState','CACHE');setDot('ccDataDot','bad');setText('ccApiState','RETRY');setDot('ccApiDot','bad')}
   finally{state.walletLoading=false;renderWallet();renderValidators();renderSystem()}
 }
@@ -499,8 +481,8 @@ function renderWallet(){
   const pnl=state.avgPrice>0&&live>0?(live-state.avgPrice)*state.total:0,pnlPct=state.avgPrice>0&&live>0?(live/state.avgPrice-1)*100:0;
   setLiveNumber('ccTotalPnl',state.avgPrice>0&&live>0?money(pnl):'—',state.avgPrice>0&&live>0?pnl:NaN);
   setLiveNumber('ccTotalPnlPct',state.avgPrice>0&&live>0?pct(pnlPct):'—',state.avgPrice>0&&live>0?pnlPct:NaN);
-  setLiveNumber('ccApr',Number.isFinite(state.apr)&&state.aprSyncAt&&Date.now()-state.aprSyncAt<window.INJ_STAKING_APR.maxCacheMs?state.apr.toFixed(3)+'%':'—',Number.isFinite(state.apr)?state.apr:NaN);
-  setLiveNumber('ccNetworkApr',state.networkApr>0&&state.aprSyncAt&&Date.now()-state.aprSyncAt<window.INJ_STAKING_APR.maxCacheMs?state.networkApr.toFixed(3)+'%':'—',state.networkApr>0?state.networkApr:NaN);
+  setLiveNumber('ccApr',state.apr>0?state.apr.toFixed(3)+'%':'—',state.apr>0?state.apr:NaN);
+  setLiveNumber('ccNetworkApr',state.networkApr>0?state.networkApr.toFixed(3)+'%':'—',state.networkApr>0?state.networkApr:NaN);
   setLiveNumber('ccCommission',state.commission>0?(state.commission*100).toFixed(2)+'%':'—',state.commission>0?state.commission*100:NaN);
   const daily=state.staked>0&&state.apr>0?state.staked*state.apr/100/365:0;
   setLiveNumber('ccDailyReward',daily>0?fmtInj(daily,4):'—',daily>0?daily:NaN);
@@ -510,11 +492,11 @@ function renderWallet(){
   const stakeRatio=state.total>0?state.staked/state.total*100:NaN;
   setLiveNumber('ccStakeRatio',Number.isFinite(stakeRatio)?stakeRatio.toFixed(1)+'%':'—',stakeRatio);
   setText('ccValidatorCount',`${state.validators.length||0} validator${state.validators.length===1?'':'s'}`);
-  setLiveNumber('ccFooterApr',Number.isFinite(state.apr)&&state.aprSyncAt&&Date.now()-state.aprSyncAt<window.INJ_STAKING_APR.maxCacheMs?state.apr.toFixed(3)+'%':'—',Number.isFinite(state.apr)?state.apr:NaN);
+  setLiveNumber('ccFooterApr',state.apr>0?state.apr.toFixed(3)+'%':'—',state.apr>0?state.apr:NaN);
   setLiveNumber('ccFooterReward',daily>0?daily.toFixed(6)+' INJ':'—',daily>0?daily:NaN);
   applyPrivacy();
 }
-function renderValidators(){const host=$('ccValidatorList');if(!host)return;host.replaceChildren();if(!state.validators.length){const e=document.createElement('span');e.className='cc-empty';e.textContent='Nessuna delega rilevata';host.append(e);return}state.validators.forEach(v=>{const row=document.createElement('div');row.className='cc-validator-row';const name=document.createElement('strong');name.textContent=v.moniker||shortAddress(v.operator);const meta=document.createElement('span');meta.textContent=`${fmtInj(v.amount,2)} · fee ${(n(v.commission)*100).toFixed(2)}%`;const status=document.createElement('b');status.textContent=v.jailed?'JAILED':(['BOND_STATUS_BONDED','3'].includes(String(v.status))?'ACTIVE':'CHECK');if(v.jailed||!['BOND_STATUS_BONDED','3'].includes(String(v.status)))status.style.color='var(--down)';row.append(name,meta,status);host.append(row)})}
+function renderValidators(){const host=$('ccValidatorList');if(!host)return;host.replaceChildren();if(!state.validators.length){const e=document.createElement('span');e.className='cc-empty';e.textContent='Nessuna delega rilevata';host.append(e);return}state.validators.forEach(v=>{const row=document.createElement('div');row.className='cc-validator-row';const name=document.createElement('strong');name.textContent=v.moniker||shortAddress(v.operator);const meta=document.createElement('span');meta.textContent=`${fmtInj(v.amount,2)} · fee ${(n(v.commission)*100).toFixed(2)}%`;const status=document.createElement('b');status.textContent=v.jailed?'JAILED':(v.status==='BOND_STATUS_BONDED'?'ACTIVE':'CHECK');if(v.jailed||v.status!=='BOND_STATUS_BONDED')status.style.color='var(--down)';row.append(name,meta,status);host.append(row)})}
 function renderMarket(){
   const live=state.visual||state.price;
   const liveChange24=state.open24>0&&live>0?(live/state.open24-1)*100:state.change24;

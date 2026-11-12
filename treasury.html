@@ -2,8 +2,7 @@
 <html data-inj-page="treasury" data-inj-viewport="89" lang="it" data-theme="navy">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<script defer src="./page-zoom-lock-20261110.js?v=1"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07121b">
     <title>INJ NODE · Treasury</title>
   <script>
@@ -144,262 +143,6 @@
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
-<link rel="stylesheet" href="./cash-reserve.css?v=20261109alloverview1">
-
-<style id="treasury-value-readability-20261112">
-  /* Treasury: leggibilita dei controvalori senza zoom, modifiche JS o valori arrotondati.
-     Incrementi fluidi per monitor orizzontali/verticali; su mobile riduzione controllata. */
-  html[data-inj-page="treasury"] .treasury-hero-copy .treasury-hero-worth {
-    font-size:clamp(3rem,6.2vw,5.3rem)!important;
-    line-height:1.08!important;
-    color:var(--text)!important;
-    font-variant-numeric:tabular-nums lining-nums;
-    max-width:100%;
-    overflow-wrap:anywhere;
-  }
-  html[data-inj-page="treasury"] .treasury-allocation-metrics
-  .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
-    display:block;
-    width:100%;
-    min-width:0;
-    font-size:clamp(.98rem,1.38vw,1.36rem)!important;
-    font-weight:650!important;
-    line-height:1.32!important;
-    color:var(--text)!important;
-    letter-spacing:-.015em;
-    white-space:normal;
-    overflow-wrap:anywhere;
-    overflow:visible!important;
-    text-overflow:clip!important;
-    font-variant-numeric:tabular-nums;
-  }
-  html[data-inj-page="treasury"] .treasury-allocation-row > small {
-    min-width:0;
-    font-size:clamp(.93rem,1.16vw,1.2rem)!important;
-    font-weight:650!important;
-    line-height:1.3!important;
-    color:var(--muted-strong)!important;
-    white-space:normal;
-    overflow-wrap:anywhere;
-    overflow:visible;
-    text-overflow:clip;
-  }
-  html[data-inj-page="treasury"] .treasury-allocation-row {
-    min-height:clamp(74px,5.3vw,94px);
-  }
-  html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div > small {
-    font-size:clamp(.98rem,1.24vw,1.3rem)!important;
-    font-weight:700!important;
-    line-height:1.3!important;
-    color:var(--text)!important;
-    overflow-wrap:anywhere;
-    font-variant-numeric:tabular-nums;
-  }
-  html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div {
-    min-height:clamp(120px,7vw,148px);
-  }
-  html[data-inj-page="treasury"] .treasury-performance-cell > small {
-    font-size:clamp(.92rem,1.15vw,1.2rem)!important;
-    font-weight:680!important;
-    line-height:1.3!important;
-    color:var(--muted-strong)!important;
-    white-space:normal;
-    overflow:visible;
-    text-overflow:clip;
-    overflow-wrap:anywhere;
-  }
-  /* Importi in Cash Reserve, nella medesima pagina Treasury. */
-  html[data-inj-page="treasury"] .cash-reserve-asset > strong {
-    font-size:clamp(1.25rem,2.6vw,2.05rem)!important;
-    line-height:1.18!important;
-  }
-  html[data-inj-page="treasury"] .cash-token-amount > small {
-    font-size:clamp(.88rem,1.05vw,1.12rem)!important;
-    line-height:1.3!important;
-    color:var(--muted-strong)!important;
-    overflow-wrap:anywhere;
-  }
-  @media (max-width:760px) {
-    html[data-inj-page="treasury"] .treasury-hero-copy .treasury-hero-worth {
-      font-size:clamp(1.9rem,8.7vw,3.05rem)!important;
-      text-align:center;
-    }
-    html[data-inj-page="treasury"] .treasury-allocation-metrics
-    .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
-      font-size:clamp(.8rem,3.1vw,1.02rem)!important;
-    }
-    html[data-inj-page="treasury"] .treasury-allocation-row > small {
-      font-size:clamp(.75rem,2.8vw,.96rem)!important;
-    }
-    html[data-inj-page="treasury"] .treasury-allocation-row {
-      min-height:62px;
-    }
-    html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div > small {
-      font-size:clamp(.8rem,3vw,1.03rem)!important;
-    }
-    html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div {
-      min-height:110px;
-    }
-    html[data-inj-page="treasury"] .treasury-performance-cell > small {
-      font-size:clamp(.76rem,2.8vw,1rem)!important;
-    }
-    html[data-inj-page="treasury"] .cash-token-amount > small {
-      font-size:clamp(.72rem,2.8vw,.9rem)!important;
-    }
-  }
-
-  /* composition-font-parity-20261112: match the estimated-production cards.
-     Increase labels, live INJ amounts and fiat amounts together, while keeping
-     two columns on narrow screens and untruncated figures at any orientation. */
-  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric {
-    align-content:center;
-    justify-items:center;
-    row-gap:clamp(6px,.7vw,11px);
-    min-height:clamp(124px,8.5vw,155px);
-  }
-  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > span {
-    font-size:clamp(.65rem,.92vw,.78rem)!important;
-    font-weight:850!important;
-    line-height:1.3!important;
-    color:var(--muted-strong)!important;
-    letter-spacing:.07em!important;
-    white-space:normal!important;
-    overflow-wrap:break-word;
-  }
-  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > strong,
-  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway > strong {
-    font-size:clamp(1.08rem,1.45vw,1.4rem)!important;
-    line-height:1.3!important;
-    font-weight:860!important;
-    letter-spacing:-.025em!important;
-    max-width:100%;
-    white-space:normal!important;
-    overflow-wrap:anywhere;
-    overflow:visible!important;
-    text-overflow:clip!important;
-    font-variant-numeric:tabular-nums lining-nums;
-  }
-  html[data-inj-page="treasury"] .treasury-allocation-metrics
-  .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
-    font-size:clamp(1.02rem,1.35vw,1.36rem)!important;
-    line-height:1.3!important;
-    font-weight:700!important;
-  }
-  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway {
-    width:100%;
-    min-width:0;
-    justify-content:center;
-    flex-wrap:wrap;
-    column-gap:8px;
-    row-gap:4px;
-  }
-  @media(max-width:900px) {
-    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric {
-      min-height:120px;
-      padding-block:14px;
-    }
-    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > span {
-      font-size:clamp(.68rem,2.7vw,.78rem)!important;
-    }
-    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > strong,
-    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway > strong {
-      font-size:clamp(1.04rem,3.5vw,1.25rem)!important;
-    }
-    html[data-inj-page="treasury"] .treasury-allocation-metrics
-    .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
-      font-size:clamp(.94rem,3.1vw,1.12rem)!important;
-    }
-  }
-</style>
-
-<style id="treasury-worth-historical-integrity-20261112">
-  /* Historical INJ price candles paired with last verified wallet holdings:
-     dashed when balance is estimated; no visual jump across offline gaps. */
-  /* Continuous clean market line: trend colour is based on the selected
-     period. Provenance remains explicit in the caption and point tooltip. */
-  html[data-inj-page="treasury"] #treasuryWorthSparkline
-  path.treasury-worth-line.treasury-worth-estimated{
-    stroke-dasharray:none!important;
-    stroke-opacity:1!important;
-    stroke-linejoin:round!important;
-    stroke-linecap:round!important;
-    fill:none!important;
-    filter:none!important;
-  }
-  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="up"]{
-    color:var(--up,#35ca8c)!important;
-  }
-  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="down"]{
-    color:var(--down,#ee6178)!important;
-  }
-  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="flat"]{
-    color:var(--accent)!important;
-  }
-  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="up"] path.treasury-worth-line{
-    stroke:var(--up,#35ca8c)!important;
-    stroke-dasharray:none!important;
-    stroke-opacity:1!important;
-  }
-  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="down"] path.treasury-worth-line{
-    stroke:var(--down,#ee6178)!important;
-    stroke-dasharray:none!important;
-    stroke-opacity:1!important;
-  }
-  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="flat"] path.treasury-worth-line{
-    stroke:var(--accent)!important;
-    stroke-dasharray:none!important;
-  }
-  html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="up"]{color:var(--up,#35ca8c)!important}
-  html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="down"]{color:var(--down,#ee6178)!important}
-  html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="flat"]{color:var(--muted-strong)!important}
-  html[data-inj-page="treasury"] .treasury-worth-method{
-    display:block;
-    margin:6px 2px 9px;
-    font-size:clamp(10px,.82vw,13px);
-    line-height:1.4;
-    color:var(--muted);
-    opacity:.86;
-  }
-</style>
-
-<style id="treasury-growth-realtime-20261112">
- html[data-inj-page="treasury"] #treasurySparkline .treasury-growth-reading{
-   fill:var(--up,#46d7a4);
-   stroke:var(--surface,#121718);
-   stroke-width:.33;
-   opacity:.75;
-   vector-effect:non-scaling-stroke;
-   pointer-events:none;
- }
- html[data-inj-page="treasury"] #treasurySparkline .treasury-growth-line{
-   stroke:var(--up,#46d7a4)!important;
-   stroke-width:1.95!important;
-   stroke-linecap:round!important;
-   stroke-linejoin:round!important;
-   stroke-dasharray:none!important;
- }
- html[data-inj-page="treasury"] .treasury-growth-coverage-note{
-   display:block;
-   margin:8px 2px 5px;
-   color:var(--muted-strong,var(--muted));
-   font-weight:540;
-   font-size:clamp(10px,.9vw,13px);
-   line-height:1.35;
-   overflow-wrap:break-word;
- }
- @media(max-width:599px){
-   html[data-inj-page="treasury"] .treasury-growth-coverage-note{
-     margin:7px 2px 4px;
-     font-size:clamp(10px,2.65vw,12px);
-     line-height:1.3;
-   }
-   html[data-inj-page="treasury"] #treasurySparkline .treasury-growth-reading{opacity:.8}
- }
-</style>
-<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=optical-responsive1">
-<link rel="stylesheet" href="./inj-responsive-typography-20261112.css?v=20261112-adaptive1">
-<link rel="stylesheet" href="./treasury-mobile-density-20261112.css?v=20261112-phone-density2">
-<link rel="stylesheet" href="./treasury-classic-typography-20261112.css?v=classic-monitor1">
 </head>
 <body>
   <div class="treasury-shell">
@@ -447,7 +190,6 @@
         </div>
       </section>
 
-      
       <section class="treasury-grid">
         <article class="treasury-panel treasury-allocation-panel">
           <header><div><span>ALLOCATION</span><strong>Composizione Treasury</strong></div><small id="treasuryWalletCount">—</small></header>
@@ -519,13 +261,12 @@
               <span id="treasuryGrowthPoints">STORICO —</span>
             </div>
           </div>
-          <div class="treasury-spark-stage" id="treasurySparkStage" role="img" tabindex="0" aria-label="Crescita Treasury: punti riferiti a letture reali, compresi i prelievi. Le pause di rilevazione sono collegate direttamente tra gli estremi senza inventare valori intermedi.">
+          <div class="treasury-spark-stage" id="treasurySparkStage" role="img" tabindex="0" aria-label="Crescita storica del totale INJ. Curva visiva arrotondata tra letture; i valori selezionabili sono quelli osservati realmente.">
             <svg class="treasury-sparkline" id="treasurySparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
             <span class="treasury-chart-live-dot treasury-growth-end-dot" id="treasuryGrowthLiveDot" hidden aria-hidden="true"></span>
             <span class="treasury-spark-cursor" id="treasurySparkCursor" hidden aria-hidden="true"><i></i></span>
             <span class="treasury-spark-tooltip" id="treasurySparkTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
           </div>
-          <small class="treasury-growth-coverage-note" id="treasuryGrowthCoverageNote" aria-live="off">Punti = letture reali, compresi i prelievi. Nessuna crescita simulata.</small>
           <footer><span id="treasuryHistoryStart">Prima lettura</span><span id="treasuryHistoryEnd">Ora</span></footer>
         </article>
 
@@ -554,14 +295,14 @@
               <span id="treasuryWorthMax">MAX —</span>
             </div>
           </div>
-          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Patrimonio totale nel tempo. Tocca o trascina sul grafico per visualizzare il controvalore del punto selezionato.">
+          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Andamento storico del patrimonio totale. Tocca o trascina per leggere valore e data nel tempo.">
             <svg class="treasury-sparkline treasury-worth-sparkline" id="treasuryWorthSparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
             <span class="treasury-worth-axis" aria-hidden="true"><b id="treasuryWorthAxisTop">—</b><b id="treasuryWorthAxisBottom">—</b></span>
             <span class="treasury-chart-live-dot treasury-worth-end-dot" id="treasuryWorthLiveDot" hidden aria-hidden="true"></span>
             <span class="treasury-spark-cursor" id="treasuryWorthCursor" hidden aria-hidden="true"><i></i></span>
-            <span class="treasury-spark-tooltip" id="treasuryWorthTooltip" hidden aria-live="polite"><strong>—</strong></span>
+            <span class="treasury-spark-tooltip" id="treasuryWorthTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
           </div>
-           <small class="treasury-worth-method">Patrimonio = INJ detenuti × prezzo di mercato INJ/USDT. Reward, depositi e prelievi possono influire sull’andamento.</small>
+          <small class="treasury-backfill-note" id="treasuryReconstructedNote" hidden>Storico ricostruito con prezzi reali · valori intermedi stimati</small>
           <footer><span id="treasuryWorthHistoryStart">Prima lettura</span><span id="treasuryWorthHistoryEnd">Ora</span></footer>
         </article>
 
@@ -584,119 +325,11 @@
           </div>
         </article>
       </section>
-
-      <!-- Cash Reserve: wallet asset inventory and verified staking positions, separate from managed Treasury. -->
-      <section class="cash-reserve-panel" id="cashReservePanel" aria-label="Cash Reserve · stablecoin Injective e Solana">
-        <div class="cash-reserve-head">
-          <div class="cash-reserve-title-row">
-            <span class="cash-reserve-shield" aria-hidden="true">⬡</span>
-            <div><h2>CASH RESERVE</h2><p data-cash-it="Riserva patrimoniale · Injective + Solana" data-cash-en="Capital reserve · Injective + Solana">Riserva patrimoniale · Injective + Solana</p></div>
-          </div>
-          <div class="cash-reserve-actions">
-            <span id="cashStatus" class="cash-pill is-idle" role="status" aria-live="polite">In attesa</span>
-            <button id="cashPrivacy" type="button" aria-label="Privacy" aria-pressed="false" title="Nascondi o mostra importi">◉</button>
-            <button id="cashSync" type="button">Sincronizza</button>
-          </div>
-        </div>
-        <div class="cash-reserve-top">
-          <div><span class="cash-reserve-eyebrow" data-cash-it="VALORE NOMINALE DELLA RISERVA" data-cash-en="NOMINAL RESERVE VALUE">VALORE NOMINALE DELLA RISERVA</span>
-            <strong id="cashTotal" class="cash-reserve-total" aria-live="polite">—</strong></div>
-          <select id="cashCurrency" aria-label="Valuta della riserva">
-            <option value="USD">USD</option><option value="EUR">EUR</option>
-          </select>
-        </div>
-        <div class="cash-reserve-assets">
-          <div class="cash-reserve-asset"><span class="cash-reserve-asset-label"><img class="cash-reserve-static-logo" src="https://assets-cdn.trustwallet.com/blockchains/solana/assets/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png" alt="" loading="lazy">USDC · INJ</span><strong id="cashUsdc">—</strong><small>Circle · Injective nativo</small></div>
-          <div class="cash-reserve-asset"><span class="cash-reserve-asset-label"><img class="cash-reserve-static-logo" src="https://assets-cdn.trustwallet.com/blockchains/solana/assets/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png" alt="" loading="lazy">USDC · SOL</span><strong id="cashUsdcSol">—</strong><small id="cashSolanaEarnDetail">Circle · Solana</small></div>
-          <div class="cash-reserve-asset"><span class="cash-reserve-asset-label"><img class="cash-reserve-static-logo" src="https://assets-cdn.trustwallet.com/blockchains/solana/assets/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.png" alt="" loading="lazy">USDT · SOL</span><strong id="cashUsdtSol">—</strong><small>Tether · Solana</small></div>
-        </div>
-        <div class="cash-reserve-networks" aria-label="Portafoglio completo per blockchain">
-          <section class="cash-network-card" aria-label="Token disponibili su Injective">
-            <header class="cash-network-head">
-              <div><small>ON-CHAIN WALLET</small><h3>Injective</h3></div>
-              <span class="cash-network-badge" id="cashInjAssetsStatus">SYNC</span>
-            </header>
-            <div class="cash-token-list" id="cashInjectiveTokens" aria-live="polite">
-              <p class="cash-token-empty">Sincronizzazione asset…</p>
-            </div>
-          </section>
-          <section class="cash-network-card" aria-label="Token disponibili su Solana">
-            <header class="cash-network-head">
-              <div><small>ON-CHAIN WALLET</small><h3>Solana</h3></div>
-              <span class="cash-network-badge" id="cashSolAssetsStatus">SYNC</span>
-            </header>
-            <div class="cash-token-list" id="cashSolanaTokens" aria-live="polite">
-              <p class="cash-token-empty">Sincronizzazione asset…</p>
-            </div>
-            <p class="cash-network-note" id="cashSolAssetsNote"></p>
-          </section>
-        </div>
-        <section class="cash-reserve-yield" aria-label="Posizioni staking e rendite verificabili">
-          <div class="cash-yield-section-head">
-            <div><small>YIELD MONITOR</small><h3>Staking &amp; DeFi</h3></div>
-            <span id="cashTokenCount" class="cash-token-count">—</span>
-          </div>
-          <div id="cashYieldList" class="cash-yield-list" aria-live="polite">
-            <p class="cash-token-empty">Lettura delle posizioni e delle ricompense…</p>
-          </div>
-        </section>
-        <div class="cash-reserve-grid">
-          <div class="cash-reserve-box">
-            <div class="cash-reserve-goal-head"><strong data-cash-it="Obiettivo di accumulo" data-cash-en="Savings target">Obiettivo di accumulo</strong><span id="cashGoalTotal">—</span></div>
-            <form id="cashGoalForm" class="cash-reserve-goal-form">
-              <input id="cashGoalAmount" type="number" min="0" step="0.01" inputmode="decimal" aria-label="Obiettivo riserva in USD" placeholder="Imposta un obiettivo in USD" />
-              <button type="submit" data-cash-it="Salva" data-cash-en="Save">Salva</button>
-            </form>
-            <div class="cash-reserve-progress"><div id="cashProgressBar"></div></div>
-            <div class="cash-reserve-goal-bottom"><span id="cashGoalProgress">Nessun obiettivo impostato</span><span>USD</span></div>
-          </div>
-          <div class="cash-reserve-box">
-            <div class="cash-reserve-chart-head">
-              <strong data-cash-it="Evoluzione riserva" data-cash-en="Reserve history">Evoluzione riserva</strong>
-              <div class="cash-reserve-chart-ranges" role="group" aria-label="Periodo grafico">
-                <button type="button" data-cash-range="1D" aria-pressed="false">1D</button>
-                <button type="button" data-cash-range="1M" aria-pressed="false">1M</button>
-                <button type="button" data-cash-range="1Y" aria-pressed="false">1Y</button>
-                <button type="button" data-cash-range="ALL" aria-pressed="true" data-cash-it="Totale" data-cash-en="All">Totale</button>
-              </div>
-            </div>
-            <div class="cash-chart-overview" aria-live="polite">
-              <div class="cash-chart-overview-total"><span data-cash-it="TOTALE RISERVA" data-cash-en="TOTAL RESERVE">TOTALE RISERVA</span><strong id="cashChartTotal">—</strong></div>
-              <span id="cashChartPeriodInfo" class="cash-chart-period-info">—</span>
-            </div>
-            <div class="cash-chart-scroll" id="cashChartScroll" aria-label="Scorri il grafico per visitare le rilevazioni precedenti">
-              <svg id="cashHistoryChart" class="cash-reserve-chart-svg" viewBox="0 0 660 180" preserveAspectRatio="none" role="img" tabindex="0" aria-label="Storico Cash Reserve interattivo, usa le frecce sinistra e destra per navigare"></svg>
-            </div>
-            <div class="cash-chart-history-tools">
-              <div class="cash-chart-navigation" aria-label="Navigazione nello storico">
-                <button type="button" id="cashChartPrev" aria-label="Rilevazione precedente" title="Rilevazione precedente">‹</button>
-                <button type="button" id="cashChartNext" aria-label="Rilevazione successiva" title="Rilevazione successiva">›</button>
-                <button type="button" id="cashChartLatest" data-cash-it="Adesso" data-cash-en="Latest">Adesso</button>
-              </div>
-              <span data-cash-it="Scorri e tocca i punti · verde ingresso, rosso uscita" data-cash-en="Scroll and tap points · green increase, red decrease">Scorri e tocca i punti · verde ingresso, rosso uscita</span>
-            </div>
-            <div id="cashChartDetail" class="cash-chart-detail" aria-live="polite"></div>
-            <p id="cashChartEmpty" class="cash-reserve-chart-empty" data-cash-it="Lo storico si formerà da questo dispositivo a partire dalle prossime sincronizzazioni." data-cash-en="History starts on this device with the next successful syncs.">Lo storico si formerà da questo dispositivo a partire dalle prossime sincronizzazioni.</p>
-            <div class="cash-reserve-chart-dates"><span id="cashChartFirst">—</span><span id="cashChartLast">—</span></div>
-          </div>
-        </div>
-        <div class="cash-reserve-statusline">
-          <span id="cashSyncInfo">In attesa</span>
-          <span data-cash-it="Sola lettura · saldo on-chain · nessuna firma richiesta" data-cash-en="Read-only · on-chain balance · no wallet signature required">Sola lettura · saldo on-chain · nessuna firma richiesta</span>
-        </div>
-        <p class="cash-reserve-note" id="cashFxNote">Valore nominale: 1 stablecoin = 1 USD. Non è una quotazione di mercato né un capitale assicurato.</p>
-        <p class="cash-reserve-note" data-cash-it="Le stablecoin verificate, disponibili o in Jupiter Earn, sono conteggiate nella riserva; gli altri token restano separati." data-cash-en="Verified stablecoins, liquid or in Jupiter Earn, count toward the reserve; other tokens are separate.">Le stablecoin verificate, disponibili o in Jupiter Earn, sono conteggiate nella riserva; gli altri token restano separati.</p>
-        <p class="cash-reserve-error" id="cashError" role="alert"></p>
-      </section>
-
     <footer class="inj-long-page-signature inj-brand-credit" data-i18n-skip="true" aria-label="INJ Node by B Capital Group"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
 </main>
   </div>
-  <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-  <script src="./treasury.js?v=20261112-worth-tooltip-only1" defer></script>
+  <script src="./treasury.js?v=20261102-chainfix1" defer></script>
 
 
-  <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
-  <script defer src="./cash-reserve.js?v=20261109-shared2"></script>
 </body>
 </html>

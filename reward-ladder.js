@@ -138,9 +138,8 @@ function addGoal(event) {
       const age = Date.now() - (finite(row.updated) || 0);
       const reward = age < 30 * 60_000 ? finite(row.rewards) : null;
       const stake = age < 30 * 60_000 ? finite(row.staked) : null;
-      const aprAge=Date.now()-(finite(row.aprUpdated)||0);
-      const storedApr=aprAge>=0&&aprAge<30*60_000?finite(row.personalApr):null;
-      const commission=aprAge>=0&&aprAge<30*60_000?finite(row.weightedCommission):null;
+      const storedApr = finite(row.personalApr);
+      const commission = finite(row.weightedCommission);
       state.rows[wallet.address] = {
         address: wallet.address, reward: reward !== null && reward >= 0 ? reward : null,
         stake: stake !== null && stake >= 0 ? stake : null,
@@ -283,12 +282,17 @@ function addGoal(event) {
   async function fetchOfficialApr(){
     if(Date.now()-state.aprAt<5*60_000)return;
     state.aprAt=Date.now();
-    const checked=await window.INJ_STAKING_APR.load();
-    state.officialApr=checked?.apr||null;
+    try{
+      const data=await getJSON('https://api.ui.injective.network/api/v1/cache/stats/apr',6500);
+      const value=finite(data?.apr);
+      if(value!==null && value>0){
+        const percent=value<=1?value*100:value;
+        if(percent>0 && percent<=100)state.officialApr=percent;
+      }
+    }catch(_){}
   }
   function aprFor(row){
-    // Validator activity and commission are already accounted for in the
-    // common wallet APR: never recalculate an approximate gross yield.
+    if(state.officialApr!==null && row.commission!==null) return state.officialApr*(1-row.commission);
     return row.apr;
   }
   async function syncNetwork(){
@@ -298,25 +302,19 @@ function addGoal(event) {
     render();
     try{
       await fetchOfficialApr();
-      const list=await Promise.all(state.wallets.map(async w=>({
-        chain:await getWalletNetwork(w.address),
-        staking:await window.INJ_STAKING_APR.wallet(w.address)
-      })));
+      const list=await Promise.all(state.wallets.map(w=>getWalletNetwork(w.address)));
       const now=Date.now();
-      list.forEach(({chain,staking},i)=>{
-        if(!chain)return;
+      list.forEach((data,i)=>{
+        if(!data)return;
         const address=state.wallets[i].address;
         const row=state.rows[address];
         if(!row)return;
-        row.reward=chain.reward;
-        row.stake=staking?.staked ?? chain.stake;
-        row.apr=staking && Number.isFinite(staking.apr) && !staking.stale ? staking.apr : null;
-        row.commission=staking && Number.isFinite(staking.weightedCommission)
-          ? staking.weightedCommission : null;
+        row.reward=data.reward;
+        row.stake=data.stake;
         row.at=now;
         row.verified=true;
       });
-      if(list.some(item=>item.chain))state.networkAt=now;
+      if(list.some(Boolean))state.networkAt=now;
     }finally{
       state.syncing=false;
       $('ladderRefresh').disabled=false;

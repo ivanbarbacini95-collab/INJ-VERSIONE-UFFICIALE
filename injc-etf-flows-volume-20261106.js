@@ -90,13 +90,6 @@
    const el=$('etfFlowHistory');if(!el)return;
    flowDates=dateKeys.slice();
    flowMap=new Map(rows.filter(Boolean).map(r=>[r.date,r]));
-   const noData=$('etfFlowEmpty'),graph=$('etfFlowGraph');
-   if(noData)noData.hidden=flowMap.size>0;
-   if(graph)graph.classList.toggle('is-awaiting-reports',flowMap.size===0);
-   setText('etfFlowsSummary',flowMap.size
-     ?tr(flowMap.size+' sedute con flussi verificati',flowMap.size+' sessions with verified fund flows')
-     :tr('Nessun report verificato · valore sconosciuto, non zero',
-         'No verified report · unknown value, not zero'));
    const key=flowDates.join('|')+'::'+[...flowMap.values()].map(r=>[r.date,r.inflowUsd,r.outflowUsd].join(':')).join('|');
    if(key===flowRenderKey){scheduleFlowScale();return;}
    const atEnd=flowFirst||el.scrollWidth-el.clientWidth-el.scrollLeft<85,previousScroll=el.scrollLeft;
@@ -111,15 +104,13 @@
      day.setAttribute('aria-label',k+' '+(row?'Inflow '+number(row.inflowUsd)+' USD, Outflow '+number(row.outflowUsd)+' USD':
        tr('dati in attesa','pending report')));
      const columns=document.createElement('div');columns.className='injc-flow-columns';
-     if(row){
-       for(const side of ['inflow','outflow']){
-         const bar=document.createElement('i');
-         bar.className='injc-flow-column '+side+' is-verified';
-         if(row[side+'Usd']===0)bar.classList.add('is-zero');
-         bar.style.height='0%';
-         columns.appendChild(bar);
-       }
-     }else day.classList.add('is-missing');
+     for(const side of ['inflow','outflow']){
+       const bar=document.createElement('i');
+       bar.className='injc-flow-column '+side+(row?' is-verified':' is-pending');
+       if(row&&row[side+'Usd']===0)bar.classList.add('is-zero');
+       bar.style.height=row?'0%':'18px';
+       columns.appendChild(bar);
+     }
      day.appendChild(columns);
      const stamp=document.createElement('span');stamp.className='injc-flow-date';stamp.textContent=dateFmt(k);day.appendChild(stamp);
      const state=document.createElement('small');state.className='injc-flow-day-state';state.textContent=row?'✓':k===today?tr('OGGI','TODAY'):'·';day.appendChild(state);
@@ -149,9 +140,9 @@
    if(!old||priority>=old.priority)dailyPrice.set(date,{price:n,priority});
  }
  let volumeDays=[],volumeFirst=true,volumeLoading=false,volumeRaf=0,volumeSnapshot='',lastVolumeSource='';
- let volumeMode='history',volumeView='history',intradayPoints=[],intradaySource='';
+ let volumeMode='session',intradayPoints=[],intradaySource='';
  function validVolume(k,value){
-   return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k<=nyDay(Date.now())&&
+   return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k>='2026-11-05'&&k<=nyDay(Date.now())&&
      Number.isSafeInteger(value)&&value>=0;
  }
  function mergeVolume(k,v,priority=0){
@@ -234,14 +225,8 @@
  function drawVolume(newData=false){
    const scroller=$('etfVolumeHistory'),axis=$('etfVolumeRightAxis'),empty=$('etfVolumeEmpty');
    if(!scroller||!axis)return;
-   const session=volumeMode==='session',allVisible=volumeView==='all'&&!session;
-   // Session feed is cumulative; each volume candle shows incremental shares.
-   // Historical feed has one total per trading day and stays undifferenced.
-   const pts=session?intradayPoints.map((p,i,all)=>({
-       ...p,cumulative:p.volume,
-       volume:Number.isFinite(p.volume)
-         ?Math.max(0,p.volume-(i?all[i-1].volume:0)):null
-     })):
+   const session=volumeMode==='session';
+   const pts=session?intradayPoints.map(p=>({...p})):
      volumeDays.map(date=>({date,volume:byDay.get(date)?.volume??null,
        price:dailyPrice.get(date)?.price??null}));
    const source=session?intradaySource:lastVolumeSource;
@@ -253,26 +238,18 @@
        :tr('In attesa dello storico dei volumi','Awaiting volume history');
    }
    setText('etfVolumeSummary',session
-     ?tr('Shares per intervallo · '+(pts.at(-1)?.date||'—')+' · '+good.length+' candele',
-         'Shares per interval · '+(pts.at(-1)?.date||'—')+' · '+good.length+' bars')
+     ?tr('Volume cumulato nella seduta '+(pts.at(-1)?.date||'—')+' · '+good.length+' punti',
+         'Cumulative session volume '+(pts.at(-1)?.date||'—')+' · '+good.length+' points')
      :tr(good.length+' sedute con volume riportato · quote INJC',
          good.length+' sessions with reported volume · INJC shares'));
    if(!pts.length){scroller.replaceChildren();return;}
-   // HISTORY preserves each bar's width and scrolls across the full available
-   // dataset; ALL fits every reported candle inside the visible viewport.
-   const viewportWidth=Math.max(1,scroller.clientWidth);
-   const width=allVisible?viewportWidth:Math.max(viewportWidth,
+   const width=Math.max(scroller.clientWidth,
      session?Math.min(5000,Math.max(390,pts.length*24+130)):pts.length*58+130);
    const top=21,bottom=180,plotHeight=bottom-top,previousX=scroller.scrollLeft;
-   // Do not snap the user's backward scroll to the latest candle. Follow
-   // the right edge only on first display or when new market data arrives.
-   const atEnd=volumeFirst||(newData&&scroller.scrollWidth-scroller.clientWidth-previousX<=3);
+   const atEnd=volumeFirst||scroller.scrollWidth-scroller.clientWidth-previousX<82;
    const earliest=pts[0].time,latest=pts.at(-1).time;
-   const leftMargin=allVisible?Math.min(24,Math.max(10,width*.04)):66;
-   const rightMargin=allVisible?Math.min(24,Math.max(10,width*.04)):66;
-   const x=i=>allVisible
-     ?leftMargin+(pts.length===1?(width-leftMargin-rightMargin)/2:i*(width-leftMargin-rightMargin)/(pts.length-1))
-     :session?leftMargin+(pts[i].time-earliest)/Math.max(1,latest-earliest)*(width-leftMargin-rightMargin)
+   const leftMargin=66,rightMargin=66;
+   const x=i=>session?leftMargin+(pts[i].time-earliest)/Math.max(1,latest-earliest)*(width-leftMargin-rightMargin)
      :width-rightMargin-(pts.length-1-i)*58;
    let max=0;
    good.forEach(p=>{const px=x(p.i);if(px>=previousX-50&&px<=previousX+scroller.clientWidth+50)max=Math.max(max,p.volume);});
@@ -281,12 +258,12 @@
    axis.querySelectorAll('[data-volume-axis]').forEach((label,i)=>{
      label.textContent=scale?compact([scale,scale/2,0][i]):(i===2?'0':'—');
    });
-   const y=v=>scale>0?Math.max(top,Math.min(bottom,bottom-v/scale*plotHeight)):bottom;
+   const y=v=>scale>0?bottom-v/scale*plotHeight:bottom;
    const grid=[top,(top+bottom)/2,bottom].map(t=>
      '<line x1="0" y1="'+t+'" x2="'+width+'" y2="'+t+'" stroke="currentColor" stroke-opacity=".12" stroke-dasharray="3 6"/>').join('');
    // Tick positions are chosen by actual rendered spacing. Preserve endpoints;
    // suppress nearby middle labels, particularly late-session dense prints.
-   const minGap=session?110:allVisible?65:90;
+   const minGap=session?110:90;
    const labelIndices=[];
    if(pts.length){
      labelIndices.push(pts.length-1);
@@ -301,23 +278,23 @@
        '" y="210" text-anchor="middle" fill="currentColor" opacity=".72" font-size="10">'+
        (session?formatNYTime(pts[i].time):dateFmt(pts[i].date))+'</text>'
    ).join('');
-   // Each bar shows nonnegative shares traded, not the direction of the share price.
-   // No bar is rendered when volume is unreported.
-   const candleWidth=allVisible
-     ?Math.max(.9,Math.min(24,(width-leftMargin-rightMargin)/Math.max(1,pts.length)*.68))
-     :session?Math.max(8,Math.min(19,(width-leftMargin-rightMargin)/Math.max(1,pts.length)*.62))
-     :24;
-   const bars=pts.map((p,i)=>{
-    if(!Number.isFinite(p.volume))return '';
-     const upper=Math.min(bottom-2,y(p.volume));
-     return '<rect class="injc-volume-bar is-neutral" x="'+(x(i)-candleWidth/2).toFixed(2)+
-       '" y="'+upper.toFixed(2)+'" width="'+candleWidth.toFixed(2)+
-       '" height="'+Math.max(2,bottom-upper).toFixed(2)+'" rx="2.5"/>';
-   }).join('');
+   const segments=[];let part=[];
+   pts.forEach((p,i)=>{if(Number.isFinite(p.volume))part.push([x(i),y(p.volume)]);
+     else if(part.length){segments.push(part);part=[];}});
+   if(part.length)segments.push(part);
+   let shapes='';
+   for(const segment of segments){
+     if(segment.length<2)continue;
+     const d=segment.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ');
+     const fill=d+' L'+segment.at(-1)[0].toFixed(2)+' '+bottom+' L'+segment[0][0].toFixed(2)+' '+bottom+' Z';
+     shapes+='<path class="injc-volume-fill" d="'+fill+'"/><path class="injc-volume-line" d="'+d+'"/>';
+   }
+   const dots=good.map(p=>'<circle class="injc-volume-dot" cx="'+x(p.i).toFixed(2)+
+     '" cy="'+y(p.volume).toFixed(2)+'" r="3.5"/>').join('');
    const svg='<svg class="injc-volume-svg'+(newData?' is-new-data':'')+'" width="'+width+
      '" height="220" viewBox="0 0 '+width+' 220" tabindex="0" role="img" aria-label="'+
      tr('Volume delle quote INJC · usa il dito o mouse per vedere i dati','INJC share volume · touch or hover to inspect')+
-     '">'+grid+bars+dates+
+     '">'+grid+shapes+dots+dates+
      '<g class="injc-volume-cursor" visibility="hidden" pointer-events="none">'+
      '<line class="injc-volume-crosshair" y1="'+top+'" y2="'+bottom+'"/>'+
      '<circle class="injc-volume-select-dot" r="6"/></g></svg>';
@@ -379,15 +356,12 @@
    if(volumeLoading||document.hidden)return;
    volumeLoading=true;
    try{
-     const loadYahoo=async(range,interval)=>{
-       try{return await fetchJson('./api/injc-market-data?provider=yahoo&range='+range+'&interval='+interval,8500);}
-       catch(_){return await fetchJson('https://proxy.cors.dev/https://query2.finance.yahoo.com/v8/finance/chart/INJC?range='+range+'&interval='+interval+'&includePrePost=false',10500);}
-     };
+     const source='https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/INJC?range=1y&interval=1d&includePrePost=false';
      const results=await Promise.allSettled([
-       loadYahoo('1y','1d'),
+       fetchJson(source,10500),
        fetchJson('./market-data/injc-etf-volume.json?t='+Date.now(),8000),
        fetchJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000),
-       loadYahoo('5d','5m')
+       fetchJson('https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/INJC?range=5d&interval=5m&includePrePost=false',10500)
      ]);
      if(results[1].status==='fulfilled'){
        const d=results[1].value;
@@ -426,10 +400,13 @@
        intradayPoints=yahooPts;
        intradaySource=tr('Volumi intraday Yahoo · feed potenzialmente ritardato','Yahoo intraday volumes · potentially delayed');
      }
-     // Show every actual reported session, beginning with the first available
-     // INJC candle; do not insert fictitious trading days or hide older bars.
-     const today=nyDay(Date.now());
-     volumeDays=[...byDay.keys()].filter(k=>k<=today).sort();
+     const today=nyDay(Date.now()),start=new Date('2026-11-05T12:00:00Z'),keys=[];
+     const weekdays=new Set();
+     for(let i=0;i<2500&&start.toISOString().slice(0,10)<=today;i++,start.setUTCDate(start.getUTCDate()+1)){
+       const day=start.getUTCDay(),key=start.toISOString().slice(0,10);
+       if(day!==0&&day!==6)weekdays.add(key);
+     }
+     volumeDays=[...weekdays].filter(k=>k<=today);
      const signature=volumeMode+';'+volumeDays.join(',')+';'+[...byDay].map(([k,v])=>k+':'+v.volume).join(',')+
        ';'+intradayPoints.map(p=>p.time+':'+p.volume+':'+p.price).join(',')+
        ';'+[...dailyPrice].map(([k,v])=>k+':'+v.price).join(',');
@@ -441,50 +418,7 @@
  function bind(){
    const fs=$('etfFlowHistory');
    fs?.addEventListener('scroll',()=>{hideFlowTooltip();scheduleFlowScale();},{passive:true});
-   const volumeScroller=$('etfVolumeHistory');
-   volumeScroller?.addEventListener('scroll',queueVolumeDraw,{passive:true});
-   // Native swipe remains in place on phones; on desktop, dragging is also
-   // supported in addition to wheel/trackpad and keyboard navigation.
-   if(volumeScroller){
-     let drag=null;
-     volumeScroller.addEventListener('pointerdown',event=>{
-       if(event.pointerType!=='mouse'||event.button!==0||volumeView==='all'||
-          volumeScroller.scrollWidth<=volumeScroller.clientWidth)return;
-       drag={x:event.clientX,left:volumeScroller.scrollLeft,id:event.pointerId};
-       volumeScroller.setPointerCapture?.(event.pointerId);
-     });
-     volumeScroller.addEventListener('pointermove',event=>{
-       if(!drag||event.pointerId!==drag.id)return;
-       if(Math.abs(event.clientX-drag.x)>3){
-         volumeScroller.scrollLeft=drag.left-(event.clientX-drag.x);
-         volumeScroller.classList.add('is-dragging');
-       }
-     });
-     const stopDrag=event=>{
-       if(!drag||event.pointerId!==drag.id)return;
-       if(volumeScroller.hasPointerCapture?.(event.pointerId))
-         volumeScroller.releasePointerCapture(event.pointerId);
-       drag=null;volumeScroller.classList.remove('is-dragging');
-     };
-     volumeScroller.addEventListener('pointerup',stopDrag);
-     volumeScroller.addEventListener('pointercancel',stopDrag);
-     volumeScroller.addEventListener('lostpointercapture',()=>{
-       drag=null;volumeScroller.classList.remove('is-dragging');
-     });
-   }
-   document.querySelectorAll('[data-injc-volume-view]').forEach(button=>{
-     button.addEventListener('click',()=>{
-       const view=button.dataset.injcVolumeView;
-       if((view!=='history'&&view!=='all')||view===volumeView)return;
-       volumeView=view;volumeFirst=view==='history';
-       document.querySelectorAll('[data-injc-volume-view]').forEach(item=>{
-         const active=item===button;
-         item.classList.toggle('active',active);
-         item.setAttribute('aria-pressed',String(active));
-       });
-       drawVolume(true);
-     });
-   });
+   $('etfVolumeHistory')?.addEventListener('scroll',queueVolumeDraw,{passive:true});
    if(typeof ResizeObserver==='function'){
      const obs=new ResizeObserver(()=>{scheduleFlowScale();queueVolumeDraw();});
      for(const id of ['etfFlowHistory','etfVolumeHistory'])if($(id))obs.observe($(id));
@@ -505,7 +439,7 @@
    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshVolume();});
    window.addEventListener('pageshow',refreshVolume);
    refreshVolume();
-   setInterval(()=>{if(!document.hidden)refreshVolume();},30000);
+   setInterval(()=>{if(!document.hidden)refreshVolume();},120000);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
  else bind();

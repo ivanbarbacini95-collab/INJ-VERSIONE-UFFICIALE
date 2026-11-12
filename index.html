@@ -3,8 +3,7 @@
 <html data-inj-screen="boot" data-inj-page="index" data-inj-viewport="80" data-theme="obsidian" lang="it">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<script defer src="./page-zoom-lock-20261110.js?v=1"></script>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#060b11" name="theme-color"/>
 <style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}</style>
 
@@ -44,7 +43,6 @@
 <script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--theme-canvas').trim()||cs.getPropertyValue('--bg').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <!-- Ordered Home CSS: 126 legacy requests consolidated; all original rules retained. -->
 <link rel="stylesheet" href="./inj-home-overrides-20261106.css?v=perf1">
-<link rel="stylesheet" href="./my-reward-portrait-20261110.css?v=portrait-desktop1">
 <script defer src="viewport.js?v=20261105-theme-canvas1"></script>
 
 <style id="entry-flat-v44-css">
@@ -129,7 +127,7 @@
 <script defer src="./home-entry-feedback.js?v=160720"></script>
 <script defer src="./home-scroll-memory.js?v=return-stable-20261105a"></script>
 <script defer src="./cloud-sync-agent.js?v=20261027sync1"></script>
-<script defer src="navigation.js?v=20261109-tools-return-motion1"></script>
+<script defer src="navigation.js?v=20261104-mono-pro1"></script>
 <script defer src="./i18n.js?v=20261028allsections1"></script>
 <script defer src="scroll-guard.js?v=160525"></script>
 <!-- INJ Node Home Vitality: unique theme-aware launcher art; no page-wide effects -->
@@ -385,8 +383,7 @@
 
 
 
-<script defer src="./validators-launcher.js?v=20261111e"></script>
-<script defer src="./home-bottom-tabs-20261030.js?v=20261111-validators1"></script>
+<script defer src="./home-bottom-tabs-20261030.js?v=20261105-precision-icons1"></script>
 
 <script defer src="./market-tab-navigation-20261031.js?v=marketrail14"></script>
 
@@ -394,8 +391,8 @@
 
 
 
-<script defer src="./home-card-reorder-20261030.js?v=20261111-no-market-reactor1"></script>
-<script src="./inj-font-switcher-20261029.js?v=rubik-ui1"></script>
+<script defer src="./home-card-reorder-20261030.js?v=order4"></script>
+<script src="./inj-font-switcher-20261029.js?v=sf-dual-20261103a"></script>
 
 <script>try{if(localStorage.getItem('inj_node_access_lock_v1'))document.documentElement.dataset.injLockPending='1';}catch(_){}</script>
 
@@ -404,7 +401,6 @@
 <script defer src="./inj-local-access-lock-20261101.js?v=1"></script>
 
 <script defer src="./my-reward-immersive-20261101.js?v=20261105-neutral1"></script>
-<script defer src="./my-reward-portrait-20261110.js?v=portrait-desktop1"></script>
 
 <script defer src="./nav-premium-loop-20261101.js?v=13-theme-accent"></script>
 
@@ -434,20 +430,13 @@
 
 
 
-
+<script defer src="./home-single-screen-20261105.js?v=return-stable-20261105a"></script>
 <script defer src="./home-pro-launcher-guard-20261105.js?v=launcher-clean1"></script>
-
 <script defer src="./inj-six-themes-20261103.js?v=20261105-theme-canvas1"></script>
 
 
 
 
-
-<!-- Home Pro portrait is stationary; only actual dock collisions reduce chart height. -->
-<link rel="stylesheet" href="./home-fixed-20261110.css?v=home-static-portrait1">
-<script defer src="./home-fixed-20261110.js?v=home-static-portrait1"></script>
-<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
-<link rel="stylesheet" href="./inj-responsive-typography-20261112.css?v=20261112-adaptive1">
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
@@ -800,7 +789,7 @@
 </button>
 <button class="entry-action" id="entryLiveButton" type="button">
 <span aria-hidden="true" class="entry-action-icon inj-pro-launcher-symbol"><svg class="inj-pro-launcher-art inj-pro-icon-live" viewBox="0 0 64 64" focusable="false" aria-hidden="true"><rect class="inj-pro-icon-frame" x="7.8" y="9.5" width="48.4" height="45" rx="7"/><path class="inj-pro-icon-muted" d="M13 23h38M13 43h38"/><path class="inj-pro-icon-detail inj-pro-live-scan" d="M13 17h38"/><path class="inj-pro-icon-bright inj-pro-live-wave" d="M13 34h7l5-10 6 19 7-13 5 6 5-7 3 3"/><circle class="inj-pro-icon-accent inj-pro-live-beacon" cx="51" cy="32" r="2.4"/></svg></span>
-<span><strong class="inj-home-tile-title" data-it="Live View" data-en="Live View">Live View</strong><small class="inj-tile-description" data-it="Prezzo, staking e reward live" data-en="Live price, staking and rewards">Prezzo, staking e reward live</small></span>
+<span><strong class="inj-home-tile-title" data-it="Live View" data-en="Live View">Live View</strong><small class="inj-tile-description" data-it="Dati live del wallet" data-en="Live wallet data">Dati live del wallet</small></span>
 <svg aria-hidden="true" class="entry-action-arrow" viewbox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
 </button>
 
@@ -820,11 +809,6 @@
 <span><strong class="inj-home-tile-title" data-it="Performance" data-en="Performance">Performance</strong><small class="inj-tile-description" data-it="Storico dei rendimenti" data-en="Performance history">Storico dei rendimenti</small></span>
 <svg aria-hidden="true" class="entry-action-arrow" viewbox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
 </button>
-<a class="entry-action entry-action-multi-chart" id="entryMultiChartButton" href="./multi-chart.html?v=20261111-portrait-auto1" aria-label="Apri INJ Multi Chart">
-<span><strong class="inj-home-tile-title" data-it="INJ Multi Chart" data-en="INJ Multi Chart">INJ Multi Chart</strong></span>
-<span aria-hidden="true" data-premium-artwork="luxury-b" class="inj-tile-scene inj-precision-icon inj-luxury-icon inj-multichart-art"><svg viewBox="0 0 120 68" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect class="pi-panel" x="11" y="8" width="44" height="23" rx="4"/><rect class="pi-panel" x="65" y="8" width="44" height="23" rx="4"/><rect class="pi-panel" x="11" y="37" width="44" height="23" rx="4"/><rect class="pi-panel" x="65" y="37" width="44" height="23" rx="4"/><path class="pi-strong" d="m16 24 8-6 7 4 8-9 10 3M70 24l7-7 7 4 8-8 11 4M16 52l7-8 8 3 8-6 10 4M70 53l7-5 7 2 9-9 10 3"/><path class="pi-hair" d="M16 27h34M70 27h34M16 56h34M70 56h34"/><circle class="pi-led" cx="49" cy="16" r="2"/><circle class="pi-led" cx="103" cy="44" r="2"/></svg></span>
-<svg aria-hidden="true" class="entry-action-arrow" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
-</a>
 <button class="entry-action entry-action-converter" id="entryConverterButton" type="button">
 <span aria-hidden="true" class="entry-action-icon"><svg viewbox="0 0 24 24"><path d="M5 4h14v16H5z"></path><path d="M8 8h8M8 12h2M14 12h2M8 16h2M14 16h2"></path></svg></span>
 <span><strong class="inj-home-tile-title" data-it="INJ Converter" data-en="INJ Converter">INJ Converter</strong><small class="inj-tile-description" data-it="Converti INJ e valute" data-en="Convert INJ &amp; currencies">Converti INJ e valute</small></span>
@@ -854,7 +838,7 @@
 <span><strong class="inj-home-tile-title" data-it="Market Cap" data-en="Market Cap">Market Cap</strong><small class="inj-tile-description" data-it="Confronta market cap" data-en="Compare market caps">Confronta market cap</small></span>
 <svg aria-hidden="true" class="entry-action-arrow" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
 </a>
-<a class="entry-action entry-action-visualize" id="entryVisualizeWealthButton" href="./visualize-wealth.html?v=20261109-layout-repair1" aria-label="Apri Valore Potenziale">
+<a class="entry-action entry-action-visualize" id="entryVisualizeWealthButton" href="./visualize-wealth.html?v=160319" aria-label="Apri Valore Potenziale">
 <span aria-hidden="true" class="entry-action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 19h18M5 16l5-5 4 3 5-9M5 8l6 4 5-6"/></svg></span><span><strong class="inj-home-tile-title" data-it="Valore potenziale" data-en="Potential Value">Valore potenziale</strong><small class="inj-tile-description" data-it="Simula il patrimonio" data-en="Simulate portfolio value">Simula il patrimonio</small></span><svg aria-hidden="true" class="entry-action-arrow" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
 </a>
 <a class="entry-action entry-action-reward-ladder" id="entryRewardLadderButton" href="./reward-ladder.html?v=160739" aria-label="Apri Reward Ladder">
@@ -867,7 +851,7 @@
 <span class="inj-macro-calendar-copy"><strong class="inj-home-tile-title" data-it="Market Event" data-en="Market Event">Market Event</strong><small class="inj-tile-description" data-it="Calendario macro" data-en="Macro calendar">Calendario macro</small></span>
 <small id="injMarketNextSummary" class="inj-events-next-text" hidden aria-hidden="true" data-it="Calendario macro ★★★ · USA / Europa / Asia" data-en="★★★ macro calendar · US / Europe / Asia">Calendario macro ★★★ · USA / Europa / Asia</small>
 </button>
-<a class="entry-action entry-action-injc" id="entryInjcEtfButton" href="./injc-etf.html?v=20261109-volume-candles-v1" aria-label="Apri INJC ETF Terminal">
+<a class="entry-action entry-action-injc" id="entryInjcEtfButton" href="./injc-etf.html?v=nasdaq-quote-20261105a" aria-label="Apri INJC ETF Terminal">
 <span aria-hidden="true" class="entry-action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h3m-3 5 2.5-2.5 2 1.6 3.5-4.1"/><circle cx="17" cy="17" r="1"/></svg></span>
 <span><strong class="inj-home-tile-title" data-it="INJC ETF" data-en="INJC ETF">INJC ETF</strong><small class="inj-tile-description" data-it="Monitoraggio ETF INJC" data-en="INJC ETF tracker">Monitoraggio ETF INJC</small></span>
 <span aria-hidden="true" class="inj-tile-scene"><svg viewBox="0 0 120 68" xmlns="http://www.w3.org/2000/svg" focusable="false"><rect class="etf-art-paper wash" x="16" y="7" width="73" height="54" rx="9"/><path class="etf-art-frame soft" d="M23 19V14h58v40H23v-8M29 20h19M29 25h12"/><text class="etf-art-label" x="29" y="43">ETF</text><circle class="etf-art-seal motion-ring" cx="88" cy="44" r="17"/><path class="etf-art-bolt motion-stroke" d="m81 45 6-8 5 5 5-6"/><circle class="solid motion-pulse" cx="97" cy="36" r="2"/><path class="soft" d="M92 13h15M96 18h11"/></svg></span>
@@ -1353,6 +1337,51 @@
 <div class="system-status-foot"><span>Ultimo controllo</span><strong id="systemStatusChecked">—</strong><button id="systemStatusRefreshButton" type="button">Aggiorna</button></div>
 </div>
 </dialog>
+<div aria-label="Live View Injective" aria-modal="true" class="focus-display-dialog" hidden="" id="focusDisplayDialog" role="dialog">
+<div class="focus-display-shell">
+<div class="focus-display-controls" id="focusDisplayControls">
+<button aria-label="Chiudi Live View e torna al menu" class="focus-display-close focus-display-control" id="closeFocusDisplayButton" title="Menu" type="button">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+</button>
+</div>
+
+<div class="focus-display-status-stack">
+<div aria-hidden="true" class="focus-display-live"><i></i><span>LIVE VIEW</span></div>
+<time aria-label="Ora locale" class="focus-display-clock" id="focusDisplayClock">--:--</time>
+</div>
+<div class="focus-display-content">
+<div class="focus-display-price-block focus-display-primary">
+<span class="focus-display-label">INJ / USDT</span>
+<strong id="focusDisplayPrice">—</strong>
+<span class="focus-display-change neutral" id="focusDisplayChange24h">— · 24H</span>
+</div>
+<div aria-hidden="true" class="focus-display-divider"></div>
+<div class="focus-display-worth-block focus-display-primary">
+<span class="focus-display-wallet" id="focusDisplayWallet">Wallet</span>
+<strong class="private" id="focusDisplayWorth">—</strong>
+<span class="focus-display-total private" id="focusDisplayTotalInj">—</span>
+<span class="focus-display-reward private" id="focusDisplayDailyReward">—</span>
+</div>
+<div class="focus-display-range" id="focusDisplayRange">
+<div class="focus-display-range-copy">
+<span>Min 24H <b id="focusDisplayRangeMin">—</b></span>
+<span>Max 24H <b id="focusDisplayRangeMax">—</b></span>
+</div>
+<div aria-label="Posizione prezzo nel range 24 ore" class="focus-display-range-track">
+<i class="focus-display-range-fill" id="focusDisplayRangeFill"></i>
+<i class="focus-display-range-marker" id="focusDisplayRangeMarker"></i>
+</div>
+</div>
+<div aria-label="Dati staking live" class="focus-display-stats private">
+<div><span>APR NETTO</span><strong id="focusDisplayApr">—</strong></div>
+<div><span>IN STAKING</span><strong id="focusDisplayStaked">—</strong></div>
+<div class="reward-accent-frame reward-accent-inline"><span>REWARD</span><strong id="focusDisplayRewards">—</strong></div>
+</div>
+<button aria-label="Apri stato rete e API" class="focus-display-system" id="focusDisplaySystemButton" type="button"><i id="focusDisplaySystemDot"></i><span id="focusDisplaySystemText">SYSTEM · —</span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg></button>
+</div>
+<footer class="inj-brand-credit inj-liveview-credit" data-i18n-skip="true"><strong>INJ Node</strong><span>by B Capital Group</span></footer>
+</div>
+</div>
 <div aria-label="Grafico Injective" aria-modal="true" class="chart-dialog native-chart-dialog" hidden="" id="chartDialog" role="dialog">
 <div class="chart-dialog-shell">
 <article class="market-terminal-card native-market-terminal" id="marketTerminalCard">
@@ -1426,8 +1455,7 @@
   </article>
 </section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
-<script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-<script defer src="app.js?v=20261110-monitor-distance1"></script>
+<script defer="" src="app.js?v=wallet-single-card-20261105c"></script>
 <script defer src="./morning-brief.js?v=160737"></script>
 <script>
 (function(){
