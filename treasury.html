@@ -312,6 +312,23 @@
 </style>
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
+
+<style id="treasury-price-direction-restored-20261112">
+  /* Last real INJ price movement controls the displayed total worth. */
+  html[data-inj-page="treasury"] #treasuryTotalWorth.treasury-price-up,
+  html[data-inj-page="treasury"] #treasuryNetWorthCurrent.treasury-price-up {
+    color:var(--up)!important;
+  }
+  html[data-inj-page="treasury"] #treasuryTotalWorth.treasury-price-down,
+  html[data-inj-page="treasury"] #treasuryNetWorthCurrent.treasury-price-down {
+    color:var(--down)!important;
+  }
+  /* Prevent number-roll digits from displaying a direction unrelated to price. */
+  html[data-inj-page="treasury"] #treasuryTotalWorth:is(.treasury-price-up,.treasury-price-down) .number-change-digit,
+  html[data-inj-page="treasury"] #treasuryNetWorthCurrent:is(.treasury-price-up,.treasury-price-down) .number-change-digit {
+    color:inherit!important;
+  }
+</style>
 </head>
 <body>
   <div class="treasury-shell">
@@ -604,7 +621,7 @@
 </main>
   </div>
   <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-  <script src="./treasury.js?v=20261109-shared2" defer></script>
+  <script src="./treasury.js?v=20261112-countervalue-market1" defer></script>
 
 
   <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
