@@ -1,11 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap");
 /* INJ NODE — Home typography across section pages (2026-10-29).
    Home remains the visual reference, deliberately untouched.
    Font families only: no geometry, sizing, spacing, scroll, hit targets,
    chart rendering or live-data formatting is changed. */
 :root{
-  --inj-home-title-face:"Supply Mono","PP Supply Mono","IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;
-  --inj-home-description-face:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --inj-home-title-face:"INJ Geist","Geist",system-ui,sans-serif;
+  --inj-home-description-face:"INJ Geist","Geist",system-ui,sans-serif;
 }
 /* Home launcher headings: same terminal typeface. */
 html:not([data-inj-page="index"]) body :is(h1,h2,h3,h4,h5,h6,.inj-location-name,.inj-location-section,.ws-brand strong,.ws-card-heading strong){

@@ -1,0 +1,89 @@
+/* INJ Node • Geist Sans unified typography • 2026-11-12
+   One locally hosted variable font on all screens. No global numeric upscaling.
+   Component geometry, icon fonts, SVG icons and chart shapes remain unchanged. */
+@font-face{font-family:"INJ Geist";src:url("./assets/fonts/inj-geist.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+:root{
+ --inj-geist-ui:"INJ Geist","Geist",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ --inj-ui-font:var(--inj-geist-ui);
+ --inj-minimal-font:var(--inj-geist-ui);
+ --inj-minimal-mono:var(--inj-geist-ui);
+ --inj-node-terminal-font:var(--inj-geist-ui);
+ --inj-home-title-face:var(--inj-geist-ui);
+ --inj-home-description-face:var(--inj-geist-ui);
+ --inj-editorial-face:var(--inj-geist-ui);
+ --inj-inter-light-font:var(--inj-geist-ui);
+ --inj-type-caption:clamp(10px, .35vw + 10px, 13px);
+ --inj-type-label:clamp(11px, .4vw + 10px, 15px);
+ --inj-type-body:clamp(13px, .25vw + 12px, 16px);
+ --inj-type-title:clamp(18px, 1.1vw + 11px, 30px);
+}
+html:not([data-inj-font]),html[data-inj-font="bold"]{
+ --inj-chosen-face:var(--inj-geist-ui);
+ --inj-chosen-weight:500;
+ --inj-chosen-detail:470;
+ --inj-chosen-emphasis:650;
+ --inj-chosen-heading:720;
+}
+html[data-inj-font="slim"]{
+ --inj-chosen-face:var(--inj-geist-ui);
+ --inj-chosen-weight:400;
+ --inj-chosen-detail:400;
+ --inj-chosen-emphasis:550;
+ --inj-chosen-heading:620;
+}
+html{
+ font-family:var(--inj-geist-ui);
+ font-size:clamp(14px, .25vw + 13px, 16px);
+ -webkit-text-size-adjust:100%;
+ text-size-adjust:100%;
+ font-optical-sizing:auto;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html body,html :is(button,input,textarea,select,option){
+ font-family:var(--inj-geist-ui)!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html body{
+ font-weight:var(--inj-chosen-weight);
+ -webkit-font-smoothing:antialiased;
+}
+html body :is(*,#__injGeistAll#__injGeistAll#__injGeistAll#__injGeistAll#__injGeistAll#__injGeistAll#__injGeistAll#__injGeistAll#__injGeistAll#__injGeistAll):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp)
+:not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands)
+:not(.iconfont):not(.icon-font){
+ font-family:var(--inj-geist-ui)!important;
+ font-synthesis-weight:none;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html body svg :is(text,tspan,textPath){font-family:var(--inj-geist-ui)!important;font-variant-numeric:tabular-nums lining-nums}
+html[data-inj-font="slim"] body{font-weight:400}
+html[data-inj-font="bold"] body{font-weight:500}
+html[data-inj-font="slim"] body :is(h1,h2,h3,h4){font-weight:var(--inj-chosen-heading)}
+html[data-inj-font="bold"] body :is(h1,h2,h3,h4){font-weight:var(--inj-chosen-heading)}
+html[data-inj-font="slim"] body :is(strong,b){font-weight:550}
+html[data-inj-font="bold"] body :is(strong,b){font-weight:650}
+/* Numbers remain stable even when digits change during live market ticks. */
+html body :is(output,[class*="price"],[class*="balance"],[class*="metric-value"],[class*="amount"],[class*="reward-value"]){
+ font-variant-numeric:tabular-nums lining-nums;
+ font-feature-settings:"tnum" 1,"lnum" 1;
+}
+/* Mobile: prevent oversized Treasury figures without shrinking interactive targets. */
+@media(max-width:600px){
+ html{font-size:14px}
+ html[data-inj-page="treasury"] :is(.treasury-metric strong,.treasury-chart-primary strong,.treasury-chart-side strong){
+  font-size:clamp(16px,4.7vw,25px)!important;line-height:1.13;
+ }
+ html[data-inj-page="treasury"] .treasury-hero-worth{font-size:clamp(22px,6vw,34px)!important}
+}
+@media(min-width:1300px) and (min-height:760px){
+ html{font-size:16px}
+}
+/* A high-DPI wall monitor is a display, not a giant mobile viewport.
+   Totem Pro owns its explicit distance-reading typography. */
+
+/* Preserve the Slim/Bold distinction on primary headings and numeric KPIs. */
+html[data-inj-font] body :is(h1,h2,h3,h4,.inj-home-tile-title,.section-heading h2,.section-heading h3,.menu-action-copy strong){
+ font-weight:var(--inj-chosen-heading)!important;
+}
+html[data-inj-font] body :is(.hero-number,.hero-secondary,.metric-value,.treasury-metric strong,.treasury-chart-primary strong,.rewards-total-value,.market-price-line>strong,.ws-main-price,.ws-price-value,.cc-now-price){
+ font-weight:var(--inj-chosen-emphasis)!important;
+}

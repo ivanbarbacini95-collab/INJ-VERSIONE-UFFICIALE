@@ -9,11 +9,11 @@
 <title>Live View · INJ Node</title>
 <script defer src="./page-zoom-lock-20261110.js?v=1"></script>
 <style>
-@font-face{font-family:INJRubik;src:url("./assets/fonts/inj-rubik.woff2") format("woff2");font-display:swap}
+
 :root{color-scheme:dark;--nv-bg:#000;--nv-text:#dce6e4;--nv-muted:#85938f;--nv-accent:#8bc9ba;--nv-up:#90d5b3;--nv-down:#cf8c8e;--nv-line:#202d2c}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;width:100%;background:var(--nv-bg)!important;overscroll-behavior:none;transition:background-color .28s ease}
-body{min-height:100dvh;color:var(--nv-text);font:500 15px/1.4 INJRubik,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;color:var(--nv-text);font:500 15px/1.4 "INJ Geist",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased}
 html[data-inj-font="slim"] body{font-weight:400}
 button{font:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
@@ -167,7 +167,7 @@ button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:4px}
  vertical-align:.15em;
  margin-inline-start:.13em;
  width:.45em;
- font:750 .32em/1 INJRubik,system-ui,-apple-system,sans-serif;
+ font:750 .32em/1 "INJ Geist",system-ui,-apple-system,sans-serif;
  letter-spacing:0;
  color:var(--nv-muted);
  opacity:0;
@@ -218,13 +218,15 @@ html[data-inj-page="night-view"] :is(.holding,.reward) .unit{
 }
 </style>
 <script defer src="./night-view.js?v=20261112-airy-digits1"></script>
-<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
+<script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
+<link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
+<link rel="stylesheet" href="./live-view-totem-pro-20261112.css?v=geist-totem1">
 </head>
 <body>
 <main class="shell">
 <header class="top">
  <button class="back" id="nightBack" type="button" aria-label="Torna alla Home"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
- <div class="brand"><h1>Live View</h1></div>
+ <div class="brand"><span class="totem-brand-glyph" aria-hidden="true">◈</span><div class="totem-brand-copy"><span class="totem-brand-name">INJ Node</span><h1>Live View</h1></div></div>
  <button class="night-toggle" id="nightModeToggle" type="button" aria-label="Attiva Night View" aria-pressed="false" title="Night View"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 15.6A8.6 8.6 0 0 1 8.4 3.7 8.6 8.6 0 1 0 20.3 15.6Z"/></svg></button>
 </header>
 <div class="content">
@@ -234,15 +236,28 @@ html[data-inj-page="night-view"] :is(.holding,.reward) .unit{
   <div class="price-sub"><span id="nightChange" class="change" data-direction="flat">— (24h)</span><span class="live-indicator" id="nightFeed" data-status="sync"><i class="live-dot" aria-hidden="true"></i><span id="nightFeedText">SYNC</span></span></div>
  </section>
  <svg class="ambient" viewBox="0 0 880 54" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="ambientStroke"><stop offset="0" style="stop-color:var(--nv-accent)" stop-opacity="0"/><stop offset=".22" style="stop-color:var(--nv-accent)" stop-opacity=".35"/><stop offset=".50" style="stop-color:var(--nv-accent)" stop-opacity=".7"/><stop offset=".78" style="stop-color:var(--nv-accent)" stop-opacity=".35"/><stop offset="1" style="stop-color:var(--nv-accent)" stop-opacity="0"/></linearGradient></defs><path d="M0 29 C90 29 130 39 220 39 C310 39 350 15 440 15 C530 15 570 39 660 39 C750 39 790 29 880 29"/></svg>
- <section class="holdings" aria-label="Bilanci Injective">
-  <div class="holding"><span class="eyebrow" data-it="INJ in stake" data-en="INJ staked">INJ in stake</span><strong id="nightStaked">—</strong><small class="fiat" id="nightStakedFiat">—</small></div>
-  <div class="holding"><span class="eyebrow" data-it="INJ non in stake" data-en="INJ available">INJ non in stake</span><strong id="nightAvailable">—</strong><small class="fiat" id="nightAvailableFiat">—</small></div>
- </section>
- <section class="reward" aria-label="Reward staking in tempo reale">
-  <span class="eyebrow" data-it="Reward live" data-en="Live rewards">Reward live</span>
-  <strong id="nightReward">—</strong>
-  <small id="nightRewardFiat">—</small>
-  <span id="nightRewardConfidence" class="estimated" aria-live="polite"></span>
+ <section class="totem-metrics" aria-label="Panoramica INJ in stake, disponibili e reward live">
+  <section class="holdings" aria-label="Bilanci Injective">
+   <div class="holding totem-card">
+    <span class="totem-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg></span>
+    <span class="eyebrow" data-it="INJ in stake" data-en="INJ staked">INJ in stake</span>
+    <strong id="nightStaked">—</strong>
+    <small class="fiat" id="nightStakedFiat">—</small>
+   </div>
+   <div class="holding totem-card">
+    <span class="totem-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="3"/><path d="M3 9h18M15 15h3"/></svg></span>
+    <span class="eyebrow" data-it="INJ disponibili" data-en="INJ available">INJ disponibili</span>
+    <strong id="nightAvailable">—</strong>
+    <small class="fiat" id="nightAvailableFiat">—</small>
+   </div>
+  </section>
+  <section class="reward totem-card totem-card-reward" aria-label="Reward staking in tempo reale">
+   <span class="totem-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="m7 7 5-4 5 4M7 17l5 4 5-4"/></svg></span>
+   <span class="eyebrow" data-it="Reward live" data-en="Live rewards">Reward live</span>
+   <strong id="nightReward">—</strong>
+   <small id="nightRewardFiat">—</small>
+   <span id="nightRewardConfidence" class="estimated" aria-live="polite"></span>
+  </section>
  </section>
 </div>
 <footer>

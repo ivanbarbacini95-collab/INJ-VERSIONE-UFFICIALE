@@ -1,10 +1,10 @@
-/* INJ Node · two visible weights of one SF Pro-like, locally hosted sans-serif. */
+/* INJ Node · two visible weights of one Geist Sans variable, locally hosted sans-serif. */
 (function(){
 'use strict';
 const STORE='inj_node_font_v1',root=document.documentElement;
 const fonts=[
- {id:'slim',name:'Slim',font:'"INJ Rubik Unified","INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Sottile, essenziale · peso 400',subtitleEn:'Light, minimal · weight 400',weight:400},
- {id:'bold',name:'Bold',font:'"INJ Rubik Unified","INJ Rubik","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Marcato, definito · peso 700',subtitleEn:'Distinct, strong · weight 700',weight:700}
+ {id:'slim',name:'Slim',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Geist Sans leggero · peso 400',subtitleEn:'Light, minimal · weight 400',weight:400},
+ {id:'bold',name:'Bold',font:'"INJ Geist","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif',subtitleIt:'Geist Sans marcato · peso 700',subtitleEn:'Distinct, strong · weight 700',weight:700}
 ];
 const byId=Object.fromEntries(fonts.map(f=>[f.id,f]));
 let active='bold';

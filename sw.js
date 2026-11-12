@@ -1,10 +1,14 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261111-scroll-perf1';
+const CACHE_NAME = 'inj-node-v20261112-geist-totem1';
 const BOOT_ASSETS = [
   './index.html',
-  './inj-rubik-unified-20261110.css?v=rubik-ui1',
+  './inj-geist-unified-20261112.css?v=geist-final1',
+  './assets/fonts/inj-geist.woff2',
+  './inj-font-switcher-20261029.js?v=geist-final1',
+  './inj-font-platform-unified-20261103.css?v=geist-final1',
+  './live-view-totem-pro-20261112.css?v=geist-totem1',
   './page-zoom-lock-20261110.js?v=1',
   './manifest.webmanifest?v=20261102litepro1',
   './style.css?v=16.01.44',
@@ -26,7 +30,7 @@ const BOOT_ASSETS = [
   './network-live-ws.js?v=20261109-uptime-ws1',
   './network-history.css?v=20261110-uptime-history1',
   './all-transactions.html?v=20261109-tools-return-motion1',
-  './night-view.html?v=20261111-digits-only1',
+  './night-view.html?v=geist-totem1',
   './night-view.js?v=20261111-digits-only1'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;

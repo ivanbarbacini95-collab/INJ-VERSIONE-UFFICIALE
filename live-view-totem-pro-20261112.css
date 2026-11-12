@@ -1,0 +1,373 @@
+/* INJ Node Official · Live View / Totem Pro · Geist Sans 2026-11-12
+   Read-only presentation layer. Preserve live data IDs, price-width locking,
+   automatic navigation fade, PWA portrait and landscape support. */
+@font-face{
+  font-family:"INJ Geist";
+  src:url("./assets/fonts/inj-geist.woff2") format("woff2");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+html[data-inj-page="night-view"]{
+  --totem-ink:var(--nv-text);
+  --totem-line:color-mix(in srgb,var(--nv-text) 12%,transparent);
+  --totem-panel:color-mix(in srgb,var(--nv-text) 4%,var(--nv-bg));
+  --totem-panel-reward:color-mix(in srgb,var(--nv-accent) 9%,var(--nv-bg));
+}
+html[data-inj-page="night-view"] body,
+html[data-inj-page="night-view"] button{
+  font-family:"INJ Geist",Inter,system-ui,-apple-system,sans-serif;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-page="night-view"] .shell{
+  width:min(100%,1680px);
+  height:100dvh;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:clamp(10px,1.2vh,20px);
+  padding:calc(env(safe-area-inset-top) + clamp(14px,1.7vh,30px))
+    clamp(18px,3.5vw,70px)
+    calc(env(safe-area-inset-bottom) + clamp(16px,2vh,32px));
+}
+html[data-inj-page="night-view"] .top{
+  min-height:clamp(54px,6vh,76px);
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:minmax(42px,1fr) minmax(0,2.5fr) minmax(42px,1fr);
+  gap:10px;
+  align-items:center;
+}
+html[data-inj-page="night-view"] .top>.back{justify-self:start}
+html[data-inj-page="night-view"] .top>.night-toggle{justify-self:end}
+html[data-inj-page="night-view"] .brand{
+  min-width:0;
+  display:flex;
+  flex:initial;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(7px,1.2vw,16px);
+  text-align:left;
+}
+html[data-inj-page="night-view"] .totem-brand-glyph{
+  display:grid;place-items:center;
+  width:clamp(32px,3vw,47px);height:clamp(32px,3vw,47px);
+  flex:0 0 auto;
+  color:var(--nv-accent);
+  font-size:clamp(26px,2.8vw,42px);
+  font-weight:400;
+  line-height:1;
+}
+html[data-inj-page="night-view"] .totem-brand-copy{
+  min-width:0;display:flex;align-items:baseline;gap:clamp(7px,1vw,15px);
+  white-space:nowrap;
+}
+html[data-inj-page="night-view"] .totem-brand-name{
+  font-size:clamp(16px,1.5vw,23px);
+  font-weight:580;
+  color:var(--nv-text);
+  letter-spacing:.005em;
+}
+html[data-inj-page="night-view"] .brand h1{
+  margin:0;
+  font-size:clamp(14px,1.35vw,20px);
+  line-height:1.25;
+  font-weight:450;
+  letter-spacing:.015em;
+  color:var(--nv-muted);
+}
+html[data-inj-page="night-view"] .brand h1::before{
+  content:"·";display:inline-block;margin-inline-end:clamp(7px,1vw,15px);color:var(--nv-accent);
+}
+html[data-inj-page="night-view"] .content{
+  flex:1 1 auto;
+  min-height:0;
+  width:100%;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1.08fr) minmax(26px,.13fr) minmax(0,1fr)!important;
+  justify-items:center;
+  justify-content:stretch;
+  align-items:center;
+  align-content:stretch;
+  gap:clamp(8px,1.8vh,26px)!important;
+  padding:clamp(4px,.8vh,14px) 0!important;
+}
+html[data-inj-page="night-view"] .price{
+  width:100%;max-width:1400px;min-width:0;
+  text-align:center;align-self:center;
+}
+html[data-inj-page="night-view"] .price-label{
+  display:block;
+  color:var(--nv-muted);
+  font-size:clamp(13px,1.4vw,24px);
+  font-weight:550;
+  letter-spacing:.16em;
+  margin-bottom:clamp(5px,.8vh,13px);
+}
+html[data-inj-page="night-view"] .price-value{
+  display:block;
+  font-family:"INJ Geist",Inter,system-ui,sans-serif;
+  font-size:clamp(70px,min(12.5vw,15vh),164px)!important;
+  line-height:1.06;
+  font-weight:550!important;
+  letter-spacing:0!important;
+  color:var(--nv-text);
+  white-space:nowrap;
+  max-width:100%;
+  text-shadow:none!important;
+  margin:clamp(7px,1vh,14px) 0 clamp(7px,1.1vh,17px);
+  font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-page="night-view"] .price-value::after{
+  font-family:"INJ Geist",Inter,system-ui,sans-serif;
+  font-weight:550;
+}
+html[data-inj-page="night-view"] .price-sub{
+  display:flex;
+  justify-content:center;align-items:center;flex-wrap:wrap;
+  gap:clamp(12px,2vw,32px);
+  min-height:0;
+  font-size:clamp(14px,1.5vw,24px);
+  font-weight:500;
+}
+html[data-inj-page="night-view"] .live-indicator{
+  font-size:clamp(13px,1.24vw,19px);
+  font-weight:550;
+  letter-spacing:.08em;
+}
+html[data-inj-page="night-view"] .ambient{
+  grid-row:2;
+  align-self:center;
+  display:block;
+  width:min(94%,1200px);
+  height:clamp(26px,5vh,60px);
+  max-height:100%;
+  margin:0 auto;
+}
+html[data-inj-page="night-view"] .ambient path{
+  stroke-width:1.5;
+  opacity:.8;
+  filter:drop-shadow(0 0 3px color-mix(in srgb,var(--nv-accent) 28%,transparent));
+}
+html[data-inj-page="night-view"] .totem-metrics{
+  grid-row:3;
+  align-self:stretch;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;
+  gap:clamp(9px,1.3vw,20px);
+  width:min(100%,1320px);
+  max-height:340px;
+  min-width:0;
+  margin-inline:auto;
+}
+html[data-inj-page="night-view"] .holdings{display:contents!important}
+html[data-inj-page="night-view"] .holding+.holding{border-left:0}
+html[data-inj-page="night-view"] .totem-card{
+  min-width:0;min-height:0;
+  border:1px solid var(--totem-line);
+  background:var(--totem-panel);
+  border-radius:clamp(15px,1.6vw,24px);
+  padding:clamp(13px,1.8vw,26px) clamp(9px,1.35vw,23px)!important;
+  display:flex!important;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px,.8vh,13px);
+  text-align:center;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--nv-text) 4%,transparent);
+}
+html[data-inj-page="night-view"] .totem-card-icon{
+  display:grid;place-items:center;
+  width:clamp(27px,2.6vw,38px);height:clamp(27px,2.6vw,38px);
+  color:var(--nv-accent);
+  margin-bottom:2px;
+}
+html[data-inj-page="night-view"] .totem-card-icon svg{
+  width:100%;height:100%;
+  stroke:currentColor;fill:none;stroke-width:1.55;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+html[data-inj-page="night-view"] .totem-card .eyebrow{
+  font-size:clamp(13px,1.1vw,19px);
+  font-weight:570;
+  letter-spacing:.015em;
+  line-height:1.2;
+  margin:0!important;
+  color:var(--nv-muted);
+}
+html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+  display:block;max-width:100%;
+  margin:0;
+  font-size:clamp(24px,2.75vw,49px)!important;
+  font-weight:570!important;
+  line-height:1.16!important;
+  letter-spacing:-.015em!important;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  color:var(--nv-text);
+}
+html[data-inj-page="night-view"] .totem-card .unit{
+  font-size:.40em;
+  font-weight:490!important;
+  margin-inline-start:.12em;
+  letter-spacing:0;
+  white-space:nowrap;
+  color:var(--nv-muted);
+}
+html[data-inj-page="night-view"] .totem-card :is(.fiat,#nightRewardFiat){
+  display:block;
+  min-height:1.2em;
+  width:100%;
+  margin:0;
+  font-size:clamp(12px,1.07vw,18px)!important;
+  font-weight:460!important;
+  line-height:1.3;
+  color:var(--nv-muted);
+  overflow-wrap:anywhere;
+  font-variant-numeric:tabular-nums;
+}
+html[data-inj-page="night-view"] .totem-card-reward{
+  background:linear-gradient(145deg,var(--totem-panel),var(--totem-panel-reward));
+  border-color:color-mix(in srgb,var(--nv-accent) 33%,var(--totem-line));
+}
+html[data-inj-page="night-view"] .totem-card-reward #nightReward{
+  color:var(--nv-accent)!important;
+}
+html[data-inj-page="night-view"] .reward:before{content:none!important;display:none!important}
+html[data-inj-page="night-view"] .totem-card .estimated{
+  display:block;
+  max-width:100%;
+  margin:0;
+  font-size:clamp(10px,.8vw,13px)!important;
+  line-height:1.25;
+  color:var(--nv-muted);
+}
+html[data-inj-page="night-view"] footer{width:100%;flex:0 0 auto}
+html[data-inj-page="night-view"] .footer{
+  width:min(100%,1320px);
+  max-width:1320px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:center;
+  gap:0;
+  margin:0 auto;
+  padding:clamp(11px,1.4vh,19px) clamp(6px,1vw,16px);
+  border:1px solid var(--totem-line);
+  border-radius:clamp(14px,1.35vw,21px);
+  background:var(--totem-panel);
+}
+html[data-inj-page="night-view"] .foot-item{
+  min-width:0;padding:2px clamp(4px,.8vw,12px);
+}
+html[data-inj-page="night-view"] .foot-item+.foot-item{border-left:1px solid var(--totem-line)}
+html[data-inj-page="night-view"] .foot-item small{
+  display:block;
+  margin:0 0 5px;
+  font-size:clamp(11px,.92vw,16px)!important;
+  line-height:1.2;
+  font-weight:460;
+  color:var(--nv-muted);
+}
+html[data-inj-page="night-view"] .foot-item strong{
+  font-size:clamp(13px,1.18vw,21px)!important;
+  font-weight:590!important;
+  line-height:1.25;
+  color:var(--nv-text);
+}
+html[data-inj-page="night-view"] .data-note{
+  font-size:clamp(10px,.8vw,13px);
+  margin-top:clamp(5px,.7vh,10px);
+}
+@media(min-width:650px) and (min-height:900px) and (orientation:portrait){
+ html[data-inj-page="night-view"] .totem-metrics{max-height:330px}
+ html[data-inj-page="night-view"] .content{
+   grid-template-rows:minmax(0,1.07fr) minmax(34px,.13fr) minmax(0,.97fr)!important;
+   row-gap:clamp(14px,2.5vh,34px)!important;
+ }
+ html[data-inj-page="night-view"] .price-value{
+   font-size:clamp(82px,13.7vw,152px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+   font-size:clamp(23px,3vw,42px)!important;
+ }
+}
+@media(min-width:900px) and (max-height:850px) and (orientation:landscape){
+ html[data-inj-page="night-view"] .content{
+   grid-template-rows:minmax(0,1fr) minmax(20px,.09fr) minmax(0,1fr)!important;
+   row-gap:clamp(5px,1vh,12px)!important;
+ }
+ html[data-inj-page="night-view"] .price-value{
+   font-size:clamp(73px,8.7vw,128px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card{padding-block:12px!important;gap:5px}
+ html[data-inj-page="night-view"] .totem-card-icon{width:26px;height:26px}
+}
+@media(max-width:699px){
+ html[data-inj-page="night-view"] .shell{
+   width:100%;
+   height:auto;
+   min-height:100dvh;
+   padding:calc(env(safe-area-inset-top) + 11px) 13px calc(env(safe-area-inset-bottom) + 15px);
+ }
+ html[data-inj-page="night-view"] .top{min-height:46px}
+ html[data-inj-page="night-view"] .totem-brand-glyph{width:28px;height:28px;font-size:27px}
+ html[data-inj-page="night-view"] .totem-brand-name{font-size:15px}
+ html[data-inj-page="night-view"] .brand h1{font-size:13px}
+ html[data-inj-page="night-view"] .content{
+   flex:1 0 auto;
+   grid-template-rows:minmax(140px,1fr) 32px auto!important;
+   row-gap:clamp(10px,1.8vh,18px)!important;
+ }
+ html[data-inj-page="night-view"] .price-label{font-size:12px}
+ html[data-inj-page="night-view"] .price-value{
+   font-size:clamp(45px,9.8vw,88px)!important;
+ }
+ html[data-inj-page="night-view"] .price-sub{font-size:13px;gap:10px}
+ html[data-inj-page="night-view"] .live-indicator{font-size:12px}
+ html[data-inj-page="night-view"] .ambient{height:30px}
+ html[data-inj-page="night-view"] .totem-metrics{
+   grid-template-columns:repeat(2,minmax(0,1fr));
+   gap:9px;
+   max-height:none;
+ }
+ html[data-inj-page="night-view"] .totem-card{
+   border-radius:15px;
+   min-height:145px;
+   padding:12px 8px!important;
+   gap:5px;
+ }
+ html[data-inj-page="night-view"] .totem-card-reward{
+   grid-column:1/-1;
+   min-height:132px;
+ }
+ html[data-inj-page="night-view"] .totem-card-icon{width:25px;height:25px}
+ html[data-inj-page="night-view"] .totem-card .eyebrow{font-size:12px}
+ html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+   font-size:clamp(23px,5.5vw,35px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card :is(.fiat,#nightRewardFiat){
+   font-size:clamp(11px,2.9vw,14px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card .estimated{font-size:10px!important}
+ html[data-inj-page="night-view"] .footer{padding:10px 4px}
+ html[data-inj-page="night-view"] .foot-item small{font-size:10px!important}
+ html[data-inj-page="night-view"] .foot-item strong{font-size:12px!important}
+}
+@media(max-width:380px){
+ html[data-inj-page="night-view"] .totem-brand-copy{gap:4px}
+ html[data-inj-page="night-view"] .totem-brand-name{font-size:13px}
+ html[data-inj-page="night-view"] .brand h1{font-size:12px}
+ html[data-inj-page="night-view"] .brand h1::before{margin-inline-end:4px}
+ html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+   font-size:clamp(21px,5.4vw,29px)!important;
+ }
+}
+@media(max-height:640px) and (orientation:landscape){
+ html[data-inj-page="night-view"] .shell{height:auto;min-height:100dvh}
+ html[data-inj-page="night-view"] .content{min-height:490px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="night-view"] .ambient path{filter:none}
+}
