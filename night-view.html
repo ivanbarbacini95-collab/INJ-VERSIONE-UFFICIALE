@@ -195,8 +195,61 @@ html.nv-controls-idle .top > .back,html.nv-controls-idle .top > .night-toggle{op
 @media(prefers-reduced-motion:reduce){
  .price-value,.price-value::after{transition:none!important}
 }
+/* Live View numeric typography 2026-11-12
+   Airier numerals, less visual bloom, normal tracking and reliable width fitting.
+   The sizing of individual screen breakpoints is otherwise preserved. */
+html[data-inj-page="night-view"] .price-value{
+ font-weight:570!important;
+ letter-spacing:.005em!important;
+ font-variant-numeric:tabular-nums lining-nums;
+ font-feature-settings:"tnum" 1,"lnum" 1;
+ text-shadow:0 0 10px rgba(126,192,178,.02);
+}
+html[data-inj-page="night-view"] .holding strong{
+ font-weight:580!important;
+ letter-spacing:.008em!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-page="night-view"] .reward strong{
+ font-weight:580!important;
+ letter-spacing:.008em!important;
+ font-variant-numeric:tabular-nums lining-nums;
+}
+html[data-inj-page="night-view"] :is(.holding,.reward) .unit{
+ font-weight:450!important;
+ letter-spacing:.025em;
+ margin-inline-start:.08em;
+}
+
+/* Large screens: slightly reduce oversized numerals without losing
+   monitor-distance legibility or the official fixed-width live-price sizing. */
+@media(min-width:700px) and (min-height:650px) {
+ html[data-inj-page="night-view"] .price-value {
+   font-size:clamp(104px,min(19.5vh,11.7vw),204px)!important;
+ }
+ html[data-inj-page="night-view"] .holding strong {
+   font-size:clamp(45px,6.8vh,80px)!important;
+ }
+ html[data-inj-page="night-view"] .reward strong {
+   font-size:clamp(62px,9.6vh,122px)!important;
+ }
+}
+@media(min-width:650px) and (min-height:900px) and (orientation:portrait) {
+ html[data-inj-page="night-view"] .price-value {
+   font-size:clamp(102px,15.8vw,186px)!important;
+ }
+ html[data-inj-page="night-view"] .holding strong {
+   font-size:clamp(44px,5.85vw,74px)!important;
+ }
+ html[data-inj-page="night-view"] .reward strong {
+   font-size:clamp(65px,9.0vw,118px)!important;
+ }
+}
+@media(max-width:380px) {
+ html[data-inj-page="night-view"] .price-value {font-size:clamp(50px,12.2vw,68px)!important}
+}
 </style>
-<script defer src="./night-view.js?v=20261111-idle-nav1"></script>
+<script defer src="./night-view.js?v=20261112-official-type1"></script>
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 </head>
 <body>
