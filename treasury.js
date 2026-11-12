@@ -1624,12 +1624,45 @@ function compactAxisMoney(value) {
   if (absolute >= 10_000) return `${symbol}${Math.round(converted).toLocaleString('it-IT')}`;
   return `${symbol}${converted.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 }
+// A genuine hole in market data must not appear as a continuous price move.
+// Real observations are solid; fetched candles with last known INJ balance
+// are dashed to distinguish market-price history from unverified holdings.
+function worthSegmentPaths(points,timeSpan,range){
+  if(!points.length)return {markup:'',missing:false};
+  const interval=timeSpan/Math.max(20,chartPointBudget(range)-1);
+  const absoluteLimit=range==='d1'?25*MINUTE:range==='w1'?4*HOUR:range==='m1'?18*HOUR:48*HOUR;
+  const maxGap=Math.min(absoluteLimit,Math.max(8*MINUTE,interval*3.4));
+  let missing=false,markup='',group=[points[0]],estimated=false;
+  function addSegment(){
+    if(group.length<2)return;
+    const first=group[0],last=group.at(-1);
+    const d=group.map((p,i)=>(i?'L':'M')+p.x.toFixed(2)+' '+p.y.toFixed(2)).join(' ');
+    const area=d+' L'+last.x.toFixed(2)+' 92 L'+first.x.toFixed(2)+' 92 Z';
+    if(!estimated)markup+='<path class="treasury-worth-area" d="'+area+'"></path>';
+    markup+='<path class="treasury-worth-line'+(estimated?' treasury-worth-estimated':'')+'" d="'+d+'"></path>';
+  }
+  for(let i=1;i<points.length;i++){
+    const previous=points[i-1],next=points[i],gap=next.t-previous.t;
+    const approximate=previous.estimated===true||next.estimated===true||next.boundary===true;
+    if(gap>maxGap){
+      missing=true;addSegment();group=[next];estimated=false;continue;
+    }
+    if(group.length>=2&&estimated!==approximate){
+      addSegment();group=[previous,next];estimated=approximate;
+    }else{
+      if(group.length===1)estimated=approximate;
+      group.push(next);
+    }
+  }
+  addSegment();
+  return {markup,missing};
+}
 function renderWorthSparkline() {
   const svg = $('treasuryWorthSparkline');
   if (!svg) return;
   const rawSamples = currentWorthRows();
   const estimateNote=$('treasuryReconstructedNote');
-  if(estimateNote)estimateNote.hidden=!rawSamples.some(row=>row.estimated===true);
+  const hasEstimatedWorth=rawSamples.some(row=>row.estimated===true);
   syncWorthRangeControls();
   if (rawSamples.length < 2) {
     state.worthPlot = null;
@@ -1666,15 +1699,20 @@ function renderWorthSparkline() {
   else if(state.worthRange==='m1'){startT=currentMonthStart(now);endT=Math.max(now,maxSampleT,startT+1);}
   const timeSpan=Math.max(1,endT-startT),topY=12,bottomY=84,chartHeight=bottomY-topY;
   const plotted=samples.map((row)=>({
-    t:number(row.t),value:number(row.value),estimated:row.estimated===true,
+    t:number(row.t),value:number(row.value),estimated:row.estimated===true,boundary:row.boundary===true,
     x:Math.max(0,Math.min(320,((number(row.t)-startT)/timeSpan)*320)),
     y:Math.max(topY,Math.min(bottomY,bottomY-((number(row.value)-displayMin)/valueSpan)*chartHeight))
   }));
-  const d=monotoneCurvePath(plotted);
-  const first=plotted[0],last=plotted.at(-1);
-  const area=`${d} L${last.x.toFixed(2)} 92 L${first.x.toFixed(2)} 92 Z`;
+  const segments=worthSegmentPaths(plotted,timeSpan,state.worthRange);
+  const last=plotted.at(-1);
   const grid=[24,48,72].map((y)=>`<line class="treasury-chart-gridline" x1="0" y1="${y}" x2="320" y2="${y}"></line>`).join('');
-  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${grid}<path class="treasury-worth-area" d="${area}"></path><path class="treasury-worth-line" d="${d}"></path>`;
+  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${grid}${segments.markup}`;
+  if(estimateNote){
+    estimateNote.hidden=!hasEstimatedWorth&&!segments.missing;
+    estimateNote.textContent=hasEstimatedWorth
+      ? (segments.missing?'Linea tratteggiata: prezzi INJ reali con saldo stimato. Le lacune restano visibili.':'Linea tratteggiata: prezzi INJ reali, saldo dell’ultima lettura disponibile (stimato).')
+      : 'Intervalli senza dati verificati lasciati vuoti, senza raccordi artificiali.';
+  }
   // A range repaint must never leave the previous floating inspector visible.
   // The interaction will explicitly reopen it on the next pointer/touch read.
   if(state.worthInspectIndex<0){
@@ -1688,7 +1726,7 @@ function renderWorthSparkline() {
   placeTreasuryLiveDot('treasuryWorthLiveDot',last);
   state.worthPlot={width:320,height:96,samples:plotted};
   $('treasuryWorthHistoryStart').textContent=historyLabel(rawSamples[0].t);
-  $('treasuryWorthHistoryEnd').textContent='Ora';
+  $('treasuryWorthHistoryEnd').textContent=state.treasuryReady&&state.priceReady?'Ora':historyLabel(rawSamples.at(-1).t);
   if(state.worthInspectIndex>=0)showWorthSample(Math.min(state.worthInspectIndex,plotted.length-1));
 }
 function hideWorthInspector() {
@@ -1711,7 +1749,7 @@ function showWorthSample(index) {
   dockChartTooltip(tooltip,leftPct);
   tooltip.querySelector('strong').textContent = money(sample.value,2);
   tooltip.querySelector('small').textContent = historyFullLabel(sample.t) +
-    (sample.estimated === true ? ' · STIMA RICOSTRUITA' : '');
+    (sample.estimated === true ? ' · PREZZO REALE / SALDO STIMATO' : sample.boundary === true ? ' · RILEVAZIONE INTERPOLATA' : ' · RILEVAZIONE');
   tooltip.hidden = false;
   stage.classList.add('inspecting');
   state.worthInspectIndex = safe;
