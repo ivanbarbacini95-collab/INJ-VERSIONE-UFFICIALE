@@ -352,16 +352,6 @@
   html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="up"]{color:var(--up,#35ca8c)!important}
   html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="down"]{color:var(--down,#ee6178)!important}
   html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="flat"]{color:var(--muted-strong)!important}
-  html[data-inj-page="treasury"] #treasuryReconstructedNote:not([hidden]){
-    display:block;
-    color:var(--muted-strong);
-    font-size:clamp(11px,.95vw,14px);
-    font-weight:500;
-    line-height:1.45;
-    letter-spacing:0;
-    opacity:.98;
-    overflow-wrap:break-word;
-  }
   html[data-inj-page="treasury"] .treasury-worth-method{
     display:block;
     margin:6px 2px 9px;
@@ -561,14 +551,13 @@
               <span id="treasuryWorthMax">MAX —</span>
             </div>
           </div>
-          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Patrimonio totale: prezzi INJ e saldo Treasury nel tempo. La linea continua cambia colore in base al trend; lo storico parzialmente ricostruito è segnalato nel dettaglio e le lacune non vengono interpolate. Tocca o trascina per data e valore.">
+          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Patrimonio totale nel tempo. Tocca o trascina sul grafico per visualizzare il controvalore del punto selezionato.">
             <svg class="treasury-sparkline treasury-worth-sparkline" id="treasuryWorthSparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
             <span class="treasury-worth-axis" aria-hidden="true"><b id="treasuryWorthAxisTop">—</b><b id="treasuryWorthAxisBottom">—</b></span>
             <span class="treasury-chart-live-dot treasury-worth-end-dot" id="treasuryWorthLiveDot" hidden aria-hidden="true"></span>
             <span class="treasury-spark-cursor" id="treasuryWorthCursor" hidden aria-hidden="true"><i></i></span>
-            <span class="treasury-spark-tooltip" id="treasuryWorthTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
+            <span class="treasury-spark-tooltip" id="treasuryWorthTooltip" hidden aria-live="polite"><strong>—</strong></span>
           </div>
-          <small class="treasury-backfill-note" id="treasuryReconstructedNote" hidden>Storico ricostruito con prezzi reali · saldo stimato</small>
            <small class="treasury-worth-method">Patrimonio = INJ detenuti × prezzo di mercato INJ/USDT. Reward, depositi e prelievi possono influire sull’andamento.</small>
           <footer><span id="treasuryWorthHistoryStart">Prima lettura</span><span id="treasuryWorthHistoryEnd">Ora</span></footer>
         </article>
@@ -701,7 +690,7 @@
 </main>
   </div>
   <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-  <script src="./treasury.js?v=20261112-growth-connected2" defer></script>
+  <script src="./treasury.js?v=20261112-worth-tooltip-only1" defer></script>
 
 
   <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
