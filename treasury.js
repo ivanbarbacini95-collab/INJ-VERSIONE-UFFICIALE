@@ -82,7 +82,6 @@ async function restoreTimelineBackups(){
 const state = {
   data: null,
   price: 0,
-  priceDirection: 'neutral',
   open24: 0,
   change24: 0,
   eurRate: 0.86,
@@ -1628,12 +1627,54 @@ function compactAxisMoney(value) {
   if (absolute >= 10_000) return `${symbol}${Math.round(converted).toLocaleString('it-IT')}`;
   return `${symbol}${converted.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 }
+
+/* Colored segments share the exact cubic geometry of the existing monotone curve. */
+function worthMarketTrendPaths(points, fullPath) {
+  const curves=fullPath.match(/ C[^C]+/g)||[];
+  if(curves.length!==points.length-1)
+    return `<path class="treasury-worth-line" d="${fullPath}"></path>`;
+  const holdings=state.samples
+    .filter(row=>Number(row?.t)>0&&Number(row?.value)>0)
+    .map(row=>({t:Number(row.t),value:Number(row.value)}))
+    .sort((a,b)=>a.t-b.t);
+  const currentTotal=Number(state.data?.total);
+  let holdingCursor=0;
+  function impliedPrice(point) {
+    if(!holdings.length)return NaN;
+    while(holdingCursor+1<holdings.length&&holdings[holdingCursor+1].t<=point.t)holdingCursor++;
+    const a=holdings[holdingCursor],b=holdings[holdingCursor+1];
+    let quantity=a.value;
+    if(b&&b.t>a.t&&point.t>a.t){
+      const mix=Math.min(1,Math.max(0,(point.t-a.t)/(b.t-a.t)));
+      quantity=a.value+(b.value-a.value)*mix;
+    }else if(point.t>=holdings.at(-1).t&&currentTotal>0&&state.treasuryReady){
+      quantity=currentTotal;
+    }
+    return quantity>0?point.value/quantity:NaN;
+  }
+  const prices=points.map(point=>impliedPrice(point));
+  const paths=[];
+  let active='',path='';
+  const flush=()=>{if(path)paths.push(`<path class="treasury-worth-line ${active}" d="${path}"></path>`);};
+  for(let i=0;i<curves.length;i++){
+    const p=points[i],q=points[i+1];
+    const known=Number.isFinite(prices[i])&&Number.isFinite(prices[i+1]);
+    const from=known?prices[i]:p.value,to=known?prices[i+1]:q.value;
+    const delta=to-from,tolerance=Math.max(1e-8,Math.abs(from)*1e-8);
+    const trend=delta>tolerance?'trend-up':delta< -tolerance?'trend-down':'trend-flat';
+    if(active!==trend){
+      flush();active=trend;path=`M${p.x.toFixed(2)} ${p.y.toFixed(2)}`;
+    }
+    path+=curves[i];
+  }
+  flush();
+  return paths.join('');
+}
+
 function renderWorthSparkline() {
   const svg = $('treasuryWorthSparkline');
   if (!svg) return;
   const rawSamples = currentWorthRows();
-  const estimateNote=$('treasuryReconstructedNote');
-  if(estimateNote)estimateNote.hidden=!rawSamples.some(row=>row.estimated===true);
   syncWorthRangeControls();
   if (rawSamples.length < 2) {
     state.worthPlot = null;
@@ -1678,7 +1719,7 @@ function renderWorthSparkline() {
   const first=plotted[0],last=plotted.at(-1);
   const area=`${d} L${last.x.toFixed(2)} 92 L${first.x.toFixed(2)} 92 Z`;
   const grid=[24,48,72].map((y)=>`<line class="treasury-chart-gridline" x1="0" y1="${y}" x2="320" y2="${y}"></line>`).join('');
-  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${grid}<path class="treasury-worth-area" d="${area}"></path><path class="treasury-worth-line" d="${d}"></path>`;
+  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${grid}<path class="treasury-worth-area" d="${area}"></path>${worthMarketTrendPaths(plotted,d)}`;
   // A range repaint must never leave the previous floating inspector visible.
   // The interaction will explicitly reopen it on the next pointer/touch read.
   if(state.worthInspectIndex<0){
@@ -1714,8 +1755,7 @@ function showWorthSample(index) {
   cursor.hidden = false;
   dockChartTooltip(tooltip,leftPct);
   tooltip.querySelector('strong').textContent = money(sample.value,2);
-  tooltip.querySelector('small').textContent = historyFullLabel(sample.t) +
-    (sample.estimated === true ? ' · STIMA RICOSTRUITA' : '');
+  tooltip.querySelector('small').textContent = '';
   tooltip.hidden = false;
   stage.classList.add('inspecting');
   state.worthInspectIndex = safe;
@@ -1913,29 +1953,6 @@ function renderWalletOwnership(){
 }
 
 
-/* Treasury countervalue follows INJ market price, never wallet balance changes. */
-function updateTreasuryPrice(nextPrice) {
-  if (!(Number.isFinite(nextPrice) && nextPrice > 0)) return;
-  const previousPrice = state.price;
-  const change = nextPrice - previousPrice;
-  const tolerance = Math.max(1e-8, previousPrice * 1e-9);
-  if (previousPrice > 0 && Math.abs(change) > tolerance) {
-    state.priceDirection = change > 0 ? 'up' : 'down';
-  } else if (!(previousPrice > 0) && state.open24 > 0) {
-    state.priceDirection = nextPrice > state.open24 ? 'up' : nextPrice < state.open24 ? 'down' : 'neutral';
-  }
-  state.price = nextPrice;
-}
-function syncTreasuryCountervalueDirection() {
-  const direction = state.price > 0 ? state.priceDirection : 'neutral';
-  for (const id of ['treasuryTotalWorth','treasuryNetWorthCurrent']) {
-    const node = $(id);
-    if (!node) continue;
-    node.classList.toggle('treasury-price-up', direction === 'up');
-    node.classList.toggle('treasury-price-down', direction === 'down');
-  }
-}
-
 function render() {
   const data = state.data;
   setLiveValue('treasuryHeaderPrice', state.price > 0 ? money(state.price,state.price<10?4:3) : '—', state.price || NaN, true);
@@ -1951,7 +1968,6 @@ function render() {
   setLiveValue('treasuryTotalDecimals',`.${decimals}`,total,true);
   setLiveValue('treasuryTotalWorth',state.price>0?money(worth,2):'—',state.price>0?worth:NaN,true);
   setLiveValue('treasuryNetWorthCurrent',state.price>0?money(worth,2):'—',state.price>0?worth:NaN,true);
-  syncTreasuryCountervalueDirection();
   const pnl24 = state.price>0 && state.open24>0 ? total * (state.price-state.open24) : NaN;
   const pnl24Pct = state.price>0 && state.open24>0 ? ((state.price/state.open24)-1)*100 : NaN;
   const pnl24Card = $('treasuryPnl24');
@@ -2274,14 +2290,14 @@ async function loadPrice() {
     }
     if(!ticker||!(number(ticker?.lastPrice)>0))throw new Error('INJ ticker unavailable');
     const price=number(ticker?.lastPrice),open24=number(ticker?.openPrice),change24=number(ticker?.priceChangePercent);
-    if(price>0){if(open24>0)state.open24=open24;updateTreasuryPrice(price);state.lastPriceAt=Date.now();state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}
+    if(price>0){state.price=price;state.lastPriceAt=Date.now();if(open24>0)state.open24=open24;state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}
   } catch(_) {
     try {
       const data=await fetchJson('https://api.coingecko.com/api/v3/simple/price?ids=injective-protocol&vs_currencies=usd&include_24hr_change=true',6000);
       const price=number(data?.['injective-protocol']?.usd),change24=number(data?.['injective-protocol']?.usd_24h_change);
       if(price>0){
+        state.price=price;state.lastPriceAt=Date.now();state.change24=change24;
         if(Number.isFinite(change24)&&change24>-99.999)state.open24=price/(1+(change24/100));
-        updateTreasuryPrice(price);state.lastPriceAt=Date.now();state.change24=change24;
         recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();
       }
     } catch(_){}
@@ -2301,7 +2317,7 @@ function connectPriceSocket(force=false) {
   const generation=++state.socketGeneration;
   try {
     const socket=new WebSocket('wss://stream.binance.com:9443/ws/injusdt@ticker');state.socket=socket;
-    socket.addEventListener('message',(event)=>{if(state.socket!==socket||generation!==state.socketGeneration)return;try{const tick=JSON.parse(event.data);const price=number(tick?.c),open24=number(tick?.o),change24=number(tick?.P);if(price>0){if(open24>0)state.open24=open24;updateTreasuryPrice(price);state.lastPriceAt=Date.now();state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}}catch(_){}});
+    socket.addEventListener('message',(event)=>{if(state.socket!==socket||generation!==state.socketGeneration)return;try{const tick=JSON.parse(event.data);const price=number(tick?.c),open24=number(tick?.o),change24=number(tick?.P);if(price>0){state.price=price;state.lastPriceAt=Date.now();if(open24>0)state.open24=open24;state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}}catch(_){}});
     socket.addEventListener('close',()=>{if(state.socket!==socket||generation!==state.socketGeneration)return;state.socket=null;if(navigator.onLine!==false)schedulePriceReconnect(1100);});
     socket.addEventListener('error',()=>{if(state.socket===socket)try{socket.close()}catch(_){}});
   } catch(_) { if(generation===state.socketGeneration)schedulePriceReconnect(1400); }
