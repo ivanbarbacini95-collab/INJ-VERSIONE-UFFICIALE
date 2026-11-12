@@ -526,13 +526,13 @@
               <span id="treasuryGrowthPoints">STORICO —</span>
             </div>
           </div>
-          <div class="treasury-spark-stage" id="treasurySparkStage" role="img" tabindex="0" aria-label="Crescita Treasury: curva costruita esclusivamente da letture reali on-chain; piccoli punti mostrano le rilevazioni e le lacune temporali non sono inventate.">
+          <div class="treasury-spark-stage" id="treasurySparkStage" role="img" tabindex="0" aria-label="Crescita Treasury: punti riferiti a letture reali, compresi i prelievi. Le pause di rilevazione sono collegate direttamente tra gli estremi senza inventare valori intermedi.">
             <svg class="treasury-sparkline" id="treasurySparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
             <span class="treasury-chart-live-dot treasury-growth-end-dot" id="treasuryGrowthLiveDot" hidden aria-hidden="true"></span>
             <span class="treasury-spark-cursor" id="treasurySparkCursor" hidden aria-hidden="true"><i></i></span>
             <span class="treasury-spark-tooltip" id="treasurySparkTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
           </div>
-          <small class="treasury-growth-coverage-note" id="treasuryGrowthCoverageNote" aria-live="off">Punti = letture effettive del totale INJ. Nessuna crescita simulata.</small>
+          <small class="treasury-growth-coverage-note" id="treasuryGrowthCoverageNote" aria-live="off">Punti = letture reali, compresi i prelievi. Nessuna crescita simulata.</small>
           <footer><span id="treasuryHistoryStart">Prima lettura</span><span id="treasuryHistoryEnd">Ora</span></footer>
         </article>
 
@@ -701,7 +701,7 @@
 </main>
   </div>
   <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-  <script src="./treasury.js?v=20261112-growth-realpoints1" defer></script>
+  <script src="./treasury.js?v=20261112-growth-connected2" defer></script>
 
 
   <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
