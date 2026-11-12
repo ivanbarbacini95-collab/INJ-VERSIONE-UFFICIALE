@@ -82,6 +82,7 @@ async function restoreTimelineBackups(){
 const state = {
   data: null,
   price: 0,
+  priceDirection: 'neutral',
   open24: 0,
   change24: 0,
   eurRate: 0.86,
@@ -1911,6 +1912,30 @@ function renderWalletOwnership(){
  head.textContent=active.length+' WALLET'+(complete?' · 100%':' · SYNC');
 }
 
+
+/* Treasury countervalue follows INJ market price, never wallet balance changes. */
+function updateTreasuryPrice(nextPrice) {
+  if (!(Number.isFinite(nextPrice) && nextPrice > 0)) return;
+  const previousPrice = state.price;
+  const change = nextPrice - previousPrice;
+  const tolerance = Math.max(1e-8, previousPrice * 1e-9);
+  if (previousPrice > 0 && Math.abs(change) > tolerance) {
+    state.priceDirection = change > 0 ? 'up' : 'down';
+  } else if (!(previousPrice > 0) && state.open24 > 0) {
+    state.priceDirection = nextPrice > state.open24 ? 'up' : nextPrice < state.open24 ? 'down' : 'neutral';
+  }
+  state.price = nextPrice;
+}
+function syncTreasuryCountervalueDirection() {
+  const direction = state.price > 0 ? state.priceDirection : 'neutral';
+  for (const id of ['treasuryTotalWorth','treasuryNetWorthCurrent']) {
+    const node = $(id);
+    if (!node) continue;
+    node.classList.toggle('treasury-price-up', direction === 'up');
+    node.classList.toggle('treasury-price-down', direction === 'down');
+  }
+}
+
 function render() {
   const data = state.data;
   setLiveValue('treasuryHeaderPrice', state.price > 0 ? money(state.price,state.price<10?4:3) : '—', state.price || NaN, true);
@@ -1926,6 +1951,7 @@ function render() {
   setLiveValue('treasuryTotalDecimals',`.${decimals}`,total,true);
   setLiveValue('treasuryTotalWorth',state.price>0?money(worth,2):'—',state.price>0?worth:NaN,true);
   setLiveValue('treasuryNetWorthCurrent',state.price>0?money(worth,2):'—',state.price>0?worth:NaN,true);
+  syncTreasuryCountervalueDirection();
   const pnl24 = state.price>0 && state.open24>0 ? total * (state.price-state.open24) : NaN;
   const pnl24Pct = state.price>0 && state.open24>0 ? ((state.price/state.open24)-1)*100 : NaN;
   const pnl24Card = $('treasuryPnl24');
@@ -2248,14 +2274,14 @@ async function loadPrice() {
     }
     if(!ticker||!(number(ticker?.lastPrice)>0))throw new Error('INJ ticker unavailable');
     const price=number(ticker?.lastPrice),open24=number(ticker?.openPrice),change24=number(ticker?.priceChangePercent);
-    if(price>0){state.price=price;state.lastPriceAt=Date.now();if(open24>0)state.open24=open24;state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}
+    if(price>0){if(open24>0)state.open24=open24;updateTreasuryPrice(price);state.lastPriceAt=Date.now();state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}
   } catch(_) {
     try {
       const data=await fetchJson('https://api.coingecko.com/api/v3/simple/price?ids=injective-protocol&vs_currencies=usd&include_24hr_change=true',6000);
       const price=number(data?.['injective-protocol']?.usd),change24=number(data?.['injective-protocol']?.usd_24h_change);
       if(price>0){
-        state.price=price;state.lastPriceAt=Date.now();state.change24=change24;
         if(Number.isFinite(change24)&&change24>-99.999)state.open24=price/(1+(change24/100));
+        updateTreasuryPrice(price);state.lastPriceAt=Date.now();state.change24=change24;
         recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();
       }
     } catch(_){}
@@ -2275,7 +2301,7 @@ function connectPriceSocket(force=false) {
   const generation=++state.socketGeneration;
   try {
     const socket=new WebSocket('wss://stream.binance.com:9443/ws/injusdt@ticker');state.socket=socket;
-    socket.addEventListener('message',(event)=>{if(state.socket!==socket||generation!==state.socketGeneration)return;try{const tick=JSON.parse(event.data);const price=number(tick?.c),open24=number(tick?.o),change24=number(tick?.P);if(price>0){state.price=price;state.lastPriceAt=Date.now();if(open24>0)state.open24=open24;state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}}catch(_){}});
+    socket.addEventListener('message',(event)=>{if(state.socket!==socket||generation!==state.socketGeneration)return;try{const tick=JSON.parse(event.data);const price=number(tick?.c),open24=number(tick?.o),change24=number(tick?.P);if(price>0){if(open24>0)state.open24=open24;updateTreasuryPrice(price);state.lastPriceAt=Date.now();state.change24=change24;recordCurrentWorth(false);state.priceReady=true;render();void repairWorthHistoryAfterResume();}}catch(_){}});
     socket.addEventListener('close',()=>{if(state.socket!==socket||generation!==state.socketGeneration)return;state.socket=null;if(navigator.onLine!==false)schedulePriceReconnect(1100);});
     socket.addEventListener('error',()=>{if(state.socket===socket)try{socket.close()}catch(_){}});
   } catch(_) { if(generation===state.socketGeneration)schedulePriceReconnect(1400); }
