@@ -1,0 +1,178 @@
+/* INJ Node · Treasury mobile-density · 2026-11-12
+   Compact phone-only values. Width/short-landscape detection follows the
+   CSS viewport, not device models or browser zoom. Larger displays unchanged.
+   Monetary numbers, chart data, gestures and accessible text remain intact. */
+@media (max-width:599px), (max-height:520px) and (pointer:coarse) {
+  html[data-inj-page="treasury"] body .treasury-main {gap:12px}
+  html[data-inj-page="treasury"] body .treasury-hero {
+    min-height:clamp(180px,51vw,208px)!important;
+    padding-block:10px;
+    border-radius:20px;
+  }
+  html[data-inj-page="treasury"] body .treasury-hero-copy {
+    min-width:0;
+    padding-inline:clamp(10px,3.5vw,18px);
+    row-gap:3px;
+  }
+  html[data-inj-page="treasury"] body .treasury-kicker {
+    font-size:clamp(9px,2.6vw,11px)!important;
+    letter-spacing:.11em;
+  }
+  html[data-inj-page="treasury"] body .treasury-hero-copy .treasury-hero-worth {
+    font-size:clamp(25px,7.1vw,32px)!important;
+    line-height:1.09!important;
+    letter-spacing:-.035em!important;
+    margin-top:2px;
+    white-space:nowrap;
+    overflow-wrap:normal;
+  }
+  html[data-inj-page="treasury"] body .treasury-total-display {margin-top:3px}
+  html[data-inj-page="treasury"] body .treasury-total-display .treasury-total-major {
+    font-size:clamp(28px,8.1vw,36px)!important;
+    line-height:1.05!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-total-display .treasury-total-decimals {
+    font-size:clamp(15px,4.35vw,20px)!important;
+    line-height:1!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-total-display > small {
+    font-size:10px!important;
+    margin-left:6px;
+  }
+  html[data-inj-page="treasury"] body .treasury-hero-pnl {
+    margin-top:6px;
+    padding:4px 8px;
+    gap:6px;
+  }
+  html[data-inj-page="treasury"] body .treasury-hero-pnl > span {font-size:9px!important}
+  html[data-inj-page="treasury"] body .treasury-hero-pnl > strong {
+    font-size:clamp(13px,3.6vw,16px)!important;
+    line-height:1.15;
+  }
+  html[data-inj-page="treasury"] body .treasury-hero-pnl > small {font-size:11px!important}
+  html[data-inj-page="treasury"] body .treasury-status-line {
+    margin-top:6px;
+    font-size:clamp(10px,2.7vw,11px)!important;
+    line-height:1.25!important;
+    letter-spacing:.035em;
+  }
+  html[data-inj-page="treasury"] body .treasury-status-live {
+    font-size:10px!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-ownership {
+    margin-block:3px 9px;
+    padding-block:8px;
+    gap:5px;
+  }
+  html[data-inj-page="treasury"] body .treasury-ownership-head > :is(span,small) {
+    font-size:10px!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-owner {
+    padding:6px 9px;
+    min-height:34px;
+    gap:7px;
+  }
+  html[data-inj-page="treasury"] body .treasury-owner-label {font-size:11px!important}
+  html[data-inj-page="treasury"] body .treasury-owner-pct {
+    font-size:12px!important;
+    margin-left:2px;
+  }
+  html[data-inj-page="treasury"] body .treasury-owner-meter {width:28px}
+  html[data-inj-page="treasury"] body .treasury-panel {
+    padding:12px;
+    border-radius:19px;
+  }
+  html[data-inj-page="treasury"] body .treasury-panel > header strong {
+    font-size:clamp(15px,4vw,18px)!important;
+    line-height:1.2!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-visual {
+    grid-template-columns:minmax(100px,.82fr) minmax(0,1.18fr);
+    gap:clamp(8px,2.7vw,12px);
+    padding:8px 2px 10px;
+    margin:6px 0 10px;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-pie {
+    width:min(100%,126px);
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-row {
+    min-height:clamp(48px,12vw,56px)!important;
+    padding-block:5px;
+    column-gap:6px;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-row > span {
+    font-size:clamp(9px,2.6vw,11px)!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-row > strong {
+    font-size:clamp(14px,3.75vw,17px)!important;
+    line-height:1.16!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-row > small {
+    font-size:clamp(11px,2.95vw,13px)!important;
+    line-height:1.2!important;
+    font-weight:650!important;
+    min-width:0;
+    white-space:normal;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-metric {
+    min-height:clamp(90px,24vw,104px)!important;
+    padding:9px 7px!important;
+    row-gap:4px!important;
+    align-content:center;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-metric > span {
+    font-size:clamp(10px,2.6vw,11px)!important;
+    letter-spacing:.04em!important;
+    line-height:1.2!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-metric > strong,
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-reward-value-runway > strong {
+    font-size:clamp(15px,4vw,18px)!important;
+    font-weight:720!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    letter-spacing:-.02em!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-metric > small,
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
+    font-size:clamp(11px,3.05vw,13px)!important;
+    font-weight:600!important;
+    line-height:1.24!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-reward-value-runway {
+    gap:5px;
+    flex-wrap:wrap;
+  }
+  html[data-inj-page="treasury"] body .treasury-velocity-panel .treasury-velocity-grid > div {
+    min-height:94px!important;
+    padding:10px 8px!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-velocity-grid strong,
+  html[data-inj-page="treasury"] body .treasury-chart-primary > strong,
+  html[data-inj-page="treasury"] body .treasury-performance-cell > strong {
+    font-size:clamp(15px,4vw,18px)!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-velocity-panel .treasury-velocity-grid > div > small {
+    font-size:clamp(11px,3vw,13px)!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-chart-side > strong {
+    font-size:clamp(12px,3.5vw,15px)!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-chart-side > small,
+  html[data-inj-page="treasury"] body .treasury-performance-cell > small {
+    font-size:clamp(10px,2.8vw,12px)!important;
+  }
+}
+/* Extra narrow phones: prioritize full-value visibility rather than clipping. */
+@media (max-width:360px) {
+  html[data-inj-page="treasury"] body .treasury-hero-copy .treasury-hero-worth {
+    font-size:clamp(23px,7.1vw,26px)!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-total-display .treasury-total-major {
+    font-size:clamp(26px,8.1vw,30px)!important;
+  }
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-metric > strong,
+  html[data-inj-page="treasury"] body .treasury-allocation-metrics .treasury-reward-value-runway > strong {
+    font-size:14px!important;
+  }
+}
