@@ -1432,26 +1432,34 @@ function placeTreasuryLiveDot(id, point, width=320, height=96) {
 // joins actual measured points but never creates or stores a fake reward sample.
 // Clear gaps are kept disconnected instead of becoming an artificial diagonal.
 function treasuryGrowthDraw(samples,range,timeSpan){
-  if(!samples.length)return {path:'',area:'',missing:false};
+  if(!samples.length)return {path:[],area:[],missing:false};
+  // Keep true withdrawal drops and compound accrual exactly as recorded.
+  // Across inactive periods, connect the two real endpoints with a straight
+  // stroke instead of leaving a visual hole or inventing interim INJ values.
   const gapLimit=range==='d1'?65*MINUTE:range==='w1'?6*HOUR:range==='m1'?18*HOUR:Math.max(2*DAY,timeSpan/65);
   const groups=[];
-  let group=[samples[0]];
-  let missing=false;
+  let group=[samples[0]],missing=false;
   for(let i=1;i<samples.length;i++){
-    const prev=samples[i-1],next=samples[i];
-    if(next.t-prev.t>gapLimit){
+    const previous=samples[i-1],next=samples[i];
+    if(next.t-previous.t>gapLimit){
       missing=true;
       groups.push(group);
       group=[next];
     }else group.push(next);
   }
   groups.push(group);
-  const lines=groups.filter(g=>g.length>=2).map(g=>monotoneCurvePath(g));
-  const areas=groups.filter(g=>g.length>=2).map(g=>{
-    const d=monotoneCurvePath(g),first=g[0],last=g.at(-1);
-    return d+' L'+last.x.toFixed(2)+' 92 L'+first.x.toFixed(2)+' 92 Z';
-  });
-  return {path:lines,area:areas,missing};
+  let d='';
+  for(const part of groups){
+    if(!part.length)continue;
+    const curve=monotoneCurvePath(part);
+    const head='M'+part[0].x.toFixed(2)+' '+part[0].y.toFixed(2);
+    if(!d)d=curve;
+    else d+=' L'+part[0].x.toFixed(2)+' '+part[0].y.toFixed(2)+curve.slice(head.length);
+  }
+  if(!d)return {path:[],area:[],missing};
+  const first=samples[0],last=samples.at(-1);
+  const area=d+' L'+last.x.toFixed(2)+' 92 L'+first.x.toFixed(2)+' 92 Z';
+  return {path:[d],area:[area],missing};
 }
 // Deliberately small, sparse visible dots. Every dot is an ACTUAL observation,
 // never a synthetic sample; inspectors can still read all retained data points.
@@ -1523,8 +1531,8 @@ function renderSparkline() {
   state.plot={width:320,height:96,samples:plotted};
   const note=$('treasuryGrowthCoverageNote');
   if(note)note.textContent=paths.missing
-    ? 'Punti = letture reali. Periodi senza rilevazioni lasciati vuoti.'
-    : 'Punti = letture effettive del totale INJ. Nessuna crescita simulata.';
+    ? 'Punti = letture reali. Intervalli senza dati collegati con una linea, senza quantità INJ inventate.'
+    : 'Punti = letture reali: reward, depositi e prelievi inclusi.';
   $('treasuryHistoryStart').textContent=historyLabel(rawSamples[0].t);
   $('treasuryHistoryEnd').textContent=state.treasuryReady?'Ora':historyLabel(rawSamples.at(-1).t);
   if(state.inspectIndex>=0)showSparkSample(Math.min(state.inspectIndex,plotted.length-1));
