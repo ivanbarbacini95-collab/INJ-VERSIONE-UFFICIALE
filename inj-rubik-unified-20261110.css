@@ -171,7 +171,9 @@ html[data-inj-page] :is(
 
 /* Portrait wall displays need a height-aware optical scale too:
    a 900x1600 totem is NOT a 900px-wide tablet. */
-@media (min-width:700px) and (min-height:1000px) and (orientation:portrait){
+/* Distinguish tall external totems from ordinary touch tablets. */
+@media (min-width:700px) and (min-height:1000px) and (orientation:portrait) and (hover:hover) and (pointer:fine),
+       (min-width:850px) and (min-height:1450px) and (orientation:portrait){
  html[data-inj-page],html[data-inj-market]{
    --inj-optical-label:clamp(.88rem,1.35vh,1.12rem);
    --inj-optical-body:clamp(.98rem,1.45vh,1.28rem);
