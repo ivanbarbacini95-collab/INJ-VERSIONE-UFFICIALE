@@ -1105,24 +1105,16 @@ function timeUniformFinancialSamples(samples,maxPoints=96){
     .sort((a,b)=>a.t-b.t);
   if(clean.length<=maxPoints||maxPoints<3)return clean;
   const first=clean[0],last=clean.at(-1),span=Math.max(1,last.t-first.t);
-  const interiorSlots=Math.max(1,maxPoints-2);
-  const out=[first];
-  let cursor=1;
-  for(let slot=0;slot<interiorSlots;slot+=1){
-    const bucketStart=first.t+(span*slot/interiorSlots);
-    const bucketEnd=first.t+(span*(slot+1)/interiorSlots);
-    let chosen=null;
-    // Keep the point closest to the centre of this time bucket. This is an
-    // actual stored reading (never an interpolated/fabricated value).
-    const centre=(bucketStart+bucketEnd)/2;
-    while(cursor<clean.length-1&&clean[cursor].t<bucketEnd){
-      const row=clean[cursor];
-      if(!chosen||Math.abs(row.t-centre)<Math.abs(chosen.t-centre))chosen=row;
-      cursor+=1;
-    }
-    if(chosen&&chosen.t>out.at(-1).t)out.push(chosen);
+  // Anchor buckets to absolute clock time, NOT first/last viewport points.
+  // Otherwise each live price tick subtly shifts every bucket centre and the
+  // entire chart appears to redraw into a different market shape.
+  const step=Math.max(MINUTE,Math.ceil(span/Math.max(1,maxPoints-2)/MINUTE)*MINUTE);
+  const buckets=new Map();
+  for(let index=1;index<clean.length-1;index+=1){
+    const row=clean[index];
+    buckets.set(Math.floor(row.t/step),row);
   }
-  if(last.t>out.at(-1).t)out.push(last);
+  const out=[first,...buckets.values(),last];
   // Always retain the true range extremes so the visible curve actually reaches
   // the same MIN/MAX reported by the card and axis labels.
   let minRow=clean[0],maxRow=clean[0];
