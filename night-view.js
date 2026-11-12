@@ -163,11 +163,11 @@
    fitQueued=false;
    const output=$('nightPrice'),container=output?.parentElement;
    if(!output||!container)return;
-   output.style.fontSize='';
+   output.style.removeProperty('font-size');
    const css=getComputedStyle(output),maxFont=parseFloat(css.fontSize);
    const available=container.clientWidth-12;
    if(maxFont>0&&available>0){
-    // A DOM Range measures the real Rubik font with tabular numerals,
+    // A DOM Range measures the real active font with tabular numerals,
     // including the actual letter-spacing (unlike canvas.measureText).
     const range=document.createRange();
     range.selectNodeContents(output);
@@ -176,7 +176,7 @@
     // Leave a little extra space to prevent rounding-related overflow.
     const required=textWidth+maxFont*.65;
     if(required>available){
-     output.style.fontSize=Math.max(22,maxFont*available/required)+'px';
+     output.style.setProperty('font-size',Math.max(22,maxFont*available/required)+'px','important');
     }
    }
    lastFitSignature=container.clientWidth+'|'+output.textContent.replace(/\d/g,'8');
