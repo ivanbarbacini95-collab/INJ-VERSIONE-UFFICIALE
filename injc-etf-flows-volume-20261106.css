@@ -270,3 +270,14 @@
 .injc-volume-bar:hover{opacity:1}
 @media(max-width:540px){.injc-flow-empty{left:8px;right:59px;top:39px;padding:10px 9px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.injc-volume-bar{transition:none}}
+
+/* 2026-11-12 · INJC volume history scroll + fit-to-all control */
+.injc-volume-controls [data-injc-volume-view]{
+ min-width:39px;padding:6px 9px;font-size:9px;line-height:1.25;
+ font-variant-numeric:tabular-nums;
+}
+.injc-volume-scroller.is-dragging,
+.injc-volume-scroller.is-dragging .injc-volume-svg{cursor:grabbing;user-select:none}
+.injc-volume-controls [data-injc-volume-view].active{
+ border-color:var(--etf-accent);
+}
