@@ -1,0 +1,33 @@
+/* INJ Node · Home dock collision fallback · 2026-11-10.
+   When a real geometry check detects overlap, this state MUST override
+   the cached data-inj-home-fit="true" no-scroll rules and preserve the
+   full launcher row above the fixed iOS popover dock via natural scrolling.
+   Keep the normal one-screen layout unchanged when it truly fits. */
+@media screen and (max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-dock-clearance="scroll"]
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible {
+  box-sizing:border-box!important;
+  height:100dvh!important;min-height:0!important;max-height:100dvh!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior-x:none!important;overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
+  scroll-padding-bottom:calc(var(--inj-home-dock-space,125px) + env(safe-area-inset-bottom,0px) + 16px)!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-dock-clearance="scroll"]
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible
+ > .entry-gate-shell:not(.first-access) {
+  box-sizing:border-box!important;
+  min-height:100dvh!important;height:auto!important;max-height:none!important;
+  overflow:visible!important;
+  align-content:start!important;
+  padding-bottom:calc(var(--inj-home-dock-space,125px) + env(safe-area-inset-bottom,0px) + 16px)!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-dock-clearance="scroll"]
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {
+  position:relative!important;z-index:1!important;
+  flex-shrink:0!important;
+  overflow:visible!important;
+  margin-bottom:12px!important;
+ }
+}

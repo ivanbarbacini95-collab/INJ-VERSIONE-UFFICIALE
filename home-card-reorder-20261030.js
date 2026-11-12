@@ -11,7 +11,7 @@
   home:['entryDashboardButton','entryLiveButton','entryTreasuryButton'],
   mercato:['entryGlobalMarketsButton','entryGlobalCryptoButton','entryMacroCalendarButton','entryLiveChartsButton','entryOrderBookButton','entryPerformanceButton'],
   reward:['entryLiveRewardsButton','entryComparisonButton','entryVisualizeWealthButton','entryRewardLadderButton','entryFreedomButton'],
-  altro:['entryWorkspaceButton','entryConverterButton','entryCommandCenterButton']
+  altro:['entryMultiChartButton','entryAllTransactionsButton','entryComparisonButton','entryVisualizeWealthButton','entryFreedomButton','entryWorkspaceButton','entryConverterButton','entryCommandCenterButton']
  };
  const prefix='inj_node_launcher_order_v1_';
  const original=new Map(),live=new Map();
@@ -22,7 +22,11 @@
   try{
    const raw=JSON.parse(localStorage.getItem(prefix+tab)||'[]');
    if(!Array.isArray(raw))return defaults.slice();
-   return [...new Set(raw.filter(id=>defaults.includes(id))),...defaults.filter(id=>!raw.includes(id))];
+   const stored=[...new Set(raw.filter(id=>defaults.includes(id)))];
+   const missing=defaults.filter(id=>!stored.includes(id));
+   if(tab==='altro'&&!stored.includes('entryMultiChartButton'))
+     return ['entryMultiChartButton',...stored,...missing.filter(id=>id!=='entryMultiChartButton')];
+   return [...stored,...missing];
   }catch(_){return defaults.slice()}
  }
  for(const tab of Object.keys(groups)){

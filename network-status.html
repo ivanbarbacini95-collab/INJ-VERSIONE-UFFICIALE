@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="it" data-theme="obsidian" data-inj-page="network-status">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<script defer src="./page-zoom-lock-20261110.js?v=1"></script>
+<meta name="theme-color" content="#060b11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Status Network · INJ Node</title>
+<script>
+try{
+ const supported=['obsidian','arctic','orbit','classic-black','classic-white'];
+ const theme=localStorage.getItem('inj_monitor_theme');
+ document.documentElement.dataset.theme=supported.includes(theme)?theme:'obsidian';
+ document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
+ document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';
+ document.querySelector('meta[name="theme-color"]').content=({'obsidian':'#060b11','arctic':'#f1f7fa','orbit':'#080b1a','classic-black':'#030304','classic-white':'#ffffff'})[document.documentElement.dataset.theme];
+}catch(_){}
+</script>
+<style>
+@font-face{font-family:INJRubik;src:url('./assets/fonts/inj-rubik.woff2') format('woff2');font-display:swap}
+:root{color-scheme:dark;--bg:#060b11;--surface:#101924;--sub:#152232;--border:#273849;--text:#f6f9ff;--muted:#99afc4;--accent:#4bb3ee;--green:#44d7a3;--amber:#ffc06b;--red:#ff6e78;--ring:rgba(75,179,238,.15)}
+html[data-theme="orbit"]{--bg:#080b1a;--surface:#11182c;--sub:#1a2440;--border:#303b5a;--accent:#a79bff}
+html[data-theme="arctic"]{color-scheme:light;--bg:#f1f7fa;--surface:#fff;--sub:#e7f1f6;--border:#d2e0e9;--text:#162b3b;--muted:#617e93;--accent:#267fa9;--ring:#d7eef7}
+html[data-theme="classic-black"]{--bg:#030304;--surface:#111113;--sub:#1a1a1d;--border:#303034;--accent:#e4e4ec;--ring:#2b2b2d}
+html[data-theme="classic-white"]{color-scheme:light;--bg:#fff;--surface:#fafafa;--sub:#f0f0f2;--border:#dedee2;--text:#121315;--muted:#6a6b72;--accent:#292a31;--ring:#eee}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100dvh;color:var(--text);font:500 14px/1.5 INJRubik,system-ui,-apple-system,sans-serif;background:var(--bg);-webkit-font-smoothing:antialiased}button{font:inherit;cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}html[data-inj-font="slim"] body{font-weight:400}
+.shell{width:min(860px,100%);margin:0 auto;padding:calc(env(safe-area-inset-top) + 20px) clamp(16px,4vw,36px) calc(env(safe-area-inset-bottom) + 40px)}
+.header{display:flex;align-items:center;gap:13px;margin-bottom:23px}.back,.refresh{display:grid;place-items:center;border:1px solid var(--border);color:var(--text);background:var(--surface);border-radius:13px;height:42px;min-width:42px}.back svg,.refresh svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.9;fill:none}.header-title{flex:1;min-width:0}.eyebrow{display:block;color:var(--muted);font-size:10px;letter-spacing:.17em;font-weight:750}.header h1{margin:2px 0 0;font-size:clamp(19px,4.6vw,25px);font-weight:850;letter-spacing:-.035em}.refresh{padding:0 13px;display:flex;gap:7px;font-size:12px;font-weight:750}.refresh[disabled]{opacity:.6;cursor:wait}
+.hero,.panel{border:1px solid var(--border);background:var(--surface);border-radius:22px}.hero{padding:clamp(20px,5vw,30px);position:relative;overflow:hidden;background:radial-gradient(ellipse at 100% 0%,var(--ring),transparent 55%),var(--surface)}.hero::after{content:"";position:absolute;width:175px;height:175px;border:1px solid var(--border);border-radius:50%;right:-65px;top:-75px;pointer-events:none}.hero-head{display:flex;align-items:center;gap:12px}.orb{width:46px;height:46px;flex:none;display:grid;place-items:center;border:1px solid var(--border);border-radius:16px;background:var(--sub);color:var(--muted)}.orb svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.65;fill:none}.hero[data-state="online"] .orb{color:var(--green);border-color:color-mix(in srgb,var(--green) 45%,var(--border))}.hero[data-state="degraded"] .orb{color:var(--amber)}.hero[data-state="halted"] .orb{color:var(--red)}.hero h2{font-size:clamp(23px,5vw,31px);margin:0;letter-spacing:-.035em;line-height:1.1}.state-label{color:var(--muted);font-size:11px;letter-spacing:.12em;font-weight:800;margin-bottom:5px}.hero p{color:var(--muted);font-size:13px;line-height:1.65;margin:18px 0 0;max-width:580px}.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:100px;background:var(--sub);border:1px solid var(--border);font-weight:800;font-size:11px;letter-spacing:.05em;margin-top:20px}.dot{width:8px;height:8px;background:var(--muted);border-radius:50%}.hero[data-state="online"] .dot,.pill[data-state="online"] .dot{background:var(--green);box-shadow:0 0 10px var(--green)}.hero[data-state="degraded"] .dot,.pill[data-state="degraded"] .dot{background:var(--amber)}.hero[data-state="halted"] .dot,.pill[data-state="halted"] .dot{background:var(--red)}.hero[data-state="online"] .pill{color:var(--green)}.hero[data-state="degraded"] .pill{color:var(--amber)}.hero[data-state="halted"] .pill{color:var(--red)}
+.metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:13px 0 0}.metric{min-width:0;border:1px solid var(--border);background:var(--surface);border-radius:16px;padding:17px}.metric small{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}.metric strong{display:block;font-size:clamp(17px,3.4vw,23px);letter-spacing:-.035em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.metric .secondary{display:block;color:var(--muted);font-size:11px;margin-top:5px}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:28px 1px 11px}.section-title h3{font-size:14px;letter-spacing:.025em;margin:0}.section-title span{font-size:10px;color:var(--muted)}.panel{padding:17px 18px}.node{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}.node:last-child{border-bottom:0}.node-name{font-weight:800;font-size:13px}.node-meta{font-size:11px;color:var(--muted);margin-top:2px}.node-state{font-size:11px;color:var(--muted);font-weight:750}.node-state.online{color:var(--green)}.node-state.delayed{color:var(--amber)}.node-state.stale{color:var(--red)}.provider{display:flex;justify-content:space-between;gap:12px;align-items:center}.provider strong{font-size:14px}.provider p,.advice p{color:var(--muted);margin:5px 0 0;font-size:12px;line-height:1.65}.provider-state{font-size:11px;font-weight:800;white-space:nowrap;color:var(--muted)}.provider-state.operational{color:var(--green)}.provider-state.degraded_performance,.provider-state.partial_outage,.provider-state.under_maintenance{color:var(--amber)}.provider-state.major_outage{color:var(--red)}.incident{padding:12px;background:var(--sub);border-radius:12px;margin-top:13px;font-size:12px;line-height:1.55}.incident[hidden]{display:none}.incident a,.links a{color:var(--accent);text-underline-offset:3px}.advice{border-color:color-mix(in srgb,var(--accent) 35%,var(--border))}.advice strong{font-size:13px}.advice[data-state="halted"]{border-color:color-mix(in srgb,var(--red) 45%,var(--border))}.advice[data-state="degraded"]{border-color:color-mix(in srgb,var(--amber) 45%,var(--border))}.links{display:flex;flex-wrap:wrap;gap:9px 21px;font-size:11px;color:var(--muted);margin-top:17px}.footnote{font-size:11px;color:var(--muted);line-height:1.65;margin:17px 3px}.spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@media(min-width:650px){.metric-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:380px){.shell{padding-left:13px;padding-right:13px}.metric{padding:13px}.metric strong{font-size:17px}.refresh span{display:none}}@media(prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+<link rel="stylesheet" href="./network-history.css?v=20261110-uptime-history1">
+<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
+</head>
+<body>
+<main class="shell">
+<header class="header">
+ <button class="back" id="back" type="button" aria-label="Torna a Tools"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
+ <div class="header-title"><span class="eyebrow">INJ NODE / TOOLS</span><h1>Status Network</h1></div>
+ <button class="refresh" id="refresh" type="button"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.8 8A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.1-2"/></svg><span id="refreshLabel">Aggiorna</span></button>
+</header>
+<section class="hero" id="hero" data-state="unknown" aria-live="polite">
+ <div class="hero-head"><div class="orb"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="M6 13h3l2-5 3 8 2-4h2"/></svg></div><div><div class="state-label" id="networkLabel">INJECTIVE · MAINNET</div><h2 id="headline">Verifica in corso</h2></div></div>
+ <p id="summary">Controllo della produzione dei blocchi su più nodi indipendenti.</p>
+ <div class="pill" id="heroPill" data-state="unknown"><i class="dot" aria-hidden="true"></i><span id="heroState">VERIFICA</span></div>
+</section>
+<div class="metric-grid" aria-label="Metriche blockchain">
+ <div class="metric"><small id="labelBlock">Ultimo blocco</small><strong id="blockHeight">—</strong><span class="secondary" id="blockSource">Injective-1</span></div>
+ <div class="metric"><small id="labelAge">Età ultimo blocco</small><strong id="blockAge">—</strong><span class="secondary" id="blockTime">—</span></div>
+ <div class="metric"><small id="labelNodes">Nodi raggiungibili</small><strong id="nodeCount">—</strong><span class="secondary" id="nodeTotal">su 3 verificati</span></div>
+ <div class="metric"><small id="labelChecked">Ultimo controllo</small><strong id="checkedTime">—</strong><span class="secondary" id="pollingNote">Ogni 20 secondi</span></div>
+</div>
+
+<div class="section-title"><h3 id="uptimeTitle">Storico rete</h3><span>RPC CHECKS + PROVIDER EVENTS</span></div>
+<section class="panel uptime-panel" id="networkUptime" aria-label="Storico disponibilità Injective">
+ <div class="uptime-controls">
+  <div class="uptime-live" id="uptimeLive" data-live="false"><i aria-hidden="true"></i><span id="uptimeLiveText">LIVE IN ATTESA</span></div>
+  <div class="uptime-switch" role="group" aria-label="Intervallo storico">
+   <button type="button" data-network-range="1D" aria-pressed="true">1D</button>
+   <button type="button" data-network-range="1S" aria-pressed="false">1S</button>
+   <button type="button" data-network-range="1M" aria-pressed="false">1M</button>
+  </div>
+ </div>
+ <div class="uptime-bars" id="uptimeBars" aria-label="Cronologia dei controlli di rete"></div>
+ <div class="uptime-axis"><span id="uptimeAxisLeft">—</span><span id="uptimeAxisRight">—</span></div>
+ <div class="uptime-legend">
+  <span class="uptime-key" data-level="online"><i aria-hidden="true"></i><span id="uptimeLegendOnline">Operativa</span></span>
+  <span class="uptime-key" data-level="degraded"><i aria-hidden="true"></i><span id="uptimeLegendDegraded">Degradata / incidente</span></span>
+  <span class="uptime-key" data-level="halted"><i aria-hidden="true"></i><span id="uptimeLegendHalted">Possibile halt</span></span>
+  <span class="uptime-key" data-level="unknown"><i aria-hidden="true"></i><span id="uptimeLegendUnknown">Non verificata</span></span>
+  <span class="uptime-key" data-level="provider"><i aria-hidden="true"></i><span id="uptimeLegendProvider">Evento QuickNode</span></span>
+ </div>
+ <div class="uptime-provider-note" id="uptimeProviderNote" hidden></div>
+ <div class="uptime-stats"><strong class="uptime-coverage" id="uptimeCoverage">Copertura misurazioni: —</strong><span class="uptime-coverage-note" id="uptimeCoverageNote">Archivio in caricamento…</span></div>
+ <div class="uptime-selection" role="status" aria-live="polite"><strong id="uptimeDetailTitle">Seleziona una barra</strong><p id="uptimeDetailBody">Le barre mostrano verifiche registrate e incidenti pubblicati.</p><a id="uptimeIncidentLink" hidden target="_blank" rel="noopener noreferrer"></a></div>
+ <p class="uptime-source-note" id="uptimeSourceNote">I periodi senza verifiche rimangono grigi.</p>
+</section>
+<div class="section-title"><h3 id="nodesTitle">Verifica nodi RPC</h3><span>INJECTIVE · PUBLICNODE · POLKACHU</span></div>
+<section class="panel" id="nodes" aria-label="Nodi RPC"></section>
+<div class="section-title"><h3 id="incidentsTitle">Segnalazioni del provider</h3><span>QUICKNODE</span></div>
+<section class="panel"><div class="provider"><div><strong>QuickNode · Injective Mainnet</strong><p id="providerDescription">Controllo incidenti segnalati</p></div><span class="provider-state" id="providerState">—</span></div><div id="incident" class="incident" hidden><strong id="incidentTitle"></strong> <a id="incidentLink" target="_blank" rel="noopener noreferrer">Dettagli ↗</a></div></section>
+<div class="section-title"><h3 id="operationsTitle">Prelievo reward / transazioni</h3></div>
+<section class="panel advice" id="advice" data-state="unknown"><strong id="adviceTitle">Verifica necessaria</strong><p id="adviceBody">Il prelievo dei reward dipende dalla disponibilità della blockchain e dal wallet.</p></section>
+<div class="links"><a href="https://status.injective.network/" target="_blank" rel="noopener noreferrer" id="officialLink">Stato endpoint Injective ↗</a><a href="https://status.quicknode.com/" target="_blank" rel="noopener noreferrer" id="quicknodeLink">Incidenti QuickNode ↗</a><a href="https://www.mintscan.io/injective" target="_blank" rel="noopener noreferrer" id="explorerLink">Explorer Injective ↗</a></div>
+<p class="footnote" id="footnote">Lo stato mostra osservazioni pubbliche e non esegue transazioni. Un nodo raggiungibile non garantisce che le transazioni possano essere trasmesse; se i dati mancano, lo stato resta non verificabile.</p>
+</main>
+<script>
+(()=>{
+ 'use strict';
+ const $=id=>document.getElementById(id), en=document.documentElement.lang==='en';
+ const tr=(it,english)=>en?english:it;
+ const number=n=>new Intl.NumberFormat(en?'en-US':'it-IT').format(n);
+ const clock=t=>new Intl.DateTimeFormat(en?'en-GB':'it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date(t));
+ const age=s=>s<60?number(s)+' s':s<3600?number(Math.floor(s/60))+' min':number(Math.floor(s/3600))+' h '+number(Math.floor((s%3600)/60))+' min';
+ const RPCS=[{name:'Injective',url:'https://sentry.tm.injective.network/status'},{name:'PublicNode',url:'https://injective-rpc.publicnode.com/status'},{name:'Polkachu',url:'https://injective-rpc.polkachu.com/status'}];
+ let pending=false,lastResult=null,pollingData=null;
+ const wsSignals=new Map();
+ function mergeLive(snapshot){
+  const now=Date.now();
+  const nodes=(Array.isArray(snapshot.nodes)?snapshot.nodes:RPCS.map(x=>({name:x.name,available:false}))).map(node=>{
+   const ws=wsSignals.get(node.name);
+   if(!ws||now-ws.seenAt>23000)return node;
+   const wsTime=Date.parse(ws.blockTime),rpcTime=Date.parse(node.blockTime||'');
+   if(node.available&&Number.isFinite(rpcTime)&&rpcTime>wsTime)return node;
+   return {...ws,ageSeconds:Math.max(0,Math.floor((now-wsTime)/1000))};
+  });
+  const valid=nodes.filter(n=>n.available&&Number.isFinite(n.ageSeconds));
+  const fresh=valid.filter(n=>n.ageSeconds<=20&&!n.catchingUp);
+  const delayed=valid.filter(n=>n.ageSeconds>20&&n.ageSeconds<=120);
+  const stale=valid.filter(n=>n.ageSeconds>120);
+  let state='unknown';
+  if(fresh.length>=2)state='online';
+  else if(fresh.length===1||delayed.length||valid.some(n=>n.catchingUp))state='degraded';
+  else if(stale.length>=2)state='halted';
+  else if(stale.length===1)state='degraded';
+  if(state==='online'&&Math.max(...fresh.map(n=>n.height))-Math.min(...fresh.map(n=>n.height))>100)state='degraded';
+  const latest=valid.length?valid.reduce((a,b)=>a.blockTime>b.blockTime?a:b):null;
+  const wsRecent=[...wsSignals.values()].some(x=>now-x.seenAt<=23000);
+  return {...snapshot,nodes,latest,state,checkedAt:wsRecent?new Date(now).toISOString():snapshot.checkedAt};
+ }
+
+ function labels(){
+  $('refreshLabel').textContent=tr('Aggiorna','Refresh');
+  $('back').setAttribute('aria-label',tr('Torna a Tools','Back to Tools'));
+  $('labelBlock').textContent=tr('Ultimo blocco','Latest block');$('labelAge').textContent=tr('Età ultimo blocco','Block age');
+  $('labelNodes').textContent=tr('Nodi raggiungibili','Reachable nodes');$('labelChecked').textContent=tr('Ultimo controllo','Last checked');
+  $('nodeTotal').textContent=tr('su 3 verificati','out of 3 checked');$('pollingNote').textContent=tr('Ogni 10 secondi','Every 10 seconds');
+  $('nodesTitle').textContent=tr('Verifica nodi RPC','RPC node checks');$('incidentsTitle').textContent=tr('Segnalazioni del provider','Provider notices');
+  $('operationsTitle').textContent=tr('Prelievo reward / transazioni','Claim rewards / transactions');
+  $('officialLink').textContent=tr('Stato endpoint Injective ↗','Injective endpoint status ↗');
+  $('quicknodeLink').textContent=tr('Incidenti QuickNode ↗','QuickNode incidents ↗');
+  $('explorerLink').textContent=tr('Explorer Injective ↗','Injective explorer ↗');
+  $('footnote').textContent=tr('Osservazioni pubbliche in sola lettura. Un nodo raggiungibile non garantisce la trasmissione delle transazioni. In assenza di dati lo stato è non verificabile.','Read-only public observations. A reachable node does not guarantee transaction broadcast. Without data the status is unverified.');
+ }
+ async function timedJson(url,ms=8500){
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ms);
+  try{const r=await fetch(url,{signal:controller.signal,cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return await r.json();}
+  finally{clearTimeout(timer);}
+ }
+ async function fallback(){
+  const now=Date.now();
+  const nodes=await Promise.all(RPCS.map(async source=>{
+   try{
+    const j=await timedJson(source.url,5500),s=j?.result?.sync_info;
+    const height=Number(s?.latest_block_height),t=Date.parse(s?.latest_block_time||'');
+    if(j?.result?.node_info?.network!=='injective-1'||!Number.isSafeInteger(height)||!Number.isFinite(t)||t>now+30000)throw Error('Invalid status');
+    return {name:source.name,available:true,height,blockTime:new Date(t).toISOString(),ageSeconds:Math.max(0,Math.floor((now-t)/1000)),catchingUp:Boolean(s.catching_up)};
+   }catch(_){return {name:source.name,available:false};}
+  }));
+  const good=nodes.filter(n=>n.available),fresh=good.filter(n=>n.ageSeconds<=20&&!n.catchingUp);
+  const delayed=good.filter(n=>n.ageSeconds>20&&n.ageSeconds<=120);
+   const stale=good.filter(n=>n.ageSeconds>120);
+   let state='unknown';
+   if(fresh.length>=2)state='online';
+   else if(fresh.length===1||delayed.length||good.some(n=>n.catchingUp))state='degraded';
+   else if(stale.length>=2)state='halted';
+   else if(stale.length===1)state='degraded';
+   if(state==='online'&&Math.max(...fresh.map(n=>n.height))-Math.min(...fresh.map(n=>n.height))>100)state='degraded';
+  let provider={level:'unknown',available:false,incident:null};
+  try{
+   const quick=await timedJson('https://quicknode.statuspage.io/api/v2/summary.json',4500);
+   const component=(quick.components||[]).find(x=>/injective\s*[-–]\s*mainnet/i.test(x.name||''));
+   const incident=(quick.incidents||[]).find(x=>/injective.*mainnet/i.test(x.name||''));
+   provider={level:component?.status||'unknown',available:Boolean(component),
+    incident:incident?{name:incident.name,url:'https://status.quicknode.com/incidents/'+encodeURIComponent(incident.id),status:incident.status}:null};
+  }catch(_){}
+  return {state,checkedAt:new Date(now).toISOString(),nodes,latest:good.length?good.reduce((a,b)=>a.blockTime>b.blockTime?a:b):null,provider,source:'direct'};
+ }
+ function advice(state){
+  const sets={
+   online:[tr('Blocchi in produzione','Blocks being produced'),tr('La rete risulta attiva dai nodi verificati. Puoi valutare un nuovo tentativo, ma il broadcast dipende anche dal wallet, dalle commissioni e dal nodo usato.','The checked nodes show ongoing production. You may consider retrying, but wallet, fees and the actual broadcast endpoint can still fail.')],
+   degraded:[tr('Meglio attendere','Better to wait'),tr('Produzione rallentata o conferma insufficiente dai nodi. Evita tentativi ripetuti di claim finché lo stato non si stabilizza.','Block production is delayed or not sufficiently verified. Avoid repeated claim attempts until the network stabilizes.')],
+   halted:[tr('Non riprovare ora','Do not retry now'),tr('Più nodi restituiscono blocchi molto vecchi. Possibile interruzione della produzione: attendi la ripresa prima di ritirare i reward.','Multiple nodes report very old blocks. A production halt may be underway; wait for recovery before claiming rewards.')],
+   unknown:[tr('Stato non verificabile','Status unverified'),tr('Non è possibile verificare la blockchain con certezza. Questo non prova un blocco della rete: consulta le fonti ufficiali prima di riprovare.','Unable to verify the blockchain with confidence. This does not prove an outage: consult official sources before retrying.')]
+  };
+  $('advice').dataset.state=state;$('adviceTitle').textContent=sets[state][0];$('adviceBody').textContent=sets[state][1];
+ }
+ function render(data){
+  lastResult=data;const state=['online','degraded','halted'].includes(data.state)?data.state:'unknown';
+  const info={
+   online:[tr('Rete operativa','Network operational'),tr('Produzione blocchi recente confermata da più nodi indipendenti.','Recent blocks confirmed by multiple independent nodes.'),tr('OPERATIVA','OPERATIONAL')],
+   degraded:[tr('Rete da verificare','Network degraded'),tr('Solo alcuni nodi vedono blocchi recenti, oppure la produzione appare rallentata.','Only some nodes see recent blocks, or production appears delayed.'),tr('ATTENZIONE','CAUTION')],
+   halted:[tr('Possibile interruzione','Possible halt'),tr('Due o più nodi segnalano un ultimo blocco vecchio di oltre due minuti.','Two or more nodes report a latest block older than two minutes.'),tr('INTERRUZIONE','HALT')],
+   unknown:[tr('Dati non disponibili','Data unavailable'),tr('Non è possibile distinguere un guasto dei nodi da un problema della rete.','Unable to distinguish endpoint failure from a network issue.'),tr('NON VERIFICATO','UNVERIFIED')]
+  }[state];
+  $('hero').dataset.state=state;$('heroPill').dataset.state=state;
+  $('headline').textContent=info[0];$('summary').textContent=info[1];$('heroState').textContent=info[2];
+  const nodes=Array.isArray(data.nodes)?data.nodes:[],valid=nodes.filter(x=>x.available);
+  const latest=data.latest;
+  $('blockHeight').textContent=latest?.height?number(latest.height):'—';
+  $('blockAge').textContent=Number.isFinite(latest?.ageSeconds)?age(latest.ageSeconds):'—';
+  $('blockTime').textContent=latest?.blockTime?clock(latest.blockTime):'—';
+  $('blockSource').textContent=latest?.name||'injective-1';
+  $('nodeCount').textContent=number(valid.length)+' / '+number(nodes.length||3);
+  $('checkedTime').textContent=data.checkedAt?clock(data.checkedAt):'—';
+  $('nodes').replaceChildren();
+  nodes.forEach(node=>{
+   const line=document.createElement('div');line.className='node';
+   const text=document.createElement('div'),name=document.createElement('div'),detail=document.createElement('div'),status=document.createElement('span');
+   name.className='node-name';name.textContent=node.name;
+   detail.className='node-meta';detail.textContent=node.available?('#'+number(node.height)+' · '+age(node.ageSeconds)+' · '+clock(node.blockTime)):tr('Non raggiungibile / dati non leggibili','Unreachable / unreadable data');
+   status.className='node-state '+(!node.available?'':node.ageSeconds>120?'stale':node.ageSeconds>20||node.catchingUp?'delayed':'online');
+   status.textContent=!node.available?tr('N/D','N/A'):node.ageSeconds>120?tr('DATI OBSOLETI','STALE'):node.ageSeconds>20||node.catchingUp?tr('RITARDO','DELAYED'):'LIVE';
+   text.append(name,detail);line.append(text,status);$('nodes').appendChild(line);
+  });
+  const provider=data.provider||{},providerState=$('providerState'),level=provider.level||'unknown';
+  providerState.className='provider-state '+level;
+  providerState.textContent=({operational:'ONLINE',degraded_performance:tr('DEGRADATO','DEGRADED'),partial_outage:tr('PROBLEMI','PARTIAL'),major_outage:'OUTAGE',under_maintenance:tr('MANUTENZIONE','MAINTENANCE')})[level]||tr('N/D','N/A');
+  $('providerDescription').textContent=provider.available?tr('Stato dei servizi API del provider, distinto dalla produzione dei blocchi.','Provider API status, separate from block production.'):tr('Fonte non raggiungibile: controlla il sito ufficiale.','Provider feed unavailable: check its status page.');
+  const incident=provider.incident;$('incident').hidden=!incident;
+  if(incident){
+   $('incidentTitle').textContent=incident.name;
+   const url=String(incident.url||'');
+   $('incidentLink').href=/^https:\/\/(?:[\w-]+\.)?(?:quicknode\.com|statuspage\.io)(?:\/|$)/i.test(url)?url:'https://status.quicknode.com/';
+   $('incidentLink').textContent=tr('Apri segnalazione ↗','View incident ↗');
+  }
+  advice(state);
+  window.dispatchEvent(new CustomEvent('injnode:network-status',{detail:data}));
+ }
+ async function check(){
+  if(pending||document.hidden)return;pending=true;
+  $('refresh').disabled=true;$('refresh').querySelector('svg').classList.add('spin');
+  try{
+   let data;
+   try{data=await timedJson('./api/network-status?at='+Date.now(),9500);if(!Array.isArray(data.nodes))throw Error('Missing nodes');}
+   catch(_){data=await fallback();}
+   pollingData=data;
+   render(mergeLive(data));
+  }catch(_){pollingData={state:'unknown',nodes:RPCS.map(x=>({name:x.name,available:false})),provider:{level:'unknown'},checkedAt:new Date().toISOString()};render(mergeLive(pollingData));}
+  finally{pending=false;$('refresh').disabled=false;$('refresh').querySelector('svg').classList.remove('spin');}
+ }
+ window.addEventListener('injnode:network-ws-block',event=>{
+  const node=event.detail;
+  if(!node||!['Injective','PublicNode'].includes(node.name)||node.available!==true)return;
+  wsSignals.set(node.name,node);
+  if(pollingData)render(mergeLive(pollingData));
+ });
+ function exitToTools(){
+  try{sessionStorage.setItem('inj_node_return_tools','1');}catch(_){}
+  // Standalone pages normally return to the existing Tools tab without remounting Home.
+  if(window.parent!==window){window.parent.postMessage({type:'injnode:section:tools'},location.origin);return;}
+  try{
+   const source=document.referrer?new URL(document.referrer):null;
+   if(source&&source.origin===location.origin&&(source.pathname.endsWith('/')||source.pathname.endsWith('/index.html'))&&history.length>1){history.back();return;}
+  }catch(_){}
+  location.replace('./index.html?tab=tools');
+ }
+ labels();$('back').addEventListener('click',exitToTools);
+ $('refresh').addEventListener('click',check);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});
+ check();setInterval(check,10000);
+})();
+</script>
+<script src="./network-history.js?v=20261110-uptime-history1"></script>
+<script src="./network-live-ws.js?v=20261109-uptime-ws1"></script>
+</body></html>

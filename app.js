@@ -123,7 +123,8 @@ window.INJ_GET_SELECTED_WALLET_SNAPSHOT = function () {
     available: Number(row?.available) || 0,
     staked: Number(row?.staked) || 0,
     rewards: Number(row?.rewards) || 0,
-    personalApr: Number.isFinite(Number(row?.personalApr)) && row?.personalApr != null ? Number(row.personalApr) : NaN,
+    personalApr: row?.aprUpdated && Date.now()-Number(row.aprUpdated)<window.INJ_STAKING_APR.maxCacheMs
+      ? Number(row?.personalApr) : NaN,
     updated: Number.isFinite(updated) && updated > 0 ? updated : 0
   };
 };
@@ -155,9 +156,11 @@ window.INJ_FINANCIAL_FREEDOM_SOURCE = function () {
         // validator metadata, reuse the live APR of this active wallet only.
         apr:(()=>{
           const saved=metric(row,'personalApr');
-          if(saved>0)return saved;
+          if(saved!==null&&Date.now()-Number(row?.aprUpdated)<window.INJ_STAKING_APR.maxCacheMs&&
+            Number(row?.aprUpdated)>0)return saved;
           const active=wallet.address===state.address?Number(state.personalApr):NaN;
-          return Number.isFinite(active)&&active>0?active:saved;
+          return Number.isFinite(active)&&active>=0&&state.networkAprUpdated&&
+            Date.now()-state.networkAprUpdated<window.INJ_STAKING_APR.maxCacheMs?active:null;
         })(),
         updated:metric(row,'updated') || 0
       };
@@ -172,41 +175,30 @@ let freedomAprSyncing=false;
 let freedomAprLastAttempt=0;
 window.INJ_FINANCIAL_FREEDOM_ENRICH_APR = async function () {
   if(freedomAprSyncing||Date.now()-freedomAprLastAttempt<60_000)return;
-  const pending=state.wallets
-    .filter(wallet=>{
-      const row=state.walletSummaries[wallet.address];
-      return number(row?.staked)>0 &&
-        (row?.personalApr===undefined||row?.personalApr===null||
-          !Number.isFinite(Number(row.personalApr)));
-    }).map(wallet=>wallet.address);
+  const pending=state.wallets.filter(wallet=>{
+    const row=state.walletSummaries[wallet.address];
+    const age=Date.now()-Number(row?.aprUpdated||0);
+    return number(row?.staked)>0 && (!(age>=0&&age<120000)||
+      row?.personalApr==null||!Number.isFinite(Number(row.personalApr)));
+  }).map(wallet=>wallet.address);
   if(!pending.length)return;
   freedomAprSyncing=true;
   freedomAprLastAttempt=Date.now();
   try{
-    if(!(state.networkApr>0)){
-      try{await ensureNetworkApr(false);}catch(_){}
-    }
-    if(!(state.networkApr>0))return;
     let cursor=0;
     const worker=async()=>{
       while(cursor<pending.length){
         const address=pending[cursor++];
         try{
-          const raw=await lcd('/cosmos/staking/v1beta1/delegations/'+address);
-          const delegated=delegationRows(raw);
-          if(!delegated.length)continue;
-          const validators=await Promise.all(delegated.map(loadValidator));
-          // Unknown commission is not a 0%-fee validator.
-          if(validators.some(v=>!number(v.updated)))continue;
-          const amount=validators.reduce((sum,v)=>sum+number(v.amount),0);
-          const annual=validators.reduce((sum,v)=>
-            sum+number(v.amount)*(validatorNetApr(v)/100),0);
-          if(!(amount>0))continue;
-          const apr=annual/amount*100;
-          if(!Number.isFinite(apr)||apr<0||apr>200)continue;
+          const verified=await window.INJ_STAKING_APR.wallet(address);
+          if(!verified||verified.stale||!Number.isFinite(verified.apr))continue;
           const current=state.walletSummaries[address];
           if(!current)continue;
-          state.walletSummaries[address]={...current,personalApr:apr,validators,networkApr:state.networkApr};
+          state.walletSummaries[address]={...current,
+            personalApr:verified.apr,validators:verified.validators,
+            networkApr:verified.networkApr,
+            weightedCommission:verified.weightedCommission,
+            aprUpdated:verified.aprUpdated,aprSource:verified.source};
           try{saveWalletSummaries();}catch(_){}
         }catch(_){}
       }
@@ -1347,8 +1339,11 @@ function renderEntryDesktopMetrics() {
   const available = number(row?.available);
   const staked = number(row?.staked);
   const total = number(row?.total);
-  const cachedApr = number(row?.personalApr);
-  const apr = cachedApr > 0 ? cachedApr : (wallet.address === state.address ? number(state.personalApr) : 0);
+  const aprAge=Date.now()-Number(row?.aprUpdated);
+  const cachedApr=aprAge>=0&&aprAge<window.INJ_STAKING_APR.maxCacheMs?Number(row?.personalApr):NaN;
+  const apr=Number.isFinite(cachedApr)&&cachedApr>=0?cachedApr:
+    (wallet.address===state.address&&state.networkAprUpdated&&
+      Date.now()-state.networkAprUpdated<window.INJ_STAKING_APR.maxCacheMs?number(state.personalApr):0);
   const stakingRatio = total > 0 ? (staked / total) * 100 : 0;
   const dailyReward = staked > 0 && apr > 0 ? staked * (apr / 100) / 365 : 0;
 
@@ -2650,9 +2645,16 @@ function enterLiveViewFromGate() {
   const wallet = activateEntrySelection();
   if (!wallet) return;
 
-  // Keep Home physically rendered underneath instead of closing/recreating it.
-  parkEntryGateUnderImmersive();
-  openFocusDisplay();
+  // Live View now uses the single Night View layout; its moon button toggles
+  // between the selected INJ Node theme and the all-black OLED palette.
+  // Do not mount or render the previous immersive Live View interface.
+  setHeaderMenuOpen(false);
+  setSearchOpen(false);
+  if (typeof window.INJ_OPEN_SECTION === 'function') {
+    window.INJ_OPEN_SECTION('./night-view.html?embedded=live&v=20261111-digits-only1');
+  } else {
+    location.href = './night-view.html?embedded=live&v=20261111-digits-only1';
+  }
 }
 
 function enterPulseViewFromGate() {
@@ -2903,7 +2905,6 @@ function bindDashboardHomeLauncher() {
   });
 }
 
-const OFFICIAL_APR_ENDPOINT = 'https://api.ui.injective.network/api/v1/cache/stats/apr';
 const LCD_ENDPOINTS = [
   'https://sentry.lcd.injective.network:443',
   'https://lcd.injective.network',
@@ -2949,6 +2950,7 @@ const state = {
   rewardSimulationPrice: 0,
   networkApr: 0,
   networkAprUpdated: 0,
+  networkAprSource: '',
   personalApr: 0,
   weightedCommission: 0,
   validators: [],
@@ -3015,7 +3017,8 @@ window.INJ_MORNING_SOURCE = function () {
       return {
         address: wallet.address, label: wallet.label,
         rewards: numeric('rewards'), staked: numeric('staked'),
-        apr: numeric('personalApr'), updated: numeric('updated') || 0
+        apr: Number(row?.aprUpdated)>0&&Date.now()-Number(row.aprUpdated)<window.INJ_STAKING_APR.maxCacheMs
+          ? numeric('personalApr') : null, updated: numeric('updated') || 0
       };
     })
   };
@@ -4036,6 +4039,14 @@ async function refreshWalletSummaries(force = false) {
   state.summariesLoading = false;
   renderAggregate();
   renderWalletCards();
+  // Keep every saved wallet's displayed net APR in sync with its OWN
+  // validators; do not reuse the currently selected wallet's commission.
+  if(Date.now()-freedomAprLastAttempt>5*60_000){
+    void window.INJ_FINANCIAL_FREEDOM_ENRICH_APR?.().then(()=>{
+      renderEntryGate();
+      renderWalletCards();
+    }).catch(()=>{});
+  }
 }
 
 function aggregateCollapsedPreference() {
@@ -4107,26 +4118,28 @@ function renderAggregate() {
 }
 
 function validatorActive(validator) {
-  return Boolean(validator && !validator.jailed && (!validator.status || validator.status === 'BOND_STATUS_BONDED'));
+  return Boolean(validator && !validator.jailed &&
+    (String(validator.status) === 'BOND_STATUS_BONDED' || String(validator.status) === '3'));
 }
-
 function validatorNetApr(validator) {
-  return validatorActive(validator)
-    ? state.networkApr * Math.max(0, 1 - number(validator.commission))
-    : 0;
+  const age = Date.now() - Number(validator?.updated);
+  if (!Number(validator?.updated) || age < 0 || age > window.INJ_STAKING_APR.maxCacheMs ||
+      !state.networkAprUpdated || Date.now() - state.networkAprUpdated > window.INJ_STAKING_APR.maxCacheMs)
+    return NaN;
+  return window.INJ_STAKING_APR.validatorNetApr(state.networkApr,
+    validator.commission, String(validator.status), validator.jailed);
 }
-
 function calculatePersonalApr() {
-  const delegated = state.validators.reduce((sum, item) => sum + item.amount, 0);
-  state.weightedCommission = delegated > 0
-    ? state.validators.reduce((sum, item) => sum + item.amount * item.commission, 0) / delegated
-    : 0;
-
-  const annualNetInj = state.validators.reduce((sum, item) => {
-    return sum + item.amount * (validatorNetApr(item) / 100);
-  }, 0);
-
-  state.personalApr = state.staked > 0 ? (annualNetInj / state.staked) * 100 : 0;
+  const staked = state.validators.reduce((sum,v)=>sum+number(v.amount),0);
+  const aprs = state.validators.map(validatorNetApr);
+  if (!(staked > 0) || aprs.some(apr=>!Number.isFinite(apr))) {
+    state.personalApr = NaN;
+    state.weightedCommission = NaN;
+    return false;
+  }
+  state.weightedCommission = state.validators.reduce((sum,v)=>sum+v.amount*v.commission,0)/staked;
+  state.personalApr = state.validators.reduce((sum,v,i)=>sum+v.amount*aprs[i],0)/staked;
+  return Number.isFinite(state.personalApr);
 }
 
 
@@ -4487,8 +4500,11 @@ function renderHomeMarketMotion() {
     gate.classList.toggle('market-neutral', value === 0 || !Number.isFinite(value));
   }
   const staked = number(row?.staked);
-  const cachedApr = number(row?.personalApr);
-  const apr = cachedApr > 0 ? cachedApr : (wallet.address === state.address ? number(state.personalApr) : 0);
+  const aprAge=Date.now()-Number(row?.aprUpdated);
+  const cachedApr=aprAge>=0&&aprAge<window.INJ_STAKING_APR.maxCacheMs?Number(row?.personalApr):NaN;
+  const apr=Number.isFinite(cachedApr)&&cachedApr>=0?cachedApr:
+    (wallet.address===state.address&&state.networkAprUpdated&&
+      Date.now()-state.networkAprUpdated<window.INJ_STAKING_APR.maxCacheMs?number(state.personalApr):0);
   const dailyReward = staked > 0 && apr > 0 ? staked * (apr / 100) / 365 : 0;
   setEntryAnimatedValue('entryDesktopDailyRewardValue', dailyReward > 0 && state.price > 0 ? `${money(dailyReward * state.price, 2)} / giorno` : 'Stima netta', dailyReward > 0 && state.price > 0 ? dailyReward * state.price : NaN);
   syncEntrySparkToVisualPrice();
@@ -4989,51 +5005,34 @@ function resumeRealtimeData(forceWalletSummaries = false) {
 }
 
 async function loadValidator(row) {
-  const cached = state.validatorMeta[row.operator];
-  if (cached && Date.now() - number(cached.updated) < 10 * 60_000) {
-    return { ...row, ...cached };
-  }
+  const cached=state.validatorMeta[row.operator];
+  if(cached && Date.now()-number(cached.updated)<10*60_000)return {...row,...cached};
   try {
-    const response = await lcd(`/cosmos/staking/v1beta1/validators/${row.operator}`);
-    const validator = response?.validator || {};
-    const meta = {
-      moniker: validator?.description?.moniker || shortAddress(row.operator),
-      commission: Math.max(0, Math.min(1, rate(validator?.commission?.commission_rates?.rate))),
-      status: validator?.status || '',
-      jailed: Boolean(validator?.jailed),
-      updated: Date.now()
-    };
-    state.validatorMeta[row.operator] = meta;
-    return { ...row, ...meta };
-  } catch (_) {
-    if (cached) return { ...row, ...cached };
-    return { ...row, moniker: shortAddress(row.operator), commission: 0, status: '', jailed: false };
+    const response=await lcd(`/cosmos/staking/v1beta1/validators/${row.operator}`);
+    const validator=response?.validator||{};
+    const fee=Number(validator?.commission?.commission_rates?.rate);
+    if(!Number.isFinite(fee)||fee<0||fee>1||!validator.status)throw Error('Validator metadata incomplete');
+    const meta={moniker:validator?.description?.moniker||shortAddress(row.operator),
+      commission:fee,status:String(validator.status),jailed:Boolean(validator.jailed),updated:Date.now()};
+    state.validatorMeta[row.operator]=meta;
+    return {...row,...meta};
+  }catch(_){
+    if(cached && Date.now()-number(cached.updated)<window.INJ_STAKING_APR.maxCacheMs)
+      return {...row,...cached};
+    return {...row,moniker:cached?.moniker||shortAddress(row.operator),
+      commission:NaN,status:'',jailed:false,updated:0};
   }
 }
 
 async function ensureNetworkApr(force = false) {
-  if (!force && state.networkApr > 0 && Date.now() - state.networkAprUpdated < 5 * 60_000) {
-    return state.networkApr;
+  const checked=await window.INJ_STAKING_APR.load(force);
+  if(!checked){
+    state.networkApr=0;state.networkAprUpdated=0;state.networkAprSource='';
+    throw Error('APR non verificabile');
   }
-
-  const [annual, pool, distribution, officialApr] = await Promise.all([
-    lcd('/cosmos/mint/v1beta1/annual_provisions'),
-    lcd('/cosmos/staking/v1beta1/pool'),
-    lcd('/cosmos/distribution/v1beta1/params').catch(() => null),
-    fetchJson(OFFICIAL_APR_ENDPOINT, 7000).catch(() => null)
-  ]);
-
-  const officialBaseApr = aprPercent(officialApr?.apr);
-  const annualProvisions = number(annual?.annual_provisions);
-  const bondedTokens = number(pool?.pool?.bonded_tokens);
-  const communityTax = rate(distribution?.params?.community_tax);
-  const fallbackGrossApr = bondedTokens > 0 ? (annualProvisions / bondedTokens) * 100 : 0;
-  const fallbackDelegatorApr = fallbackGrossApr * Math.max(0, 1 - communityTax);
-  const nextApr = officialBaseApr || fallbackDelegatorApr;
-  if (nextApr > 0) {
-    state.networkApr = nextApr;
-    state.networkAprUpdated = Date.now();
-  }
+  state.networkApr=checked.apr;
+  state.networkAprUpdated=checked.at;
+  state.networkAprSource=checked.source+(checked.stale?' · CACHE':'');
   return state.networkApr;
 }
 
@@ -5049,9 +5048,11 @@ function activateWalletImmediately(address, requestedLabel = '') {
   state.staked = number(cached?.staked);
   state.rewards = number(cached?.rewards);
   state.validators = Array.isArray(cached?.validators) ? cached.validators : [];
-  state.personalApr = number(cached?.personalApr);
-  state.weightedCommission = number(cached?.weightedCommission);
-  if (number(cached?.networkApr) > 0) state.networkApr = number(cached.networkApr);
+  // Do not revive a legacy APR after a wallet switch.
+  const cachedAt = Number(cached?.aprUpdated);
+  state.personalApr = cachedAt > 0 && Date.now()-cachedAt < window.INJ_STAKING_APR.maxCacheMs &&
+    Number.isFinite(Number(cached.personalApr)) ? Number(cached.personalApr) : NaN;
+  state.weightedCommission = Number(cached?.weightedCommission);
 
   $('addressInput').value = address;
   state.lastWalletUpdate = number(cached?.updated);
@@ -5155,25 +5156,34 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
     renderWalletCards();
     setStatus('', 'Dati principali aggiornati…');
 
-    // Secondo stadio: dettagli più costosi. Sono cache-izzati e non bloccano il cambio wallet.
-    const [validators] = await Promise.all([
-      Promise.all(validatorRows.map(loadValidator)),
-      aprPromise
-    ]);
+    // The identical validator-weighted APR source is used on every page.
+    // The APR request stays separate so a slow validator never blocks balances.
+    const checked=await window.INJ_STAKING_APR.wallet(address);
     if (requestId !== state.walletRequest) return;
-
-    state.validators = validators;
     await aprPromise;
     if (requestId !== state.walletRequest) return;
-    calculatePersonalApr();
 
+    const valid=Boolean(checked&&!checked.stale&&Number.isFinite(checked.apr));
+    state.validators=checked?.validators||await Promise.all(validatorRows.map(loadValidator));
+    state.personalApr=valid?checked.apr:NaN;
+    state.weightedCommission=valid?checked.weightedCommission:NaN;
+    if(checked&&!checked.stale){
+      state.networkApr=checked.networkApr;
+      state.networkAprUpdated=checked.aprUpdated;
+      state.networkAprSource=checked.source;
+      state.staked=checked.staked;
+    }
     state.walletSummaries[address] = {
       ...state.walletSummaries[address],
-      validators,
-      personalApr: state.personalApr,
-      weightedCommission: state.weightedCommission,
-      networkApr: state.networkApr,
-      updated: Date.now()
+      staked:state.staked,
+      total:state.available+state.staked+state.rewards,
+      validators:state.validators,
+      personalApr:valid?state.personalApr:null,
+      weightedCommission:Number.isFinite(state.weightedCommission)?state.weightedCommission:null,
+      networkApr:state.networkApr,
+      aprUpdated:valid?state.networkAprUpdated:0,
+      aprSource:valid?state.networkAprSource:'',
+      updated:Date.now()
     };
     state.lastWalletUpdate = state.walletSummaries[address].updated;
     saveWalletSummaries();
@@ -6948,7 +6958,13 @@ function renderPortfolio() {
   setValue('stakedUsd', money(state.staked * state.price), state.staked * state.price);
   setAccruedRewardValue(formatInj(state.rewards, 5), state.rewards);
   setValue('rewardsUsd', money(state.rewards * state.price), state.rewards * state.price, { flash: false });
-  setValue('aprValue', state.personalApr > 0 ? `${state.personalApr.toFixed(3)}%` : '—', state.personalApr || NaN);
+  const aprCurrent=Number.isFinite(state.personalApr)&&state.personalApr>=0&&state.networkAprUpdated&&
+    Date.now()-state.networkAprUpdated<window.INJ_STAKING_APR.maxCacheMs;
+  setValue('aprValue', aprCurrent?`${state.personalApr.toFixed(3)}%`:'—',
+    aprCurrent?state.personalApr:NaN);
+  $('aprValue').title=aprCurrent
+    ?`APR netto stimato · ${state.networkAprSource} · ${formatFreshAge(state.networkAprUpdated)}`
+    :'APR in verifica: percentuale non confermata on-chain';
   setValue('stakedShare', `${stakedShare.toFixed(1)}%`, stakedShare);
   setValue('liquidShare', `${liquidShare.toFixed(1)}%`, liquidShare);
   const worthChange = $('netWorthChange24h');
@@ -7264,7 +7280,7 @@ function renderRewardTracker() {
   if (simulationActive) {
     $('aprMethod').textContent = `Simulazione sui ${formatInj(stakingBase, 4)} realmente delegati in questo wallet, valorizzati a ${usdMoney(simulationPrice)} per INJ. APR netto personale ${state.personalApr.toFixed(3)}%. Clicca fuori dalla card per tornare al prezzo LIVE.`;
   } else if (state.personalApr > 0) {
-    $('aprMethod').textContent = `Stima netta sui ${formatInj(state.staked, 4)} realmente delegati. I validator inattivi o jailed producono 0% nel calcolo; le commissioni sono ponderate per quantità delegata.`;
+    $('aprMethod').textContent = `APR netto stimato sui ${formatInj(state.staked, 4)} delegati. Ogni commissione e stato validatore sono verificati on-chain. Fonte: ${state.networkAprSource || 'in verifica'} · ${formatFreshAge(state.networkAprUpdated)}. I reward reali dipendono anche dalla produzione dei blocchi.`;
   } else if (state.address && state.staked <= 0) {
     $('aprMethod').textContent = 'L’APR personale apparirà quando l’indirizzo avrà una delegazione attiva.';
   } else {
@@ -7401,12 +7417,14 @@ function renderValidators() {
     title.textContent = validator.moniker;
     const status = document.createElement('small');
     status.className = `validator-status ${validatorActive(validator) ? '' : 'inactive'}`.trim();
-    status.textContent = validatorActive(validator) ? 'Attivo' : validator.jailed ? 'Jailed' : 'Inattivo';
+    status.textContent = !validator.updated?'In verifica':validatorActive(validator)?'Attivo':validator.jailed?'Jailed':'Inattivo';
     name.append(title, status);
 
     const stake = metricCell('Delegati', formatInj(validator.amount, 4), true);
-    const commission = metricCell('Commissione', `${(validator.commission * 100).toFixed(2)}%`);
-    const netApr = metricCell('APR netto', `${validatorNetApr(validator).toFixed(3)}%`);
+    const fee=Number(validator.commission);
+    const netAprValue=validatorNetApr(validator);
+    const commission=metricCell('Commissione',Number.isFinite(fee)?`${(fee*100).toFixed(2)}%`:'—');
+    const netApr=metricCell('APR netto stimato',Number.isFinite(netAprValue)?`${netAprValue.toFixed(3)}%`:'—');
     if (!validatorActive(validator) || validator.commission >= 0.1) {
       row.classList.add('validator-alert');
       commission.classList.add('warning');

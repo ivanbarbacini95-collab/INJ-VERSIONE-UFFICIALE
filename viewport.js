@@ -18,6 +18,17 @@
     }
   }
 
+  // Perf: scrivere una custom property su :root invalida gli stili di tutto il
+  // documento. Farlo a ogni "scrollend" (un passo di rotella, un gesto) costava
+  // un ricalcolo completo per scatto e dava frame lenti. La variabile serve solo
+  // alle superfici assolute quando si aprono, e viene già catturata su
+  // pointerdown/keydown: qui la aggiorniamo una sola volta, a scroll fermo.
+  let topSyncTimer = 0;
+  function queueDocumentTopSync() {
+    window.clearTimeout(topSyncTimer);
+    topSyncTimer = window.setTimeout(syncDocumentTop, 350);
+  }
+
   function measure() {
     frame = 0;
     syncDocumentTop();
@@ -56,12 +67,13 @@
     }
     scrollIdleTimer = 0;
     root.classList.remove('inj-native-scrolling');
-    syncDocumentTop();
+    queueDocumentTopSync();
   }
   function markNativeScroll() {
     // Avoid creating/cancelling a timer on every 60–120Hz touch/wheel event.
     // Browser-native scrolling remains entirely under WebKit's control.
     lastScrollActivity = performance.now();
+    if (topSyncTimer) { window.clearTimeout(topSyncTimer); topSyncTimer = 0; }
     if (!root.classList.contains('inj-native-scrolling')) root.classList.add('inj-native-scrolling');
     if (!scrollIdleTimer) scrollIdleTimer = window.setTimeout(settleNativeScroll, 180);
   }
@@ -69,7 +81,7 @@
     if (scrollIdleTimer) window.clearTimeout(scrollIdleTimer);
     scrollIdleTimer = 0;
     root.classList.remove('inj-native-scrolling');
-    syncDocumentTop();
+    queueDocumentTopSync();
   }
   function syncTheme() {
     const css = getComputedStyle(root);

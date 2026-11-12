@@ -90,6 +90,13 @@
    const el=$('etfFlowHistory');if(!el)return;
    flowDates=dateKeys.slice();
    flowMap=new Map(rows.filter(Boolean).map(r=>[r.date,r]));
+   const noData=$('etfFlowEmpty'),graph=$('etfFlowGraph');
+   if(noData)noData.hidden=flowMap.size>0;
+   if(graph)graph.classList.toggle('is-awaiting-reports',flowMap.size===0);
+   setText('etfFlowsSummary',flowMap.size
+     ?tr(flowMap.size+' sedute con flussi verificati',flowMap.size+' sessions with verified fund flows')
+     :tr('Nessun report verificato · valore sconosciuto, non zero',
+         'No verified report · unknown value, not zero'));
    const key=flowDates.join('|')+'::'+[...flowMap.values()].map(r=>[r.date,r.inflowUsd,r.outflowUsd].join(':')).join('|');
    if(key===flowRenderKey){scheduleFlowScale();return;}
    const atEnd=flowFirst||el.scrollWidth-el.clientWidth-el.scrollLeft<85,previousScroll=el.scrollLeft;
@@ -104,13 +111,15 @@
      day.setAttribute('aria-label',k+' '+(row?'Inflow '+number(row.inflowUsd)+' USD, Outflow '+number(row.outflowUsd)+' USD':
        tr('dati in attesa','pending report')));
      const columns=document.createElement('div');columns.className='injc-flow-columns';
-     for(const side of ['inflow','outflow']){
-       const bar=document.createElement('i');
-       bar.className='injc-flow-column '+side+(row?' is-verified':' is-pending');
-       if(row&&row[side+'Usd']===0)bar.classList.add('is-zero');
-       bar.style.height=row?'0%':'18px';
-       columns.appendChild(bar);
-     }
+     if(row){
+       for(const side of ['inflow','outflow']){
+         const bar=document.createElement('i');
+         bar.className='injc-flow-column '+side+' is-verified';
+         if(row[side+'Usd']===0)bar.classList.add('is-zero');
+         bar.style.height='0%';
+         columns.appendChild(bar);
+       }
+     }else day.classList.add('is-missing');
      day.appendChild(columns);
      const stamp=document.createElement('span');stamp.className='injc-flow-date';stamp.textContent=dateFmt(k);day.appendChild(stamp);
      const state=document.createElement('small');state.className='injc-flow-day-state';state.textContent=row?'✓':k===today?tr('OGGI','TODAY'):'·';day.appendChild(state);
@@ -140,7 +149,7 @@
    if(!old||priority>=old.priority)dailyPrice.set(date,{price:n,priority});
  }
  let volumeDays=[],volumeFirst=true,volumeLoading=false,volumeRaf=0,volumeSnapshot='',lastVolumeSource='';
- let volumeMode='session',intradayPoints=[],intradaySource='';
+ let volumeMode='history',intradayPoints=[],intradaySource='';
  function validVolume(k,value){
    return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k>='2026-11-05'&&k<=nyDay(Date.now())&&
      Number.isSafeInteger(value)&&value>=0;
@@ -226,7 +235,13 @@
    const scroller=$('etfVolumeHistory'),axis=$('etfVolumeRightAxis'),empty=$('etfVolumeEmpty');
    if(!scroller||!axis)return;
    const session=volumeMode==='session';
-   const pts=session?intradayPoints.map(p=>({...p})):
+   // Session feed is cumulative; each volume candle shows incremental shares.
+   // Historical feed has one total per trading day and stays undifferenced.
+   const pts=session?intradayPoints.map((p,i,all)=>({
+       ...p,cumulative:p.volume,
+       volume:Number.isFinite(p.volume)
+         ?Math.max(0,p.volume-(i?all[i-1].volume:0)):null
+     })):
      volumeDays.map(date=>({date,volume:byDay.get(date)?.volume??null,
        price:dailyPrice.get(date)?.price??null}));
    const source=session?intradaySource:lastVolumeSource;
@@ -238,8 +253,8 @@
        :tr('In attesa dello storico dei volumi','Awaiting volume history');
    }
    setText('etfVolumeSummary',session
-     ?tr('Volume cumulato nella seduta '+(pts.at(-1)?.date||'—')+' · '+good.length+' punti',
-         'Cumulative session volume '+(pts.at(-1)?.date||'—')+' · '+good.length+' points')
+     ?tr('Shares per intervallo · '+(pts.at(-1)?.date||'—')+' · '+good.length+' candele',
+         'Shares per interval · '+(pts.at(-1)?.date||'—')+' · '+good.length+' bars')
      :tr(good.length+' sedute con volume riportato · quote INJC',
          good.length+' sessions with reported volume · INJC shares'));
    if(!pts.length){scroller.replaceChildren();return;}
@@ -258,7 +273,7 @@
    axis.querySelectorAll('[data-volume-axis]').forEach((label,i)=>{
      label.textContent=scale?compact([scale,scale/2,0][i]):(i===2?'0':'—');
    });
-   const y=v=>scale>0?bottom-v/scale*plotHeight:bottom;
+   const y=v=>scale>0?Math.max(top,Math.min(bottom,bottom-v/scale*plotHeight)):bottom;
    const grid=[top,(top+bottom)/2,bottom].map(t=>
      '<line x1="0" y1="'+t+'" x2="'+width+'" y2="'+t+'" stroke="currentColor" stroke-opacity=".12" stroke-dasharray="3 6"/>').join('');
    // Tick positions are chosen by actual rendered spacing. Preserve endpoints;
@@ -278,23 +293,22 @@
        '" y="210" text-anchor="middle" fill="currentColor" opacity=".72" font-size="10">'+
        (session?formatNYTime(pts[i].time):dateFmt(pts[i].date))+'</text>'
    ).join('');
-   const segments=[];let part=[];
-   pts.forEach((p,i)=>{if(Number.isFinite(p.volume))part.push([x(i),y(p.volume)]);
-     else if(part.length){segments.push(part);part=[];}});
-   if(part.length)segments.push(part);
-   let shapes='';
-   for(const segment of segments){
-     if(segment.length<2)continue;
-     const d=segment.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ');
-     const fill=d+' L'+segment.at(-1)[0].toFixed(2)+' '+bottom+' L'+segment[0][0].toFixed(2)+' '+bottom+' Z';
-     shapes+='<path class="injc-volume-fill" d="'+fill+'"/><path class="injc-volume-line" d="'+d+'"/>';
-   }
-   const dots=good.map(p=>'<circle class="injc-volume-dot" cx="'+x(p.i).toFixed(2)+
-     '" cy="'+y(p.volume).toFixed(2)+'" r="3.5"/>').join('');
+   // Each bar shows nonnegative shares traded, not the direction of the share price.
+   // No bar is rendered when volume is unreported.
+   const candleWidth=session
+     ?Math.max(8,Math.min(19,(width-leftMargin-rightMargin)/Math.max(1,pts.length)*.62))
+     :24;
+   const bars=pts.map((p,i)=>{
+    if(!Number.isFinite(p.volume))return '';
+     const upper=Math.min(bottom-2,y(p.volume));
+     return '<rect class="injc-volume-bar is-neutral" x="'+(x(i)-candleWidth/2).toFixed(2)+
+       '" y="'+upper.toFixed(2)+'" width="'+candleWidth.toFixed(2)+
+       '" height="'+Math.max(2,bottom-upper).toFixed(2)+'" rx="2.5"/>';
+   }).join('');
    const svg='<svg class="injc-volume-svg'+(newData?' is-new-data':'')+'" width="'+width+
      '" height="220" viewBox="0 0 '+width+' 220" tabindex="0" role="img" aria-label="'+
      tr('Volume delle quote INJC · usa il dito o mouse per vedere i dati','INJC share volume · touch or hover to inspect')+
-     '">'+grid+shapes+dots+dates+
+     '">'+grid+bars+dates+
      '<g class="injc-volume-cursor" visibility="hidden" pointer-events="none">'+
      '<line class="injc-volume-crosshair" y1="'+top+'" y2="'+bottom+'"/>'+
      '<circle class="injc-volume-select-dot" r="6"/></g></svg>';
@@ -356,12 +370,15 @@
    if(volumeLoading||document.hidden)return;
    volumeLoading=true;
    try{
-     const source='https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/INJC?range=1y&interval=1d&includePrePost=false';
+     const loadYahoo=async(range,interval)=>{
+       try{return await fetchJson('./api/injc-market-data?provider=yahoo&range='+range+'&interval='+interval,8500);}
+       catch(_){return await fetchJson('https://proxy.cors.dev/https://query2.finance.yahoo.com/v8/finance/chart/INJC?range='+range+'&interval='+interval+'&includePrePost=false',10500);}
+     };
      const results=await Promise.allSettled([
-       fetchJson(source,10500),
+       loadYahoo('1y','1d'),
        fetchJson('./market-data/injc-etf-volume.json?t='+Date.now(),8000),
        fetchJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000),
-       fetchJson('https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/INJC?range=5d&interval=5m&includePrePost=false',10500)
+       loadYahoo('5d','5m')
      ]);
      if(results[1].status==='fulfilled'){
        const d=results[1].value;
@@ -439,7 +456,7 @@
    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshVolume();});
    window.addEventListener('pageshow',refreshVolume);
    refreshVolume();
-   setInterval(()=>{if(!document.hidden)refreshVolume();},120000);
+   setInterval(()=>{if(!document.hidden)refreshVolume();},30000);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
  else bind();

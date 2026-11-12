@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it" data-theme="obsidian" data-inj-page="validators">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#060b11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Validators · INJ Node</title>
+<script>
+try {
+ const themes=['obsidian','arctic','orbit','classic-black','classic-white'];
+ const theme=localStorage.getItem('inj_monitor_theme');
+ document.documentElement.dataset.theme=themes.includes(theme)?theme:'obsidian';
+ document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
+ document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';
+} catch (_) {}
+</script>
+<link rel="stylesheet" href="./validators.css?v=20261111e">
+<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
+<script defer src="./page-zoom-lock-20261110.js?v=1"></script>
+<script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
+<script defer src="./validators.js?v=20261111e"></script>
+</head>
+<body>
+<main class="shell">
+ <header class="page-header">
+  <button type="button" class="icon-button" id="back" aria-label="Torna a Tools">
+   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+  </button>
+  <div class="page-title"><span class="eyebrow">INJ NODE / TOOLS</span><h1>Validators</h1></div>
+  <div class="live-indicator" id="liveIndicator"><span class="pulse" aria-hidden="true"></span><span id="liveText">SYNC</span></div>
+  <button type="button" class="icon-button refresh" id="refresh" aria-label="Aggiorna"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.8 8A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.1-2"/></svg></button>
+ </header>
+ <section class="hero">
+  <div class="hero-copy">
+   <span class="eyebrow">INJECTIVE MAINNET · STAKING INTELLIGENCE</span>
+   <h2 data-it="Ogni validatore. Dati verificabili." data-en="Every validator. Verifiable data.">Ogni validatore. Dati verificabili.</h2>
+   <p data-it="Commissioni, APR netto e classifica. Tutti i wallet salvati sono riconosciuti automaticamente." data-en="On-chain commissions, net APR and rankings. Every saved wallet is detected automatically.">Commissioni on-chain, APR netto e delegatori. Cerca un wallet per individuare il suo posto nella classifica.</p>
+  </div>
+  <div class="orbit-illustration" aria-hidden="true"><svg viewBox="0 0 150 130"><ellipse cx="75" cy="66" rx="61" ry="35" transform="rotate(-26 75 66)"/><ellipse cx="75" cy="66" rx="47" ry="27" transform="rotate(30 75 66)"/><circle cx="75" cy="66" r="17"/><circle class="satellite" cx="128" cy="43" r="5"/><circle class="satellite-two" cx="44" cy="92" r="3.5"/><path d="M75 49v34M58 66h34"/></svg></div>
+ </section>
+ <section class="metrics" aria-label="Riepilogo validatori">
+  <article class="metric"><span data-it="VALIDATORI" data-en="VALIDATORS">VALIDATORI</span><strong id="totalValidators">—</strong><small id="activeValidators">— attivi</small></article>
+  <article class="metric"><span data-it="APR RETE" data-en="NETWORK APR">APR RETE</span><strong id="networkApr">—</strong><small id="aprSource">Fonte in verifica</small></article>
+  <article class="metric"><span data-it="INJ IN STAKING" data-en="STAKED INJ">INJ IN STAKING</span><strong id="stakedTotal">—</strong><small data-it="Valid. attivi" data-en="Bonded validators">Valid. attivi</small></article>
+  <article class="metric"><span data-it="AGGIORNAMENTO" data-en="UPDATED">AGGIORNAMENTO</span><strong id="updatedAt">—</strong><small data-it="Mainnet · auto-refresh" data-en="Mainnet · auto-refresh">Mainnet · auto-refresh</small></article>
+ </section>
+ <section class="search-panel">
+  <div class="section-line"><div><span class="eyebrow">DELEGATOR LOCATOR</span><h2 data-it="Trova il tuo posto" data-en="Find your position">Trova il tuo posto</h2></div></div>
+  <form id="walletForm" class="wallet-form">
+   <label class="sr-only" for="walletAddress" data-it="Indirizzo del delegatore" data-en="Delegator address">Indirizzo del delegatore</label>
+   <input id="walletAddress" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="inj1..." maxlength="100" required aria-describedby="walletHelp">
+   <button type="submit" id="walletSubmit" data-it="Trova wallet" data-en="Find wallet">Trova wallet</button>
+  </form>
+  <p id="walletHelp" class="help" data-it="La ricerca manuale è facoltativa. I wallet salvati vengono rilevati ed evidenziati automaticamente in ogni validatore." data-en="Manual lookup is optional. Every saved wallet is detected and highlighted automatically within validators.">Ricerca pubblica on-chain: mostriamo i validatori a cui il wallet delega e la sua posizione per INJ delegati.</p>
+  <div id="walletResult" class="wallet-result" hidden aria-live="polite"></div>
+ </section>
+ <section class="directory">
+  <div class="directory-top">
+   <div><span class="eyebrow">VALIDATOR DIRECTORY</span><h2 data-it="Rete Injective" data-en="Injective network">Rete Injective</h2></div>
+   <span id="resultsCount" class="directory-count">—</span>
+  </div>
+  <div class="filters">
+   <label class="filter-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.3"/><path d="m15.5 15.5 5 5"/></svg><input type="search" id="searchValidator" placeholder="Cerca validatore / indirizzo..." aria-label="Cerca validatore"></label>
+   <select id="statusFilter" aria-label="Stato validatori"><option value="all" data-it="Tutti" data-en="All">Tutti</option><option value="bonded" data-it="Attivi" data-en="Active">Attivi</option><option value="other" data-it="Inattivi" data-en="Inactive">Inattivi</option></select>
+   <select id="sortFilter" aria-label="Ordina validatori"><option value="stake" data-it="Per staking" data-en="By stake">Per staking</option><option value="apr" data-it="APR netto ↓" data-en="Net APR ↓">APR netto ↓</option><option value="fee" data-it="Commissione ↑" data-en="Commission ↑">Commissione ↑</option><option value="name" data-it="Per nome" data-en="By name">Per nome</option></select>
+  </div>
+  <div class="table-heading"><span>VALIDATOR</span><span>COMMISSION</span><span>NET APR</span><span>DELEGATORS</span><span></span></div>
+  <div id="validatorList" class="validator-list" aria-live="polite"><div class="empty">Connessione alla rete Injective…</div></div>
+  <button type="button" class="more" id="loadMore" hidden data-it="Mostra altri validatori" data-en="Show more validators">Mostra altri validatori</button>
+  <p class="footnote" id="directoryNote" data-it="I valori provengono da Injective mainnet. L’APR netto tiene conto della commissione del validatore, non di eventuali variazioni future. Le classifiche sono calcolate sulle deleghe complete e non sono stime." data-en="Values come from Injective mainnet. Net APR accounts for validator commission, not future changes. Ranks are calculated from the complete delegation set, never estimated.">I valori provengono da Injective mainnet. L’APR netto tiene conto della commissione del validatore, non di eventuali variazioni future. Le classifiche sono calcolate sulle deleghe complete e non sono stime.</p>
+ </section>
+</main>
+<dialog id="validatorDetail" class="detail" aria-labelledby="detailTitle">
+ <div class="detail-shell">
+  <header class="detail-header"><div><span class="eyebrow" id="detailSubtitle">VALIDATOR PROFILE</span><h2 id="detailTitle">Validator</h2></div><button class="icon-button" type="button" id="closeDetail" aria-label="Chiudi dettagli"><svg viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header>
+  <div id="detailMetrics" class="detail-metrics"></div>
+  <div class="detail-address"><code id="operatorAddress"></code><button id="copyOperator" type="button" aria-label="Copia indirizzo">COPY</button></div>
+  <div class="detail-rank-head"><div><span class="eyebrow">DELEGATORS RANKING</span><h3 id="rankTitle" data-it="Classifica delegatori" data-en="Delegator ranking">Classifica delegatori</h3></div><span id="rankingAge" class="ranking-age"></span></div>
+  <p id="rankStatus" class="rank-status" aria-live="polite" role="status"></p>
+  <p id="priceStatus" class="price-status" aria-live="polite"></p>
+  <p id="savedWalletStatus" class="saved-wallet-status" aria-live="polite"></p>
+  <div id="myRank" class="my-rank" hidden></div>
+  <div id="delegatorList" class="delegator-list"></div>
+  <button id="moreDelegators" class="more" type="button" hidden data-it="Mostra altri delegatori" data-en="Show more delegators">Mostra altri delegatori</button>
+  <p class="footnote" data-it="Posizione calcolata per saldo delegato a questo validatore. I dati sono pubblici e vengono letti dalla blockchain." data-en="Rank is based on delegated balance to this validator. Records are public and read from the blockchain.">Posizione calcolata per saldo delegato a questo validatore. I dati sono pubblici e vengono letti dalla blockchain.</p>
+ </div>
+</dialog>
+</body>
+</html>

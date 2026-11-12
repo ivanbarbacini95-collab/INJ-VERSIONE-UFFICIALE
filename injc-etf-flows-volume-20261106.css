@@ -85,7 +85,8 @@
 .injc-flow-tooltip[hidden],.injc-volume-tooltip[hidden]{display:none!important}
 .injc-flow-tooltip strong{font-size:11px;color:var(--etf-ink)}
 .injc-flow-tooltip span{font-size:10px;color:var(--etf-muted)}
-.injc-volume-section{border-top:1px solid var(--etf-line);padding-top:20px;margin-top:22px;min-width:0}
+.injc-volume-section{border-top:0;padding-top:0;margin-top:0;min-width:0}
+.injc-volume-only{padding:20px}
 .injc-volume-heading{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .injc-volume-heading strong{font-size:14px;font-weight:760;color:var(--etf-ink)}
 .injc-volume-heading small{display:block;margin-top:6px;color:var(--etf-muted);font-size:10px;line-height:1.5}
@@ -240,3 +241,32 @@
  .injc-volume-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
  .injc-volume-metric-highlight{grid-column:1 / -1;grid-row:1}
 }
+
+/* 2026-11-09 · Source-aware fund-flow empty state and share-volume candles. */
+.injc-flow-graph .injc-flow-day.is-missing .injc-flow-columns::after{
+ content:"·";position:absolute;top:calc(50% - 12px);left:0;right:0;
+ text-align:center;color:var(--etf-muted);opacity:.46;font-size:15px;
+ pointer-events:none;
+}
+.injc-flow-empty{
+ position:absolute;left:12px;right:72px;top:42px;z-index:4;
+ font-size:11px;line-height:1.65;font-weight:650;
+ color:var(--etf-muted);text-align:center;
+ padding:12px 14px;border-radius:11px;
+ border:1px solid color-mix(in srgb,var(--etf-muted) 23%,transparent);
+ background:color-mix(in srgb,var(--etf-card) 94%,transparent);
+ pointer-events:none;
+}
+.injc-flow-empty[hidden]{display:none!important}
+.injc-volume-bar{
+ fill:var(--etf-accent);opacity:.9;
+ stroke:color-mix(in srgb,var(--etf-card) 12%,transparent);
+ stroke-width:.6;shape-rendering:geometricPrecision;
+ transition:opacity .18s ease;
+}
+.injc-volume-bar.is-up{fill:var(--etf-accent)}
+.injc-volume-bar.is-down{fill:var(--etf-accent)}
+.injc-volume-bar.is-neutral{fill:var(--etf-accent)}
+.injc-volume-bar:hover{opacity:1}
+@media(max-width:540px){.injc-flow-empty{left:8px;right:59px;top:39px;padding:10px 9px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.injc-volume-bar{transition:none}}

@@ -1,0 +1,8 @@
+@font-face{font-family:"INJ Rubik Unified";src:url("./assets/fonts/inj-rubik.woff2") format("woff2");font-weight:300 900;font-display:swap}
+:root{--inj-rubik-ui:"INJ Rubik Unified","INJ Rubik","Rubik",system-ui,sans-serif}
+html[data-inj-font=slim]{--inj-chosen-face:var(--inj-rubik-ui);--inj-chosen-weight:400;--inj-chosen-detail:400;--inj-chosen-emphasis:550;--inj-chosen-heading:600}
+html[data-inj-font=bold]{--inj-chosen-face:var(--inj-rubik-ui);--inj-chosen-weight:500;--inj-chosen-detail:500;--inj-chosen-emphasis:700;--inj-chosen-heading:750}
+html{--inj-ui-font:var(--inj-rubik-ui);--inj-minimal-font:var(--inj-rubik-ui);--inj-minimal-mono:var(--inj-rubik-ui);--inj-node-terminal-font:var(--inj-rubik-ui);--inj-home-title-face:var(--inj-rubik-ui);--inj-home-description-face:var(--inj-rubik-ui);--inj-editorial-face:var(--inj-rubik-ui)}
+html body,html body :is(*,#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll#__injRubikAll):not(svg):not(svg *):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded):not(.material-symbols-sharp):not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad):not(.fa-solid):not(.fa-regular):not(.fa-brands){font-family:var(--inj-rubik-ui)!important;font-synthesis-weight:none;font-variant-numeric:tabular-nums lining-nums;-webkit-font-smoothing:antialiased}
+html[data-inj-font=slim] body{font-weight:400!important}html[data-inj-font=bold] body{font-weight:500!important}
+html body svg :is(text,tspan,textPath){font-family:var(--inj-rubik-ui)!important}

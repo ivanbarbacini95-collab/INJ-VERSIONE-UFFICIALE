@@ -10,7 +10,6 @@ const REWARD_COMPARE_TOLERANCE = 2e-8;
 const STATUS_REFRESH_MS = 30000;
 const CLAIM_DROP_EPSILON = 1e-9;
 const CLAIM_REBOUND_GUARD_MS = 45000;
-const OFFICIAL_APR_ENDPOINT = 'https://api.ui.injective.network/api/v1/cache/stats/apr';
 const LCD_ENDPOINTS = [
   'https://sentry.lcd.injective.network:443',
   'https://lcd.injective.network',
@@ -25,8 +24,6 @@ const MANAGED_ADDRESSES = Object.freeze([
 ]);
 const LABELS_KEY = 'inj_node_treasury_wallet_labels_v1';
 const SAVED_WALLETS_KEY = 'inj_monitor_wallets_v1';
-const VALIDATOR_COMMISSION_CACHE_MS = 120000;
-const validatorCommissionCache = new Map();
 
 const state = {
   rows: MANAGED_ADDRESSES.map((address, index) => ({
@@ -378,7 +375,8 @@ function renderFrame(frameNow = 0) {
   if($('rewardsTotalStaked'))$('rewardsTotalStaked').textContent=totalStaked>0?`${formatStaked(totalStaked)} INJ`:'—';
   const weightedAprNumerator=state.rows.reduce((sum,row)=>sum + Math.max(0,number(row.staked))*Math.max(0,number(row.apr)),0);
   const weightedApr=totalStaked>0?weightedAprNumerator/totalStaked:0;
-  if($('rewardsApr'))$('rewardsApr').textContent=weightedApr>0?`${weightedApr.toFixed(3)}%`:'—';
+  const complete=state.rows.every(row=>!(row.staked>0)||row.aprVerified);
+  if($('rewardsApr'))$('rewardsApr').textContent=complete&&weightedApr>0?`${weightedApr.toFixed(3)}%`:'—';
 }
 async function fetchJson(url,timeout=7000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const response=await fetch(url,{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error(`HTTP ${response.status}`);return await response.json();}finally{clearTimeout(timer)}}
 let preferredLcd=null;
@@ -403,29 +401,9 @@ async function lcd(path){
 }
 function delegationTotal(data){return (data?.delegation_responses||[]).reduce((sum,row)=>sum+fromWei(row?.balance?.amount),0)}
 function rewardTotal(data){return (data?.total||[]).filter((coin)=>coin?.denom==='inj').reduce((sum,coin)=>sum+fromWei(coin.amount),0)}
-function aprPercent(value){const n=number(value);if(n<=0)return 0;return n<=1?n*100:n}
-let aprRequest=null;
 async function loadApr(){
-  if(aprRequest)return aprRequest;
-  aprRequest=(async()=>{
-    try{
-      const official=await fetchJson(OFFICIAL_APR_ENDPOINT,4200);
-      const apr=aprPercent(official?.apr);
-      if(apr>0)return apr;
-    }catch(_){}
-    try{
-      const [mint,pool,params]=await Promise.all([
-        lcd('/cosmos/mint/v1beta1/annual_provisions'),
-        lcd('/cosmos/staking/v1beta1/pool'),
-        lcd('/cosmos/distribution/v1beta1/params')
-      ]);
-      const annual=number(mint?.annual_provisions),bonded=number(pool?.pool?.bonded_tokens);
-      const tax=number(params?.params?.community_tax);
-      if(annual>0&&bonded>0)return annual/bonded*100*Math.max(0,1-tax);
-    }catch(_){}
-    return state.apr;
-  })();
-  try{return await aprRequest;}finally{aprRequest=null;}
+  const checked=await window.INJ_STAKING_APR.load();
+  return checked?.apr||0;
 }
 async function rewardFromEndpoint(base,address){
   const path=`/cosmos/distribution/v1beta1/delegators/${address}/rewards`;
@@ -485,39 +463,15 @@ async function loadPendingRewardConfirmed(address,row){
   return {address,rewards:first,confidence:'verified'};
 }
 
-function commissionPercentFromValidator(data){
-  const raw=number(data?.validator?.commission?.commission_rates?.rate);
-  if(!Number.isFinite(raw)||raw<0)return NaN;
-  // Cosmos SDK espone la commissione come decimale: 0.10 = 10%.
-  return Math.min(100, raw<=1 ? raw*100 : raw);
-}
-async function validatorCommissionPercent(validatorAddress){
-  const cached=validatorCommissionCache.get(validatorAddress);
-  const now=Date.now();
-  if(cached&&now-cached.at<VALIDATOR_COMMISSION_CACHE_MS)return cached.value;
-  const data=await lcd(`/cosmos/staking/v1beta1/validators/${validatorAddress}`);
-  const value=commissionPercentFromValidator(data);
-  if(!Number.isFinite(value))throw new Error('Validator commission unavailable');
-  validatorCommissionCache.set(validatorAddress,{value,at:now});
-  return value;
-}
 async function loadDelegation(address,networkApr){
-  const data=await lcd(`/cosmos/staking/v1beta1/delegations/${address}`);
-  const delegations=Array.isArray(data?.delegation_responses)?data.delegation_responses:[];
-  const rows=delegations.map((entry)=>({
-    validator:String(entry?.delegation?.validator_address||''),
-    amount:fromWei(entry?.balance?.amount)
-  })).filter((entry)=>entry.validator&&entry.amount>0);
-  const staked=rows.reduce((sum,entry)=>sum+entry.amount,0);
-  if(!(staked>0))return {address,staked:0,apr:0,validatorCount:0,aprVerified:true};
-
-  const details=await Promise.all(rows.map(async(entry)=>{
-    const commission=await validatorCommissionPercent(entry.validator);
-    const effectiveApr=Math.max(0,number(networkApr)) * Math.max(0,1-commission/100);
-    return {...entry,commission,effectiveApr};
-  }));
-  const weightedApr=details.reduce((sum,entry)=>sum+entry.amount*entry.effectiveApr,0)/staked;
-  return {address,staked,apr:weightedApr,validatorCount:details.length,aprVerified:true};
+  // One verified wallet/validator APR source across Dashboard, Reward and Workspace.
+  const data=await window.INJ_STAKING_APR.wallet(address);
+  if(!data||!(data.networkApr>0))throw new Error('Wallet APR not verified');
+  if(!(data.staked>0))return {address,staked:0,apr:0,validatorCount:0,aprVerified:true};
+  if(!Number.isFinite(data.apr)||Math.abs(data.networkApr-networkApr)>1e-8)
+    throw new Error('Inconsistent network APR');
+  return {address,staked:data.staked,apr:data.apr,
+    validatorCount:data.validators.length,aprVerified:!data.stale};
 }
 
 /*
@@ -592,7 +546,13 @@ async function syncStatus(force=false){
   state.statusLoading=true;
   try{
     const apr=await loadApr();
-    if(apr>0)state.apr=apr;
+    state.apr=apr>0?apr:0;
+    if(!(state.apr>0)){
+      state.rows.forEach(row=>{row.aprVerified=false;row.apr=0;row.ratePerMs=0;});
+      state.lastStatusSync=Date.now();
+      renderRows();
+      return;
+    }
     const effectiveNetworkApr=state.apr;
     const settled=await Promise.all(
       MANAGED_ADDRESSES.map((address)=>

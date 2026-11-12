@@ -2,7 +2,8 @@
 <html data-inj-page="command-center" data-inj-viewport="80" data-theme="navy" data-ui-style="elegant" lang="it">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<script defer src="./page-zoom-lock-20261110.js?v=1"></script>
 <meta name="theme-color" content="#05090d"/>
 
 <title>Command Center · INJ Node</title>
@@ -29,7 +30,7 @@ try {
 <link rel="stylesheet" href="command-center.css?v=16.00.37"/>
 <script>document.addEventListener('DOMContentLoaded',()=>{const c=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <link rel="stylesheet" href="viewport.css?v=16.00.74">
-<script defer src="viewport.js?v=16.06.00"></script>
+<script defer src="viewport.js?v=20261111-scrollperf1"></script>
   <link rel="stylesheet" href="./top-clarity.css?v=16.00.88">
 <link rel="stylesheet" href="navigation.css?v=160074">
 <script defer src="navigation.js?v=families30-classic-v2"></script>
@@ -89,6 +90,7 @@ try {
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
+<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 </head>
 <body class="cc-flash-terminal">
 <main class="cc-shell" id="commandCenter">
@@ -220,7 +222,8 @@ try {
 
 <dialog class="cc-dialog" id="ccLevelsDialog"><form id="ccLevelsForm"><header><h2>Livelli personali</h2><button aria-label="Chiudi" data-close="ccLevelsDialog" type="button">×</button></header><p>Prezzi INJ / USDT. Le soglie vengono salvate per questo wallet; lascia vuoto per rimuoverle.</p><label>Livello 1<input id="ccLevel1" inputmode="decimal" min="0.000001" placeholder="Es. 7.50" step="any" type="number"/></label><label>Livello 2<input id="ccLevel2" inputmode="decimal" min="0.000001" placeholder="Es. 10.00" step="any" type="number"/></label><p>Il prezzo medio appare sul grafico quando rientra nella scala visibile. Gli avvisi funzionano mentre il Command Centre è aperto.</p><button type="submit">Salva livelli</button></form></dialog>
 <dialog class="cc-dialog" id="ccEventsDialog"><header><h2>Eventi della sessione</h2><button aria-label="Chiudi" data-close="ccEventsDialog" type="button">×</button></header><ol id="ccEventList"><li>Nessun evento</li></ol></dialog>
-<script defer src="command-center.js?v=20261026tf1"></script>
+<script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
+<script defer src="command-center.js?v=20261109-shared2"></script>
 <script defer src="./command-center-flash.js?v=160502"></script>
 
 
