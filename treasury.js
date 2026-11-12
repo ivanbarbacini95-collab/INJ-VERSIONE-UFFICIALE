@@ -554,31 +554,30 @@ const BINANCE_KLINE_STEPS = Object.freeze({
   '1d': DAY
 });
 function worthBackfillPlan(gapMs){
-  if(gapMs<=20*HOUR)return {interval:'1m',step:MINUTE};
+  if(gapMs<=48*HOUR)return {interval:'1m',step:MINUTE};
   if(gapMs<=3*DAY)return {interval:'5m',step:5*MINUTE};
   if(gapMs<=10*DAY)return {interval:'15m',step:15*MINUTE};
   if(gapMs<=35*DAY)return {interval:'30m',step:30*MINUTE};
   if(gapMs<=180*DAY)return {interval:'4h',step:4*HOUR};
   return {interval:'1d',step:DAY};
 }
-function totalAtHistoryTime(timestamp){
-  const rows=state.samples
-    .filter((row)=>number(row.t)>0&&number(row.value)>0)
-    .map((row)=>({t:number(row.t),value:number(row.value)}))
+// No synthetic wallet balance ramp between two chain scans.
+// Backfill uses each last observed balance and the actual INJ/USDT close price.
+function observedTreasuryBalances(){
+  return state.samples
+    .filter(row=>number(row?.t)>0&&number(row?.value)>0)
+    .map(row=>({t:number(row.t),value:number(row.value)}))
     .sort((a,b)=>a.t-b.t);
-  const liveTotal=number(state.data?.total);
-  if(!rows.length)return liveTotal;
-  if(timestamp<=rows[0].t)return rows[0].value;
-  if(timestamp>=rows.at(-1).t)return liveTotal>0?liveTotal:rows.at(-1).value;
-  let low=0,high=rows.length-1;
+}
+function totalAtHistoryTime(timestamp,rows=observedTreasuryBalances()){
+  if(!rows.length||timestamp<rows[0].t)return null;
+  let low=0,high=rows.length;
   while(low<high){
-    const mid=Math.floor((low+high)/2);
-    if(rows[mid].t<timestamp)low=mid+1;else high=mid;
+    const mid=(low+high)>>1;
+    if(rows[mid].t<=timestamp)low=mid+1;
+    else high=mid;
   }
-  const right=rows[low],left=rows[Math.max(0,low-1)];
-  if(!right||!left||right.t<=left.t)return number(left?.value)||number(right?.value)||liveTotal;
-  const ratio=Math.max(0,Math.min(1,(timestamp-left.t)/(right.t-left.t)));
-  return left.value+((right.value-left.value)*ratio);
+  return rows[Math.max(0,low-1)].value;
 }
 function newestWorthGap(){
   const rows=normalizeTimeline(state.worthSamples);
@@ -595,6 +594,8 @@ function newestWorthGap(){
 }
 async function fetchBinanceWorthBridge(startTime,endTime,plan){
   const rows=[];
+  const balances=observedTreasuryBalances();
+  if(!balances.length)return rows;
   // Both documented Binance Spot endpoints expose public INJUSDT klines.
   // The market-data-only host is generally more resilient in browser PWAs.
   const hosts=['https://data-api.binance.vision','https://api.binance.com'];
@@ -619,7 +620,8 @@ async function fetchBinanceWorthBridge(startTime,endTime,plan){
       const t=number(candle?.[6])||number(candle?.[0]);
       const price=number(candle?.[4]);
       if(t>startTime&&t<endTime&&price>0){
-        const total=totalAtHistoryTime(t);
+        const total=totalAtHistoryTime(t,balances);
+        // True market close; estimated balance remains explicitly labelled.
         if(total>0)rows.push({t,value:total*price,estimated:true});
       }
     }
@@ -736,9 +738,13 @@ function clipWorthRows(rows,cutoff){
   if(firstInside>0 && filtered.length){
     const prev=rows[firstInside-1],next=filtered[0];
     const span=Math.max(1,next.t-prev.t);
-    const ratio=Math.max(0,Math.min(1,(cutoff-prev.t)/span));
-    const value=prev.value+((next.value-prev.value)*ratio);
-    filtered.unshift({t:cutoff,value,boundary:true});
+    // Only interpolate across a *short* actual-price observation interval.
+    // Sparse long gaps must remain visible instead of a false diagonal.
+    if(span<=2*MINUTE){
+      const ratio=Math.max(0,Math.min(1,(cutoff-prev.t)/span));
+      const value=prev.value+((next.value-prev.value)*ratio);
+      filtered.unshift({t:cutoff,value,boundary:true,estimated:true});
+    }
   }
   return filtered;
 }
@@ -1099,22 +1105,13 @@ function timeUniformFinancialSamples(samples,maxPoints=96){
     if(removeAt<0)break;
     out.splice(removeAt,1);
   }
-  // In case empty historical buckets reduced the count, fill only with real
-  // points chosen by LTTB; this preserves noteworthy moves without bunching.
-  if(out.length<Math.min(maxPoints,clean.length)){
-    const extras=lttbSamples(clean,Math.min(maxPoints,clean.length));
-    for(const row of extras){
-      if(out.length>=maxPoints)break;
-      if(!out.some((item)=>item.t===row.t))out.push(row);
-    }
-    out.sort((a,b)=>a.t-b.t);
-  }
-  return out.slice(0,maxPoints);
+  // Time buckets with no readings are genuinely empty. Do not inject
+  // LTTB extras or slice away the live endpoint when the archive is sparse.
+  return out;
 }
 function worthDisplaySamples(samples,range,maxPoints){
-  return range==='all'||range==='m1'||range==='w1'
-    ? timeUniformFinancialSamples(samples,maxPoints)
-    : readableFinancialSamples(samples,maxPoints);
+  // All timeframes use equal time spacing and verified/stored sample points.
+  return timeUniformFinancialSamples(samples,maxPoints);
 }
 // Shape-preserving cubic interpolation: passes through every retained real point
 // and avoids the artificial overshoot typical of generic smooth curves.
