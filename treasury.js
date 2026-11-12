@@ -1628,47 +1628,23 @@ function compactAxisMoney(value) {
   return `${symbol}${converted.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 }
 
-/* Colored segments share the exact cubic geometry of the existing monotone curve. */
-function worthMarketTrendPaths(points, fullPath) {
-  const curves=fullPath.match(/ C[^C]+/g)||[];
-  if(curves.length!==points.length-1)
-    return `<path class="treasury-worth-line" d="${fullPath}"></path>`;
-  const holdings=state.samples
-    .filter(row=>Number(row?.t)>0&&Number(row?.value)>0)
-    .map(row=>({t:Number(row.t),value:Number(row.value)}))
-    .sort((a,b)=>a.t-b.t);
-  const currentTotal=Number(state.data?.total);
-  let holdingCursor=0;
-  function impliedPrice(point) {
-    if(!holdings.length)return NaN;
-    while(holdingCursor+1<holdings.length&&holdings[holdingCursor+1].t<=point.t)holdingCursor++;
-    const a=holdings[holdingCursor],b=holdings[holdingCursor+1];
-    let quantity=a.value;
-    if(b&&b.t>a.t&&point.t>a.t){
-      const mix=Math.min(1,Math.max(0,(point.t-a.t)/(b.t-a.t)));
-      quantity=a.value+(b.value-a.value)*mix;
-    }else if(point.t>=holdings.at(-1).t&&currentTotal>0&&state.treasuryReady){
-      quantity=currentTotal;
-    }
-    return quantity>0?point.value/quantity:NaN;
+/* Every up/down section of the displayed portfolio curve has a precise SVG
+   gradient stop, so the curve stays continuous while its color tracks direction.
+   SVG paint is set inline to defeat legacy theme stroke overrides. */
+function worthTrendGradientStops(points) {
+  if (points.length < 2) return '<stop offset="0%" style="stop-color:var(--muted-strong)"></stop>';
+  const stops=[];
+  for (let i=1; i<points.length; i++) {
+    const from=points[i-1],to=points[i];
+    const delta=to.value-from.value;
+    const tolerance=Math.max(0.000001,Math.abs(from.value)*1e-10);
+    const color=delta>tolerance?'var(--up)':delta< -tolerance?'var(--down)':'var(--muted-strong)';
+    const start=(Math.max(0,Math.min(320,from.x))/320*100).toFixed(5);
+    const end=(Math.max(0,Math.min(320,to.x))/320*100).toFixed(5);
+    stops.push(`<stop offset="${start}%" style="stop-color:${color}"></stop>`);
+    stops.push(`<stop offset="${end}%" style="stop-color:${color}"></stop>`);
   }
-  const prices=points.map(point=>impliedPrice(point));
-  const paths=[];
-  let active='',path='';
-  const flush=()=>{if(path)paths.push(`<path class="treasury-worth-line ${active}" d="${path}"></path>`);};
-  for(let i=0;i<curves.length;i++){
-    const p=points[i],q=points[i+1];
-    const known=Number.isFinite(prices[i])&&Number.isFinite(prices[i+1]);
-    const from=known?prices[i]:p.value,to=known?prices[i+1]:q.value;
-    const delta=to-from,tolerance=Math.max(1e-8,Math.abs(from)*1e-8);
-    const trend=delta>tolerance?'trend-up':delta< -tolerance?'trend-down':'trend-flat';
-    if(active!==trend){
-      flush();active=trend;path=`M${p.x.toFixed(2)} ${p.y.toFixed(2)}`;
-    }
-    path+=curves[i];
-  }
-  flush();
-  return paths.join('');
+  return stops.join('');
 }
 
 function renderWorthSparkline() {
@@ -1719,7 +1695,7 @@ function renderWorthSparkline() {
   const first=plotted[0],last=plotted.at(-1);
   const area=`${d} L${last.x.toFixed(2)} 92 L${first.x.toFixed(2)} 92 Z`;
   const grid=[24,48,72].map((y)=>`<line class="treasury-chart-gridline" x1="0" y1="${y}" x2="320" y2="${y}"></line>`).join('');
-  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${grid}<path class="treasury-worth-area" d="${area}"></path>${worthMarketTrendPaths(plotted,d)}`;
+  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient><linearGradient id="treasuryWorthTrendLive" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="320" y2="0">${worthTrendGradientStops(plotted)}</linearGradient></defs>${grid}<path class="treasury-worth-area" d="${area}"></path><path class="treasury-worth-line" d="${d}" stroke="url(#treasuryWorthTrendLive)" style="stroke:url(#treasuryWorthTrendLive) !important"></path>`;
   // A range repaint must never leave the previous floating inspector visible.
   // The interaction will explicitly reopen it on the next pointer/touch read.
   if(state.worthInspectIndex<0){
