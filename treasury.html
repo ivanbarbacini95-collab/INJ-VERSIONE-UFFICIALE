@@ -146,6 +146,171 @@
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
 <link rel="stylesheet" href="./cash-reserve.css?v=20261109alloverview1">
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
+<style id="treasury-value-readability-20261112">
+  /* Treasury: leggibilita dei controvalori senza zoom, modifiche JS o valori arrotondati.
+     Incrementi fluidi per monitor orizzontali/verticali; su mobile riduzione controllata. */
+  html[data-inj-page="treasury"] .treasury-hero-copy .treasury-hero-worth {
+    font-size:clamp(3rem,6.2vw,5.3rem)!important;
+    line-height:1.08!important;
+    color:var(--text)!important;
+    font-variant-numeric:tabular-nums lining-nums;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics
+  .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
+    display:block;
+    width:100%;
+    min-width:0;
+    font-size:clamp(.98rem,1.38vw,1.36rem)!important;
+    font-weight:650!important;
+    line-height:1.32!important;
+    color:var(--text)!important;
+    letter-spacing:-.015em;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    font-variant-numeric:tabular-nums;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-row > small {
+    min-width:0;
+    font-size:clamp(.93rem,1.16vw,1.2rem)!important;
+    font-weight:650!important;
+    line-height:1.3!important;
+    color:var(--muted-strong)!important;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    overflow:visible;
+    text-overflow:clip;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-row {
+    min-height:clamp(74px,5.3vw,94px);
+  }
+  html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div > small {
+    font-size:clamp(.98rem,1.24vw,1.3rem)!important;
+    font-weight:700!important;
+    line-height:1.3!important;
+    color:var(--text)!important;
+    overflow-wrap:anywhere;
+    font-variant-numeric:tabular-nums;
+  }
+  html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div {
+    min-height:clamp(120px,7vw,148px);
+  }
+  html[data-inj-page="treasury"] .treasury-performance-cell > small {
+    font-size:clamp(.92rem,1.15vw,1.2rem)!important;
+    font-weight:680!important;
+    line-height:1.3!important;
+    color:var(--muted-strong)!important;
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
+    overflow-wrap:anywhere;
+  }
+  /* Importi in Cash Reserve, nella medesima pagina Treasury. */
+  html[data-inj-page="treasury"] .cash-reserve-asset > strong {
+    font-size:clamp(1.25rem,2.6vw,2.05rem)!important;
+    line-height:1.18!important;
+  }
+  html[data-inj-page="treasury"] .cash-token-amount > small {
+    font-size:clamp(.88rem,1.05vw,1.12rem)!important;
+    line-height:1.3!important;
+    color:var(--muted-strong)!important;
+    overflow-wrap:anywhere;
+  }
+  @media (max-width:760px) {
+    html[data-inj-page="treasury"] .treasury-hero-copy .treasury-hero-worth {
+      font-size:clamp(1.9rem,8.7vw,3.05rem)!important;
+      text-align:center;
+    }
+    html[data-inj-page="treasury"] .treasury-allocation-metrics
+    .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
+      font-size:clamp(.8rem,3.1vw,1.02rem)!important;
+    }
+    html[data-inj-page="treasury"] .treasury-allocation-row > small {
+      font-size:clamp(.75rem,2.8vw,.96rem)!important;
+    }
+    html[data-inj-page="treasury"] .treasury-allocation-row {
+      min-height:62px;
+    }
+    html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div > small {
+      font-size:clamp(.8rem,3vw,1.03rem)!important;
+    }
+    html[data-inj-page="treasury"] .treasury-velocity-panel .treasury-velocity-grid > div {
+      min-height:110px;
+    }
+    html[data-inj-page="treasury"] .treasury-performance-cell > small {
+      font-size:clamp(.76rem,2.8vw,1rem)!important;
+    }
+    html[data-inj-page="treasury"] .cash-token-amount > small {
+      font-size:clamp(.72rem,2.8vw,.9rem)!important;
+    }
+  }
+
+  /* composition-font-parity-20261112: match the estimated-production cards.
+     Increase labels, live INJ amounts and fiat amounts together, while keeping
+     two columns on narrow screens and untruncated figures at any orientation. */
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric {
+    align-content:center;
+    justify-items:center;
+    row-gap:clamp(6px,.7vw,11px);
+    min-height:clamp(124px,8.5vw,155px);
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > span {
+    font-size:clamp(.65rem,.92vw,.78rem)!important;
+    font-weight:850!important;
+    line-height:1.3!important;
+    color:var(--muted-strong)!important;
+    letter-spacing:.07em!important;
+    white-space:normal!important;
+    overflow-wrap:break-word;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > strong,
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway > strong {
+    font-size:clamp(1.08rem,1.45vw,1.4rem)!important;
+    line-height:1.3!important;
+    font-weight:860!important;
+    letter-spacing:-.025em!important;
+    max-width:100%;
+    white-space:normal!important;
+    overflow-wrap:anywhere;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    font-variant-numeric:tabular-nums lining-nums;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics
+  .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
+    font-size:clamp(1.02rem,1.35vw,1.36rem)!important;
+    line-height:1.3!important;
+    font-weight:700!important;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway {
+    width:100%;
+    min-width:0;
+    justify-content:center;
+    flex-wrap:wrap;
+    column-gap:8px;
+    row-gap:4px;
+  }
+  @media(max-width:900px) {
+    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric {
+      min-height:120px;
+      padding-block:14px;
+    }
+    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > span {
+      font-size:clamp(.68rem,2.7vw,.78rem)!important;
+    }
+    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-metric > strong,
+    html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway > strong {
+      font-size:clamp(1.04rem,3.5vw,1.25rem)!important;
+    }
+    html[data-inj-page="treasury"] .treasury-allocation-metrics
+    .treasury-metric > :is(#treasuryRewardsWorth,#treasuryAvailableWorth,#treasuryStakedWorth) {
+      font-size:clamp(.94rem,3.1vw,1.12rem)!important;
+    }
+  }
+</style>
 </head>
 <body>
   <div class="treasury-shell">
