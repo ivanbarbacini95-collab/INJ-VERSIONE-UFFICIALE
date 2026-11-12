@@ -795,8 +795,10 @@ function currentGrowthRows(){
   const cutoff=worthRangeCutoff(state.growthRange,now);
   const availableSpan=rows.length>1?Math.max(0,number(rows.at(-1).t)-number(rows[0].t)):0;
   const effectiveCutoff=state.growthRange==='d1'&&availableSpan<DAY?number(rows[0].t):cutoff;
-  const filtered=clipWorthRows(rows,effectiveCutoff);
-  return filtered.length>=2?filtered:rows.slice(-Math.min(2,rows.length));
+  // Treasury growth is observations-only: no synthetic timeframe boundary,
+  // and no older readings pulled inside 1G merely to fill empty space.
+  const filtered=rows.filter(row=>number(row.t)>=effectiveCutoff);
+  return filtered.length?filtered:rows.slice(-1);
 }
 function syncGrowthRangeControls(){
   const rows=allGrowthRows();
@@ -1475,6 +1477,8 @@ function renderSparkline() {
   const rawSamples = currentGrowthRows();
   syncGrowthRangeControls();
   if (rawSamples.length < 2) {
+    const note=$('treasuryGrowthCoverageNote');
+    if(note)note.textContent='Storico in formazione: servono almeno due letture confermate.';
     state.plot = null;
     svg.innerHTML = '<path class="treasury-growth-line" d="M0 76 L320 76" opacity=".18"></path>';
     placeTreasuryLiveDot('treasuryGrowthLiveDot',null);
