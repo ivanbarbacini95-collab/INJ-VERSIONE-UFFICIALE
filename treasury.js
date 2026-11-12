@@ -1729,13 +1729,10 @@ function renderWorthSparkline() {
   const svg = $('treasuryWorthSparkline');
   if (!svg) return;
   const rawSamples = currentWorthRows();
-  const estimateNote=$('treasuryReconstructedNote');
-  const hasEstimatedWorth=rawSamples.some(row=>row.estimated===true);
   syncWorthRangeControls();
   if (rawSamples.length < 2) {
     svg.dataset.trend='flat';
     if($('treasuryWorthDelta'))$('treasuryWorthDelta').dataset.trend='flat';
-    if(estimateNote)estimateNote.hidden=true;
     state.worthPlot = null;
     svg.innerHTML = '<path class="treasury-worth-line" d="M0 48 L320 48" opacity=".18"></path>';
     placeTreasuryLiveDot('treasuryWorthLiveDot',null);
@@ -1787,12 +1784,6 @@ function renderWorthSparkline() {
   const last=plotted.at(-1);
   const grid=[24,48,72].map((y)=>`<line class="treasury-chart-gridline" x1="0" y1="${y}" x2="320" y2="${y}"></line>`).join('');
   svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${grid}${segments.markup}`;
-  if(estimateNote){
-    estimateNote.hidden=!hasEstimatedWorth&&!segments.missing;
-    estimateNote.textContent=hasEstimatedWorth
-      ? (segments.missing?'Storico parzialmente ricostruito: prezzi INJ reali, saldo stimato. Le lacune restano visibili.':'Storico parzialmente ricostruito: prezzi INJ reali, saldo dell’ultima lettura disponibile (stimato).')
-      : 'Intervalli senza dati verificati lasciati vuoti, senza raccordi artificiali.';
-  }
   // A range repaint must never leave the previous floating inspector visible.
   // The interaction will explicitly reopen it on the next pointer/touch read.
   if(state.worthInspectIndex<0){
@@ -1828,8 +1819,6 @@ function showWorthSample(index) {
   cursor.hidden = false;
   dockChartTooltip(tooltip,leftPct);
   tooltip.querySelector('strong').textContent = money(sample.value,2);
-  tooltip.querySelector('small').textContent = historyFullLabel(sample.t) +
-    (sample.estimated === true ? ' · PREZZO REALE / SALDO STIMATO' : sample.boundary === true ? ' · RILEVAZIONE INTERPOLATA' : ' · RILEVAZIONE');
   tooltip.hidden = false;
   stage.classList.add('inspecting');
   state.worthInspectIndex = safe;
