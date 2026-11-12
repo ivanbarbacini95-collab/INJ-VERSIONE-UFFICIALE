@@ -97,6 +97,9 @@ const state = {
   worthPlot: null,
   worthInspectIndex: -1,
   worthRange: 'd1',
+  injMarketHistory: Object.create(null),
+  injMarketPending: Object.create(null),
+  injMarketFailureAt: Object.create(null),
   firstPaint: true,
   socket: null,
   reconnectTimer: 0,
@@ -782,18 +785,109 @@ function bindGrowthRangeControls(){
   document.querySelectorAll('[data-growth-range]').forEach((button)=>button.addEventListener('click',()=>setGrowthRange(button.dataset.growthRange)));
   syncGrowthRangeControls();
 }
-function currentWorthRows(){
-  const rows=allWorthRows();
-  if(!rows.length||state.worthRange==='all')return rows;
-  const now=Date.now();
-  const cutoff=worthRangeCutoff(state.worthRange,now);
-  const availableSpan=rows.length>1?Math.max(0,number(rows.at(-1).t)-number(rows[0].t)):0;
-  // During the first 24h, 1G grows naturally from the first real reading at the
-  // left edge. Once 24h exists, it becomes a true rolling 24-hour window.
-  const effectiveCutoff=state.worthRange==='d1'&&availableSpan<DAY?number(rows[0].t):cutoff;
-  const filtered=clipWorthRows(rows,effectiveCutoff);
-  return filtered.length>=2?filtered:rows.slice(-Math.min(2,rows.length));
+/* Portfolio Trend is a market-price chart, not a curve of sparsely saved
+   wallet valuations. Each historical INJ candle is applied to the CURRENT
+   Treasury INJ holding so deposits/withdrawals don't fabricate price movement.
+   Actual wallet flow history remains independent in the Treasury growth chart. */
+function injMarketWindow(range,now=Date.now()){
+  if(range==='d1')return {start:now-DAY,end:now};
+  if(range==='w1')return {start:now-7*DAY,end:now};
+  if(range==='m1')return {start:currentMonthStart(now),end:now};
+  const candidates=[...state.worthSamples,...state.samples]
+    .map(row=>Number(row?.t)).filter(t=>Number.isFinite(t)&&t>0&&t<now);
+  return {start:candidates.length?Math.min(...candidates):now-DAY,end:now};
 }
+function injMarketCandlePlan(range,span){
+  if(range==='d1')return {interval:'5m',step:5*MINUTE};
+  if(range==='w1')return {interval:'15m',step:15*MINUTE};
+  if(range==='m1')return {interval:'1h',step:HOUR};
+  if(span<=12*DAY)return {interval:'15m',step:15*MINUTE};
+  if(span<=55*DAY)return {interval:'1h',step:HOUR};
+  if(span<=180*DAY)return {interval:'4h',step:4*HOUR};
+  return {interval:'1d',step:DAY};
+}
+async function fetchInjMarketCandles(start,end,plan){
+  const hosts=['https://data-api.binance.vision','https://api.binance.com'];
+  for(const host of hosts){
+    try{
+      const points=[];
+      let cursor=Math.max(0,Math.floor((start-plan.step)/plan.step)*plan.step);
+      for(let attempt=0;attempt<4&&cursor<end;attempt++){
+        const query='/api/v3/klines?symbol=INJUSDT&interval='+plan.interval+
+          '&startTime='+Math.floor(cursor)+'&endTime='+Math.floor(end)+'&limit=1000';
+        const candles=await fetchJson(host+query,6500);
+        if(!Array.isArray(candles)||!candles.length)throw new Error('INJ klines unavailable');
+        for(const candle of candles){
+          const t=Number(candle?.[0]),value=Number(candle?.[4]);
+          if(Number.isFinite(t)&&t>=start-plan.step&&t<=end&&Number.isFinite(value)&&value>0)
+            points.push({t,value});
+        }
+        const next=Number(candles.at(-1)?.[0])+plan.step;
+        if(!(next>cursor))break;
+        cursor=next;
+        if(candles.length<1000)break;
+      }
+      const ordered=points.sort((a,b)=>a.t-b.t).filter((row,i,arr)=>i===0||row.t!==arr[i-1].t);
+      if(ordered.length>=2)return ordered;
+    }catch(error){console.warn('INJ market history host unavailable',error);}
+  }
+  // Public market-chart fallback, still actual INJ prices: never rebuild from
+  // sparse Treasury snapshots when the Binance public candle feed is unavailable.
+  const days=Math.min(365,Math.max(1,Math.ceil((end-start)/DAY)+1));
+  const data=await fetchJson('https://api.coingecko.com/api/v3/coins/injective-protocol/market_chart?vs_currency=usd&days='+days,7000);
+  const points=(Array.isArray(data?.prices)?data.prices:[])
+    .map(item=>({t:Number(item?.[0]),value:Number(item?.[1])}))
+    .filter(row=>Number.isFinite(row.t)&&row.t>=start-2*HOUR&&row.t<=end&&Number.isFinite(row.value)&&row.value>0)
+    .sort((a,b)=>a.t-b.t);
+  if(points.length<2)throw new Error('INJ historical prices unavailable');
+  return points;
+}
+async function loadInjMarketHistory(range=state.worthRange,force=false){
+  if(navigator.onLine===false)return;
+  if(state.injMarketPending[range])return state.injMarketPending[range];
+  const windowRange=injMarketWindow(range);
+  const cached=state.injMarketHistory[range];
+  const refreshMs=3*MINUTE;
+  // A rolling-window cache may start a few minutes early; rows are clipped
+  // at paint time so the selected timeframe keeps sliding in realtime.
+  if(!force&&cached&&Date.now()-cached.fetchedAt<refreshMs&&
+     (range!=='all'||Math.abs(cached.start-windowRange.start)<HOUR))return;
+  if(!force&&Date.now()-Number(state.injMarketFailureAt[range]||0)<30000)return;
+  const pending=(async()=>{
+    try{
+      const plan=injMarketCandlePlan(range,windowRange.end-windowRange.start);
+      const points=await fetchInjMarketCandles(windowRange.start,windowRange.end,plan);
+      state.injMarketHistory[range]={points,start:windowRange.start,fetchedAt:Date.now(),step:plan.step};
+      state.injMarketFailureAt[range]=0;
+    }catch(error){
+      state.injMarketFailureAt[range]=Date.now();
+      console.warn('Portfolio Trend: actual INJ price history unavailable',error);
+    }finally{
+      delete state.injMarketPending[range];
+      if(state.worthRange===range)render();
+    }
+  })();
+  state.injMarketPending[range]=pending;
+  return pending;
+}
+function currentWorthRows(){
+  const range=state.worthRange;
+  const cache=state.injMarketHistory[range];
+  const quantity=Number(state.data?.total);
+  if(!cache?.points?.length||!(quantity>0))return [];
+  const cutoff=injMarketWindow(range).start;
+  const priceRows=clipWorthRows(cache.points,cutoff);
+  const livePrice=Number(state.price);
+  if(state.priceReady&&Number.isFinite(livePrice)&&livePrice>0){
+    const now=Date.now(),last=priceRows.at(-1);
+    if(!last)priceRows.push({t:now,value:livePrice});
+    else if(now-last.t<1000)last.value=livePrice;
+    else priceRows.push({t:now,value:livePrice});
+  }
+  return priceRows.filter(row=>row.t>=cutoff&&row.value>0)
+    .map(row=>({t:row.t,value:row.value*quantity}));
+}
+
 function syncWorthRangeControls(){
   const rows=allWorthRows();
   const span=rows.length>1?Math.max(0,number(rows.at(-1).t)-number(rows[0].t)):0;
@@ -816,6 +910,7 @@ function setWorthRange(range){
   const button=document.querySelector(`[data-worth-range="${range}"]`);
   if(button?.disabled)return;
   state.worthRange=range;
+  void loadInjMarketHistory(range);
   hideWorthInspector();
   syncWorthRangeControls();
   render();
@@ -826,7 +921,12 @@ function bindWorthRangeControls(){
 }
 function updateWorthChartMetrics(sample=null){
   const rows=currentWorthRows();
-  if(!rows.length)return;
+  if(!rows.length){
+    setText('treasuryNetWorthCurrent',state.price>0&&Number(state.data?.total)>0?money(state.price*Number(state.data.total),2):'—');
+    setText('treasuryWorthChangeAbs','—');setText('treasuryWorthChangePct','—');
+    setText('treasuryWorthMin','—');setText('treasuryWorthMax','—');
+    return;
+  }
   const first=number(rows[0].value),current=sample?number(sample.value):number(rows.at(-1).value);
   const delta=current-first,pct=first>0?(delta/first)*100:0;
   const min=Math.min(...rows.map((row)=>number(row.value))),max=Math.max(...rows.map((row)=>number(row.value)));
@@ -1647,7 +1747,8 @@ function renderWorthSparkline() {
   syncWorthRangeControls();
   if (rawSamples.length < 2) {
     state.worthPlot = null;
-    svg.innerHTML = '<path class="treasury-worth-line" d="M0 48 L320 48" opacity=".18"></path>';
+    const pending=Boolean(state.injMarketPending[state.worthRange]);
+    svg.innerHTML = `<text x="160" y="49" text-anchor="middle" font-size="7" fill="currentColor" opacity=".65">${pending?'Caricamento prezzi INJ…':'Storico prezzi INJ non disponibile'}</text>`;
     placeTreasuryLiveDot('treasuryWorthLiveDot',null);
     setText('treasuryWorthAxisTop','—');setText('treasuryWorthAxisBottom','—');
     $('treasuryWorthHistoryStart').textContent = rawSamples.length ? historyLabel(rawSamples[0].t) : 'Prima lettura';
@@ -1656,7 +1757,8 @@ function renderWorthSparkline() {
     return;
   }
 
-  const samples=worthDisplaySamples(rawSamples,state.worthRange,chartPointBudget(state.worthRange));
+  const marketBudget=window.innerWidth<=760?{d1:200,w1:176,m1:180,all:220}:{d1:360,w1:300,m1:300,all:350};
+  const samples=worthDisplaySamples(rawSamples,state.worthRange,marketBudget[state.worthRange]||200);
   const values=samples.map((row)=>number(row.value));
   // Axis/scale extrema always come from the COMPLETE selected range, not from
   // the visually thinned line. This keeps MIN/MAX and the graph perfectly in
@@ -1968,7 +2070,7 @@ function render() {
   const worthBase=worthRangeRows.length?number(worthRangeRows[0].value):worth;
   const worthCurrent=worthRangeRows.length?number(worthRangeRows.at(-1).value):worth;
   const worthDelta=state.price>0?worthCurrent-worthBase:0,worthPct=worthBase>0?(worthDelta/worthBase)*100:0;
-  setLiveValue('treasuryWorthDelta',state.price>0?`${worthPct>=0?'+':''}${worthPct.toFixed(2)}%`:'—',worthPct,true);
+  setLiveValue('treasuryWorthDelta',state.price>0&&worthRangeRows.length>1?`${worthPct>=0?'+':''}${worthPct.toFixed(2)}%`:'—',worthRangeRows.length>1?worthPct:NaN,true);
   syncGrowthRangeControls();
   updateGrowthChartMetrics();
   syncWorthRangeControls();
@@ -2306,6 +2408,7 @@ function maintainPriceRealtime(){
 }
 function resumeTreasuryRealtime(force=true){
   if(navigator.onLine===false)return;
+  void loadInjMarketHistory(state.worthRange);
   // A resumed PWA may have live prices but a stale last-session wallet total.
   // Prevent a fresh-looking worth point until the current chain scan finishes.
   if(Date.now()-number(state.updatedAt)>10000)state.treasuryReady=false;
@@ -2344,12 +2447,14 @@ function boot() {
   try { state.currency=localStorage.getItem('inj_monitor_currency')==='EUR'?'EUR':'USD'; } catch(_) {}
   window.addEventListener('storage',e=>{if(e.key==='inj_monitor_wallets_v1')renderWalletOwnership();});
   hydrateSnapshot();hydrateHistory();hydrateWorthHistory();bindTreasuryHomeReturn();bindSparkInteraction();bindWorthInteraction();bindGrowthRangeControls();bindWorthRangeControls();render();
+  void loadInjMarketHistory(state.worthRange);
   void restoreTimelineBackups().then(()=>{state.historyReady=true;render();void repairWorthHistoryAfterResume();});
   Promise.allSettled([loadPrice(),loadEurRate(),loadTreasury(true)]).finally(()=>{state.firstPaint=false;});
   connectPriceSocket();
   setInterval(()=>{if(!document.hidden)void loadTreasury(false);},12000);
   setInterval(()=>{if(!document.hidden)void refreshTreasuryChainRewards(false);},REWARD_CHAIN_REFRESH_MS);
   setInterval(()=>{if(!document.hidden)maintainPriceRealtime();},2500);
+  setInterval(()=>{if(!document.hidden)void loadInjMarketHistory(state.worthRange);},3*MINUTE);
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){state.treasuryReady=false;persistHistory();persistWorthHistory();}
     else{void restoreTimelineBackups().then(()=>{state.historyReady=true;render();void repairWorthHistoryAfterResume();});resumeTreasuryRealtime(true);}
