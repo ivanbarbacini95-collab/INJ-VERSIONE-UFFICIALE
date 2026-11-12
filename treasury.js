@@ -891,9 +891,13 @@ function allGrowthRows(){
     .filter((row)=>number(row.t)>0&&number(row.value)>0)
     .map((row)=>({t:number(row.t),value:number(row.value)}));
   const liveTotal=number(state.data?.total);
-  if(liveTotal>0){
+  // Do not mix a cached wallet total from a previous session with a fresh
+  // chart timestamp. New live readings only follow a complete wallet scan.
+  if(liveTotal>0 && state.treasuryReady){
     const last=rows.at(-1);
-    if(!last||Math.abs(last.value-liveTotal)>1e-10)rows.push({t:Date.now(),value:liveTotal});
+    const now=Date.now();
+    if(!last)rows.push({t:now,value:liveTotal});
+    else if(Math.abs(last.value-liveTotal)>1e-10)rows.push({t:now,value:liveTotal});
   }
   return rows;
 }
@@ -1422,31 +1426,48 @@ function placeTreasuryLiveDot(id, point, width=320, height=96) {
   dot.style.top=`${Math.max(0,Math.min(100,(number(point.y)/height)*100))}%`;
   dot.hidden=false;
 }
-// Give intermittent staking accrual a gentle, continuous visual curve.
-// For long intervals with plausible reward-sized increases, add interpolation
-// points to the SVG path ONLY; on-chain records and tooltips stay unchanged.
-// Larger deposits, withdrawals and transfers retain their true sharp change.
-function smoothTreasuryGrowthPath(points){
-  if(points.length<2)return monotoneCurvePath(points);
-  const display=[points[0]];
-  for(let i=0;i<points.length-1;i++){
-    const a=points[i],b=points[i+1];
-    const elapsed=b.t-a.t,change=b.value-a.value;
-    const organic=elapsed>=15*MINUTE&&change>0&&
-      change/Math.max(1,a.value)<=Math.min(.004,.001+elapsed/DAY*.001);
-    if(organic){
-      const steps=Math.min(8,Math.max(3,Math.ceil(elapsed/(15*MINUTE))));
-      for(let j=1;j<steps;j++){
-        const f=j/steps;
-        // Soft Hermite-like easing: 70% linear accrual and 30% rounded
-        // transition at each observed endpoint; no overshooting.
-        const blend=.7*f+.3*f*f*(3-2*f);
-        display.push({x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*blend});
-      }
-    }
-    display.push(b);
+// Render only real, timestamped Treasury observations. A monotone cubic
+// joins actual measured points but never creates or stores a fake reward sample.
+// Clear gaps are kept disconnected instead of becoming an artificial diagonal.
+function treasuryGrowthDraw(samples,range,timeSpan){
+  if(!samples.length)return {path:'',area:'',missing:false};
+  const gapLimit=range==='d1'?65*MINUTE:range==='w1'?6*HOUR:range==='m1'?18*HOUR:Math.max(2*DAY,timeSpan/65);
+  const groups=[];
+  let group=[samples[0]];
+  let missing=false;
+  for(let i=1;i<samples.length;i++){
+    const prev=samples[i-1],next=samples[i];
+    if(next.t-prev.t>gapLimit){
+      missing=true;
+      groups.push(group);
+      group=[next];
+    }else group.push(next);
   }
-  return monotoneCurvePath(display);
+  groups.push(group);
+  const lines=groups.filter(g=>g.length>=2).map(g=>monotoneCurvePath(g));
+  const areas=groups.filter(g=>g.length>=2).map(g=>{
+    const d=monotoneCurvePath(g),first=g[0],last=g.at(-1);
+    return d+' L'+last.x.toFixed(2)+' 92 L'+first.x.toFixed(2)+' 92 Z';
+  });
+  return {path:lines,area:areas,missing};
+}
+// Deliberately small, sparse visible dots. Every dot is an ACTUAL observation,
+// never a synthetic sample; inspectors can still read all retained data points.
+function treasuryGrowthMarkers(samples){
+  const out=[];
+  let lastX=-Infinity;
+  for(let i=0;i<samples.length;i++){
+    const row=samples[i];
+    if(row.boundary===true)continue;
+    const edge=i===0||i===samples.length-1;
+    const moved=i>0&&Math.abs(row.value-samples[i-1].value)>1e-8;
+    if((edge||moved)&& (edge||row.x-lastX>=8)){
+      out.push('<circle class="treasury-growth-reading" cx="'+row.x.toFixed(2)+
+        '" cy="'+row.y.toFixed(2)+'" r="'+(edge?'1.45':'.95')+'"></circle>');
+      lastX=row.x;
+    }
+  }
+  return out.join('');
 }
 function renderSparkline() {
   const svg = $('treasurySparkline');
@@ -1463,42 +1484,45 @@ function renderSparkline() {
     return;
   }
 
-  const samples = readableFinancialSamples(rawSamples,chartPointBudget(state.growthRange));
+  // 1G preserves extra observations and 1S/1M/ALL retain an honest overview.
+  const mobile=window.innerWidth<=760;
+  const budgets=mobile?{d1:192,w1:150,m1:115,all:95}:{d1:360,w1:270,m1:215,all:175};
+  const budget=budgets[state.growthRange]||budgets.d1;
+  const samples=rawSamples.length<=budget?rawSamples.map(row=>({...row}))
+    :timeUniformFinancialSamples(rawSamples,budget);
   const values=samples.map((row)=>number(row.value));
-  const rawMin=Math.min(...values),rawMax=Math.max(...values),rawSpan=Math.max(0,rawMax-rawMin);
+  // Chart extrema are always calculated from ALL real readings in the range.
+  const rawValues=rawSamples.map(row=>number(row.value));
+  const rawMin=Math.min(...rawValues),rawMax=Math.max(...rawValues),rawSpan=Math.max(0,rawMax-rawMin);
   const reference=Math.max(.000001,(rawMin+rawMax)/2,number(values.at(-1)));
   const effectiveSpan=Math.max(rawSpan,reference*.00018,1e-7);
   const pad=effectiveSpan*.075;
   const displayMin=Math.max(0,rawMin-pad),displayMax=rawMax+pad,valueSpan=Math.max(1e-9,displayMax-displayMin);
 
-  const now=Date.now();
-  const allRows=allGrowthRows();
-  const minSampleT=Math.min(...samples.map((row)=>number(row.t)));
-  const maxSampleT=Math.max(...samples.map((row)=>number(row.t)));
-  let startT=minSampleT,endT=Math.max(startT+1,maxSampleT);
-  const firstArchiveT=number(allRows[0]?.t)||minSampleT;
-  const archiveSpan=Math.max(0,now-firstArchiveT);
-  if(state.growthRange==='d1'){
-    if(archiveSpan<DAY){startT=firstArchiveT;endT=Math.max(now,maxSampleT,startT+1);}
-    else {startT=now-DAY;endT=now;}
-  }else if(state.growthRange==='w1'){startT=now-(7*DAY);endT=now;}
-  else if(state.growthRange==='m1'){startT=currentMonthStart(now);endT=Math.max(now,maxSampleT,startT+1);}
+  // Show every real reading across the visible plot width, even if the full
+  // requested 24h was not recorded on this device. Axis dates stay truthful.
+  const minSampleT=number(rawSamples[0].t),maxSampleT=number(rawSamples.at(-1).t);
+  const startT=minSampleT,endT=Math.max(startT+1,maxSampleT);
   const timeSpan=Math.max(1,endT-startT),topY=12,bottomY=84,chartHeight=bottomY-topY;
   const plotted=samples.map((row)=>({
-    t:number(row.t),value:number(row.value),
+    t:number(row.t),value:number(row.value),boundary:row.boundary===true,
     x:Math.max(0,Math.min(320,((number(row.t)-startT)/timeSpan)*320)),
     y:Math.max(topY,Math.min(bottomY,bottomY-((number(row.value)-displayMin)/valueSpan)*chartHeight))
   }));
-  // The archive and tooltip values remain exact; only the line between
-  // sparse readings is visually eased, never stored as invented INJ rewards.
-  const d=smoothTreasuryGrowthPath(plotted);
-  const first=plotted[0],last=plotted.at(-1);
-  const area=`${d} L${last.x.toFixed(2)} 92 L${first.x.toFixed(2)} 92 Z`;
-  svg.innerHTML=`<defs><linearGradient id="treasuryGrowthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".14"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${treasuryGridSvg()}<path class="treasury-growth-area" d="${area}"></path><path class="treasury-growth-line" d="${d}"></path>`;
+  const paths=treasuryGrowthDraw(plotted,state.growthRange,timeSpan);
+  const markers=treasuryGrowthMarkers(plotted);
+  const areaMarkup=paths.area.map(d=>'<path class="treasury-growth-area" d="'+d+'"></path>').join('');
+  const lineMarkup=paths.path.map(d=>'<path class="treasury-growth-line" d="'+d+'"></path>').join('');
+  svg.innerHTML=`<defs><linearGradient id="treasuryGrowthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".14"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient></defs>${treasuryGridSvg()}`+areaMarkup+lineMarkup+markers;
+  const last=plotted.at(-1);
   placeTreasuryLiveDot('treasuryGrowthLiveDot',last);
   state.plot={width:320,height:96,samples:plotted};
+  const note=$('treasuryGrowthCoverageNote');
+  if(note)note.textContent=paths.missing
+    ? 'Punti = letture reali. Periodi senza rilevazioni lasciati vuoti.'
+    : 'Punti = letture effettive del totale INJ. Nessuna crescita simulata.';
   $('treasuryHistoryStart').textContent=historyLabel(rawSamples[0].t);
-  $('treasuryHistoryEnd').textContent='Ora';
+  $('treasuryHistoryEnd').textContent=state.treasuryReady?'Ora':historyLabel(rawSamples.at(-1).t);
   if(state.inspectIndex>=0)showSparkSample(Math.min(state.inspectIndex,plotted.length-1));
 }
 
