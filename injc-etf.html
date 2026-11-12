@@ -174,7 +174,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
 <link rel="stylesheet" href="./injc-etf-market-terminal-20261105.css?v=etf-session-inspect-20261106a">
 <link rel="stylesheet" href="./injc-etf-live-refinement-20261106.css?v=20261110-session-rollover2">
-<link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=20261109-history-only1">
+<link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=20261112-all-history1">
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
 </head>
 <body>
@@ -275,7 +275,8 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
         <small id="etfVolumeSummary" data-it="Storico dei volumi scambiati" data-en="Trading-volume history">Storico dei volumi scambiati</small>
       </div>
       <div class="injc-volume-controls" role="group" aria-label="Visualizzazione volume INJC">
-        <span class="injc-volume-unit">HISTORY</span>
+        <button type="button" class="active" data-injc-volume-view="history" aria-pressed="true" data-it="HISTORY" data-en="HISTORY">HISTORY</button>
+        <button type="button" data-injc-volume-view="all" aria-pressed="false" data-it="ALL" data-en="ALL">ALL</button>
         <span class="injc-volume-unit">SHARES · NASDAQ</span>
       </div>
     </div>
@@ -314,7 +315,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <footer class="brand-footer"><strong>INJ NODE</strong> / BY B CAPITAL GROUP</footer>
 </main>
 </div>
-<script defer src="./injc-etf-flows-volume-20261106.js?v=20261110-official-feed1"></script>
+<script defer src="./injc-etf-flows-volume-20261106.js?v=20261112-all-history1"></script>
 <script defer src="./injc-etf-market-terminal-20261105.js?v=20261110-session-rollover2"></script>
 <script defer src="./injc-etf-session-inspector-20261106.js?v=etf-session-inspect-20261106a"></script>
 
