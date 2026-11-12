@@ -145,7 +145,7 @@
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
 <script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
 <link rel="stylesheet" href="./cash-reserve.css?v=20261109alloverview1">
-<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=rubik-ui1">
+
 <style id="treasury-value-readability-20261112">
   /* Treasury: leggibilita dei controvalori senza zoom, modifiche JS o valori arrotondati.
      Incrementi fluidi per monitor orizzontali/verticali; su mobile riduzione controllata. */
@@ -315,15 +315,43 @@
 <style id="treasury-worth-historical-integrity-20261112">
   /* Historical INJ price candles paired with last verified wallet holdings:
      dashed when balance is estimated; no visual jump across offline gaps. */
-  html[data-inj-page="treasury"] .treasury-worth-sparkline
+  /* Continuous clean market line: trend colour is based on the selected
+     period. Provenance remains explicit in the caption and point tooltip. */
+  html[data-inj-page="treasury"] #treasuryWorthSparkline
   path.treasury-worth-line.treasury-worth-estimated{
-    stroke-dasharray:4.2 3.8!important;
-    stroke-width:1.95!important;
-    stroke-opacity:.68!important;
+    stroke-dasharray:none!important;
+    stroke-opacity:1!important;
     stroke-linejoin:round!important;
+    stroke-linecap:round!important;
     fill:none!important;
     filter:none!important;
   }
+  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="up"]{
+    color:var(--up,#35ca8c)!important;
+  }
+  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="down"]{
+    color:var(--down,#ee6178)!important;
+  }
+  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="flat"]{
+    color:var(--accent)!important;
+  }
+  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="up"] path.treasury-worth-line{
+    stroke:var(--up,#35ca8c)!important;
+    stroke-dasharray:none!important;
+    stroke-opacity:1!important;
+  }
+  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="down"] path.treasury-worth-line{
+    stroke:var(--down,#ee6178)!important;
+    stroke-dasharray:none!important;
+    stroke-opacity:1!important;
+  }
+  html[data-inj-page="treasury"] #treasuryWorthSparkline[data-trend="flat"] path.treasury-worth-line{
+    stroke:var(--accent)!important;
+    stroke-dasharray:none!important;
+  }
+  html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="up"]{color:var(--up,#35ca8c)!important}
+  html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="down"]{color:var(--down,#ee6178)!important}
+  html[data-inj-page="treasury"] #treasuryWorthDelta[data-trend="flat"]{color:var(--muted-strong)!important}
   html[data-inj-page="treasury"] #treasuryReconstructedNote:not([hidden]){
     display:block;
     color:var(--muted-strong);
@@ -343,6 +371,7 @@
     opacity:.86;
   }
 </style>
+<link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=optical-responsive1">
 </head>
 <body>
   <div class="treasury-shell">
@@ -496,7 +525,7 @@
               <span id="treasuryWorthMax">MAX —</span>
             </div>
           </div>
-          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Patrimonio totale: prezzi INJ e saldo Treasury nel tempo. I tratti tratteggiati indicano saldi stimati, le lacune non vengono interpolate. Tocca o trascina per data e valore.">
+          <div class="treasury-spark-stage treasury-worth-stage" id="treasuryWorthStage" role="img" tabindex="0" aria-label="Patrimonio totale: prezzi INJ e saldo Treasury nel tempo. La linea continua cambia colore in base al trend; lo storico parzialmente ricostruito è segnalato nel dettaglio e le lacune non vengono interpolate. Tocca o trascina per data e valore.">
             <svg class="treasury-sparkline treasury-worth-sparkline" id="treasuryWorthSparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
             <span class="treasury-worth-axis" aria-hidden="true"><b id="treasuryWorthAxisTop">—</b><b id="treasuryWorthAxisBottom">—</b></span>
             <span class="treasury-chart-live-dot treasury-worth-end-dot" id="treasuryWorthLiveDot" hidden aria-hidden="true"></span>
