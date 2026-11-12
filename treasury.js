@@ -1697,6 +1697,8 @@ function renderWorthSparkline() {
   const hasEstimatedWorth=rawSamples.some(row=>row.estimated===true);
   syncWorthRangeControls();
   if (rawSamples.length < 2) {
+    svg.dataset.trend='flat';
+    if($('treasuryWorthDelta'))$('treasuryWorthDelta').dataset.trend='flat';
     if(estimateNote)estimateNote.hidden=true;
     state.worthPlot = null;
     svg.innerHTML = '<path class="treasury-worth-line" d="M0 48 L320 48" opacity=".18"></path>';
@@ -1708,6 +1710,15 @@ function renderWorthSparkline() {
     return;
   }
 
+  // Trend is measured over the selected timeframe, not from individual ticks.
+  // A single up/down color remains stable until the timeframe trend reverses.
+  const firstWorth=number(rawSamples[0].value),lastWorth=number(rawSamples.at(-1).value);
+  const trendTolerance=Math.max(0.000001,firstWorth*1e-10);
+  const worthTrend=lastWorth>firstWorth+trendTolerance?'up'
+    :lastWorth<firstWorth-trendTolerance?'down':'flat';
+  svg.dataset.trend=worthTrend;
+  const trendBadge=$('treasuryWorthDelta');
+  if(trendBadge)trendBadge.dataset.trend=worthTrend;
   const samples=worthDisplaySamples(rawSamples,state.worthRange,chartPointBudget(state.worthRange));
   const values=samples.map((row)=>number(row.value));
   // Axis/scale extrema always come from the COMPLETE selected range, not from
@@ -1743,7 +1754,7 @@ function renderWorthSparkline() {
   if(estimateNote){
     estimateNote.hidden=!hasEstimatedWorth&&!segments.missing;
     estimateNote.textContent=hasEstimatedWorth
-      ? (segments.missing?'Linea tratteggiata: prezzi INJ reali con saldo stimato. Le lacune restano visibili.':'Linea tratteggiata: prezzi INJ reali, saldo dell’ultima lettura disponibile (stimato).')
+      ? (segments.missing?'Storico parzialmente ricostruito: prezzi INJ reali, saldo stimato. Le lacune restano visibili.':'Storico parzialmente ricostruito: prezzi INJ reali, saldo dell’ultima lettura disponibile (stimato).')
       : 'Intervalli senza dati verificati lasciati vuoti, senza raccordi artificiali.';
   }
   // A range repaint must never leave the previous floating inspector visible.
