@@ -634,10 +634,49 @@ async function fetchBinanceWorthBridge(startTime,endTime,plan){
   return rows;
 }
 
+// One-time correction for legacy "estimated" points written by earlier
+// releases, where INJ balances were linearly interpolated and appeared to
+// follow a market trajectory that never happened. Verified rows stay intact.
+const WORTH_LEGACY_REPRICE_KEY='inj_node_worth_market_backfill_v20261112';
+let legacyWorthRepriceRunning=false,legacyWorthRepriceAttempt=0;
+async function repairLegacyWorthEstimates(){
+  if(legacyWorthRepriceRunning||state.worthBackfillRunning
+     ||!state.treasuryReady||!state.priceReady||!state.historyReady)return;
+  try{if(localStorage.getItem(WORTH_LEGACY_REPRICE_KEY)==='done')return;}catch(_){}
+  const cutoff=Date.now()-30*DAY;
+  const legacy=normalizeTimeline(state.worthSamples)
+    .filter(row=>row.estimated===true&&row.t>=cutoff);
+  if(!legacy.length){
+    try{localStorage.setItem(WORTH_LEGACY_REPRICE_KEY,'done');}catch(_){}
+    return;
+  }
+  if(Date.now()-legacyWorthRepriceAttempt<2*MINUTE)return;
+  legacyWorthRepriceAttempt=Date.now();
+  legacyWorthRepriceRunning=true;
+  try{
+    const earliestBalance=number(observedTreasuryBalances()[0]?.t);
+    const start=Math.max(cutoff,earliestBalance,legacy[0].t-2*MINUTE);
+    const end=Math.min(Date.now(),legacy.at(-1).t+2*MINUTE);
+    if(end-start<MINUTE)return;
+    const rebuilt=await fetchBinanceWorthBridge(start,end,worthBackfillPlan(end-start));
+    if(!rebuilt.length)throw new Error('Mercato storico non disponibile');
+    const first=rebuilt[0].t,last=rebuilt.at(-1).t;
+    const verifiedAndUncovered=state.worthSamples.filter(row=>
+      row.estimated!==true||row.t<first||row.t>last);
+    state.worthSamples=mergeTimelineRows(verifiedAndUncovered,rebuilt);
+    persistWorthHistory();
+    try{localStorage.setItem(WORTH_LEGACY_REPRICE_KEY,'done');}catch(_){}
+    hideWorthInspector();render();
+  }catch(error){
+    console.warn('Verifica dello storico Treasury rimandata',error);
+  }finally{
+    legacyWorthRepriceRunning=false;
+  }
+}
 async function repairWorthHistoryAfterResume(){
   if(state.worthBackfillRunning||!state.priceReady||!state.treasuryReady||!state.historyReady)return;
   const gap=newestWorthGap();
-  if(!gap)return;
+  if(!gap){void repairLegacyWorthEstimates();return;}
   // Avoid repeated history API requests on every live price websocket tick.
   if(Date.now()-state.worthBackfillLastAttempt<60000)return;
   state.worthBackfillLastAttempt=Date.now();
@@ -656,6 +695,7 @@ async function repairWorthHistoryAfterResume(){
     console.warn('Treasury Net Worth resume repair non disponibile',error);
   }finally{
     state.worthBackfillRunning=false;
+    void repairLegacyWorthEstimates();
   }
 }
 
