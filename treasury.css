@@ -2275,3 +2275,18 @@ body.dashboard-scroll-root.menu-overlay-open .app-shell{
   display:block;margin:3px 2px 6px;color:var(--muted);opacity:.87;
   font-size:clamp(9px,.85vw,11px);font-weight:500;line-height:1.5;letter-spacing:.015em;
 }
+
+/* 2026-11-12: live portfolio chart line colored by the underlying INJ price trend. */
+.treasury-worth-sparkline path.treasury-worth-line.trend-up{
+  stroke:var(--up)!important;
+  filter:drop-shadow(0 0 2.5px color-mix(in srgb,var(--up) 22%,transparent))!important;
+}
+.treasury-worth-sparkline path.treasury-worth-line.trend-down{
+  stroke:var(--down)!important;
+  filter:drop-shadow(0 0 2.5px color-mix(in srgb,var(--down) 22%,transparent))!important;
+}
+.treasury-worth-sparkline path.treasury-worth-line.trend-flat{
+  stroke:var(--muted-strong)!important;
+  filter:none!important;
+}
+#treasuryWorthTooltip>small{display:none!important}
