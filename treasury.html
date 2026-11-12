@@ -371,6 +371,41 @@
     opacity:.86;
   }
 </style>
+
+<style id="treasury-growth-realtime-20261112">
+ html[data-inj-page="treasury"] #treasurySparkline .treasury-growth-reading{
+   fill:var(--up,#46d7a4);
+   stroke:var(--surface,#121718);
+   stroke-width:.33;
+   opacity:.75;
+   vector-effect:non-scaling-stroke;
+   pointer-events:none;
+ }
+ html[data-inj-page="treasury"] #treasurySparkline .treasury-growth-line{
+   stroke:var(--up,#46d7a4)!important;
+   stroke-width:1.95!important;
+   stroke-linecap:round!important;
+   stroke-linejoin:round!important;
+   stroke-dasharray:none!important;
+ }
+ html[data-inj-page="treasury"] .treasury-growth-coverage-note{
+   display:block;
+   margin:8px 2px 5px;
+   color:var(--muted-strong,var(--muted));
+   font-weight:540;
+   font-size:clamp(10px,.9vw,13px);
+   line-height:1.35;
+   overflow-wrap:break-word;
+ }
+ @media(max-width:599px){
+   html[data-inj-page="treasury"] .treasury-growth-coverage-note{
+     margin:7px 2px 4px;
+     font-size:clamp(10px,2.65vw,12px);
+     line-height:1.3;
+   }
+   html[data-inj-page="treasury"] #treasurySparkline .treasury-growth-reading{opacity:.8}
+ }
+</style>
 <link rel="stylesheet" href="./inj-rubik-unified-20261110.css?v=optical-responsive1">
 </head>
 <body>
@@ -491,12 +526,13 @@
               <span id="treasuryGrowthPoints">STORICO —</span>
             </div>
           </div>
-          <div class="treasury-spark-stage" id="treasurySparkStage" role="img" tabindex="0" aria-label="Crescita storica del totale INJ. Curva visiva arrotondata tra letture; i valori selezionabili sono quelli osservati realmente.">
+          <div class="treasury-spark-stage" id="treasurySparkStage" role="img" tabindex="0" aria-label="Crescita Treasury: curva costruita esclusivamente da letture reali on-chain; piccoli punti mostrano le rilevazioni e le lacune temporali non sono inventate.">
             <svg class="treasury-sparkline" id="treasurySparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true"></svg>
             <span class="treasury-chart-live-dot treasury-growth-end-dot" id="treasuryGrowthLiveDot" hidden aria-hidden="true"></span>
             <span class="treasury-spark-cursor" id="treasurySparkCursor" hidden aria-hidden="true"><i></i></span>
             <span class="treasury-spark-tooltip" id="treasurySparkTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
           </div>
+          <small class="treasury-growth-coverage-note" id="treasuryGrowthCoverageNote" aria-live="off">Punti = letture effettive del totale INJ. Nessuna crescita simulata.</small>
           <footer><span id="treasuryHistoryStart">Prima lettura</span><span id="treasuryHistoryEnd">Ora</span></footer>
         </article>
 
@@ -665,7 +701,7 @@
 </main>
   </div>
   <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-  <script src="./treasury.js?v=20261112-optical-trend1" defer></script>
+  <script src="./treasury.js?v=20261112-growth-realpoints1" defer></script>
 
 
   <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
