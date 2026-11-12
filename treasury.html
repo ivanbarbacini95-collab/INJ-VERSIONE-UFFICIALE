@@ -334,6 +334,14 @@
     opacity:.98;
     overflow-wrap:break-word;
   }
+  html[data-inj-page="treasury"] .treasury-worth-method{
+    display:block;
+    margin:6px 2px 9px;
+    font-size:clamp(10px,.82vw,13px);
+    line-height:1.4;
+    color:var(--muted);
+    opacity:.86;
+  }
 </style>
 </head>
 <body>
@@ -495,7 +503,8 @@
             <span class="treasury-spark-cursor" id="treasuryWorthCursor" hidden aria-hidden="true"><i></i></span>
             <span class="treasury-spark-tooltip" id="treasuryWorthTooltip" hidden aria-live="polite"><strong>—</strong><small>—</small></span>
           </div>
-          <small class="treasury-backfill-note" id="treasuryReconstructedNote" hidden>Storico ricostruito con prezzi reali · valori intermedi stimati</small>
+          <small class="treasury-backfill-note" id="treasuryReconstructedNote" hidden>Storico ricostruito con prezzi reali · saldo stimato</small>
+           <small class="treasury-worth-method">Patrimonio = INJ detenuti × prezzo di mercato INJ/USDT. Reward, depositi e prelievi possono influire sull’andamento.</small>
           <footer><span id="treasuryWorthHistoryStart">Prima lettura</span><span id="treasuryWorthHistoryEnd">Ora</span></footer>
         </article>
 
@@ -627,7 +636,7 @@
 </main>
   </div>
   <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-  <script src="./treasury.js?v=20261109-shared2" defer></script>
+  <script src="./treasury.js?v=20261112-truthful-worth3" defer></script>
 
 
   <script defer src="./cash-portfolio-onchain.js?v=20261109-shared2"></script>
