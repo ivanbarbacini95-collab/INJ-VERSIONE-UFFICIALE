@@ -1628,23 +1628,16 @@ function compactAxisMoney(value) {
   return `${symbol}${converted.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 }
 
-/* Every up/down section of the displayed portfolio curve has a precise SVG
-   gradient stop, so the curve stays continuous while its color tracks direction.
-   SVG paint is set inline to defeat legacy theme stroke overrides. */
-function worthTrendGradientStops(points) {
-  if (points.length < 2) return '<stop offset="0%" style="stop-color:var(--muted-strong)"></stop>';
-  const stops=[];
-  for (let i=1; i<points.length; i++) {
-    const from=points[i-1],to=points[i];
-    const delta=to.value-from.value;
-    const tolerance=Math.max(0.000001,Math.abs(from.value)*1e-10);
-    const color=delta>tolerance?'var(--up)':delta< -tolerance?'var(--down)':'var(--muted-strong)';
-    const start=(Math.max(0,Math.min(320,from.x))/320*100).toFixed(5);
-    const end=(Math.max(0,Math.min(320,to.x))/320*100).toFixed(5);
-    stops.push(`<stop offset="${start}%" style="stop-color:${color}"></stop>`);
-    stops.push(`<stop offset="${end}%" style="stop-color:${color}"></stop>`);
-  }
-  return stops.join('');
+/* One market direction for each selected Treasury timeframe.
+   Keep the complete underlying historical curve untouched. */
+function worthSelectedRangeTrend(rows) {
+  if (!rows || rows.length < 2) return 'flat';
+  const start=Number(rows[0].value),end=Number(rows.at(-1).value);
+  if (!Number.isFinite(start)||!Number.isFinite(end)||start<=0||end<=0) return 'flat';
+  // Monetary figures display cents: ignore changes that round to zero.
+  const delta=end-start;
+  if (Math.abs(delta)<0.005) return 'flat';
+  return delta>0?'up':'down';
 }
 
 function renderWorthSparkline() {
@@ -1695,7 +1688,12 @@ function renderWorthSparkline() {
   const first=plotted[0],last=plotted.at(-1);
   const area=`${d} L${last.x.toFixed(2)} 92 L${first.x.toFixed(2)} 92 Z`;
   const grid=[24,48,72].map((y)=>`<line class="treasury-chart-gridline" x1="0" y1="${y}" x2="320" y2="${y}"></line>`).join('');
-  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"></stop><stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop></linearGradient><linearGradient id="treasuryWorthTrendLive" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="320" y2="0">${worthTrendGradientStops(plotted)}</linearGradient></defs>${grid}<path class="treasury-worth-area" d="${area}"></path><path class="treasury-worth-line" d="${d}" stroke="url(#treasuryWorthTrendLive)" style="stroke:url(#treasuryWorthTrendLive) !important"></path>`;
+  // Use the SAME selected raw readings as the timeframe %/absolute delta, not
+  // each local rise/fall of the displayed line or a separate 24h spot ticker.
+  const rangeTrend=worthSelectedRangeTrend(rawSamples);
+  const rangeColor=rangeTrend==='up'?'var(--up)':rangeTrend==='down'?'var(--down)':'var(--muted-strong)';
+  svg.dataset.rangeTrend=rangeTrend;
+  svg.innerHTML=`<defs><linearGradient id="treasuryWorthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${rangeColor}" stop-opacity=".12"></stop><stop offset="100%" stop-color="${rangeColor}" stop-opacity="0"></stop></linearGradient></defs>${grid}<path class="treasury-worth-area" d="${area}"></path><path class="treasury-worth-line trend-${rangeTrend}" d="${d}" stroke="${rangeColor}" style="stroke:${rangeColor} !important"></path>`;
   // A range repaint must never leave the previous floating inspector visible.
   // The interaction will explicitly reopen it on the next pointer/touch read.
   if(state.worthInspectIndex<0){
