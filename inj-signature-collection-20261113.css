@@ -1,0 +1,330 @@
+/* INJ Node · Signature Collection 2026-11-13
+   Six original premium themes. Single semantic palette for all pages.
+   Decorative colors never replace the live green/red financial signal.
+   All appearance rules are theme-scoped, no cross-theme side effects. */
+
+html[data-theme="carbon-gold"]{
+ color-scheme:dark!important;
+ --bg:#0a0c0e;--theme-canvas:#0a0c0e;
+ --surface:#15191d;--surface-strong:#21262a;--surface-soft:#293036;
+ --text:#f5f0e7;--muted:#ada99e;--muted-strong:#d5ccbb;
+ --line:rgba(226,192,137,.19);--line-strong:rgba(226,192,137,.34);
+ --accent:#e5bf7f;--accent-ink:#32220c;
+ --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent);
+ --up:#4bd2a0;--down:#e77b89;
+ --up-soft:color-mix(in srgb,var(--up) 12%,transparent);
+ --down-soft:color-mix(in srgb,var(--down) 12%,transparent);
+ --page-gradient:linear-gradient(150deg,#191b1c 0%,#0a0c0e 54%,#151817 100%);
+ --card-gradient:linear-gradient(145deg,rgba(34,36,36,.94),rgba(17,19,22,.97));
+ --dock-gradient:linear-gradient(140deg,rgba(34,35,34,.96),rgba(17,19,21,.96));
+ --floating-surface:#15191d;
+ --dialog-gradient:linear-gradient(145deg,#21262a,#15191d);
+ --inj-theme-art:radial-gradient(ellipse 69% 69% at 87% 1%,rgba(229,191,127,.17),transparent 77%);
+ --inj-ribbon-layer:linear-gradient(transparent,transparent);
+ --inj-signature-glow:rgba(226,185,112,.15);
+ --inj-native-status-tone:#0a0c0e;
+ --inj-native-top-tone:#0a0c0e;
+ --theme-browser:#0a0c0e;
+ --canvas:#0a0c0e;--panel:#15191d;--panel-strong:#21262a;
+ --surface2:#21262a;--surface-2:#21262a;--surface-3:#293036;
+ --positive:#4bd2a0;--negative:#e77b89;
+ --ws-bg:#0a0c0e;--ws-panel:#15191d;--ws-fg:#f5f0e7;
+ --ws-muted:#ada99e;--ws-accent:#e5bf7f;--ws-line:rgba(226,192,137,.19);
+}
+#themePicker .theme-swatch.carbon-gold{
+ background-image:
+  radial-gradient(ellipse 88% 80% at 78% 5%,rgba(226,185,112,.15),transparent 78%),
+  linear-gradient(136deg,#21262a,#0a0c0e 64%,#15191d)!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+ border:1px solid rgba(226,192,137,.34)!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#f5f0e7 13%,transparent)!important;
+}
+
+html[data-theme="emerald-circuit"]{
+ color-scheme:dark!important;
+ --bg:#061511;--theme-canvas:#061511;
+ --surface:#0e211c;--surface-strong:#17342b;--surface-soft:#1c4336;
+ --text:#e8fff5;--muted:#95b7a9;--muted-strong:#c9e7d9;
+ --line:rgba(100,232,183,.18);--line-strong:rgba(100,232,183,.34);
+ --accent:#64e8b7;--accent-ink:#05271b;
+ --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent);
+ --up:#4bdda0;--down:#ed8191;
+ --up-soft:color-mix(in srgb,var(--up) 12%,transparent);
+ --down-soft:color-mix(in srgb,var(--down) 12%,transparent);
+ --page-gradient:linear-gradient(150deg,#102a22 0%,#061511 55%,#0b201d 100%);
+ --card-gradient:linear-gradient(145deg,rgba(20,48,37,.94),rgba(8,25,20,.97));
+ --dock-gradient:linear-gradient(140deg,rgba(19,44,35,.96),rgba(6,22,18,.97));
+ --floating-surface:#0e211c;
+ --dialog-gradient:linear-gradient(145deg,#17342b,#0e211c);
+ --inj-theme-art:radial-gradient(ellipse 72% 52% at 93% 3%,rgba(86,231,174,.14),transparent 80%);
+ --inj-ribbon-layer:linear-gradient(transparent,transparent);
+ --inj-signature-glow:rgba(100,232,183,.14);
+ --inj-native-status-tone:#061511;
+ --inj-native-top-tone:#061511;
+ --theme-browser:#061511;
+ --canvas:#061511;--panel:#0e211c;--panel-strong:#17342b;
+ --surface2:#17342b;--surface-2:#17342b;--surface-3:#1c4336;
+ --positive:#4bdda0;--negative:#ed8191;
+ --ws-bg:#061511;--ws-panel:#0e211c;--ws-fg:#e8fff5;
+ --ws-muted:#95b7a9;--ws-accent:#64e8b7;--ws-line:rgba(100,232,183,.18);
+}
+#themePicker .theme-swatch.emerald-circuit{
+ background-image:
+  radial-gradient(ellipse 88% 80% at 78% 5%,rgba(100,232,183,.14),transparent 78%),
+  linear-gradient(136deg,#17342b,#061511 64%,#0e211c)!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+ border:1px solid rgba(100,232,183,.34)!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#e8fff5 13%,transparent)!important;
+}
+
+html[data-theme="burgundy-noir"]{
+ color-scheme:dark!important;
+ --bg:#190e17;--theme-canvas:#190e17;
+ --surface:#291823;--surface-strong:#38212f;--surface-soft:#452b3b;
+ --text:#fff1f5;--muted:#bda0ac;--muted-strong:#e5c8d4;
+ --line:rgba(231,160,185,.18);--line-strong:rgba(231,160,185,.33);
+ --accent:#e7a0b9;--accent-ink:#351421;
+ --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent);
+ --up:#54d4a8;--down:#f1808c;
+ --up-soft:color-mix(in srgb,var(--up) 12%,transparent);
+ --down-soft:color-mix(in srgb,var(--down) 12%,transparent);
+ --page-gradient:linear-gradient(155deg,#321a2a 0%,#190e17 53%,#221420 100%);
+ --card-gradient:linear-gradient(145deg,rgba(56,31,44,.95),rgba(27,15,24,.98));
+ --dock-gradient:linear-gradient(145deg,rgba(54,32,45,.96),rgba(25,14,24,.97));
+ --floating-surface:#291823;
+ --dialog-gradient:linear-gradient(145deg,#38212f,#291823);
+ --inj-theme-art:radial-gradient(ellipse 65% 67% at 86% 0%,rgba(231,160,185,.16),transparent 78%);
+ --inj-ribbon-layer:linear-gradient(transparent,transparent);
+ --inj-signature-glow:rgba(215,112,154,.14);
+ --inj-native-status-tone:#190e17;
+ --inj-native-top-tone:#190e17;
+ --theme-browser:#190e17;
+ --canvas:#190e17;--panel:#291823;--panel-strong:#38212f;
+ --surface2:#38212f;--surface-2:#38212f;--surface-3:#452b3b;
+ --positive:#54d4a8;--negative:#f1808c;
+ --ws-bg:#190e17;--ws-panel:#291823;--ws-fg:#fff1f5;
+ --ws-muted:#bda0ac;--ws-accent:#e7a0b9;--ws-line:rgba(231,160,185,.18);
+}
+#themePicker .theme-swatch.burgundy-noir{
+ background-image:
+  radial-gradient(ellipse 88% 80% at 78% 5%,rgba(215,112,154,.14),transparent 78%),
+  linear-gradient(136deg,#38212f,#190e17 64%,#291823)!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+ border:1px solid rgba(231,160,185,.33)!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#fff1f5 13%,transparent)!important;
+}
+
+html[data-theme="champagne-edition"]{
+ color-scheme:light!important;
+ --bg:#ede7db;--theme-canvas:#ede7db;
+ --surface:#f8f5ef;--surface-strong:#ece3d6;--surface-soft:#e6dbca;
+ --text:#372d28;--muted:#826f63;--muted-strong:#605044;
+ --line:rgba(123,96,70,.20);--line-strong:rgba(123,96,70,.33);
+ --accent:#926843;--accent-ink:#ffffff;
+ --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent);
+ --up:#147c61;--down:#c04857;
+ --up-soft:color-mix(in srgb,var(--up) 12%,transparent);
+ --down-soft:color-mix(in srgb,var(--down) 12%,transparent);
+ --page-gradient:linear-gradient(151deg,#fffdf9 0%,#ede7db 55%,#e8dfd1 100%);
+ --card-gradient:linear-gradient(145deg,rgba(255,253,249,.98),rgba(247,240,229,.98));
+ --dock-gradient:linear-gradient(140deg,rgba(255,253,249,.97),rgba(239,230,214,.96));
+ --floating-surface:#f8f5ef;
+ --dialog-gradient:linear-gradient(145deg,#ece3d6,#f8f5ef);
+ --inj-theme-art:radial-gradient(ellipse 69% 64% at 84% 0%,rgba(170,124,72,.12),transparent 79%);
+ --inj-ribbon-layer:linear-gradient(transparent,transparent);
+ --inj-signature-glow:rgba(166,117,65,.14);
+ --inj-native-status-tone:#ede7db;
+ --inj-native-top-tone:#ede7db;
+ --theme-browser:#ede7db;
+ --canvas:#ede7db;--panel:#f8f5ef;--panel-strong:#ece3d6;
+ --surface2:#ece3d6;--surface-2:#ece3d6;--surface-3:#e6dbca;
+ --positive:#147c61;--negative:#c04857;
+ --ws-bg:#ede7db;--ws-panel:#f8f5ef;--ws-fg:#372d28;
+ --ws-muted:#826f63;--ws-accent:#926843;--ws-line:rgba(123,96,70,.20);
+}
+#themePicker .theme-swatch.champagne-edition{
+ background-image:
+  radial-gradient(ellipse 88% 80% at 78% 5%,rgba(166,117,65,.14),transparent 78%),
+  linear-gradient(136deg,#ece3d6,#ede7db 64%,#f8f5ef)!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+ border:1px solid rgba(123,96,70,.33)!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#372d28 13%,transparent)!important;
+}
+
+html[data-theme="abyss-blue"]{
+ color-scheme:dark!important;
+ --bg:#071624;--theme-canvas:#071624;
+ --surface:#0d2334;--surface-strong:#153347;--surface-soft:#1c4056;
+ --text:#e9f7ff;--muted:#8caebe;--muted-strong:#bed7e4;
+ --line:rgba(101,203,237,.18);--line-strong:rgba(101,203,237,.35);
+ --accent:#65cbed;--accent-ink:#073349;
+ --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent);
+ --up:#47d1ab;--down:#e8798b;
+ --up-soft:color-mix(in srgb,var(--up) 12%,transparent);
+ --down-soft:color-mix(in srgb,var(--down) 12%,transparent);
+ --page-gradient:linear-gradient(152deg,#10314b 0%,#071624 56%,#091e30 100%);
+ --card-gradient:linear-gradient(145deg,rgba(19,48,66,.95),rgba(9,25,40,.98));
+ --dock-gradient:linear-gradient(140deg,rgba(17,43,62,.96),rgba(7,24,37,.97));
+ --floating-surface:#0d2334;
+ --dialog-gradient:linear-gradient(145deg,#153347,#0d2334);
+ --inj-theme-art:radial-gradient(ellipse 67% 75% at 87% 2%,rgba(77,183,237,.16),transparent 76%);
+ --inj-ribbon-layer:linear-gradient(transparent,transparent);
+ --inj-signature-glow:rgba(70,174,220,.15);
+ --inj-native-status-tone:#071624;
+ --inj-native-top-tone:#071624;
+ --theme-browser:#071624;
+ --canvas:#071624;--panel:#0d2334;--panel-strong:#153347;
+ --surface2:#153347;--surface-2:#153347;--surface-3:#1c4056;
+ --positive:#47d1ab;--negative:#e8798b;
+ --ws-bg:#071624;--ws-panel:#0d2334;--ws-fg:#e9f7ff;
+ --ws-muted:#8caebe;--ws-accent:#65cbed;--ws-line:rgba(101,203,237,.18);
+}
+#themePicker .theme-swatch.abyss-blue{
+ background-image:
+  radial-gradient(ellipse 88% 80% at 78% 5%,rgba(70,174,220,.15),transparent 78%),
+  linear-gradient(136deg,#153347,#071624 64%,#0d2334)!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+ border:1px solid rgba(101,203,237,.35)!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#e9f7ff 13%,transparent)!important;
+}
+
+html[data-theme="liquid-titanium"]{
+ color-scheme:dark!important;
+ --bg:#11161c;--theme-canvas:#11161c;
+ --surface:#1b232b;--surface-strong:#29333d;--surface-soft:#333f49;
+ --text:#ecf3f7;--muted:#a2b5c1;--muted-strong:#d6e1e7;
+ --line:rgba(184,213,226,.19);--line-strong:rgba(184,213,226,.34);
+ --accent:#b8d5e2;--accent-ink:#19303c;
+ --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent);
+ --up:#50cda4;--down:#e6818b;
+ --up-soft:color-mix(in srgb,var(--up) 12%,transparent);
+ --down-soft:color-mix(in srgb,var(--down) 12%,transparent);
+ --page-gradient:linear-gradient(145deg,#28333e 0%,#11161c 54%,#1b242c 100%);
+ --card-gradient:linear-gradient(145deg,rgba(48,59,68,.95),rgba(22,29,36,.98));
+ --dock-gradient:linear-gradient(150deg,rgba(49,60,71,.96),rgba(20,27,34,.97));
+ --floating-surface:#1b232b;
+ --dialog-gradient:linear-gradient(145deg,#29333d,#1b232b);
+ --inj-theme-art:radial-gradient(ellipse 75% 61% at 84% 1%,rgba(186,211,224,.15),transparent 80%);
+ --inj-ribbon-layer:linear-gradient(transparent,transparent);
+ --inj-signature-glow:rgba(167,200,216,.14);
+ --inj-native-status-tone:#11161c;
+ --inj-native-top-tone:#11161c;
+ --theme-browser:#11161c;
+ --canvas:#11161c;--panel:#1b232b;--panel-strong:#29333d;
+ --surface2:#29333d;--surface-2:#29333d;--surface-3:#333f49;
+ --positive:#50cda4;--negative:#e6818b;
+ --ws-bg:#11161c;--ws-panel:#1b232b;--ws-fg:#ecf3f7;
+ --ws-muted:#a2b5c1;--ws-accent:#b8d5e2;--ws-line:rgba(184,213,226,.19);
+}
+#themePicker .theme-swatch.liquid-titanium{
+ background-image:
+  radial-gradient(ellipse 88% 80% at 78% 5%,rgba(167,200,216,.14),transparent 78%),
+  linear-gradient(136deg,#29333d,#11161c 64%,#1b232b)!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+ border:1px solid rgba(184,213,226,.34)!important;
+ box-shadow:inset 0 1px 0 color-mix(in srgb,#ecf3f7 13%,transparent)!important;
+}
+
+/* Shared subtle treatment on all app screens, including embedded sections. */
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page]:not([data-inj-page="night-view"]),
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-market]{
+ background-color:var(--theme-canvas)!important;
+ background-image:var(--inj-theme-art),var(--page-gradient)!important;
+ background-position:center center,center center!important;
+ background-size:100% 100%,100% 100%!important;
+ background-repeat:no-repeat,no-repeat!important;
+ background-attachment:fixed,fixed!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page]:not([data-inj-page="night-view"]) body{
+ color:var(--text);
+}
+/* Home is a fixed PWA surface; paint the exact same theme through the
+   safe-area and app background, no second color band at the upper edge. */
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="index"] body #entryGate.entry-gate,
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="index"] body #entryGate.entry-gate.visible{
+ background-color:var(--theme-canvas)!important;
+ background-image:var(--inj-theme-art),var(--page-gradient)!important;
+ background-repeat:no-repeat,no-repeat!important;
+ background-position:center center,center center!important;
+ background-size:100% 100%,100% 100%!important;
+ background-attachment:scroll,scroll!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="index"] body #entryGate.entry-gate > .entry-gate-shell:not(.first-access){
+ background:transparent!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="index"] body #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track{
+ /* Static professional presentation. All six atmospheres stay unobtrusive. */
+ background-image:var(--inj-theme-art)!important;
+ opacity:.28!important;
+ filter:none!important;
+ animation:none!important;
+}
+html[data-theme="champagne-edition"] body #entryGate.entry-gate > .inj-theme-flow-layer > .inj-theme-flow-track{opacity:.18!important}
+
+/* Local theme aliases for the newer stand-alone tools. */
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="all-transactions"]{
+ --panel:var(--surface);--raised:var(--surface-strong);
+ --border:var(--line);--fg:var(--text);
+ --shadow:0 14px 36px color-mix(in srgb,var(--theme-canvas) 28%,transparent);
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]):is([data-inj-page="network-status"],[data-inj-page="validators"]){
+ --sub:var(--surface-strong);--border:var(--line);
+ --green:var(--up);--red:var(--down);
+ --ring:color-mix(in srgb,var(--accent) 14%,transparent);
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="multi-chart"]{
+ --mc-bg:var(--theme-canvas);--mc-panel:var(--surface);
+ --mc-border:var(--line);--mc-ink:var(--text);
+ --mc-dim:var(--muted-strong);--mc-muted:var(--muted);
+ --mc-accent:var(--accent);--mc-green:var(--up);--mc-red:var(--down);
+ --mc-price-line:var(--accent);
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="injc-etf"]{
+ --etf-bg:var(--theme-canvas);--etf-card:var(--surface);
+ --etf-ink:var(--text);--etf-muted:var(--muted);
+ --etf-accent:var(--accent);--etf-line:var(--line);
+ --etf-up:var(--up);
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="multi-chart"] :is(.mc-app,.mc-zoom){
+ background-color:var(--mc-bg)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="multi-chart"] :is(.mc-card,.mc-style,.mc-page-button){
+ border-color:var(--mc-border)!important;
+ background-color:var(--mc-panel)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="injc-etf"] body{
+ background:var(--etf-bg)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"])[data-inj-page="injc-etf"] .etf-shell{
+ color:var(--etf-ink);
+}
+/* Keep existing components, but give theme-specific focus/hover accents. */
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]) :is(button,a,input,select,textarea):focus-visible{
+ outline-color:var(--accent)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]) #themePicker .inj-theme-family[data-family="premium"] .inj-family-illustration{
+ color:var(--accent)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]) #themePicker .inj-theme-family[data-selected="true"] > summary{
+ background:color-mix(in srgb,var(--accent) 6%,var(--surface))!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]) :is(.data-card,.market-card,.treasury-card,.rewards-card,.ws-card,.cc-card){
+ border-color:var(--line);
+}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]) :is(.up,.positive,.is-positive){color:var(--up)}
+html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]) :is(.down,.negative,.is-negative){color:var(--down)}
+@media(prefers-reduced-motion:reduce){
+ html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]){animation:none!important;transition:none!important}
+}
