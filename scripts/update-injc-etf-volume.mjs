@@ -19,7 +19,7 @@ const previous=new Map((existing.sessions||[]).filter(x=>/^\d{4}-\d{2}-\d{2}$/.t
 let incoming=null;
 for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
  try{
-  const endpoint='https://'+host+'/v8/finance/chart/INJC?range=1y&interval=1d&includePrePost=false';
+  const endpoint='https://'+host+'/v8/finance/chart/INJC?range=max&interval=1d&includePrePost=false';
   const response=await fetch(endpoint,{signal:AbortSignal.timeout(16000),headers:{
    accept:'application/json','user-agent':'Mozilla/5.0 (compatible; INJNodeETFDailyVolume/1.0)'
   }});
