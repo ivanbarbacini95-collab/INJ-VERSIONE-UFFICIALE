@@ -9,12 +9,12 @@
 <title>Status Network · INJ Node</title>
 <script>
 try{
- const supported=['obsidian','arctic','orbit','classic-black','classic-white'];
+ const supported=['obsidian','arctic','orbit','classic-black','classic-white','carbon-gold','emerald-circuit','burgundy-noir','champagne-edition','abyss-blue','liquid-titanium'];
  const theme=localStorage.getItem('inj_monitor_theme');
  document.documentElement.dataset.theme=supported.includes(theme)?theme:'obsidian';
  document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
  document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';
- document.querySelector('meta[name="theme-color"]').content=({'obsidian':'#060b11','arctic':'#f1f7fa','orbit':'#080b1a','classic-black':'#030304','classic-white':'#ffffff'})[document.documentElement.dataset.theme];
+ document.querySelector('meta[name="theme-color"]').content=({'obsidian':'#060b11','arctic':'#f1f7fa','orbit':'#080b1a','classic-black':'#030304','classic-white':'#ffffff','carbon-gold':'#0a0c0e','emerald-circuit':'#061511','burgundy-noir':'#190e17','champagne-edition':'#ede7db','abyss-blue':'#071624','liquid-titanium':'#11161c'})[document.documentElement.dataset.theme];
 }catch(_){}
 </script>
 <style>
@@ -33,6 +33,8 @@ html[data-theme="classic-white"]{color-scheme:light;--bg:#fff;--surface:#fafafa;
 <link rel="stylesheet" href="./network-history.css?v=20261110-uptime-history1">
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
+<script defer src="./inj-six-themes-20261103.js?v=20261113-signature11"></script>
+<link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=20261113-signature11">
 </head>
 <body>
 <main class="shell">
