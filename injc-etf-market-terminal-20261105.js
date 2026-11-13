@@ -559,13 +559,20 @@
    const data=lastQuote, today=nyKey(new Date());
    const sameDay=Boolean(data?.quoteTime&&nyKey(new Date(data.quoteTime))===today);
    const regular=sameDay&&data?.session==='regular';
-   setText('etfVolume',regular?count(data.volume):'—');
-   setText('etfNotional',regular&&Number.isFinite(data.volume)?shortUsd(data.volume*data.price):'—');
+   // Never display a separate quote-feed volume that disagrees with the
+   // Trading Volume chart. Both metrics follow its current-session bars.
+   const volumeSnapshot=window.__injcEtfTradedShares;
+   const tradedShares=volumeSnapshot?.ticker==='INJC'&&volumeSnapshot.date===today
+     &&Number.isSafeInteger(volumeSnapshot.shares)&&volumeSnapshot.shares>=0
+       ?volumeSnapshot.shares:null;
+   setText('etfVolume',tradedShares!==null?count(tradedShares):'—');
+   setText('etfNotional',tradedShares!==null&&sameDay&&Number.isFinite(data?.price)&&data.price>0
+     ?shortUsd(tradedShares*data.price):'—');
    setText('etfDayHigh',regular?usd(data.high):'—');
    setText('etfDayLow',regular?usd(data.low):'—');
    setText('etfDayOpen',regular?usd(data.open):'—');
    setText('etfPreviousClose',sameDay?usd(data.previous):'—');
-   setText('etfPerformanceSessionLabel',regular
+   setText('etfPerformanceSessionLabel',regular||tradedShares!==null
      ?tr('SEDUTA '+today+' · NASDAQ','SESSION '+today+' · NASDAQ')
      :tr('SEDUTA '+today+' · IN ATTESA DI SCAMBI',
          'SESSION '+today+' · AWAITING TRADES'));
@@ -756,6 +763,7 @@
    if(expanded)panel.scrollTop=0;
  }
  function bind(){
+   window.addEventListener('injc:traded-shares',renderPerformance);
    document.querySelectorAll('[data-etf-range]').forEach(b=>b.addEventListener('click',()=>{
       timeframe=b.dataset.etfRange;
       document.querySelectorAll('[data-etf-range]').forEach(btn=>{btn.classList.toggle('active',btn===b);btn.setAttribute('aria-pressed',String(btn===b))});
