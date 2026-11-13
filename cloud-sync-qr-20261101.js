@@ -31,8 +31,8 @@ function init(){
  function refresh(){
   document.getElementById('csDeviceLinkTitle').textContent=t('COLLEGA UN ALTRO DISPOSITIVO','CONNECT ANOTHER DEVICE');
   document.getElementById('csDeviceLinkDescription').textContent=t(
-   'Apri Cloud Sync sul secondo dispositivo con il QR. Accedi alla stessa identità usando una passkey e scegli Ripristina per importare le impostazioni.',
-   'Open Cloud Sync on the other device with this QR. Authenticate with a passkey for the same account and choose Restore to import your settings.');
+   'Apri Cloud Sync sul secondo dispositivo con il QR: puoi incollare un backup copiato oppure accedere con passkey e ripristinare dal cloud.',
+   'Open Cloud Sync on the other device with this QR: paste a copied backup, or sign in with a passkey and restore from the cloud.');
   document.getElementById('csDeviceLinkNote').textContent=t(
    'Il QR è un collegamento pubblico e non concede accesso automatico. Non contiene password, token o dati del wallet.',
    'The QR is a public link, not an authentication token. It contains no passwords, session keys or wallet data.');
