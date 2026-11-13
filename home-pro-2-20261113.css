@@ -310,7 +310,7 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
 
 html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card{
  height:var(--inj-home-fit-chart-height,260px)!important;
- min-height:178px!important;
+ min-height:148px!important;
  max-height:var(--inj-home-fit-chart-height,260px)!important;
  margin-top:-8px!important;
  padding:8px 10px 7px!important;
