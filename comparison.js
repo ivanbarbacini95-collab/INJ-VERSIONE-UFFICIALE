@@ -226,6 +226,7 @@
   if(!force&&!stale)return;
   if(!force&&Date.now()<state.quoteRetryAfter)return;
   state.busy=true;state.activeQuoteKey=requestKey;state.quoteError='';
+  const requestStarted=Date.now();
   renderStatus();
   try{
    const uri=API+'/coins/markets?vs_currency=usd&ids='+encodeURIComponent(ids.join(','))+'&order=market_cap_desc&per_page=20&page=1&sparkline=false';
@@ -239,13 +240,14 @@
      matched++;
     }
    }
-   const unresolved=ids.filter(id=>!usableQuote(id));
+   // Old cached quotes must never count as a fresh response for an omitted ID.
+   const unresolved=ids.filter(id=>!usableQuote(id)||(state.quotes.get(id)?.updated||0)<requestStarted);
    let repairError=null;
    if(unresolved.length){
     try{await repairMissingQuotes(unresolved);}
     catch(error){repairError=error;}
    }
-   const missing=ids.filter(id=>!usableQuote(id));
+   const missing=ids.filter(id=>!usableQuote(id)||(state.quotes.get(id)?.updated||0)<requestStarted);
    if(matched||unresolved.length>missing.length){
     state.lastRemote=Date.now();
     persistQuotes();
@@ -492,7 +494,7 @@
   set('capTargetCap',money(ref.cap));
   set('capTargetMeta',ref.source==='Nasdaq'?t('Nasdaq · snapshot giornaliero · USD','Nasdaq · daily snapshot · USD'):
      ref.source==='IndexBasket'?t('Stima '+ref.coverage.matched+'/'+ref.coverage.total+' società · giornaliero','Estimate '+ref.coverage.matched+'/'+ref.coverage.total+' constituents · daily'):
-     ref.source==='CoinGecko'?'CoinGecko · USD'+(recentCrypto(state.target.id)?' · LIVE':' · '+t('salvato','cached')):
+     ref.source==='CoinGecko'?(positive(ref.cap)?'CoinGecko · USD'+(recentCrypto(state.target.id)?' · LIVE':' · '+t('salvato','cached')):t('Capitalizzazione non disponibile · riprova ↻','Market cap unavailable · retry ↻')):
      t('In attesa del dato automatico','Waiting for automatic data'));
    marketCapSource(ref);
    const can=source&&positive(source.cap)&&positive(source.price)&&positive(ref.cap);
