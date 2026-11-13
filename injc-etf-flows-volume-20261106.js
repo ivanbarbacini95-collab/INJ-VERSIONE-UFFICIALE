@@ -174,7 +174,7 @@
      if(validVolume(k,Number(v))){mergeVolume(k,v,2);rememberPrice(k,close,2);added++;}
    });
    if(!added)throw Error('No actual dated INJC volume');
-   lastVolumeSource='Yahoo Finance · '+tr('dati potenzialmente ritardati','potential delay');
+   if(!lastVolumeSource)lastVolumeSource='Yahoo Finance · '+tr('dati potenzialmente ritardati','potential delay');
  }
  async function fetchJson(url,timeout=10500){
    const c=new AbortController(),timer=setTimeout(()=>c.abort(),timeout);
@@ -384,15 +384,23 @@
        fetchJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000),
        loadYahoo('5d','5m')
      ]);
-     if(results[1].status==='fulfilled'){
-       const d=results[1].value;
-       if(d?.ticker==='INJC'&&Array.isArray(d.sessions)){
-         d.sessions.forEach(row=>{
-           mergeVolume(row.date,row.volume,1);
-           rememberPrice(row.date,row.close,1);
-         });
-         if(d.sessions.length)lastVolumeSource=tr('Storico INJC · feed aggiornato periodicamente','INJC history · periodically refreshed feed');
-       }
+     // Refresh from current providers, rather than keeping yesterday's largest
+     // observed volume in memory after the provider corrects its daily bars.
+     const cached=results[1].status==='fulfilled'?results[1].value:null;
+     const chart=results[0].status==='fulfilled'?results[0].value?.chart?.result?.[0]:null;
+     const hasCache=cached?.ticker==='INJC'&&Array.isArray(cached.sessions);
+     const hasChart=chart?.meta?.symbol?.toUpperCase()==='INJC'&&
+       Array.isArray(chart.timestamp)&&chart.timestamp.length>0&&chart.indicators?.quote?.[0];
+     if(hasCache||hasChart){byDay.clear();dailyPrice.clear();lastVolumeSource='';}
+     if(hasCache){
+       cached.sessions.forEach(row=>{
+         // Saved daily history is canonical after the session closes.
+         // Live Yahoo fills gaps; it must not replace a stored historical bar.
+         const priority=row.date===nyDay(Date.now())?1:3;
+         mergeVolume(row.date,row.volume,priority);
+         rememberPrice(row.date,row.close,priority);
+       });
+       if(cached.sessions.length)lastVolumeSource=tr('Storico INJC · Yahoo Finance · sincronizzato','INJC history · Yahoo Finance · synced');
      }
      if(results[0].status==='fulfilled'){
        try{parseYahooVolume(results[0].value);}catch(_){}
@@ -403,7 +411,9 @@
        snapshotPts=snapshotIntraday(d);
        if(d?.ticker==='INJC'&&q?.quoteTime&&q.price&&q.session==='regular')
          rememberPrice(nyDay(Date.parse(q.quoteTime)),q.price,0);
-       if(d?.ticker==='INJC'&&q&&Number.isFinite(Date.parse(q.quoteTime))
+       if(d?.ticker==='INJC'&&q&&q.volume!==null&&q.volume!==undefined
+           &&q.session==='regular'&&Number.isFinite(Date.parse(q.quoteTime))
+           &&nyDay(Date.parse(q.quoteTime))===nyDay(Date.now())
            &&Number.isSafeInteger(Number(q.volume))&&Number(q.volume)>=0){
          mergeVolume(nyDay(Date.parse(q.quoteTime)),q.volume,0);
          if(!lastVolumeSource)lastVolumeSource=tr('Snapshot INJC · dati potenzialmente ritardati','INJC snapshot · potential delay');
