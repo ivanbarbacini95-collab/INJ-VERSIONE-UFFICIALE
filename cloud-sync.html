@@ -8,8 +8,10 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>Cloud Sync · INJ Node</title>
 <link rel="stylesheet" href="./cloud-sync.css?v=20261027b1">
+<link rel="stylesheet" href="./cloud-sync-portable-20261113.css?v=copy-paste-v1">
 <script defer src="./cloud-sync-config.js?v=20261027b1"></script>
 <script defer src="./cloud-sync.js?v=20261027origin2"></script>
+<script defer src="./cloud-sync-portable-20261113.js?v=copy-paste-v1"></script>
 
 <link rel="stylesheet" href="./inj-top-seamless.css?v=20261028seam1"/>
 <script defer src="./inj-top-seamless.js?v=20261028seam1"></script>
@@ -51,8 +53,38 @@
       <div class="cs-titleline"><div class="cs-emblem" aria-hidden="true">☁</div><div><h1>CLOUD <em>SYNC</em></h1><p>Le tue impostazioni, su tutti i tuoi dispositivi.</p></div></div>
       <div class="cs-state" id="cloudSyncState" role="status" aria-live="polite">Verifica del servizio…</div>
     </div>
+    <section class="cs-card cs-portable" id="csPortableSection" aria-labelledby="csPortableTitle">
+      <span class="cs-eyebrow">01 / BACKUP PORTATILE</span>
+      <h2 id="csPortableTitle">Trasferisci INJ Node su un altro dispositivo</h2>
+      <p>Genera un backup sul dispositivo originale, copialo e incollalo qui da un secondo dispositivo per recuperare indirizzi wallet, nomi e configurazioni personali. Funziona anche senza account Cloud Sync.</p>
+      <div class="cs-portable-grid">
+        <div class="cs-portable-pane">
+          <h3>Da questo dispositivo</h3>
+          <p>1. Genera il codice e copialo per trasferirlo in modo privato.</p>
+          <div class="cs-actions">
+            <button type="button" id="csPortableExport" class="cs-primary">GENERA BACKUP</button>
+            <button type="button" id="csPortableCopy" class="cs-secondary" disabled>COPIA BACKUP</button>
+          </div>
+          <label for="csPortableOutput">Codice da copiare</label>
+          <textarea id="csPortableOutput" rows="4" readonly spellcheck="false" aria-label="Backup di INJ Node da copiare" placeholder="Il backup apparirà qui dopo aver premuto Genera backup."></textarea>
+        </div>
+        <div class="cs-portable-pane">
+          <h3>Sul secondo dispositivo</h3>
+          <p>2. Incolla il codice, verificalo e conferma il ripristino.</p>
+          <label for="csPortableInput">Incolla qui il backup</label>
+          <textarea id="csPortableInput" rows="4" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Incolla il backup ricevuto dall'altro dispositivo" placeholder="Incolla il codice backup copiato dal primo dispositivo..."></textarea>
+          <div class="cs-actions">
+            <button type="button" id="csPortableVerify" class="cs-secondary">VERIFICA BACKUP</button>
+            <button type="button" id="csPortableRestore" class="cs-primary" disabled>RIPRISTINA DATI</button>
+          </div>
+          <p id="csPortablePreview" class="cs-portable-preview" aria-live="polite"></p>
+        </div>
+      </div>
+      <p id="csPortableStatus" class="cs-portable-status" role="status" aria-live="polite">Pronto per trasferire le configurazioni tra dispositivi.</p>
+      <p class="cs-portable-warning"><strong>Privacy:</strong> il codice contiene indirizzi pubblici, etichette e preferenze finanziarie in formato leggibile; condividilo solo con dispositivi di fiducia. Non include seed phrase, chiavi private, passkey o password. Il ripristino sostituisce le impostazioni locali selezionate, previa conferma. Le cronologie custodite esclusivamente nel database locale del browser non vengono trasferite.</p>
+    </section>
     <section class="cs-card" id="cloudSyncEntry">
-      <span class="cs-eyebrow">01 / IDENTITÀ PERSONALE</span>
+      <span class="cs-eyebrow">02 / IDENTITÀ PERSONALE</span>
       <h2>Il tuo account privato</h2>
       <p>Collega una passkey protetta dal dispositivo. Puoi usare Face ID, Touch ID o una chiave di sicurezza supportata. Nessuna password da ricordare.</p>
       <div class="cs-actions">
@@ -62,7 +94,7 @@
       <p class="cs-small">Non viene inviato nulla al cloud finché non scegli di salvare. Utilizza preferibilmente il dominio definitivo di INJ Node: le passkey sono associate al dominio.</p>
     </section>
     <section class="cs-card" id="cloudSyncAccount" hidden>
-      <div class="cs-heading"><div><span class="cs-eyebrow">02 / IL TUO ARCHIVIO</span><h2>Account collegato</h2></div><span class="cs-online">● CONNESSO</span></div>
+      <div class="cs-heading"><div><span class="cs-eyebrow">03 / IL TUO ARCHIVIO</span><h2>Account collegato</h2></div><span class="cs-online">● CONNESSO</span></div>
       <div class="cs-metrics">
         <div><span>STATO CLOUD</span><strong id="csBackupStatus">Non ancora salvato</strong></div>
         <div><span>ULTIMO BACKUP</span><strong id="csUpdatedAt">—</strong></div>
