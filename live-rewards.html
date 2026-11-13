@@ -9,9 +9,9 @@
   <script>
     try {
       const savedTheme = (localStorage.getItem('inj_monitor_theme') === 'dynamic' ? 'ocean' : localStorage.getItem('inj_monitor_theme'));
-      const theme = ['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar'].includes(savedTheme) ? savedTheme : 'navy';
+      const theme = ['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar','carbon-gold','emerald-circuit','burgundy-noir','champagne-edition','abyss-blue','liquid-titanium'].includes(savedTheme) ? savedTheme : 'navy';
       document.documentElement.dataset.theme = theme;
-      const themeColors = { navy:'#07121b', black:'#090b0e', light:'#f8fbff', amber:'#0a111a', ocean:'#07131f', chromatic:'#111323', velvet:'#0a1024', aqua:'#d7e9ef', 'ocean-x-electric':'#06132d', 'ocean-x-ion':'#130c2c', 'ocean-x-toxic':'#061c1d', 'ocean-x-solar':'#1b122c' };
+      const themeColors = { navy:'#07121b', black:'#090b0e', light:'#f8fbff', amber:'#0a111a', ocean:'#07131f', chromatic:'#111323', velvet:'#0a1024', aqua:'#d7e9ef', 'ocean-x-electric':'#06132d', 'ocean-x-ion':'#130c2c', 'ocean-x-toxic':'#061c1d', 'ocean-x-solar':'#1b122c','carbon-gold':'#0a0c0e','emerald-circuit':'#061511','burgundy-noir':'#190e17','champagne-edition':'#ede7db','abyss-blue':'#071624','liquid-titanium':'#11161c' };
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', (themeColors[theme] || '#080d12'));
     } catch (_) {}
   </script>
@@ -23,7 +23,7 @@
 <script defer src="./live-rewards.js?v=20261109-shared2"></script>
   <link rel="stylesheet" href="./top-clarity.css?v=16.00.88">
 <link rel="stylesheet" href="navigation.css?v=160074">
-<script defer src="navigation.js?v=families30-classic-v2"></script>
+<script defer src="navigation.js?v=20261113-signature11"></script>
 <script defer src="./i18n.js?v=20261028allsections1"></script>
 
 <link rel="stylesheet" href="./ios-screen-fixes.css?v=160095">
@@ -84,10 +84,11 @@
 <link rel="stylesheet" href="./inj-six-themes-20261103.css?v=theme-persist-flow-20261103c">
 <link rel="stylesheet" href="./inj-signature-atmospheres-20261103.css?v=signature-preview-fidelity1">
 <link rel="stylesheet" href="./inj-theme-collections-20261103.css?v=families30-distinct2">
-<script src="./inj-six-themes-20261103.js?v=families30-classic-v2"></script>
+<script src="./inj-six-themes-20261103.js?v=20261113-signature11"></script>
 <link rel="stylesheet" href="./live-rewards-neutral-numbers-20261105.css?v=reward-neutral1">
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
+<link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=20261113-signature11">
 </head>
 <body>
   <div class="rewards-shell">
