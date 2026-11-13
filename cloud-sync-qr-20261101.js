@@ -66,8 +66,8 @@ function init(){
  if(new URLSearchParams(location.search).get('source')==='qr'){
   const message=document.getElementById('csMessage');
   if(message){message.hidden=false;message.textContent=t(
-   'Sei sul secondo dispositivo: accedi con la passkey dell’account esistente, poi usa RIPRISTINA.',
-   'You are on the second device: sign in with a passkey from the existing account, then choose RESTORE.');}
+   'Sei sul secondo dispositivo: incolla e ripristina un backup oppure accedi al cloud con passkey.',
+   'You are on the second device: paste and restore a backup, or sign in to Cloud Sync with your passkey.');}
  }
  window.addEventListener('injnode:languagechange',refresh);
 }
