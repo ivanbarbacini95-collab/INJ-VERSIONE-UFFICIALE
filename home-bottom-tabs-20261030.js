@@ -267,10 +267,18 @@ html[data-inj-page="index"] body #entryGate
      !document.body.classList.contains('drawer-open') &&
      (!document.body.classList.contains('entry-live-launch')||marketPerformance) &&
      !shell?.classList.contains('first-access');
-   if(visible&&!nav.matches(':popover-open')){
-    try{nav.showPopover()}catch(_){/* Retry after the Home becomes renderable. */}
-   }else if(!visible&&nav.matches(':popover-open')){
-    try{nav.hidePopover()}catch(_){}
+   if(visible){
+    if(nav.getAttribute('popover')!=='manual')nav.setAttribute('popover','manual');
+    if(!nav.matches(':popover-open')){
+     try{nav.showPopover()}catch(_){/* Retry after the Home becomes renderable. */}
+    }
+   }else{
+    if(nav.matches(':popover-open')){
+     try{nav.hidePopover()}catch(_){}
+    }
+    // Closed popovers can stay UA-hidden on Safari despite display:grid.
+    // Restore ordinary fixed positioning on every other tab.
+    nav.removeAttribute('popover');
    }
   };
   const visibilityObserver=new MutationObserver(syncTopLayer);
