@@ -48,9 +48,16 @@ if(!incoming){
 }
 for(const [date,row] of incoming){
  const prev=previous.get(date);
+ // Yahoo may return incomplete/corrupt daily volume bars even for old sessions.
+ // Quarantine drastic downward revisions instead of corrupting stored history.
+ if(date<today&&(!prev&&row.volume===0||
+   prev&&prev.volume>0&&(row.volume===0||row.volume<prev.volume*0.85))){
+   console.warn('Reject suspicious INJC history revision:',date,
+     'cached',prev?.volume??'none','provider',row.volume);
+   continue;
+ }
  // The ongoing session is cumulative; protect it against delayed snapshots.
- // For completed sessions, accept provider revisions (including lower corrections).
- // This prevents outdated intraday highs from becoming permanent historical totals.
+ // Once a session is completed, accept plausible provider corrections.
  previous.set(date,{
    volume:date===today&&prev?Math.max(prev.volume,row.volume):row.volume,
    close:row.close>0?row.close:(prev?.close??null)
