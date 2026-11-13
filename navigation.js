@@ -100,8 +100,8 @@ function syncSectionTheme(){
  try{theme=localStorage.getItem('inj_monitor_theme')||theme;}catch(_){}
  // Six current official themes. Legacy values are mapped once, never
  // written back as an obsolete "navy" fallback by embedded pages.
- const official=["obsidian","arctic","orbit","emerald","ember","titanium","pure-black","graphite","frost-white","warm-ivory","midnight-blue","slate-grey","liquid-silver","chrome-blue","pearl-glass","rose-copper","sapphire-glass","golden-satin","neon-grid","cyber-cyan","quantum-purple","matrix-green","solar-circuit","red-horizon","classic-black","classic-white","classic-navy","classic-ivory","classic-stone","classic-champagne","carbon-gold","emerald-circuit","burgundy-noir","champagne-edition","abyss-blue","liquid-titanium"];
- const legacy={navy:'obsidian',black:'obsidian',light:'arctic',amber:'ember',velvet:'orbit','ocean-x-solar':'ember',
+ const official=["obsidian","arctic","orbit","emerald","ember","titanium","pure-black","graphite","frost-white","warm-ivory","midnight-blue","slate-grey","liquid-silver","chrome-blue","pearl-glass","rose-copper","sapphire-glass","golden-satin","neon-grid","cyber-cyan","quantum-purple","matrix-green","solar-circuit","red-horizon","classic-black","classic-white","classic-navy","classic-ivory","classic-stone","classic-champagne","carbon-gold"];
+ const legacy={'emerald-circuit':'carbon-gold','burgundy-noir':'carbon-gold','champagne-edition':'carbon-gold','abyss-blue':'carbon-gold','liquid-titanium':'carbon-gold',navy:'obsidian',black:'obsidian',light:'arctic',amber:'ember',velvet:'orbit','ocean-x-solar':'ember',
    ocean:'emerald',chromatic:'orbit',aqua:'arctic','ocean-x-electric':'orbit','ocean-x-ion':'orbit',
    'ocean-x-toxic':'emerald',dynamic:'obsidian'};
  theme=official.includes(theme)?theme:(legacy[theme]||'obsidian');
@@ -112,7 +112,7 @@ function syncSectionTheme(){
    for(const key of themeKeys){const value=css.getPropertyValue(key).trim();if(value)root.style.setProperty(key,value);else root.style.removeProperty(key);}
   }
  }catch(_){}
- root.style.colorScheme=['arctic','frost-white','warm-ivory','pearl-glass','classic-white','classic-ivory','classic-champagne','champagne-edition'].includes(theme)?'light':'dark';
+ root.style.colorScheme=['arctic','frost-white','warm-ivory','pearl-glass','classic-white','classic-ivory','classic-champagne'].includes(theme)?'light':'dark';
  const color=getComputedStyle(root).getPropertyValue('--bg').trim();
  if(color)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',color);
 }
