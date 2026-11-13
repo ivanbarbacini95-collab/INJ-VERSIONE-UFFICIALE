@@ -70,7 +70,9 @@
   const inline=parseFloat(chart.style.getPropertyValue(varName));
   const actual=chart.getBoundingClientRect().height;
   const current=Number.isFinite(inline)&&inline>100?inline:actual;
-  const next=Math.max(minChartHeight,Math.floor(current-overlap-2));
+  // Never enlarge a chart already compressed by the one-screen fitter.
+  const floor=Math.min(minChartHeight,current);
+  const next=Math.max(floor,Math.floor(current-overlap-2));
   if(next<current-0.5){
    chart.style.setProperty(varName,next+'px');
    // Verify *real* resulting card position; the CSS may limit chart height.
