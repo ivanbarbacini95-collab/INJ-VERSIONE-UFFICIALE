@@ -51,6 +51,11 @@
   const actions=gate?.querySelector('.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44');
   if(!actions||!chart||!nav)return;
   root.dataset.injHomeStatic='true';
+  // If the dock-collision guard enabled scrolling, never freeze Home again.
+  if(root.dataset.injHomeDockClearance==='scroll'){
+   delete root.dataset.injHomeFit;
+   return;
+  }
   root.dataset.injHomeFit='true';
   if(gate.scrollTop!==0)gate.scrollTop=0;
   if(window.scrollY>0)window.scrollTo(0,0);
@@ -133,10 +138,10 @@
   // Previous Home versions could restore a saved vertical offset even when
   // CSS disallows touch scrolling. Explicitly keep its origin at zero.
   gate.addEventListener('scroll',()=>{
-   if(root.dataset.injHomeStatic==='true'&&gate.scrollTop!==0)gate.scrollTop=0;
+   if(root.dataset.injHomeStatic==='true'&&root.dataset.injHomeDockClearance!=='scroll'&&gate.scrollTop!==0)gate.scrollTop=0;
   },{passive:true});
   window.addEventListener('scroll',()=>{
-   if(root.dataset.injHomeStatic==='true'&&window.scrollY!==0)window.scrollTo(0,0);
+   if(root.dataset.injHomeStatic==='true'&&root.dataset.injHomeDockClearance!=='scroll'&&window.scrollY!==0)window.scrollTo(0,0);
   },{passive:true});
   for(const event of ['pageshow','resize','orientationchange','focus'])
    window.addEventListener(event,schedule,{passive:true});
