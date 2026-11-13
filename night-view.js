@@ -18,11 +18,6 @@
   'classic-black':{bg:'#030304',text:'#ededf2',muted:'#94949d',accent:'#d3d3db',line:'#303034',surface:'#111113',up:'#6ed2a4',down:'#d88992'},
   'classic-white':{bg:'#ffffff',text:'#16191c',muted:'#656b74',accent:'#394a59',line:'#e0e2e5',surface:'#f7f8fa',up:'#198f6d',down:'#c05c69'},
   'carbon-gold':{bg:'#0a0c0e',text:'#f5f0e7',muted:'#ada99e',accent:'#e5bf7f',line:'rgba(226,192,137,.19)',surface:'#15191d',up:'#4bd2a0',down:'#e77b89'},
-  'emerald-circuit':{bg:'#061511',text:'#e8fff5',muted:'#95b7a9',accent:'#64e8b7',line:'rgba(100,232,183,.18)',surface:'#0e211c',up:'#4bdda0',down:'#ed8191'},
-  'burgundy-noir':{bg:'#190e17',text:'#fff1f5',muted:'#bda0ac',accent:'#e7a0b9',line:'rgba(231,160,185,.18)',surface:'#291823',up:'#54d4a8',down:'#f1808c'},
-  'champagne-edition':{bg:'#ede7db',text:'#372d28',muted:'#826f63',accent:'#926843',line:'rgba(123,96,70,.20)',surface:'#f8f5ef',up:'#147c61',down:'#c04857'},
-  'abyss-blue':{bg:'#071624',text:'#e9f7ff',muted:'#8caebe',accent:'#65cbed',line:'rgba(101,203,237,.18)',surface:'#0d2334',up:'#47d1ab',down:'#e8798b'},
-  'liquid-titanium':{bg:'#11161c',text:'#ecf3f7',muted:'#a2b5c1',accent:'#b8d5e2',line:'rgba(184,213,226,.19)',surface:'#1b232b',up:'#50cda4',down:'#e6818b'}
  };
  function themeValues(){
   let selected='obsidian',fromParent=null;
@@ -32,13 +27,13 @@
     fromParent=getComputedStyle(parent.document.documentElement);
    }else selected=localStorage.getItem('inj_monitor_theme')||selected;
   }catch(_){try{selected=localStorage.getItem('inj_monitor_theme')||selected}catch(__){}}
-  const legacy={navy:'obsidian',black:'classic-black',light:'classic-white',velvet:'orbit',aqua:'arctic'};
+  const legacy={'emerald-circuit':'carbon-gold','burgundy-noir':'carbon-gold','champagne-edition':'carbon-gold','abyss-blue':'carbon-gold','liquid-titanium':'carbon-gold',navy:'obsidian',black:'classic-black',light:'classic-white',velvet:'orbit',aqua:'arctic'};
   selected=palettes[selected]?selected:(legacy[selected]||'obsidian');
   const fallback=palettes[selected],read=(name,fallbackValue)=>{
    const value=fromParent?.getPropertyValue(name)?.trim();
    return value&&value!=='initial'?value:fallbackValue;
   };
-  return {selected,light:selected==='arctic'||selected==='classic-white'||selected==='champagne-edition',
+  return {selected,light:selected==='arctic'||selected==='classic-white',
     bg:read('--theme-canvas',read('--bg',fallback.bg)),
     text:read('--text',fallback.text),muted:read('--muted',fallback.muted),
     accent:read('--accent',fallback.accent),line:read('--line',fallback.line),
