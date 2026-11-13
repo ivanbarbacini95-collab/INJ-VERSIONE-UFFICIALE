@@ -841,7 +841,8 @@
   for(const id of ['capManualName','capManualCap','capManualScale']){
    $(id).addEventListener('input',render);$(id).addEventListener('change',render);
   }
-  window.addEventListener('pageshow',()=>{render();void refreshQuotes(true);});
+  // Reopening the PWA should reuse fresh quotes rather than force duplicate API calls.
+  window.addEventListener('pageshow',()=>{render();void refreshQuotes();});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();void refreshQuotes();}});
   window.addEventListener('storage',event=>{
    if(event.key==='inj_node_language_v1')localize();
