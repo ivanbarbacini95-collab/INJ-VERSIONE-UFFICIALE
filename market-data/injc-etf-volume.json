@@ -5,9 +5,9 @@
   "firstTradingSession": "2026-11-05",
   "timeZone": "America/New_York",
   "unit": "ETF shares",
-  "note": "Reported INJC ETF-share daily trading volume from a delayed Yahoo Finance feed. Suspicious provider revisions are quarantined; values are not certified Nasdaq consolidated totals.",
+  "note": "Reported daily INJC ETF shares traded and same-session reported close used only for indicative valuation. Not fund flows. Latest session may be partial.",
   "source": "Yahoo Finance · daily quote bars · potentially delayed",
-  "generatedAt": "2026-11-13T08:57:58.319Z",
+  "generatedAt": "2026-11-13T19:05:54.241Z",
   "sessions": [
     {
       "date": "2026-11-05",
@@ -38,6 +38,11 @@
       "date": "2026-11-12",
       "volume": 2633,
       "close": 23.62030029296875
+    },
+    {
+      "date": "2026-11-13",
+      "volume": 0,
+      "close": 25.780000686645508
     }
   ]
 }
