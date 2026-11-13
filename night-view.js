@@ -209,17 +209,25 @@
    fitQueued=false;
    const node=$('nightPrice'),frame=node?.parentElement;
    if(!node||!frame)return;
-   node.style.fontSize='';
-   const css=getComputedStyle(node),maxFont=parseFloat(css.fontSize);
-   const available=frame.clientWidth-12;
-   if(!(maxFont>0&&available>0))return;
-   // Measure the rendered numeral spans, including the added letter spacing.
-   // Always leave room for the direction arrow to avoid a size jump on live ticks.
+   // Portrait Totem uses CSS !important on the live price. Clear any
+   // prior inline fit, then calculate from the theme's current base size.
+   node.style.removeProperty('font-size');
+   const css=getComputedStyle(node),baseFont=parseFloat(css.fontSize);
+   const available=Math.max(0,frame.clientWidth-24);
+   if(!(baseFont>0&&available>0))return;
+   // A DOM Range measures the real text glyphs, unlike scrollWidth on the
+   // block-level output (which reports the full container width).
    const range=document.createRange();
    range.selectNodeContents(node);
-   const measured=range.getBoundingClientRect().width;
-   const span=measured+maxFont*.22;
-   if(span>available)node.style.fontSize=Math.max(22,maxFont*available/span)+'px';
+   const textWidth=range.getBoundingClientRect().width;
+   // Reserve space for the up/down arrow even when it is currently hidden.
+   const widthNeeded=textWidth+baseFont*.29+10;
+   if(widthNeeded>available){
+    const fitted=Math.max(22,Math.floor(baseFont*available/widthNeeded*.975));
+    // IMPORTANT: normal inline fontSize loses to the !important portrait CSS,
+    // leaving 'USD' hidden by the shell's overflow-x clipping.
+    node.style.setProperty('font-size',fitted+'px','important');
+   }
   });
  }
  function paint(){
