@@ -31,3 +31,36 @@
   margin-bottom:12px!important;
  }
 }
+
+
+/* 2026-11-13: the fixed Home layer must yield to measured dock collision.
+   The popup nav is always above ordinary page content; scroll the Home panel
+   and reserve its entire footprint rather than making the last row untappable. */
+@media screen and (max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-static="true"][data-inj-home-dock-clearance="scroll"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open:not(.menu-overlay-open):not(.inj-section-open)
+ #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible{
+  position:fixed!important;
+  inset:0!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  overscroll-behavior-y:contain!important;
+  scroll-padding-bottom:calc(var(--inj-home-dock-space,125px) + env(safe-area-inset-bottom,0px) + 16px)!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-static="true"][data-inj-home-dock-clearance="scroll"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open:not(.menu-overlay-open):not(.inj-section-open)
+ #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible
+ > .entry-gate-shell:not(.first-access){
+  box-sizing:border-box!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  align-content:start!important;
+  padding-bottom:calc(var(--inj-home-dock-space,125px) + env(safe-area-inset-bottom,0px) + 16px)!important;
+ }
+}
