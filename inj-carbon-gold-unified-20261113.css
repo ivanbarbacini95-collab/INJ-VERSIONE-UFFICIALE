@@ -1,0 +1,458 @@
+/* INJ Node · 2026-11-13 · Carbon Gold continuity + borderless Home.
+   Single late-loaded layer. No DOM replacement, no changes to wallet/chart logic.
+   Every layout change is limited to the actual page/mode it belongs to. */
+
+/* Global palette aliases for independent Tools, ETF, Market, Treasury and
+   Workspace documents. Preserve live up/down semantics on all pages. */
+html[data-theme="carbon-gold"]{
+ --market-gradient:linear-gradient(146deg,#22221f 0%,#15191d 52%,#111417 100%);
+ --market-surface:var(--surface);
+ --accent-strong:#f0cc91;
+ --gold:#e5bf7f;
+ --border:var(--line);
+ --fg:var(--text);
+ --ink:var(--text);
+ --green:var(--up);
+ --red:var(--down);
+ --shadow:0 12px 30px rgba(0,0,0,.20);
+}
+html[data-theme="carbon-gold"] :is(.treasury-panel,.rewards-panel,.cc-card,.injc-panel,.etf-panel,.market-panel,.ws-card,.data-card,.metric-card,.panel){
+ border-color:var(--line)!important;
+}
+html[data-theme="carbon-gold"] :is(.treasury-shell,.rewards-shell,.etf-shell,.cc-shell,.mc-app,.freedom-page,.ws-grid,.shell){
+ box-sizing:border-box;
+ min-width:0;
+ max-width:100%;
+}
+html[data-theme="carbon-gold"] :is(.wallet-mini-address,.wallet-address,.account-address,.validator-address,.address-text){
+ min-width:0;
+ max-width:100%;
+ overflow-wrap:anywhere;
+}
+html[data-theme="carbon-gold"] :is(button,a,input,select,textarea):focus-visible{
+ outline-color:var(--accent)!important;
+}
+@media(max-width:599px){
+ html[data-theme="carbon-gold"] :is(.treasury-grid,.rewards-layout,.mc-grid,.cc-grid,.metric-grid,.etf-grid,.ws-grid){
+  min-width:0;
+  max-width:100%;
+ }
+ html[data-theme="carbon-gold"] :is(.treasury-panel,.rewards-panel,.cc-card,.injc-panel,.etf-panel,.panel){
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+ }
+}
+
+/* Home · frameless shortcuts. Keep the existing buttons, SVG micro-animation,
+   actions, focus outlines and chart-to-dock collision controller. */
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+ --inj-pro-link-height:clamp(76px,9dvh,94px);
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ grid-template-rows:minmax(0,1fr)!important;
+ grid-auto-rows:minmax(0,1fr)!important;
+ height:var(--inj-pro-link-height)!important;
+ min-height:var(--inj-pro-link-height)!important;
+ max-height:var(--inj-pro-link-height)!important;
+ gap:0!important;
+ box-sizing:border-box!important;
+ padding:7px 0 0!important;
+ border:0!important;
+ border-top:1px solid color-mix(in srgb,var(--accent) 21%,transparent)!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ margin-top:var(--inj-home-links-gap,clamp(9px,1.4dvh,16px))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+ display:flex!important;
+ position:relative!important;
+ align-items:center!important;
+ justify-content:center!important;
+ flex-direction:column!important;
+ gap:5px!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ height:100%!important;
+ min-height:0!important;
+ max-height:100%!important;
+ margin:0!important;
+ padding:4px 3px!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ background-image:none!important;
+ box-shadow:none!important;
+ filter:none!important;
+ transform:none!important;
+ overflow:visible!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryLiveButton,#entryTreasuryButton).entry-action::before{
+ content:""!important;
+ display:block!important;
+ position:absolute!important;
+ left:0!important;
+ top:18%!important;
+ bottom:18%!important;
+ width:1px!important;
+ background:color-mix(in srgb,var(--accent) 19%,transparent)!important;
+ opacity:1!important;
+ pointer-events:none!important;
+ border:0!important;
+ transform:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+ > .entry-action-icon.inj-pro-launcher-symbol{
+ width:clamp(26px,3.2dvh,34px)!important;
+ height:clamp(26px,3.2dvh,34px)!important;
+ min-height:0!important;
+ opacity:.86!important;
+ border:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action .inj-home-tile-title{
+ font-size:clamp(10.5px,1.45vw,13px)!important;
+ font-weight:610!important;
+ color:var(--text)!important;
+ letter-spacing:.005em!important;
+}
+@media(hover:hover) and (pointer:fine){
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action:hover{
+  background:color-mix(in srgb,var(--accent) 3%,transparent)!important;
+ }
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action:focus-visible{
+ outline:2px solid var(--accent)!important;
+ outline-offset:-2px!important;
+ border-radius:8px!important;
+}
+/* Home only: remove the dock's outer capsule, inset hairline and comet frame.
+   Keep all five actual tab targets and the gold active indicator. */
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav{
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ background-image:none!important;
+ box-shadow:none!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-nav-comet-orbit{
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active{
+ background:transparent!important;
+ background-image:none!important;
+ border:0!important;
+ box-shadow:none!important;
+ color:var(--text)!important;
+}
+@media(max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  --inj-pro-link-height:clamp(58px,7.7dvh,72px);
+  padding-top:5px!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+  gap:3px!important;
+  padding:3px 1px!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+ > .entry-action-icon.inj-pro-launcher-symbol{
+  width:clamp(23px,3.3dvh,29px)!important;
+  height:clamp(23px,3.3dvh,29px)!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action .inj-home-tile-title{
+  font-size:clamp(10px,2.8vw,12px)!important;
+ }
+}
+
+/* Dashboard · Carbon Gold should never inherit a blue market card.
+   Respect the native document scroll owner and tablet layout rules. */
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell main#top{
+ min-width:0!important;
+ max-width:100%!important;
+ box-sizing:border-box!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell main#top > :is(.wallet-dock,.aggregate-strip,.overview-grid,.metrics-grid,.analytics-grid){
+ min-width:0!important;
+ max-width:100%!important;
+ box-sizing:border-box!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top :is(.data-card,.aggregate-strip){
+ box-sizing:border-box!important;
+ min-width:0!important;
+ border-color:var(--line)!important;
+ border-radius:18px!important;
+ box-shadow:0 10px 26px rgba(0,0,0,.12)!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top :is(#marketCard,#worthCard){
+ background:radial-gradient(ellipse 75% 68% at 96% 0%,rgba(229,191,127,.055),transparent 80%),
+ linear-gradient(146deg,#20211f,#121518 67%,#101316)!important;
+ background-color:#15191d!important;
+ border:1px solid var(--line)!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top .metrics-grid > .data-card{
+ background:linear-gradient(145deg,rgba(31,33,33,.97),rgba(18,21,23,.98))!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #walletCards.wallet-mini-strip{
+ min-width:0!important;
+ max-width:100%!important;
+ display:flex!important;
+ flex-wrap:nowrap!important;
+ overflow-x:auto!important;
+ overscroll-behavior-x:contain;
+ scroll-snap-type:x proximity;
+ -webkit-overflow-scrolling:touch;
+ gap:10px!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #walletCards > .wallet-mini{
+ box-sizing:border-box!important;
+ flex:0 0 clamp(246px,78vw,316px)!important;
+ min-width:0!important;
+ max-width:calc(100vw - 32px)!important;
+ scroll-snap-align:start;
+ background:linear-gradient(145deg,#232321,#141719)!important;
+ border:1px solid var(--line)!important;
+ border-radius:16px!important;
+ box-shadow:none!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #walletCards > .wallet-mini.active{
+ border-color:color-mix(in srgb,var(--accent) 55%,transparent)!important;
+ box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 16%,transparent)!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #walletCards :is(.wallet-mini-main,.wallet-mini-heading,.wallet-mini-name,.wallet-mini-address){
+ min-width:0!important;
+ max-width:100%;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #walletCards .wallet-mini-address{
+ white-space:nowrap!important;
+ overflow:hidden!important;
+ text-overflow:ellipsis!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #walletCards :is(.wallet-mini-total,.wallet-mini-worth){
+ font-variant-numeric:tabular-nums;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #marketCard .market-value-row{
+ min-width:0!important;
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) auto!important;
+ align-items:center!important;
+ gap:clamp(6px,2vw,18px)!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #marketCard #marketPrice{
+ font-size:clamp(36px,9.6vw,66px)!important;
+ line-height:1.05!important;
+ letter-spacing:-.04em!important;
+ min-width:0!important;
+ max-width:100%!important;
+ font-variant-numeric:tabular-nums!important;
+ white-space:nowrap!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #marketCard .market-performance{
+ min-width:0!important;
+ max-width:100%!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-end!important;
+ gap:4px!important;
+ text-align:right!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #marketCard :is(.market-change,#marketChangeAmount){
+ font-size:clamp(11px,2.8vw,14px)!important;
+ font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #marketCard .market-range{
+ min-width:0!important;
+ max-width:100%!important;
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:10px!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #marketCard .market-range > span{
+ min-width:0!important;
+ display:flex!important;
+ justify-content:space-between!important;
+ flex-wrap:wrap!important;
+ gap:4px 8px!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #worthCard #netWorthUsd{
+ font-size:clamp(36px,9.6vw,68px)!important;
+ line-height:1.06!important;
+ letter-spacing:-.045em!important;
+ max-width:100%!important;
+ font-variant-numeric:tabular-nums!important;
+ white-space:nowrap!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #worthCard .worth-performance-stack{
+ display:flex!important;
+ flex-wrap:wrap!important;
+ align-items:flex-start!important;
+ gap:7px!important;
+ max-width:100%!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #worthCard .worth-performance-stack > .worth-change{
+ display:inline-flex!important;
+ max-width:100%!important;
+ min-width:0!important;
+ white-space:normal!important;
+ overflow-wrap:break-word!important;
+ font-size:clamp(11px,2.9vw,13px)!important;
+ line-height:1.4!important;
+ font-variant-numeric:tabular-nums!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #worthCard .allocation-labels{
+ display:flex!important;
+ flex-wrap:wrap!important;
+ justify-content:space-between!important;
+ gap:8px!important;
+}
+@media(max-width:759px){
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .overview-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:12px!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top :is(#marketCard,#worthCard){
+  padding:clamp(14px,3.6vw,20px)!important;
+ }
+}
+@media(min-width:390px) and (max-width:599px){
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  gap:10px!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid > .data-card{
+  min-width:0!important;
+  max-width:100%!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:110px!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  padding:14px 12px!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid > #ownedTotalCard{
+  grid-column:1/-1!important;
+  grid-row:1!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid > #availableCard{
+  grid-column:1!important;grid-row:2!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid > #stakedCard{
+  grid-column:2!important;grid-row:2!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid > #rewardsCard{
+  grid-column:1!important;grid-row:3!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid > #aprCard{
+  grid-column:2!important;grid-row:3!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid .metric-value{
+  font-size:clamp(19px,5.1vw,29px)!important;
+  overflow-wrap:anywhere!important;
+ }
+}
+@media(max-width:389px){
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:10px!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .metrics-grid > .data-card{
+  grid-column:1!important;
+  grid-row:auto!important;
+  min-width:0!important;
+  width:100%!important;
+ }
+}
+@media(min-width:760px) and (max-width:1180px){
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .overview-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:clamp(12px,1.5vw,18px)!important;
+ }
+ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-ready:not(.entry-gate-open)
+ > .app-shell #top > .overview-grid > .data-card{
+  grid-column:auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="index"][data-inj-home-tab="home"] .inj-pro-launcher-symbol *,
+ html[data-theme="carbon-gold"] :is(.wallet-mini,.data-card){
+  animation:none!important;
+  transition:none!important;
+ }
+}
