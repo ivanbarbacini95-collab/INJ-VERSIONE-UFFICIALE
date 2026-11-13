@@ -58,26 +58,25 @@
   if(key!==dimension){
    dimension=key;
    setLevel(0);
-   // Base height scales with the actual portrait viewport, then the existing
-   // overlap detector reduces it if needed. Neither the ticker nor wallet rail
-   // is stretched to create an artificial scroll surface.
    const initialHeight=Math.max(214,Math.min(276,Math.round(innerHeight*.315)));
    chart.style.setProperty('--inj-home-fit-chart-height',initialHeight+'px');
   }
-  // A native popover may be mounted later; never use a hidden/stale dock rect.
   const dock=nav.getBoundingClientRect();
-  const safeGap=16;
+  const safeGap=18;
   const dockTop=(dock.width>200&&dock.height>42&&dock.top>100 &&
    (!nav.hasAttribute('popover')||nav.matches(':popover-open')))
    ?dock.top:Math.max(0,innerHeight-95);
   if(dockTop<140)return;
+
+  // Measure from the smallest gap. This prevents a previously centered
+  // row from making the chart-fit routine think the Home is overflowing.
+  if(actions.style.getPropertyValue('--inj-home-links-gap')!=='8px')
+   actions.style.setProperty('--inj-home-links-gap','8px');
   const overlap=()=>actions.getBoundingClientRect().bottom-(dockTop-safeGap);
-  // The photographed layout is preserved when the row already fits.
   let excess=overlap();
-  if(excess<=0)return;
   function shrink(){
    const actual=chart.getBoundingClientRect().height;
-   if(actual<120)return;
+   if(actual<149)return;
    const desired=Math.max(148,Math.round(actual-excess-4));
    const previous=Number.parseFloat(chart.style.getPropertyValue('--inj-home-fit-chart-height'));
    if(desired<actual-0.5 && (!Number.isFinite(previous)||desired<previous-0.5)){
@@ -85,19 +84,27 @@
    }
    excess=overlap();
   }
-  shrink();
-  if(excess<=0)return;
-  setLevel(1);
-  excess=overlap();
-  if(excess<=0)return;
-  shrink();
-  if(excess<=0)return;
-  setLevel(2);
-  excess=overlap();
-  if(excess<=0)return;
-  shrink();
-  // No scroll fallback: the Home remains a stationary overview.
-  // Short viewports use the compact layout, never place cards under the dock.
+  if(excess>0){shrink();}
+  if(excess>0){setLevel(1);excess=overlap();}
+  if(excess>0){shrink();}
+  if(excess>0){setLevel(2);excess=overlap();}
+  if(excess>0){shrink();}
+
+  // Center Dashboard / Live View / INJ Treasury in the REAL measured
+  // free strip between the price chart and the fixed bottom navigation.
+  // Keep 18px minimum dock clearance and never push a link under the dock.
+  if(excess<=0){
+   const chartBottom=chart.getBoundingClientRect().bottom;
+   const rowHeight=actions.getBoundingClientRect().height;
+   const free=dockTop-safeGap-chartBottom-rowHeight;
+   const centered=Math.max(8,Math.min(150,Math.floor(free/2)));
+   if(centered>8){
+    actions.style.setProperty('--inj-home-links-gap',centered+'px');
+    if(overlap()>0)actions.style.setProperty('--inj-home-links-gap','8px');
+   }
+  }
+  // On exceptionally short viewports, retain the existing compact state
+  // rather than hiding or overlaying a launcher.
  }
  function init(){
   const gate=$('entryGate'),nav=$('injPrimaryBottomNav'),chart=$('entryInsights');
