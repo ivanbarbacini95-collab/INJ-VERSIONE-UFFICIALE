@@ -233,12 +233,15 @@ html[data-inj-page="index"] body.entry-gate-open
   padding-bottom:calc(4px + env(safe-area-inset-bottom,0px))!important;
  }
 }
-html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
- body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-nav-comet-orbit{
+/* Navigation stays identical on Home, Tools, Rewards, ETF and Market:
+   disable the legacy animated perimeter on every primary tab, not only Home. */
+html[data-inj-page="index"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-nav-comet-orbit{
  display:none!important;
+ animation:none!important;
 }
-html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
- body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active{
+html[data-inj-page="index"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active{
  background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
  background-image:none!important;
  border:0!important;
