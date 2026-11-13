@@ -36,36 +36,56 @@ jobs:
         run: |
           set -eu
           file="market-data/injc-fund-holdings.json"
-          if git diff --quiet -- "$file"; then
-            echo "No new issuer holdings."
+          history="market-data/injc-fund-holdings-history.json"
+          if git diff --quiet -- "$file" "$history"; then
+            echo "No new issuer holdings or history."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           snapshot="$(mktemp)"
+          history_snapshot="$(mktemp)"
           remote="$(mktemp)"
-          trap 'rm -f "$snapshot" "$remote"' EXIT
+          remote_history="$(mktemp)"
+          trap 'rm -f "$snapshot" "$history_snapshot" "$remote" "$remote_history"' EXIT
           cp "$file" "$snapshot"
+          cp "$history" "$history_snapshot"
           for attempt in 1 2 3 4 5; do
             git fetch --quiet origin main
             if git show "origin/main:$file" > "$remote" 2>/dev/null; then
               if node -e '
                 const fs=require("node:fs");
-                const a=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
-                const b=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
-                if(b.asOf>a.asOf)process.exit(0);
-                if(b.asOf===a.asOf&&Date.parse(b.verifiedAt||"")>=Date.parse(a.verifiedAt||""))process.exit(0);
+                const incoming=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+                const published=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
+                if((published.asOf||"")>(incoming.asOf||""))process.exit(0);
                 process.exit(1);
               ' "$snapshot" "$remote"; then
-                echo "Newer report already on main."
+                echo "A more recent Canary holdings report is already published."
                 exit 0
               fi
             fi
+            git show "origin/main:$history" > "$remote_history" 2>/dev/null || echo '{}' > "$remote_history"
             git reset --hard origin/main
             cp "$snapshot" "$file"
-            git add "$file"
+            # Merge histories on retry to preserve any observation published by another workflow.
+            node - "$remote_history" "$history_snapshot" "$history" <<'NODE'
+          const fs=require('node:fs');
+          const remote=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          const local=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          const merged=new Map();
+          for(const row of [...(remote.points||[]),...(local.points||[])]){
+            if(/^\d{4}-\d{2}-\d{2}$/.test(row.date||'')&&
+              Number.isFinite(Number(row.injHeld))&&Number(row.injHeld)>0)
+              merged.set(row.date,{date:row.date,injHeld:Number(row.injHeld)});
+          }
+          const points=[...merged.values()].sort((a,b)=>a.date.localeCompare(b.date));
+          const result={schemaVersion:1,ticker:'INJC',source:'https://canaryetfs.com/injc/',
+            updatedAt:points.at(-1)?.date||null,points};
+          fs.writeFileSync(process.argv[4],JSON.stringify(result,null,2)+'\n');
+          NODE
+            git add "$file" "$history"
             if git diff --cached --quiet; then exit 0; fi
-            git commit -m "data(injc): refresh issuer-reported INJ holdings and net assets"
+            git commit -m "data(injc): refresh official INJ holdings and dated quantity chart"
             if git push origin HEAD:main; then exit 0; fi
             sleep "$attempt"
           done
