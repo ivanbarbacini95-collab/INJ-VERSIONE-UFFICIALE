@@ -58,25 +58,44 @@ function decode(html){
 const html=await getHtml();
 const entry=decode(html);
 if(!entry)throw Error('INJC issuer holdings row unavailable; refusing to publish unverified numbers');
-const today=new Date().toISOString().slice(0,10);
-if(entry.date>'2026-11-04'&&entry.date<=new Date(Date.now()+86400000).toISOString().slice(0,10)){
- let old=null;
- try{old=JSON.parse(await fs.readFile(TARGET,'utf8'))}catch{}
- if(old?.asOf&&old.asOf>entry.date)throw Error('Issuer data older than published snapshot');
- const result={
-  schemaVersion:1,ticker:'INJC',asOf:entry.date,
-  injHeld:entry.inj,officialNetAssetsUsd:entry.officialNetAssetsUsd,
-  officialInjMarketValueUsd:entry.marketValueUsd,
-  sharesOutstanding:entry.sharesOutstanding,
-  source:SOURCE,sourceType:'issuer_holdings',
-  verifiedAt:new Date().toISOString()
- };
- if(old?.asOf===result.asOf&&old?.injHeld===result.injHeld&&
-    old?.officialNetAssetsUsd===result.officialNetAssetsUsd&&
-    old?.sharesOutstanding===result.sharesOutstanding){
-  console.log('No change to issuer holdings as of '+entry.date);process.exit(0);
- }
+if(!(entry.date>'2026-11-04'&&entry.date<=new Date(Date.now()+86400000).toISOString().slice(0,10)))
+ throw Error('Unexpected holdings as-of date: '+entry.date);
+let old=null;
+try{old=JSON.parse(await fs.readFile(TARGET,'utf8'))}catch{}
+if(old?.asOf&&old.asOf>entry.date)throw Error('Issuer data older than published snapshot');
+const snapshot={
+ schemaVersion:1,ticker:'INJC',asOf:entry.date,
+ injHeld:entry.inj,officialNetAssetsUsd:entry.officialNetAssetsUsd,
+ officialInjMarketValueUsd:entry.marketValueUsd,
+ sharesOutstanding:entry.sharesOutstanding,
+ source:SOURCE,sourceType:'issuer_holdings',
+ verifiedAt:new Date().toISOString()
+};
+const unchanged=old?.asOf===snapshot.asOf&&old?.injHeld===snapshot.injHeld&&
+ old?.officialNetAssetsUsd===snapshot.officialNetAssetsUsd&&
+ old?.officialInjMarketValueUsd===snapshot.officialInjMarketValueUsd&&
+ old?.sharesOutstanding===snapshot.sharesOutstanding;
+if(!unchanged){
  await fs.mkdir(path.dirname(TARGET),{recursive:true});
- await fs.writeFile(TARGET,JSON.stringify(result,null,2)+'\n');
- console.log('Verified issuer holdings: '+entry.date+', INJ '+entry.inj+', NAV '+entry.officialNetAssetsUsd+' USD');
-}else throw Error('Unexpected holdings as-of date: '+entry.date);
+ await fs.writeFile(TARGET,JSON.stringify(snapshot,null,2)+'\n');
+ console.log('Verified issuer holdings: '+entry.date+', INJ '+entry.inj);
+}else console.log('No change to verified INJC holdings: '+entry.date);
+
+// Persist only genuine issuer dated observations. Never invent intermediate points.
+const historyPath='market-data/injc-fund-holdings-history.json';
+let previous=null;
+try{previous=JSON.parse(await fs.readFile(historyPath,'utf8'))}catch{}
+const points=new Map();
+for(const point of (Array.isArray(previous?.points)?previous.points:[])){
+ if(/^\d{4}-\d{2}-\d{2}$/.test(point.date||'')&&number(point.injHeld)>0&&
+    point.date<='9999-12-31')points.set(point.date,{date:point.date,injHeld:Number(point.injHeld)});
+}
+const historic=points.get(entry.date);
+points.set(entry.date,{date:entry.date,injHeld:entry.inj});
+const ordered=[...points.values()].sort((a,b)=>a.date.localeCompare(b.date));
+if(ordered.length>3660)ordered.splice(0,ordered.length-3660);
+if(!previous||!historic||historic.injHeld!==entry.inj){
+ const output={schemaVersion:1,ticker:'INJC',source:SOURCE,updatedAt:entry.date,points:ordered};
+ await fs.writeFile(historyPath,JSON.stringify(output,null,2)+'\n');
+ console.log('INJC holdings history now has '+ordered.length+' dated observations');
+}else console.log('No new holdings history observation');
