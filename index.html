@@ -445,9 +445,11 @@
 
 <!-- Home Pro portrait is stationary; only actual dock collisions reduce chart height. -->
 <link rel="stylesheet" href="./home-fixed-20261110.css?v=home-static-portrait1">
-<script defer src="./home-fixed-20261110.js?v=home-static-portrait1"></script>
+<script defer src="./home-fixed-20261110.js?v=home-pro2-fit1"></script>
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
+<!-- Home Pro 2.0 is the final, scoped visual layer. Reversible via backup branch. -->
+<link rel="stylesheet" href="./home-pro-2-20261113.css?v=home-pro2-1">
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
@@ -765,7 +767,7 @@
 <div class="entry-price-timebar"><span>APERTURA · 00:00 UTC</span><span>CHIUSURA · 24:00 UTC</span></div>
 </div>
 <div class="entry-price-pnl private">
-<div><span>P/L OGGI</span></div>
+<div><span data-it="VARIAZIONE STIMATA · OGGI" data-en="EST. CHANGE · TODAY">VARIAZIONE STIMATA · OGGI</span></div>
 <strong class="neutral" id="entryInsightPnl">—</strong>
 </div>
 </section>
