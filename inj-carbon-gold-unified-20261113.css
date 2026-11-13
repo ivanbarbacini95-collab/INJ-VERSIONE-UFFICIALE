@@ -533,3 +533,28 @@ html[data-inj-page="index"][data-theme="carbon-gold"] body.dashboard-scroll-read
   transition:none!important;
  }
 }
+
+/* 2026-11-13 · Bottom-dock interaction clearance.
+   ETF runs inside a body-level iframe. It must end ABOVE the persistent
+   navigation band, rather than allowing its final controls to sit underneath.
+   The iframe remains opaque and independently scrollable on iOS/PWA. */
+html[data-inj-page="index"][data-inj-home-tab="etf"] body > #injEtfTabPanel:not([hidden]){
+ inset:0 0 calc(73px + env(safe-area-inset-bottom,0px)) 0!important;
+ inset-block-end:calc(73px + env(safe-area-inset-bottom,0px))!important;
+ bottom:calc(73px + env(safe-area-inset-bottom,0px))!important;
+ height:auto!important;
+ min-height:0!important;
+ max-height:none!important;
+}
+@media (max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="etf"] body > #injEtfTabPanel:not([hidden]){
+  inset-block-end:calc(71px + env(safe-area-inset-bottom,0px))!important;
+  bottom:calc(71px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
+@media (max-height:620px){
+ html[data-inj-page="index"][data-inj-home-tab="etf"] body > #injEtfTabPanel:not([hidden]){
+  inset-block-end:calc(65px + env(safe-area-inset-bottom,0px))!important;
+  bottom:calc(65px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
