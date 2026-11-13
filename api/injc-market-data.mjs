@@ -2,7 +2,7 @@
    Public Nasdaq.com/Yahoo data can be delayed; this route fixes browser CORS
    without manufacturing prices or pretending to offer a licensed live stream. */
 const UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
-const ranges=new Set(['1d','5d','1mo','3mo','1y']);
+const ranges=new Set(['1d','5d','1mo','3mo','1y','max']);
 const intervals=new Set(['1m','5m','30m','1d']);
 async function fetchSource(url,timeout=6500){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
