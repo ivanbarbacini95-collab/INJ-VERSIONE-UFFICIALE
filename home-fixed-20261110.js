@@ -68,43 +68,41 @@
    ?dock.top:Math.max(0,innerHeight-95);
   if(dockTop<140)return;
 
-  // Measure from the smallest gap. This prevents a previously centered
-  // row from making the chart-fit routine think the Home is overflowing.
-  if(actions.style.getPropertyValue('--inj-home-links-gap')!=='8px')
-   actions.style.setProperty('--inj-home-links-gap','8px');
-  const overlap=()=>actions.getBoundingClientRect().bottom-(dockTop-safeGap);
-  let excess=overlap();
-  function shrink(){
+  // Fill the full chart-to-dock strip. Icons and text are centered between
+  // matching upper/lower hairlines rather than anchored near the upper rule.
+  const topGap=Math.max(10,Math.min(22,Math.round(innerHeight*.018)));
+  const minZone=Math.max(58,Math.min(72,Math.round(innerHeight*.077)));
+  const topValue=topGap+'px';
+  if(actions.style.getPropertyValue('--inj-home-links-gap')!==topValue)
+   actions.style.setProperty('--inj-home-links-gap',topValue);
+  const room=()=>dockTop-safeGap-chart.getBoundingClientRect().bottom-topGap;
+  function shrinkChart(){
    const actual=chart.getBoundingClientRect().height;
-   if(actual<149)return;
-   const desired=Math.max(148,Math.round(actual-excess-4));
-   const previous=Number.parseFloat(chart.style.getPropertyValue('--inj-home-fit-chart-height'));
-   if(desired<actual-0.5 && (!Number.isFinite(previous)||desired<previous-0.5)){
-    chart.style.setProperty('--inj-home-fit-chart-height',desired+'px');
-   }
-   excess=overlap();
+   const configured=Number.parseFloat(chart.style.getPropertyValue('--inj-home-fit-chart-height'));
+   const available=Number.isFinite(configured)?Math.min(actual,configured):actual;
+   if(actual<149||available<=149)return false;
+   const shortfall=Math.max(0,minZone-room());
+   const target=Math.max(148,Math.round(available-shortfall-4));
+   if(target>=available-1)return false;
+   chart.style.setProperty('--inj-home-fit-chart-height',target+'px');
+   return true;
   }
-  if(excess>0){shrink();}
-  if(excess>0){setLevel(1);excess=overlap();}
-  if(excess>0){shrink();}
-  if(excess>0){setLevel(2);excess=overlap();}
-  if(excess>0){shrink();}
-
-  // Center Dashboard / Live View / INJ Treasury in the REAL measured
-  // free strip between the price chart and the fixed bottom navigation.
-  // Keep 18px minimum dock clearance and never push a link under the dock.
-  if(excess<=0){
-   const chartBottom=chart.getBoundingClientRect().bottom;
-   const rowHeight=actions.getBoundingClientRect().height;
-   const free=dockTop-safeGap-chartBottom-rowHeight;
-   const centered=Math.max(8,Math.min(150,Math.floor(free/2)));
-   if(centered>8){
-    actions.style.setProperty('--inj-home-links-gap',centered+'px');
-    if(overlap()>0)actions.style.setProperty('--inj-home-links-gap','8px');
-   }
+  for(let pass=0;pass<3&&room()<minZone;pass++){
+   shrinkChart();
+   if(room()>=minZone)break;
+   if(pass<2)setLevel(pass+1);
   }
-  // On exceptionally short viewports, retain the existing compact state
-  // rather than hiding or overlaying a launcher.
+  if(room()<minZone)shrinkChart();
+  const zoneHeight=Math.max(minZone,Math.floor(room()));
+  const heightValue=zoneHeight+'px';
+  if(actions.style.getPropertyValue('--inj-home-shortcut-zone-height')!==heightValue)
+   actions.style.setProperty('--inj-home-shortcut-zone-height',heightValue);
+  const overflow=actions.getBoundingClientRect().bottom-(dockTop-safeGap);
+  if(overflow>1&&zoneHeight>minZone){
+   actions.style.setProperty('--inj-home-shortcut-zone-height',
+    Math.max(minZone,Math.floor(zoneHeight-overflow-2))+'px');
+  }
+  // Avoid resetting expanded height on each ResizeObserver callback.
  }
  function init(){
   const gate=$('entryGate'),nav=$('injPrimaryBottomNav'),chart=$('entryInsights');
