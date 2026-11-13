@@ -2,6 +2,18 @@
 
 L'interfaccia è dentro INJ Node → **Menu → Preferenze → Cloud Sync**. Backend isolato nella repository privata [INJ-NODE-INSIGHTS/cloud-sync](https://github.com/ivanbarbacini95-collab/INJ-NODE-INSIGHTS/tree/main/cloud-sync).
 
+## Backup portatile tra dispositivi (senza account)
+
+Nella pagina Cloud Sync: **Genera backup → Copia backup** sul dispositivo A; poi **Incolla → Verifica backup → Ripristina dati** sul dispositivo B.
+Questa modalità è indipendente da Worker, passkey e connessione Cloudflare.
+
+- Il backup è JSON con versione e checksum SHA-256. Il checksum verifica l'integrità, non autentica il mittente.
+- Trasferisce chiavi localStorage autorizzate: indirizzi wallet pubblici e nomi, valuta, tema, font, lingua, target, preferenze finanziarie, preferiti e preset Workspace.
+- Esclude seed phrase, chiavi private, passkey, password di blocco, sessioni e token. Il codice è in chiaro e può rivelare indirizzi pubblici e preferenze: non condividerlo con sconosciuti.
+- Le cronologie presenti esclusivamente in IndexedDB non vengono trasferite; alcuni dati on-chain vengono recuperati alla riapertura.
+- La verifica precede una conferma esplicita. Il ripristino sostituisce solo le chiavi autorizzate e prova a ripristinare i dati precedenti in caso di errore di scrittura.
+- Dopo l'importazione INJ Node si ricarica per applicare il nuovo stato.
+
 ## Cloudflare: crea un servizio diverso da Admin Insights
 
 1. In Cloudflare apri Workers & Pages → Create application, collega GitHub e seleziona `ivanbarbacini95-collab/INJ-NODE-INSIGHTS`.
