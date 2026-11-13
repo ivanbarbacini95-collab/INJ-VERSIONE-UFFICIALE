@@ -9,12 +9,12 @@
 <title>All Transaction · INJ Node</title>
 <script>
 try {
- const allowed=['obsidian','arctic','orbit','classic-black','classic-white'];
+ const allowed=['obsidian','arctic','orbit','classic-black','classic-white','carbon-gold','emerald-circuit','burgundy-noir','champagne-edition','abyss-blue','liquid-titanium'];
  const raw=localStorage.getItem('inj_monitor_theme')||'obsidian';
  document.documentElement.dataset.theme=allowed.includes(raw)?raw:'obsidian';
  document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
  document.documentElement.dataset.injThemeMotion='static';document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';
- const tones={obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','classic-black':'#030304','classic-white':'#ffffff'};
+ const tones={obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','classic-black':'#030304','classic-white':'#ffffff','carbon-gold':'#0a0c0e','emerald-circuit':'#061511','burgundy-noir':'#190e17','champagne-edition':'#ede7db','abyss-blue':'#071624','liquid-titanium':'#11161c'};
  document.querySelector('meta[name="theme-color"]').content=tones[document.documentElement.dataset.theme];
 } catch(_){}
 </script>
@@ -59,6 +59,8 @@ html[data-inj-page="all-transactions"] .disclaimer{font-size:10px;margin:15px 3p
 </style>
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
+<script defer src="./inj-six-themes-20261103.js?v=20261113-signature11"></script>
+<link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=20261113-signature11">
 </head>
 <body>
 <main class="shell">
