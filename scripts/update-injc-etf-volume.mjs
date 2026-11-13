@@ -48,10 +48,11 @@ if(!incoming){
 }
 for(const [date,row] of incoming){
  const prev=previous.get(date);
- // Market volume is cumulative during a session. Avoid regressions from stale feeds.
- // Use the same day's reported closing/last quote as an approximate valuation reference.
+ // The ongoing session is cumulative; protect it against delayed snapshots.
+ // For completed sessions, accept provider revisions (including lower corrections).
+ // This prevents outdated intraday highs from becoming permanent historical totals.
  previous.set(date,{
-   volume:prev?Math.max(prev.volume,row.volume):row.volume,
+   volume:date===today&&prev?Math.max(prev.volume,row.volume):row.volume,
    close:row.close>0?row.close:(prev?.close??null)
  });
 }
