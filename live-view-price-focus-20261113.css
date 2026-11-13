@@ -220,3 +220,116 @@ html[data-inj-page="night-view"] .data-note{
   min-height:clamp(145px,17vh,210px);
  }
 }
+
+
+/* Totem portrait 2026-11-13: use the actual vertical space for a readable
+   two-up balance deck and full-width live reward. Preserve live price digits
+   and their directional colors, independent of selected visual theme. */
+@media screen and (min-width:700px) and (orientation:portrait){
+ html[data-inj-page="night-view"] .shell{
+  width:min(100%,1100px);
+  padding-inline:clamp(22px,3.4vw,56px);
+  gap:clamp(10px,1.6vh,23px);
+ }
+ html[data-inj-page="night-view"] .content{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:clamp(16px,2.8vh,40px)!important;
+  padding:clamp(5px,1vh,14px) 0!important;
+  min-height:0;
+ }
+ html[data-inj-page="night-view"] .price{
+  flex:0 0 auto!important;
+  min-height:0;
+  max-width:100%;
+  width:100%;
+ }
+ html[data-inj-page="night-view"] .price-value{
+  font-size:clamp(108px,min(16vw,18vh),205px)!important;
+  max-width:100%;
+  line-height:1.04!important;
+  margin:clamp(7px,1vh,16px) 0!important;
+ }
+ html[data-inj-page="night-view"] .price-label{
+  font-size:clamp(15px,1.6vw,22px);
+ }
+ html[data-inj-page="night-view"] .price-sub{
+  font-size:clamp(16px,1.8vw,24px);
+ }
+ html[data-inj-page="night-view"] .ambient{
+  flex:0 0 auto!important;
+  width:min(95%,920px);
+  height:clamp(24px,3vh,43px);
+  max-height:43px;
+ }
+ html[data-inj-page="night-view"] .totem-metrics{
+  display:grid!important;
+  flex:0 0 auto!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:clamp(12px,1.6vh,24px);
+  align-items:stretch;
+  width:min(100%,940px);
+  max-height:none!important;
+ }
+ html[data-inj-page="night-view"] .holdings{
+  display:contents!important;
+ }
+ html[data-inj-page="night-view"] .totem-card{
+  min-height:clamp(148px,15vh,225px);
+  padding:clamp(14px,1.8vh,26px) clamp(12px,1.6vw,23px)!important;
+  gap:clamp(7px,.75vh,12px);
+ }
+ html[data-inj-page="night-view"] .totem-card-reward{
+  grid-column:1/-1;
+  min-height:clamp(148px,15vh,225px);
+ }
+ html[data-inj-page="night-view"] .totem-card-icon{
+  width:clamp(32px,3.9vw,47px);
+  height:clamp(32px,3.9vw,47px);
+ }
+ html[data-inj-page="night-view"] .totem-card .eyebrow{
+  font-size:clamp(15px,1.7vw,22px);
+ }
+ html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+  font-size:clamp(32px,4.4vw,56px)!important;
+  line-height:1.12!important;
+ }
+ html[data-inj-page="night-view"] .totem-card-reward #nightReward{
+  font-size:clamp(39px,5vw,65px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card :is(.fiat,#nightRewardFiat){
+  font-size:clamp(14px,1.6vw,19px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card .estimated{
+  font-size:clamp(12px,1.2vw,16px)!important;
+ }
+ html[data-inj-page="night-view"] .footer{
+  width:min(100%,940px);
+  padding:clamp(12px,1.4vh,21px) clamp(7px,1vw,16px);
+ }
+ html[data-inj-page="night-view"] .foot-item small{
+  font-size:clamp(12px,1.45vw,17px)!important;
+ }
+ html[data-inj-page="night-view"] .foot-item strong{
+  font-size:clamp(15px,1.8vw,22px)!important;
+ }
+ html[data-inj-page="night-view"] .data-note{
+  font-size:clamp(11px,1.1vw,14px);
+ }
+}
+@media screen and (min-width:700px) and (max-height:1050px) and (orientation:portrait){
+ html[data-inj-page="night-view"] .shell{
+  height:auto;
+  min-height:100dvh;
+ }
+ html[data-inj-page="night-view"] .content{
+  flex:1 0 auto!important;
+  gap:clamp(10px,1.7vh,23px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card,
+ html[data-inj-page="night-view"] .totem-card-reward{
+  min-height:clamp(124px,13vh,170px);
+ }
+}
