@@ -245,10 +245,9 @@ html[data-inj-page="index"] body #entryGate
   });
  });
  document.body.append(nav);
- /* Promote the five-tab dock to the browser top layer. Fixed elements inside
-    a transformed/scroll-locked PWA body can otherwise move with its content
-    or sit below the Home overlay on iOS. Manual popovers are non-modal, so
-    wallet swipes and vertical page scrolling remain fully interactive. */
+ /* Only Home needs the iOS PWA top-layer stability workaround.
+    Other tabs contain interactive filters, dropdowns and embedded screens:
+    a top-layer dock would cover those controls regardless of z-index. */
  const supportsTopLayer=typeof nav.showPopover==='function' && typeof nav.hidePopover==='function';
  let syncTopLayer=()=>{};
  if(supportsTopLayer){
@@ -261,8 +260,7 @@ html[data-inj-page="index"] body #entryGate
    const visible=root.dataset.injViewMode!=='light' && root.dataset.injModeTransition!=='leaving' && gate.classList.contains('visible') &&
      (gate.getAttribute('aria-hidden')==='false'||marketPerformance) &&
      document.body.classList.contains('entry-gate-open') &&
-     root.dataset.injHomeTab!=='mercato' &&
-     root.dataset.injHomeTab!=='reward' &&
+     root.dataset.injHomeTab==='home' &&
      !document.body.classList.contains('boot-loading') &&
      !document.body.classList.contains('inj-section-open') &&
      !document.body.classList.contains('menu-overlay-open') &&
