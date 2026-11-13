@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <script defer src="./page-zoom-lock-20261110.js?v=1"></script>
 <meta content="#060b11" name="theme-color"/>
-<style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}html[data-theme="carbon-gold"],html[data-theme="carbon-gold"] body{background-color:#0a0c0e;color-scheme:dark}html[data-theme="emerald-circuit"],html[data-theme="emerald-circuit"] body{background-color:#061511;color-scheme:dark}html[data-theme="burgundy-noir"],html[data-theme="burgundy-noir"] body{background-color:#190e17;color-scheme:dark}html[data-theme="champagne-edition"],html[data-theme="champagne-edition"] body{background-color:#ede7db;color-scheme:light}html[data-theme="abyss-blue"],html[data-theme="abyss-blue"] body{background-color:#071624;color-scheme:dark}html[data-theme="liquid-titanium"],html[data-theme="liquid-titanium"] body{background-color:#11161c;color-scheme:dark}</style>
+<style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}html[data-theme="carbon-gold"],html[data-theme="carbon-gold"] body{background-color:#0a0c0e;color-scheme:dark}</style>
 
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -21,13 +21,15 @@
 
 <script>
     try {
-      const savedTheme = localStorage.getItem('inj_monitor_theme');
+      const savedThemeRaw = localStorage.getItem('inj_monitor_theme');
+      const savedTheme = ["emerald-circuit","burgundy-noir","champagne-edition","abyss-blue","liquid-titanium"].includes(savedThemeRaw) ? 'carbon-gold' : savedThemeRaw;
+      if(savedTheme !== savedThemeRaw) localStorage.setItem('inj_monitor_theme',savedTheme);
       const oldThemes = {"navy":"orbit","black":"classic-black","light":"classic-white","amber":"obsidian","velvet":"orbit","ocean-x-solar":"obsidian","ocean":"obsidian","chromatic":"orbit","aqua":"arctic","ocean-x-electric":"orbit","ocean-x-ion":"orbit","ocean-x-toxic":"obsidian","dynamic":"obsidian","emerald":"obsidian","ember":"obsidian","titanium":"obsidian","pure-black":"classic-black","graphite":"classic-black","frost-white":"classic-white","warm-ivory":"classic-white","midnight-blue":"orbit","slate-grey":"classic-black","liquid-silver":"classic-black","chrome-blue":"orbit","pearl-glass":"classic-white","rose-copper":"obsidian","sapphire-glass":"orbit","golden-satin":"obsidian","neon-grid":"orbit","cyber-cyan":"obsidian","quantum-purple":"orbit","matrix-green":"obsidian","solar-circuit":"obsidian","red-horizon":"obsidian","classic-navy":"orbit","classic-ivory":"classic-white","classic-stone":"classic-black","classic-champagne":"classic-white"};
-      const initialTone = {'classic-black':'#030304','classic-white':'#ffffff',obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','carbon-gold':'#0a0c0e','emerald-circuit':'#061511','burgundy-noir':'#190e17','champagne-edition':'#ede7db','abyss-blue':'#071624','liquid-titanium':'#11161c'};
+      const initialTone = {'classic-black':'#030304','classic-white':'#ffffff',obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','carbon-gold':'#0a0c0e'};
       document.documentElement.dataset.theme = initialTone[savedTheme] ? savedTheme : (oldThemes[savedTheme] || 'obsidian');
       document.documentElement.dataset.injThemeMotion = 'static';
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content',initialTone[document.documentElement.dataset.theme]||initialTone.obsidian);
-      document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')?.setAttribute('content',(['classic-white','arctic','champagne-edition'].includes(document.documentElement.dataset.theme)?'default':'black-translucent'));
+      document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')?.setAttribute('content',(['classic-white','arctic'].includes(document.documentElement.dataset.theme)?'default':'black-translucent'));
       const savedUiStyle = localStorage.getItem('inj_monitor_ui_style');
       document.documentElement.dataset.uiStyle = ['elegant', 'futuristic', 'ultra'].includes(savedUiStyle) ? savedUiStyle : 'elegant';
       if (sessionStorage.getItem('inj_node_return_home') === '1') {
@@ -437,7 +439,7 @@
 
 <script defer src="./home-pro-launcher-guard-20261105.js?v=launcher-clean1"></script>
 
-<script defer src="./inj-six-themes-20261103.js?v=20261113-signature11"></script>
+<script defer src="./inj-six-themes-20261103.js?v=carbon-only-20261113b"></script>
 
 
 
@@ -450,7 +452,7 @@
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
 <!-- Home Pro 2.0 is the final, scoped visual layer. Reversible via backup branch. -->
 <link rel="stylesheet" href="./home-pro-2-20261113.css?v=home-pro2-joined2">
-<link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=20261113-signature11">
+<link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=carbon-only-20261113b">
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
@@ -596,7 +598,7 @@
 <div class="theme-control menu-theme-control" id="themeControl">
 <button aria-controls="themePicker" aria-expanded="false" aria-label="Scegli Theme" class="menu-action menu-setting" id="themeButton" title="Theme" type="button">
 <span aria-hidden="true" class="menu-action-icon"><svg viewbox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 1 0 0 17h1.1a1.7 1.7 0 0 0 0-3.4h-.8a1.8 1.8 0 0 1 0-3.6H15a5.5 5.5 0 0 0 0-11h-3Z"></path><circle cx="8" cy="9" r=".7"></circle><circle cx="11" cy="6.8" r=".7"></circle><circle cx="7.2" cy="13" r=".7"></circle></svg></span>
-<span class="menu-action-copy"><strong data-it="Theme" data-en="Theme">Theme</strong><small data-it="11 temi · 3 collezioni" data-en="11 themes · 3 collections">11 temi · 3 collezioni</small></span>
+<span class="menu-action-copy"><strong data-it="Theme" data-en="Theme">Theme</strong><small data-it="6 temi · 3 collezioni" data-en="6 themes · 3 collections">6 temi · 3 collezioni</small></span>
 <svg aria-hidden="true" class="menu-action-chevron" viewbox="0 0 24 24"><path d="m8 10 4 4 4-4"></path></svg>
 </button>
 <div aria-label="Theme" class="theme-picker" id="themePicker" role="group">
@@ -614,14 +616,9 @@
 <button data-theme-choice="orbit" type="button"><i class="theme-swatch orbit" aria-hidden="true"></i><span>Deep Orbit</span></button>
 </div></details>
 <details class="inj-theme-family" data-family="premium">
-<summary><span class="inj-family-illustration" aria-hidden="true">✦</span><span class="inj-family-title"><strong>Signature Collection</strong><small data-it="Sei materiali e atmosfere premium" data-en="Six premium finishes and atmospheres">Sei materiali e atmosfere premium</small></span><span class="inj-family-count">6</span><span class="inj-family-chevron" aria-hidden="true"></span></summary>
+<summary><span class="inj-family-illustration" aria-hidden="true">✦</span><span class="inj-family-title"><strong>Signature Collection</strong><small data-it="Carbon Gold · Nero e champagne" data-en="Carbon Gold · Carbon and champagne">Carbon Gold · Nero e champagne</small></span><span class="inj-family-count">1</span><span class="inj-family-chevron" aria-hidden="true"></span></summary>
 <div class="theme-category-options theme-list-unified">
 <button data-theme-choice="carbon-gold" type="button"><i class="theme-swatch carbon-gold" aria-hidden="true"></i><span>Carbon Gold</span></button>
-<button data-theme-choice="emerald-circuit" type="button"><i class="theme-swatch emerald-circuit" aria-hidden="true"></i><span>Emerald Circuit</span></button>
-<button data-theme-choice="burgundy-noir" type="button"><i class="theme-swatch burgundy-noir" aria-hidden="true"></i><span>Burgundy Noir</span></button>
-<button data-theme-choice="champagne-edition" type="button"><i class="theme-swatch champagne-edition" aria-hidden="true"></i><span>Champagne Edition</span></button>
-<button data-theme-choice="abyss-blue" type="button"><i class="theme-swatch abyss-blue" aria-hidden="true"></i><span>Abyss Blue</span></button>
-<button data-theme-choice="liquid-titanium" type="button"><i class="theme-swatch liquid-titanium" aria-hidden="true"></i><span>Liquid Titanium</span></button>
 </div></details>
 </div>
 </div>
@@ -1440,7 +1437,7 @@
 </section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
 <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-<script defer src="app.js?v=20261113-signature11"></script>
+<script defer src="app.js?v=carbon-only-20261113b"></script>
 <script defer src="./morning-brief.js?v=160737"></script>
 <script>
 (function(){
