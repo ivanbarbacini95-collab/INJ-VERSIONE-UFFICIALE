@@ -175,6 +175,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 <link rel="stylesheet" href="./injc-etf-market-terminal-20261105.css?v=etf-session-inspect-20261106a">
 <link rel="stylesheet" href="./injc-etf-live-refinement-20261106.css?v=20261110-session-rollover2">
 <link rel="stylesheet" href="./injc-etf-flows-volume-20261106.css?v=20261109-history-only1">
+<link rel="stylesheet" href="./injc-etf-fund-aum-20261113.css?v=managed-assets-1">
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
 </head>
@@ -211,6 +212,32 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
     <p id="etfReferenceNav" data-it="NAV iniziale 04/11/2026: $25,00 · riferimento del fondo, non prezzo di un primo scambio." data-en="Initial NAV 11/04/2026: $25.00 · fund reference, not an executed first-trade price.">NAV iniziale 04/11/2026: $25,00 · riferimento del fondo, non prezzo di un primo scambio.</p>
     <p data-it="Quotazione dell'ETF INJC, non di INJ spot. I dati pubblici possono essere ritardati." data-en="INJC ETF share quote, not INJ spot. Public market data may be delayed.">Quotazione dell'ETF INJC, non di INJ spot. I dati pubblici possono essere ritardati.</p>
   </div>
+</section>
+<section aria-label="Patrimonio gestito INJC">
+ <div class="injc-title-row"><h2 data-it="Patrimonio gestito · INJC" data-en="Assets under management · INJC">Patrimonio gestito · INJC</h2><small class="injc-aum-freshness" id="injcFundFreshness" data-state="unavailable">—</small></div>
+ <div class="injc-aum-panel">
+  <div class="injc-aum-primary">
+   <div class="injc-aum-metric">
+    <span data-it="INJ DETENUTI DAL FONDO" data-en="INJ HELD BY FUND">INJ DETENUTI DAL FONDO</span>
+    <strong id="injcFundInj" aria-live="polite">—</strong>
+    <small data-it="INJ · quantità ufficiale pubblicata da Canary" data-en="INJ · issuer-reported quantity">INJ · quantità ufficiale pubblicata da Canary</small>
+   </div>
+   <div class="injc-aum-metric">
+    <span id="injcFundUsdTag">STIMA LIVE · USD</span>
+    <strong id="injcFundUsd" aria-live="polite">—</strong>
+    <small id="injcFundUsdDescription">Quantità INJ ufficiale × prezzo spot INJ/USD</small>
+   </div>
+  </div>
+  <div class="injc-aum-meta">
+   <p><span data-it="Patrimonio netto ufficiale (ultimo report)" data-en="Official net assets (latest report)">Patrimonio netto ufficiale (ultimo report)</span> · <strong id="injcFundOfficial">—</strong></p>
+   <p><span data-it="Prezzo INJ spot" data-en="INJ spot price">Prezzo INJ spot</span> · <strong id="injcFundPrice">—</strong> <span id="injcFundPriceSource"></span></p>
+  </div>
+  <div class="injc-aum-source">
+   <span id="injcFundDate">Holdings non disponibili</span>
+   <a href="https://canaryetfs.com/injc/" target="_blank" rel="noopener noreferrer" data-it="DATI CANARY CAPITAL ↗" data-en="CANARY CAPITAL DATA ↗">DATI CANARY CAPITAL ↗</a>
+  </div>
+  <p class="injc-foot" data-it="La quantità di INJ e il patrimonio netto sono dati ufficiali periodici, non aggiornamenti intraday. La cifra USD in tempo reale è una stima (INJ detenuti × prezzo spot) e non sostituisce il patrimonio netto ufficiale; il volume delle quote scambiate è separato." data-en="INJ quantity and net assets are periodic issuer reports, not intraday figures. The real-time USD value is an estimate (INJ held × spot price), not official net assets; traded ETF share volume is separate.">La quantità di INJ e il patrimonio netto sono dati ufficiali periodici, non aggiornamenti intraday. La cifra USD in tempo reale è una stima (INJ detenuti × prezzo spot) e non sostituisce il patrimonio netto ufficiale; il volume delle quote scambiate è separato.</p>
+ </div>
 </section>
 <section aria-label="Grafico INJC">
  <div class="injc-title-row"><h2 data-it="Grafico di mercato" data-en="Market Chart">Grafico di mercato</h2><small id="etfSyncLabel">IN ATTESA</small></div>
@@ -317,6 +344,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 </main>
 </div>
 <script defer src="./injc-etf-flows-volume-20261106.js?v=20261113-volume-audit2"></script>
+<script defer src="./injc-etf-fund-aum-20261113.js?v=managed-assets-1"></script>
 <script defer src="./injc-etf-market-terminal-20261105.js?v=20261110-session-rollover2"></script>
 <script defer src="./injc-etf-session-inspector-20261106.js?v=etf-session-inspect-20261106a"></script>
 
