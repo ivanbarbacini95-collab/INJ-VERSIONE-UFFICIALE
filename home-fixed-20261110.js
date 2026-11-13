@@ -58,7 +58,11 @@
   if(key!==dimension){
    dimension=key;
    setLevel(0);
-   chart.style.setProperty('--inj-home-fit-chart-height','244px');
+   // Base height scales with the actual portrait viewport, then the existing
+   // overlap detector reduces it if needed. Neither the ticker nor wallet rail
+   // is stretched to create an artificial scroll surface.
+   const initialHeight=Math.max(214,Math.min(276,Math.round(innerHeight*.315)));
+   chart.style.setProperty('--inj-home-fit-chart-height',initialHeight+'px');
   }
   // A native popover may be mounted later; never use a hidden/stale dock rect.
   const dock=nav.getBoundingClientRect();
