@@ -9,14 +9,14 @@
 <title>INJ Multi Chart · INJ Node</title>
 <script>
 try{
-  const themes=['obsidian','arctic','orbit','classic-black','classic-white','carbon-gold','emerald-circuit','burgundy-noir','champagne-edition','abyss-blue','liquid-titanium'];
+  const themes=['obsidian','arctic','orbit','classic-black','classic-white','carbon-gold'];
   const selected=localStorage.getItem('inj_monitor_theme');
   const theme=themes.includes(selected)?selected:'obsidian';
   document.documentElement.dataset.theme=theme;
   document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
   document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';
   document.querySelector('meta[name="theme-color"]').content=
-   ({obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','classic-black':'#030304','classic-white':'#ffffff','carbon-gold':'#0a0c0e','emerald-circuit':'#061511','burgundy-noir':'#190e17','champagne-edition':'#ede7db','abyss-blue':'#071624','liquid-titanium':'#11161c'})[theme];
+   ({obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','classic-black':'#030304','classic-white':'#ffffff','carbon-gold':'#0a0c0e'})[theme];
 }catch(_){}
 </script>
 <link rel="stylesheet" href="./multi-chart.css?v=20261110-external-candles1">
@@ -24,7 +24,7 @@ try{
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
 <script defer src="./inj-six-themes-20261103.js?v=20261113-signature11"></script>
-<link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=20261113-signature11">
+<link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=carbon-only-20261113b">
 </head>
 <body>
 <div class="mc-app" id="mcApp">
