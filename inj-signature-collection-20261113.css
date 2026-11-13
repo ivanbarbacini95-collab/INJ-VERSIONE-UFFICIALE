@@ -328,3 +328,6 @@ html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="b
 @media(prefers-reduced-motion:reduce){
  html:is([data-theme="carbon-gold"],[data-theme="emerald-circuit"],[data-theme="burgundy-noir"],[data-theme="champagne-edition"],[data-theme="abyss-blue"],[data-theme="liquid-titanium"]){animation:none!important;transition:none!important}
 }
+
+/* Preserve light system controls even against older :not(arctic) rules. */
+html[data-theme="champagne-edition"][data-theme]:not([data-theme="arctic"]){color-scheme:light!important}

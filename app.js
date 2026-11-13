@@ -8243,7 +8243,13 @@ function applyTheme(theme, notify = false) {
     'classic-white': { label: 'White', color: '#ffffff' },
     obsidian: { label: 'Obsidian Pulse', color: '#0b1722' },
     arctic: { label: 'Arctic Glass', color: '#f3f9fc' },
-    orbit: { label: 'Deep Orbit', color: '#15152e' }
+    orbit: { label: 'Deep Orbit', color: '#15152e' },
+    'carbon-gold': { label: 'Carbon Gold', color: '#0a0c0e' },
+    'emerald-circuit': { label: 'Emerald Circuit', color: '#061511' },
+    'burgundy-noir': { label: 'Burgundy Noir', color: '#190e17' },
+    'champagne-edition': { label: 'Champagne Edition', color: '#ede7db' },
+    'abyss-blue': { label: 'Abyss Blue', color: '#071624' },
+    'liquid-titanium': { label: 'Liquid Titanium', color: '#11161c' }
   };
   const selected = themes[theme] ? theme : 'obsidian';
   document.documentElement.dataset.theme = selected;
@@ -8257,7 +8263,7 @@ function applyTheme(theme, notify = false) {
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
-  // Five curated palettes are available across two compact Theme families.
+  // Eleven curated palettes are available across three compact Theme families.
   if (isChartOpen()) requestAnimationFrame(renderNativeChart);
   if (notify) toast(`Tema ${themes[selected].label}`);
 }

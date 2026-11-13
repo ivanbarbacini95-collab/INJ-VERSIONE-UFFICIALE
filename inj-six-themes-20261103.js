@@ -5,12 +5,12 @@
  var key='inj_monitor_theme',motionKey='inj_node_theme_motion_v1';
  // Planet backgrounds have been retired; clear their prior device selection.
  try{localStorage.removeItem('inj_node_cosmic_scene_v1');}catch(_){}
- var tones={'classic-black':'#030304','classic-white':'#ffffff',obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a'};
+ var tones={'classic-black':'#030304','classic-white':'#ffffff',obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','carbon-gold':'#0a0c0e','emerald-circuit':'#061511','burgundy-noir':'#190e17','champagne-edition':'#ede7db','abyss-blue':'#071624','liquid-titanium':'#11161c'};
  var legacy={"navy":"obsidian","black":"classic-black","light":"classic-white","amber":"obsidian","velvet":"orbit","ocean-x-solar":"obsidian","ocean":"obsidian","chromatic":"orbit","aqua":"arctic","ocean-x-electric":"orbit","ocean-x-ion":"orbit","ocean-x-toxic":"obsidian","dynamic":"obsidian","emerald":"obsidian","ember":"obsidian","titanium":"obsidian","pure-black":"classic-black","graphite":"classic-black","frost-white":"classic-white","warm-ivory":"classic-white","midnight-blue":"orbit","slate-grey":"classic-black","liquid-silver":"classic-black","chrome-blue":"orbit","pearl-glass":"classic-white","rose-copper":"obsidian","sapphire-glass":"orbit","golden-satin":"obsidian","neon-grid":"orbit","cyber-cyan":"obsidian","quantum-purple":"orbit","matrix-green":"obsidian","solar-circuit":"obsidian","red-horizon":"obsidian","classic-navy":"orbit","classic-ivory":"classic-white","classic-stone":"classic-black","classic-champagne":"classic-white"};
  function get(k){try{return localStorage.getItem(k)}catch(_){return null}}
  function put(k,v){try{localStorage.setItem(k,v)}catch(_){}}
  function normalize(v){return Object.prototype.hasOwnProperty.call(tones,v)?v:(legacy[v]||'obsidian')}
- var names={'classic-black':'Black','classic-white':'White',obsidian:'Obsidian Pulse',arctic:'Arctic Glass',orbit:'Deep Orbit'};
+ var names={'classic-black':'Black','classic-white':'White',obsidian:'Obsidian Pulse',arctic:'Arctic Glass',orbit:'Deep Orbit','carbon-gold':'Carbon Gold','emerald-circuit':'Emerald Circuit','burgundy-noir':'Burgundy Noir','champagne-edition':'Champagne Edition','abyss-blue':'Abyss Blue','liquid-titanium':'Liquid Titanium'};
  function updateThemeControls(theme){
   document.querySelectorAll('[data-theme-choice]').forEach(function(button){
    var active=button.dataset.themeChoice===theme;
@@ -32,9 +32,9 @@
   // Same theme canvas as the actual page, rather than the old launch colors.
   // Browser/Android chrome and the next app page must never retain a stale tint.
   var computed=getComputedStyle(root);
-  var value=computed.getPropertyValue('--theme-canvas').trim() ||
-    computed.getPropertyValue('--bg').trim() ||
-    tones[normalize(root.dataset.theme)];
+  var value=tones[normalize(root.dataset.theme)] ||
+    computed.getPropertyValue('--theme-canvas').trim() ||
+    computed.getPropertyValue('--bg').trim();
   var tag=document.querySelector('meta[name="theme-color"]');
   if(tag&&value&&tag.content!==value)tag.setAttribute('content',value);
  }
@@ -139,7 +139,7 @@
   });
  });
  observer.observe(root,{attributes:true,attributeFilter:['data-theme']});
- function initialize(){mountControl();mountHomeAtmosphere();updateThemeControls(normalize(get(key)||root.dataset.theme));}
+ function initialize(){mountControl();const picker=document.getElementById('themePicker');if(picker)bindThemeFamilies(picker);mountHomeAtmosphere();updateThemeControls(normalize(get(key)||root.dataset.theme));}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});
  else initialize();
  window.addEventListener('injnode:languagechange',updateLabels);
