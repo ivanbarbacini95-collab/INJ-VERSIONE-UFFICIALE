@@ -231,6 +231,19 @@
      volume:q.volume?.[i]===null||q.volume?.[i]===undefined?NaN:Number(q.volume[i])
    })));
  }
+ // One canonical value for the Shares Traded metric and the displayed volume bars.
+ // For the daily chart this is today's bar; for intraday bars it is their sum.
+ // Missing sessions remain unavailable instead of falling back to a quote from another feed.
+ function publishTradingVolume(points,session){
+   const today=nyDay(Date.now());
+   const rows=points.filter(p=>p.date===today&&Number.isSafeInteger(p.volume)&&p.volume>=0);
+   const shares=rows.length
+     ?(session?rows.reduce((sum,p)=>sum+p.volume,0):rows.at(-1).volume):null;
+   const snapshot={ticker:'INJC',date:today,shares,
+     source:session?intradaySource:lastVolumeSource};
+   window.__injcEtfTradedShares=snapshot;
+   window.dispatchEvent(new CustomEvent('injc:traded-shares',{detail:snapshot}));
+ }
  function drawVolume(newData=false){
    const scroller=$('etfVolumeHistory'),axis=$('etfVolumeRightAxis'),empty=$('etfVolumeEmpty');
    if(!scroller||!axis)return;
@@ -245,6 +258,7 @@
      volumeDays.map(date=>({date,volume:byDay.get(date)?.volume??null,
        price:dailyPrice.get(date)?.price??null}));
    const source=session?intradaySource:lastVolumeSource;
+   publishTradingVolume(pts,session);
    setText('etfVolumeSourceLabel',source||tr('In attesa del volume riportato','Awaiting reported volume'));
    const good=pts.map((p,i)=>({...p,i})).filter(p=>Number.isFinite(p.volume));
    if(empty){
