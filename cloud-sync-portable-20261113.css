@@ -1,0 +1,25 @@
+/* Cloud Sync · private portable copy/paste between user devices */
+.cs-portable{border-color:color-mix(in srgb,var(--accent) 36%,var(--line));}
+.cs-portable h2{margin-bottom:8px;}
+.cs-portable h3{margin:0;font-size:15px;line-height:1.35;color:var(--text);}
+.cs-portable-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:19px;}
+.cs-portable-pane{min-width:0;padding:clamp(14px,2.2vw,23px);background:color-mix(in srgb,var(--card,#10212a) 90%,transparent);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;}
+.cs-portable-pane>p{margin:9px 0 12px!important;max-width:none;}
+.cs-portable-pane label{display:block;font-size:11px;color:var(--muted);letter-spacing:.03em;margin:7px 0;}
+.cs-portable-pane textarea{display:block;min-width:0;width:100%;min-height:124px;resize:vertical;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:9px;outline:none;padding:12px;background:color-mix(in srgb,var(--bg) 82%,#202a32);color:var(--text);font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere;word-break:break-word;-webkit-user-select:text;user-select:text;}
+.cs-portable-pane textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 12%,transparent);}
+.cs-portable-pane textarea::placeholder{color:var(--muted);opacity:.85;}
+.cs-portable-pane .cs-actions{margin:10px 0 12px;gap:8px;}
+.cs-portable-pane .cs-actions>button{flex:1 1 155px;min-height:46px;padding:10px 13px;}
+.cs-portable-pane button:disabled{opacity:.48;cursor:not-allowed;}
+.cs-portable-pane .cs-portable-preview{min-height:1.6em;margin-top:9px!important;color:var(--accent);font-size:11px;}
+.cs-portable .cs-portable-status{margin:17px 0 0;padding:12px 14px;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--accent) 4%,var(--card));color:var(--text);font-size:12px;}
+.cs-portable .cs-portable-status.error{border-color:#aa6466;color:#ffbfbc;background:#301d20;}
+.cs-portable .cs-portable-warning{margin:13px 0 0;font-size:11px;line-height:1.6;max-width:none;color:var(--muted);}
+.cs-portable .cs-portable-warning strong{color:var(--text);}
+@media(max-width:760px){
+ .cs-portable-grid{grid-template-columns:1fr;gap:12px;}
+ .cs-portable-pane textarea{min-height:100px;font-size:12px;}
+ .cs-portable-pane .cs-actions>button{flex:1 1 45%;font-size:10px;}
+}
+@media(max-width:390px){.cs-portable-pane .cs-actions>button{flex:1 1 100%;}}
