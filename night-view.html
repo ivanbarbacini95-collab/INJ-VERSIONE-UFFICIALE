@@ -217,17 +217,71 @@ html[data-inj-page="night-view"] :is(.holding,.reward) .unit{
  margin-inline-start:.08em;
 }
 </style>
-<script defer src="./night-view.js?v=20261112-airy-digits1"></script>
+<script defer src="./night-view.js?v=20261113-wallet-scope1"></script>
 <script>try{document.documentElement.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold'}catch(_){document.documentElement.dataset.injFont='bold'}</script>
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
 <link rel="stylesheet" href="./live-view-totem-pro-20261112.css?v=geist-totem1">
+<style>
+/* Live View wallet scope: small, idle-fading control beside the moon. */
+html[data-inj-page="night-view"] .top>.top-actions{
+ display:flex;align-items:center;justify-content:flex-end;justify-self:end;
+ gap:clamp(5px,.7vw,11px);min-width:max-content;
+}
+html[data-inj-page="night-view"] .top-actions .wallet-scope-toggle{
+ display:inline-flex;align-items:center;justify-content:center;gap:6px;
+ min-width:82px;height:40px;padding:0 10px;
+ border:1px solid var(--nv-line);border-radius:13px;
+ background:var(--nv-control-bg,transparent);color:var(--nv-muted);
+ font:550 12px/1 "INJ Geist",system-ui,sans-serif;
+ white-space:nowrap;cursor:pointer;touch-action:manipulation;
+ transition:opacity .23s ease,transform .23s ease,color .2s ease,border-color .2s ease;
+}
+html[data-inj-page="night-view"] .top-actions .wallet-scope-toggle svg{
+ width:17px;height:17px;fill:none;stroke:currentColor;
+ stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;
+}
+html[data-inj-page="night-view"] .wallet-scope-toggle[data-scope="all"]{
+ color:var(--nv-accent);border-color:color-mix(in srgb,var(--nv-accent) 58%,var(--nv-line));
+}
+html[data-inj-page="night-view"] .wallet-scope-toggle.is-idle:not(:focus-visible){
+ opacity:0;pointer-events:none;transform:translateY(-5px);
+}
+html[data-inj-page="night-view"] .wallet-scope-toggle[hidden]{display:none!important}
+html[data-inj-page="night-view"] .wallet-scope-toggle:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px}
+@media(min-width:700px) and (min-height:650px){
+ html[data-inj-page="night-view"] .top-actions .wallet-scope-toggle{
+  height:clamp(48px,5.8vh,68px);min-width:clamp(85px,8vw,118px);
+  font-size:clamp(12px,1.35vh,17px);border-radius:16px;
+ }
+ html[data-inj-page="night-view"] .top-actions .wallet-scope-toggle svg{width:clamp(19px,2vh,25px);height:clamp(19px,2vh,25px)}
+}
+@media(max-width:520px){
+ html[data-inj-page="night-view"] .top{grid-template-columns:40px minmax(0,1fr) auto;gap:6px}
+ html[data-inj-page="night-view"] .top-actions .wallet-scope-toggle{
+  width:34px;min-width:34px;height:40px;padding:0;
+ }
+ html[data-inj-page="night-view"] .wallet-scope-toggle #nightScopeLabel{display:none}
+}
+@media(max-width:360px){
+ html[data-inj-page="night-view"] .top .totem-brand-glyph{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-inj-page="night-view"] .wallet-scope-toggle{transition:none!important}
+}
+</style>
 </head>
 <body>
 <main class="shell">
 <header class="top">
  <button class="back" id="nightBack" type="button" aria-label="Torna alla Home"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
  <div class="brand"><span class="totem-brand-glyph" aria-hidden="true">◈</span><div class="totem-brand-copy"><span class="totem-brand-name">INJ Node</span><h1>Live View</h1></div></div>
- <button class="night-toggle" id="nightModeToggle" type="button" aria-label="Attiva Night View" aria-pressed="false" title="Night View"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 15.6A8.6 8.6 0 0 1 8.4 3.7 8.6 8.6 0 1 0 20.3 15.6Z"/></svg></button>
+ <div class="top-actions">
+  <button class="wallet-scope-toggle" id="nightWalletScope" type="button" aria-pressed="false" aria-label="Mostra tutti i wallet salvati" title="Mostra tutti i wallet salvati" hidden>
+   <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="2"/><path d="M9 20h9a2 2 0 0 0 2-2V9"/></svg>
+   <span id="nightScopeLabel">Portfolio</span>
+  </button>
+  <button class="night-toggle" id="nightModeToggle" type="button" aria-label="Attiva Night View" aria-pressed="false" title="Night View"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 15.6A8.6 8.6 0 0 1 8.4 3.7 8.6 8.6 0 1 0 20.3 15.6Z"/></svg></button>
+ </div>
 </header>
 <div class="content">
  <section class="price" aria-label="Prezzo Injective in tempo reale">
