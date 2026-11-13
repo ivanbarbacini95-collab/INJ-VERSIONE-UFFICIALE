@@ -149,7 +149,7 @@
    if(!old||priority>=old.priority)dailyPrice.set(date,{price:n,priority});
  }
  let volumeDays=[],volumeFirst=true,volumeLoading=false,volumeRaf=0,volumeSnapshot='',lastVolumeSource='';
- let volumeMode='history',intradayPoints=[],intradaySource='';
+ let volumeMode='history',volumeView='all',intradayPoints=[],intradaySource='';
  function validVolume(k,value){
    return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k>='2026-11-05'&&k<=nyDay(Date.now())&&
      Number.isSafeInteger(value)&&value>=0;
@@ -255,20 +255,22 @@
    setText('etfVolumeSummary',session
      ?tr('Shares per intervallo · '+(pts.at(-1)?.date||'—')+' · '+good.length+' candele',
          'Shares per interval · '+(pts.at(-1)?.date||'—')+' · '+good.length+' bars')
-     :tr(good.length+' sedute con volume riportato · quote INJC',
-         good.length+' sessions with reported volume · INJC shares'));
+     :tr(good.length+' sedute con volume riportato · '+(good[0]?.date||'—')+' → '+(good.at(-1)?.date||'—')+' · quote INJC',
+         good.length+' sessions with reported volume · '+(good[0]?.date||'—')+' → '+(good.at(-1)?.date||'—')+' · INJC shares'));
    if(!pts.length){scroller.replaceChildren();return;}
-   const width=Math.max(scroller.clientWidth,
+   const fitAll=!session&&volumeView==='all';
+   const width=fitAll?Math.max(1,scroller.clientWidth):Math.max(scroller.clientWidth,
      session?Math.min(5000,Math.max(390,pts.length*24+130)):pts.length*58+130);
    const top=21,bottom=180,plotHeight=bottom-top,previousX=scroller.scrollLeft;
-   const atEnd=volumeFirst||scroller.scrollWidth-scroller.clientWidth-previousX<82;
+   const atEnd=!fitAll&&(volumeFirst||scroller.scrollWidth-scroller.clientWidth-previousX<82);
    const earliest=pts[0].time,latest=pts.at(-1).time;
-   const leftMargin=66,rightMargin=66;
+   const leftMargin=fitAll?Math.min(46,width*.13):66;
+   const rightMargin=fitAll?Math.min(46,width*.13):66;
    const x=i=>session?leftMargin+(pts[i].time-earliest)/Math.max(1,latest-earliest)*(width-leftMargin-rightMargin)
+     :fitAll?(pts.length===1?width/2:leftMargin+i*(width-leftMargin-rightMargin)/Math.max(1,pts.length-1))
      :width-rightMargin-(pts.length-1-i)*58;
-   let max=0;
-   good.forEach(p=>{const px=x(p.i);if(px>=previousX-50&&px<=previousX+scroller.clientWidth+50)max=Math.max(max,p.volume);});
-   if(!max)max=Math.max(0,...good.map(p=>p.volume));
+   // Stable scale for the entire history; scrolling never loses or rescales earlier bars.
+   const max=Math.max(0,...good.map(p=>p.volume));
    const scale=roundTop(max);
    axis.querySelectorAll('[data-volume-axis]').forEach((label,i)=>{
      label.textContent=scale?compact([scale,scale/2,0][i]):(i===2?'0':'—');
@@ -297,6 +299,7 @@
    // No bar is rendered when volume is unreported.
    const candleWidth=session
      ?Math.max(8,Math.min(19,(width-leftMargin-rightMargin)/Math.max(1,pts.length)*.62))
+     :fitAll?Math.max(2,Math.min(24,(width-leftMargin-rightMargin)/Math.max(1,pts.length)*.65))
      :24;
    const bars=pts.map((p,i)=>{
     if(!Number.isFinite(p.volume))return '';
@@ -361,7 +364,8 @@
      select(next);scroller.scrollLeft=Math.max(0,x(good[next].i)-scroller.clientWidth*.5);
    });
    plot.addEventListener('blur',()=>{cursor.setAttribute('visibility','hidden');if(tip)tip.hidden=true;});
-   if(atEnd)scroller.scrollLeft=scroller.scrollWidth;
+   if(fitAll)scroller.scrollLeft=0;
+   else if(atEnd)scroller.scrollLeft=scroller.scrollWidth;
    else scroller.scrollLeft=Math.min(previousX,scroller.scrollWidth-scroller.clientWidth);
    renderValuation(good.length?good.at(-1):null);
    volumeFirst=false;
@@ -375,7 +379,7 @@
        catch(_){return await fetchJson('https://proxy.cors.dev/https://query2.finance.yahoo.com/v8/finance/chart/INJC?range='+range+'&interval='+interval+'&includePrePost=false',10500);}
      };
      const results=await Promise.allSettled([
-       loadYahoo('1y','1d'),
+       loadYahoo('max','1d'),
        fetchJson('./market-data/injc-etf-volume.json?t='+Date.now(),8000),
        fetchJson('./market-data/injc-etf-quotes.json?t='+Date.now(),8000),
        loadYahoo('5d','5m')
@@ -435,7 +439,7 @@
  function bind(){
    const fs=$('etfFlowHistory');
    fs?.addEventListener('scroll',()=>{hideFlowTooltip();scheduleFlowScale();},{passive:true});
-   $('etfVolumeHistory')?.addEventListener('scroll',queueVolumeDraw,{passive:true});
+   $('etfVolumeHistory')?.addEventListener('scroll',()=>{const tip=$('etfVolumeTooltip');if(tip)tip.hidden=true;},{passive:true});
    if(typeof ResizeObserver==='function'){
      const obs=new ResizeObserver(()=>{scheduleFlowScale();queueVolumeDraw();});
      for(const id of ['etfFlowHistory','etfVolumeHistory'])if($(id))obs.observe($(id));
@@ -450,6 +454,18 @@
          b.setAttribute('aria-pressed',String(active));
        });
        drawVolume(true);
+     });
+   });
+   document.querySelectorAll('[data-injc-volume-view]').forEach(button=>{
+     button.addEventListener('click',()=>{
+       const view=button.dataset.injcVolumeView;
+       if(view!=='all'&&view!=='recent')return;
+       volumeView=view;volumeFirst=view==='recent';
+       document.querySelectorAll('[data-injc-volume-view]').forEach(b=>{
+         const active=b===button;b.classList.toggle('active',active);
+         b.setAttribute('aria-pressed',String(active));
+       });
+       drawVolume();
      });
    });
    $('etfRefresh')?.addEventListener('click',refreshVolume);
