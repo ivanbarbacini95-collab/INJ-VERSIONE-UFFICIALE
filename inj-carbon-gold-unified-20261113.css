@@ -107,9 +107,10 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
  left:0!important;
  top:50%!important;
  bottom:auto!important;
- height:clamp(30px,4.6dvh,44px)!important;
+ height:clamp(46px,55%,74px)!important;
  width:1px!important;
- background:color-mix(in srgb,var(--accent) 15%,transparent)!important;
+ background:color-mix(in srgb,var(--accent) 30%,transparent)!important;
+ box-shadow:0 0 8px color-mix(in srgb,var(--accent) 9%,transparent)!important;
  opacity:1!important;
  pointer-events:none!important;
  border:0!important;
@@ -153,17 +154,84 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
  outline-offset:-2px!important;
  border-radius:8px!important;
 }
-/* Home only: remove the dock's outer capsule, inset hairline and comet frame.
-   Keep all five actual tab targets and the gold active indicator. */
-html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
- body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav{
+/* A continuous theme-aware bottom band (no floating capsule). On every
+   visible primary tab, fill iOS safe area and keep its five targets centered.
+   No fixed theme colors: palette variables repaint immediately on selection. */
+html[data-inj-page="index"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav{
+ position:fixed!important;
+ left:0!important;
+ right:0!important;
+ top:auto!important;
+ bottom:0!important;
+ inset-inline-start:0!important;
+ inset-inline-end:0!important;
+ transform:none!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+ height:calc(73px + env(safe-area-inset-bottom,0px))!important;
+ min-height:calc(73px + env(safe-area-inset-bottom,0px))!important;
+ max-height:calc(73px + env(safe-area-inset-bottom,0px))!important;
+ box-sizing:border-box!important;
+ grid-template-columns:repeat(5,minmax(0,clamp(49px,18vw,108px)))!important;
+ align-items:stretch!important;
+ justify-content:center!important;
+ gap:clamp(0px,.5vw,7px)!important;
+ padding:7px max(10px,env(safe-area-inset-right,0px))
+  calc(7px + env(safe-area-inset-bottom,0px))
+  max(10px,env(safe-area-inset-left,0px))!important;
+ margin:0!important;
  border:0!important;
+ border-top:1px solid color-mix(in srgb,var(--accent) 19%,var(--line))!important;
  border-radius:0!important;
- background:transparent!important;
- background-image:none!important;
- box-shadow:none!important;
+ background-color:var(--theme-canvas,var(--bg,#090d10))!important;
+ background-image:linear-gradient(
+  180deg,
+  color-mix(in srgb,var(--surface-strong) 88%,var(--theme-canvas)) 0%,
+  color-mix(in srgb,var(--surface) 30%,var(--theme-canvas)) 100%
+ )!important;
+ background-position:center!important;
+ background-size:100% 100%!important;
+ box-shadow:0 -8px 22px rgba(0,0,0,.12)!important;
  -webkit-backdrop-filter:none!important;
  backdrop-filter:none!important;
+}
+html[data-inj-page="index"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab{
+ width:100%!important;
+ max-width:108px!important;
+ height:100%!important;
+ min-height:0!important;
+ align-self:stretch!important;
+ border-radius:12px!important;
+}
+html[data-inj-page="index"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active{
+ color:var(--accent)!important;
+ background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+@media(max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav{
+  height:calc(71px + env(safe-area-inset-bottom,0px))!important;
+  min-height:calc(71px + env(safe-area-inset-bottom,0px))!important;
+  max-height:calc(71px + env(safe-area-inset-bottom,0px))!important;
+  padding-top:5px!important;
+  padding-bottom:calc(5px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
+@media(max-height:620px){
+ html[data-inj-page="index"] body.entry-gate-open
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav{
+  height:calc(65px + env(safe-area-inset-bottom,0px))!important;
+  min-height:calc(65px + env(safe-area-inset-bottom,0px))!important;
+  max-height:calc(65px + env(safe-area-inset-bottom,0px))!important;
+  padding-top:4px!important;
+  padding-bottom:calc(4px + env(safe-area-inset-bottom,0px))!important;
+ }
 }
 html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
  body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-nav-comet-orbit{
@@ -171,11 +239,11 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
 }
 html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
  body.entry-gate-open > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav > .inj-bottom-tab.is-active{
- background:transparent!important;
+ background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
  background-image:none!important;
  border:0!important;
  box-shadow:none!important;
- color:var(--text)!important;
+ color:var(--accent)!important;
 }
 @media(max-width:700px) and (orientation:portrait){
  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
