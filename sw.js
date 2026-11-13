@@ -1,9 +1,11 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261113-etf-volume-audit2';
+const CACHE_NAME = 'inj-node-v20261113-signature11';
 const BOOT_ASSETS = [
   './index.html',
+  './inj-signature-collection-20261113.css?v=20261113-signature11',
+  './inj-six-themes-20261103.js?v=20261113-signature11',
   './inj-geist-unified-20261112.css?v=geist-final1',
   './assets/fonts/inj-geist.woff2',
   './inj-font-switcher-20261029.js?v=geist-final1',
@@ -18,20 +20,20 @@ const BOOT_ASSETS = [
   './my-reward-portrait-20261110.js?v=portrait-desktop1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=20261111-digits-only1',
-  './navigation.js?v=20261109-tools-return-motion1',
+  './app.js?v=20261113-signature11',
+  './navigation.js?v=20261113-signature11',
   './home-bottom-tabs-20261030.js?v=20261110-liveview-one-layout3',
   './validators-launcher.js?v=20261111e',
-  './validators.html?v=20261111e',
+  './validators.html?v=20261113-signature11',
   './validators.css?v=20261111e',
   './validators.js?v=20261111e',
-  './network-status.html?v=20261110-uptime-history1',
+  './network-status.html?v=20261113-signature11',
   './network-history.js?v=20261110-uptime-history1',
   './network-live-ws.js?v=20261109-uptime-ws1',
   './network-history.css?v=20261110-uptime-history1',
-  './all-transactions.html?v=20261109-tools-return-motion1',
-  './night-view.html?v=geist-totem1',
-  './night-view.js?v=20261111-digits-only1'
+  './all-transactions.html?v=20261113-signature11',
+  './night-view.html?v=20261113-signature11',
+  './night-view.js?v=20261113-signature11'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
 
