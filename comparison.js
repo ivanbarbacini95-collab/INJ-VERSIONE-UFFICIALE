@@ -13,6 +13,7 @@
  const SELECTED_KEY='inj_node_comparison_selected_wallet_v1';
  const NASDAQ_URL='https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/tickers/all.csv';
  const usMarketCaps=new Map(),usStockNames=new Map(), estimatedIndexCaps=new Map();
+ const searchCache=new Map();
  const INDEX_DATASETS={
    SPX:'https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/tickers/sp500.csv',
    NDX:'https://raw.githubusercontent.com/Gary-Strauss/NASDAQ100_Constituents/master/data/nasdaq100_constituents.json'
@@ -166,8 +167,37 @@
  }
  function normalizeMarket(row){
   const id=String(row?.id||'').toLowerCase(),cap=number(row?.market_cap),price=number(row?.current_price),supply=number(row?.circulating_supply);
-  if(!id||!positive(cap)||!positive(price))return null;
-  return {id,cap,price,supply:positive(supply)?supply:NaN,updated:Date.now(),name:String(row?.name||id),symbol:String(row?.symbol||'').toUpperCase(),image:coinLogo(row?.image)};
+  // A target coin only needs a verified market cap. Do not discard that cap
+  // if CoinGecko temporarily omits its price or circulating supply.
+  if(!id||!positive(cap))return null;
+  return {id,cap,price:positive(price)?price:NaN,supply:positive(supply)?supply:NaN,updated:Date.now(),name:String(row?.name||id),symbol:String(row?.symbol||'').toUpperCase(),image:coinLogo(row?.image)};
+ }
+ function usableQuote(id){
+  const row=state.quotes.get(id);
+  return positive(row?.cap)&&(id!==state.source.id||positive(row?.price));
+ }
+ // The market endpoint sometimes returns 200 OK but silently omits a requested
+ // ID. Resolve only the missing IDs through another CoinGecko endpoint; never
+ // infer a market cap from price or switch to a coin with a similar symbol.
+ async function repairMissingQuotes(ids){
+  if(!ids.length)return;
+  const url=API+'/simple/price?ids='+encodeURIComponent(ids.join(','))+
+   '&vs_currencies=usd&include_market_cap=true';
+  const results=await fetchJson(url,10000);
+  for(const id of ids){
+   const row=results?.[id];
+   const cap=number(row?.usd_market_cap),price=number(row?.usd);
+   if(!positive(cap)||!positive(price))continue;
+   const previous=state.quotes.get(id);
+   const selected=[state.source,state.target,SOURCE_DEFAULT].find(item=>item.id===id);
+   state.quotes.set(id,{
+    id,cap,price,supply:positive(previous?.supply)?previous.supply:NaN,
+    updated:Date.now(),fromCache:false,
+    name:selected?.name||previous?.name||id,
+    symbol:selected?.symbol||previous?.symbol||'',
+    image:coinLogo(previous?.image)||coinLogo(selected?.image)||''
+   });
+  }
  }
  function restoreQuotes(){
   try{
@@ -175,7 +205,9 @@
    if(!cache||!Array.isArray(cache.rows))return;
    if(!cache.savedAt||Date.now()-cache.savedAt>24*3600000)return;
    for(const row of cache.rows){
-    if(row&&positive(row.cap)&&positive(row.price))state.quotes.set(row.id,{...row,fromCache:true});
+    if(row&&typeof row.id==='string'&&positive(row.cap)){
+     state.quotes.set(row.id,{...row,price:positive(row.price)?row.price:NaN,fromCache:true});
+    }
    }
   }catch(_){}
  }
@@ -185,12 +217,12 @@
  async function refreshQuotes(force=false){
   const ids=[...new Set([state.source.id,'injective-protocol',...(state.kind==='crypto'?[state.target.id]:[])])].filter(Boolean);
   const requestKey=ids.join('|');
-  // Changing selection during a previous request must not silently drop the new asset.
+  // A new selection is always fetched after an in-flight request completes.
   if(state.busy){
-   if(requestKey!==state.activeQuoteKey)state.queuedForce=true;
+   if(requestKey!==state.activeQuoteKey||force)state.queuedForce=true;
    return;
   }
-  const stale=ids.some(id=>!state.quotes.has(id)||Date.now()-state.quotes.get(id).updated>180000);
+  const stale=ids.some(id=>!usableQuote(id)||Date.now()-state.quotes.get(id).updated>180000);
   if(!force&&!stale)return;
   if(!force&&Date.now()<state.quoteRetryAfter)return;
   state.busy=true;state.activeQuoteKey=requestKey;state.quoteError='';
@@ -198,29 +230,47 @@
   try{
    const uri=API+'/coins/markets?vs_currency=usd&ids='+encodeURIComponent(ids.join(','))+'&order=market_cap_desc&per_page=20&page=1&sparkline=false';
    const result=await fetchJson(uri);
-   if(!Array.isArray(result)||!result.length)throw Error('No CoinGecko market quotes');
+   if(!Array.isArray(result))throw Error('Invalid CoinGecko market response');
    let matched=0;
    for(const row of result){
     const normalized=normalizeMarket(row);
-    if(normalized){state.quotes.set(normalized.id,normalized);if(ids.includes(normalized.id))matched++;}
+    if(normalized&&ids.includes(normalized.id)){
+     state.quotes.set(normalized.id,normalized);
+     matched++;
+    }
    }
-   if(!matched)throw Error('No matching CoinGecko market quotes');
+   const unresolved=ids.filter(id=>!usableQuote(id));
+   let repairError=null;
+   if(unresolved.length){
+    try{await repairMissingQuotes(unresolved);}
+    catch(error){repairError=error;}
+   }
+   const missing=ids.filter(id=>!usableQuote(id));
+   if(matched||unresolved.length>missing.length){
+    state.lastRemote=Date.now();
+    persistQuotes();
+   }
+   // A successful HTTP request does not imply that every requested asset
+   // loaded. Retain verified quotes and retry just as for a network failure.
+   if(missing.length)throw repairError||Error('Incomplete CoinGecko quote: '+missing.join(', '));
    state.quoteFailures=0;state.quoteRetryAfter=0;
-   state.lastRemote=Date.now();persistQuotes();
   }catch(error){
    state.quoteError=String(error?.message||error);
    state.quoteFailures++;
    const delay=/429|rate limit/i.test(state.quoteError)?90000:
-     Math.min(90000,6000*Math.pow(2,Math.min(4,state.quoteFailures-1)));
+    Math.min(90000,6000*Math.pow(2,Math.min(4,state.quoteFailures-1)));
    state.quoteRetryAfter=Date.now()+delay;
-   // Keep previous verified quotes in place while retrying a failing feed.
+   // Keep the last valid price and cap; throttle retries to respect API limits.
    setTimeout(()=>{if(!document.hidden)void refreshQuotes();},delay+250);
   }finally{
    state.busy=false;render();
    const latest=[...new Set([state.source.id,'injective-protocol',...(state.kind==='crypto'?[state.target.id]:[])])].filter(Boolean).join('|');
    if(latest!==requestKey||state.queuedForce){
     state.queuedForce=false;
-    void refreshQuotes(true);
+    // If the user changed the selection, bypass the old asset's cooldown.
+    // Otherwise honor the backoff rather than retrying a 429 immediately.
+    if(latest!==requestKey)void refreshQuotes(true);
+    else void refreshQuotes();
    }
   }
  }
@@ -228,12 +278,14 @@
  function recentCrypto(id){const q=quote(id);return q&&Date.now()-q.updated<180000&&!q.fromCache;}
  function renderStatus(){
   const needed=[state.source.id,...(state.kind==='crypto'?[state.target.id]:[])];
-  const fresh=state.kind==='crypto'&&needed.every(id=>recentCrypto(id));
+  const complete=needed.every(id=>usableQuote(id));
+  const fresh=complete&&state.kind==='crypto'&&needed.every(id=>recentCrypto(id));
   const cached=needed.some(id=>quote(id));
   const status=$('comparisonStatus');
   status.classList.toggle('live',fresh);
   status.classList.toggle('cache',!fresh&&cached);
-  set('comparisonStatusText',state.busy?'SYNC':fresh?'LIVE':cached?t('SALVATO','CACHED'):
+  set('comparisonStatusText',state.busy?'SYNC':!complete&&state.quoteError?t('RIPROVA','RETRY'):
+   !complete?t('IN ATTESA','WAITING'):fresh?'LIVE':cached?t('SALVATO','CACHED'):
    state.quoteError?t('RIPROVA','RETRY'):t('ATTESA','WAITING'));
   status.title=state.quoteError?t('Feed temporaneamente non disponibile · premi ↻ per riprovare','Feed temporarily unavailable · press ↻ to retry'):'';
  }
@@ -488,18 +540,50 @@
   }
   host.hidden=false;
  }
+ // Cache only CoinGecko's exact ID/name/symbol matches; never invent prices.
+ // Reduces duplicate /search calls when users revisit a coin or edit the query.
+ function restoreSearchCache(){
+  try{
+   const rows=JSON.parse(localStorage.getItem(QUERY_CACHE)||'[]');
+   if(!Array.isArray(rows))return;
+   for(const row of rows){
+    if(typeof row?.term==='string'&&Array.isArray(row.coins)&&
+       Date.now()-Number(row.at)>0&&Date.now()-Number(row.at)<12*60_000){
+      searchCache.set(row.term,{coins:row.coins,at:row.at});
+    }
+   }
+  }catch(_){}
+ }
+ function rememberSearch(term,coins){
+  const key=term.trim().toLowerCase();
+  searchCache.delete(key);
+  searchCache.set(key,{coins:coins.slice(0,20).map(item=>({
+   id:item.id,name:item.name,symbol:item.symbol,large:coinLogo(item.large||item.thumb||item.image)
+  })),at:Date.now()});
+  while(searchCache.size>25)searchCache.delete(searchCache.keys().next().value);
+  try{
+   localStorage.setItem(QUERY_CACHE,JSON.stringify(
+    [...searchCache].map(([query,row])=>({term:query,...row}))
+   ));
+  }catch(_){}
+ }
  async function search(type,term){
   const ticket=++state.searchTicket[type];
   const input=$(type==='source'?'capSourceSearch':'capTargetSearch');
   const spin=$(type==='source'?'capSourceSpin':'capTargetSpin');
   const host=$(type==='source'?'capSourceResults':'capTargetResults');
-  if(!term.trim()||term.trim().length<2){host.hidden=true;spin.classList.remove('busy');return;}
+  const query=term.trim(),key=query.toLowerCase();
+  if(query.length<2){host.hidden=true;spin.classList.remove('busy');return;}
+  const cached=searchCache.get(key);
+  if(cached&&Date.now()-cached.at<12*60_000){
+   buildOptions(type,cached.coins);spin.classList.remove('busy');return;
+  }
   spin.classList.add('busy');
   try{
-   const response=await fetchJson(API+'/search?query='+encodeURIComponent(term.trim()),10000);
-   if(state.searchTicket[type]!==ticket)return;
-   if(input.value.trim()!==term.trim())return;
+   const response=await fetchJson(API+'/search?query='+encodeURIComponent(query),10000);
+   if(state.searchTicket[type]!==ticket||input.value.trim()!==query)return;
    const cryptos=Array.isArray(response?.coins)?response.coins:[];
+   rememberSearch(query,cryptos);
    buildOptions(type,cryptos);
   }catch(_){
    if(state.searchTicket[type]===ticket){
@@ -513,7 +597,7 @@
   const input=$(type==='source'?'capSourceSearch':'capTargetSearch');
   const key=type==='source'?'sourceSearchTimer':'targetSearchTimer';
   clearTimeout(state[key]);
-  state[key]=setTimeout(()=>void search(type,input.value),350);
+  state[key]=setTimeout(()=>void search(type,input.value),550);
  }
  function setKind(kind){
   if(!['crypto','stock','index'].includes(kind))return;
@@ -723,7 +807,7 @@
  }
 
  function boot(){
-  restoreQuotes();restoreUsStockCaps();restoreIndexCaps();localize();setKind('crypto');render();
+  restoreQuotes();restoreSearchCache();restoreUsStockCaps();restoreIndexCaps();localize();setKind('crypto');render();
   $('comparisonRetry')?.addEventListener('click',()=>{
    state.quoteRetryAfter=0;
    void refreshQuotes(true);
