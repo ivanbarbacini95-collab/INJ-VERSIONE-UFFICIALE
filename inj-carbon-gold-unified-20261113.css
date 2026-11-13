@@ -50,18 +50,23 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
  body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
  .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
  --inj-pro-link-height:clamp(76px,9dvh,94px);
+ --inj-home-shortcut-zone-height:var(--inj-pro-link-height);
  display:grid!important;
  grid-template-columns:repeat(3,minmax(0,1fr))!important;
  grid-template-rows:minmax(0,1fr)!important;
  grid-auto-rows:minmax(0,1fr)!important;
- height:var(--inj-pro-link-height)!important;
- min-height:var(--inj-pro-link-height)!important;
- max-height:var(--inj-pro-link-height)!important;
+ height:var(--inj-home-shortcut-zone-height,var(--inj-pro-link-height))!important;
+ min-height:var(--inj-home-shortcut-zone-height,var(--inj-pro-link-height))!important;
+ max-height:var(--inj-home-shortcut-zone-height,var(--inj-pro-link-height))!important;
+ align-items:stretch!important;
+ justify-items:stretch!important;
+ align-content:center!important;
  gap:0!important;
  box-sizing:border-box!important;
- padding:7px 0 0!important;
+ padding:7px 0!important;
  border:0!important;
  border-top:1px solid color-mix(in srgb,var(--accent) 21%,transparent)!important;
+ border-bottom:1px solid color-mix(in srgb,var(--accent) 21%,transparent)!important;
  background:transparent!important;
  box-shadow:none!important;
  margin-top:var(--inj-home-links-gap,clamp(9px,1.4dvh,16px))!important;
@@ -100,14 +105,15 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
  display:block!important;
  position:absolute!important;
  left:0!important;
- top:18%!important;
- bottom:18%!important;
+ top:50%!important;
+ bottom:auto!important;
+ height:clamp(30px,4.6dvh,44px)!important;
  width:1px!important;
- background:color-mix(in srgb,var(--accent) 19%,transparent)!important;
+ background:color-mix(in srgb,var(--accent) 15%,transparent)!important;
  opacity:1!important;
  pointer-events:none!important;
  border:0!important;
- transform:none!important;
+ transform:translateY(-50%)!important;
 }
 html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
  body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
