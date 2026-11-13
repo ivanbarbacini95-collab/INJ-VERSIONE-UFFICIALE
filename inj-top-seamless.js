@@ -31,11 +31,33 @@
    const status=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
    const mode=isLight(color)?'default':'black-translucent';
    if(status&&status.content!==mode)status.content=mode;
+   // Keep a single current-theme tone for the web-owned top region.
+   // Invalidating the top compositor layer avoids a stale palette after
+   // switching themes inside an installed iOS PWA.
+   if(root.dataset.injPage==='index'){
+    root.style.setProperty('--inj-live-native-tone',color);
+    const gate=document.getElementById('entryGate');
+    gate?.style.setProperty('--inj-live-native-tone',color);
+   }
  }
+ let previousTheme=root.dataset.theme||'';
  function queue(){
    if(pending)return;
    pending=true;
-   requestAnimationFrame(sync);
+   requestAnimationFrame(()=>{
+    const changed=previousTheme!==root.dataset.theme;
+    previousTheme=root.dataset.theme||'';
+    sync();
+    if(changed){
+     // Force WebKit to rasterize the current theme's ribbon asset instead
+     // of keeping the old GPU backing layer in the Home header.
+     const track=document.querySelector('#entryGate > .inj-theme-flow-layer > .inj-theme-flow-track');
+     if(track){
+      track.style.visibility='hidden';
+      requestAnimationFrame(()=>{track.style.visibility='';});
+     }
+    }
+   });
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});
  else sync();
