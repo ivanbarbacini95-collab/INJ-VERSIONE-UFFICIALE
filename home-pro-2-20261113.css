@@ -404,3 +404,63 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
 }
 
 }
+
+/* Home Pro 2.1 · Price and chart read as one continuous native card.
+   Keep the original sibling nodes so chart listeners and wallet animations
+   continue working; do not stack them with negative margins. */
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryOverview.entry-overview{
+ box-sizing:border-box!important;
+ position:relative!important;
+ margin-bottom:0!important;
+ border:1px solid var(--line)!important;
+ border-bottom:0!important;
+ border-radius:20px 20px 0 0!important;
+ background:var(--surface)!important;
+ background-image:none!important;
+ box-shadow:none!important;
+ overflow:visible!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card{
+ box-sizing:border-box!important;
+ position:relative!important;
+ margin-top:0!important;
+ border:1px solid var(--line)!important;
+ border-top:0!important;
+ border-radius:0 0 20px 20px!important;
+ background:var(--surface)!important;
+ background-image:none!important;
+ box-shadow:none!important;
+ overflow:visible!important;
+}
+/* The chart section itself has no independent top frame or overlapping edge. */
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card::before,
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card::after{
+ content:none!important;
+ display:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+ --inj-home-links-gap:8px;
+ margin-top:var(--inj-home-links-gap)!important;
+}
+@media screen and (max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryOverview.entry-overview{border-radius:17px 17px 0 0!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card{border-radius:0 0 17px 17px!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  margin-top:var(--inj-home-links-gap)!important;
+ }
+}
+@media(max-width:700px) and (max-height:740px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+  margin-top:var(--inj-home-links-gap)!important;
+ }
+}
+/* The app's existing theme variables are the authority for the top web pixels.
+   iOS native system chrome is still rendered by WebKit/OS. */
+html[data-inj-page="index"][data-theme]{
+ --inj-native-top-tone:var(--theme-canvas)!important;
+ --inj-native-status-tone:var(--theme-canvas)!important;
+}
+html[data-inj-page="index"][data-theme] body.entry-gate-open #entryGate.entry-gate{
+ --inj-native-top-tone:var(--theme-canvas)!important;
+ --inj-native-status-tone:var(--theme-canvas)!important;
+}
