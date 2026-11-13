@@ -72,7 +72,7 @@
  const unit=(v,d=2)=>fmt(v,d)+' <span class="unit">INJ</span>';
  const note=(id,value)=>{const node=$(id);if(node&&node.innerHTML!==value)node.innerHTML=value};
  const app=()=>{try{return parent!==window && parent.location.origin===location.origin && typeof parent.INJ_FINANCIAL_FREEDOM_SOURCE==='function'?parent.INJ_FINANCIAL_FREEDOM_SOURCE():null}catch(_){return null}};
- const state={price:null,tradeAt:0,lastTick:null,priceAt:0,change:null,tickerAt:0,networkAt:0,networkOk:null,networkAge:0,ws:null,wsRetry:0,walletAt:0,selected:'',timer:0,fetching:false,lastDisplayedPrice:null,lastDisplayedCurrency:'',lastDisplayedText:'',directionTimer:0};
+ const state={price:null,tradeAt:0,lastTick:null,priceAt:0,change:null,tickerAt:0,networkAt:0,networkOk:null,networkAge:0,ws:null,wsRetry:0,walletAt:0,selected:'',scope:'selected',timer:0,fetching:false,lastDisplayedPrice:null,lastDisplayedCurrency:'',lastDisplayedText:'',directionTimer:0};
  function fallback(){
   try{
    const wallets=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'[]');
@@ -82,6 +82,59 @@
   }catch(_){return {wallets:[],selectedAddress:'',price:null,priceAt:0,currency:'USD',privacy:false}}
  }
  function snapshot(){return app()||fallback()}
+
+ // The scope belongs only to this Live View; the Home wallet selection is unchanged.
+ // All-wallet totals require every saved wallet to have a verified on-chain snapshot.
+ let walletScopeIdleTimer=0;
+ function revealWalletScope(){
+  const button=$('nightWalletScope');
+  if(!button||button.hidden)return;
+  button.classList.remove('is-idle');
+  clearTimeout(walletScopeIdleTimer);
+  walletScopeIdleTimer=setTimeout(()=>{
+   if(document.activeElement!==button)button.classList.add('is-idle');
+  },4200);
+ }
+ function syncWalletScope(count){
+  const button=$('nightWalletScope');
+  if(!button)return;
+  const wasHidden=button.hidden;
+  button.hidden=count<2;
+  if(button.hidden)return;
+  const all=state.scope==='all';
+  button.dataset.scope=all?'all':'selected';
+  button.setAttribute('aria-pressed',String(all));
+  button.setAttribute('aria-label',all?tr('Mostra il portfolio selezionato','Show selected portfolio'):tr('Mostra tutti i wallet salvati','Show all saved wallets'));
+  button.title=button.getAttribute('aria-label');
+  $('nightScopeLabel').textContent=all?tr('Tutti','All'):tr('Portfolio','Portfolio');
+  if(wasHidden)revealWalletScope();
+ }
+ function summarizeAllWallets(rows,now){
+  const parts=rows.map(w=>{
+   const staked=num(w.staked),total=num(w.total),rewards=num(w.rewards),apr=num(w.apr);
+   const updated=num(w.updated)||0,age=updated?Math.max(0,now-updated):Infinity;
+   const verified=!!w.address&&valid(staked)&&valid(total)&&valid(rewards)&&updated>0;
+   const fresh=verified&&age<120000;
+   const estimated=fresh&&age<35000&&apr!==null&&apr>0&&staked>0?
+    staked*apr/100*Math.min(age,20000)/msYear:0;
+   return {staked,total,rewards,apr,updated,verified,fresh,estimated};
+  });
+  const complete=parts.length>0&&parts.every(p=>p.verified);
+  const fresh=complete&&parts.every(p=>p.fresh);
+  const staked=complete?parts.reduce((sum,p)=>sum+p.staked,0):null;
+  const canCalculateApr=complete&&staked>0&&parts.every(p=>p.staked<=0||(p.apr!==null&&p.apr>=0));
+  const apr=canCalculateApr?parts.reduce((sum,p)=>sum+p.staked*Math.max(0,p.apr||0),0)/staked:null;
+  return {
+   count:parts.length,verifiedCount:parts.filter(p=>p.verified).length,
+   complete,fresh,estimated:complete?parts.reduce((sum,p)=>sum+p.estimated,0):0,
+   wallet:{
+    address:'all-saved-wallets',
+    staked,total:complete?parts.reduce((sum,p)=>sum+p.total,0):null,
+    rewards:complete?parts.reduce((sum,p)=>sum+p.rewards,0):null,
+    apr,updated:complete?Math.min(...parts.map(p=>p.updated)):0
+   }
+  };
+ }
  // Match Home: only digits whose visible values change flash green/red.
  // Currency symbols, separators and unaffected digits keep their normal color.
  function renderPriceDigits(node,oldText,newText,direction){
@@ -169,8 +222,11 @@
   });
  }
  function paint(){
-  const now=Date.now(),snap=snapshot(),rows=Array.isArray(snap.wallets)?snap.wallets:[],
-   selected=rows.find(w=>w.address===snap.selectedAddress)||rows[0]||null;
+  const now=Date.now(),snap=snapshot(),rows=Array.isArray(snap.wallets)?snap.wallets:[];
+  syncWalletScope(rows.length);
+  const allMode=state.scope==='all'&&rows.length>1;
+  const aggregate=allMode?summarizeAllWallets(rows,now):null;
+  const selected=allMode?aggregate.wallet:(rows.find(w=>w.address===snap.selectedAddress)||rows[0]||null);
   const parentPrice=num(snap.price),parentPriceAt=num(snap.priceAt)||0;
   const parentValid=parentPrice>0 && parentPriceAt>0 && now-parentPriceAt>=0 && now-parentPriceAt<60000;
   const tradeValid=state.price>0 && now-state.tradeAt>=0 && now-state.tradeAt<45000;
@@ -204,13 +260,15 @@
   $('nightStakedFiat').textContent=fiatQuantity(walletVerified?staked:null);
   $('nightAvailableFiat').textContent=fiatQuantity(available);
   // Interpolation is an estimate, limited to 20s after an on-chain snapshot.
-  const mayEstimate=walletFresh&&age<35000&&apr!==null&&apr>0&&staked>0;
-  const estimated=mayEstimate?staked*apr/100*Math.min(age,20000)/msYear:0;
+  const mayEstimate=allMode?aggregate.estimated>0:(walletFresh&&age<35000&&apr!==null&&apr>0&&staked>0);
+  const estimated=allMode?aggregate.estimated:(mayEstimate?staked*apr/100*Math.min(age,20000)/msYear:0);
   const shown=walletVerified?rewards+estimated:null;
   note('nightReward',privacy?'••••':shown!==null?unit(shown,6):'—');
   const canConvert=usd>0&&shown!==null;
   $('nightRewardFiat').textContent=privacy?'••••':canConvert?'≈ '+money(shown*usd*rate,currency,2):'—';
   $('nightRewardConfidence').textContent=!address?tr('Seleziona un wallet dalla Home','Select a wallet on Home'):
+   allMode&&!aggregate.complete?tr('Dati confermati per '+aggregate.verifiedCount+'/'+aggregate.count+' wallet','Verified data for '+aggregate.verifiedCount+'/'+aggregate.count+' wallets'):
+   allMode&&!aggregate.fresh?tr('Aggiornamento dei wallet salvati necessario','Saved wallets need refreshing'):
    !walletVerified?tr('In attesa dei dati on-chain','Awaiting on-chain data'):
    !walletFresh?tr('Snapshot on-chain da aggiornare','On-chain snapshot needs refresh'):
    mayEstimate&&estimated>0?tr('Crescita stimata tra conferme on-chain','Estimated accrual between on-chain confirmations'):
@@ -220,13 +278,22 @@
   $('nightNetwork').textContent=state.networkOk===true?tr('Operativa','Online'):state.networkOk===false?tr('Da verificare','Check needed'):'—';
   const freshest=Math.max(parentValid?parentPriceAt:0,tradeValid?state.tradeAt:0,walletFresh?updated:0);
   $('nightUpdated').textContent=freshest?new Date(freshest).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
-  $('nightNote').textContent=!walletFresh&&address?tr('Dati wallet non aggiornati: valori non considerati live','Wallet data are stale; balances are not live'):
+  $('nightNote').textContent=allMode&&!aggregate.complete?tr('Totale sospeso: mancano dati verificati per alcuni wallet','Total unavailable: some wallets lack verified data'):
+   !walletFresh&&address?tr('Dati wallet non aggiornati: valori non considerati live','Wallet data are stale; balances are not live'):
    (!usd?tr('Prezzo in sincronizzazione','Synchronizing price'):'');
  }
  function back(){
   if(parent!==window)parent.postMessage({type:'injnode:section:home'},location.origin);
   else location.href='./index.html';
  }
+ $('nightWalletScope').addEventListener('click',()=>{
+  state.scope=state.scope==='all'?'selected':'all';
+  paint();revealWalletScope();
+ });
+ for(const eventName of ['pointermove','pointerdown','touchstart','keydown','focusin']){
+  document.addEventListener(eventName,revealWalletScope,{passive:true});
+ }
+ $('nightWalletScope').addEventListener('blur',revealWalletScope);
  $('nightBack').addEventListener('click',back);
  $('nightModeToggle').addEventListener('click',()=>{
   nightEnabled=!nightEnabled;
