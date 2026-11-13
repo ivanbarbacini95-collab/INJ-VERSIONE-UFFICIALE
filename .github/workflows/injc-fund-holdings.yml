@@ -1,0 +1,73 @@
+name: INJ Node · INJC issuer holdings / managed assets
+
+on:
+  workflow_dispatch:
+  schedule:
+    # The issuer reports actual INJ positions periodically; spot USD is refreshed in the browser.
+    - cron: '21 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/injc-fund-holdings.yml'
+      - 'scripts/update-injc-fund-holdings.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: injnode-injc-fund-holdings
+  cancel-in-progress: false
+
+jobs:
+  issuer-holdings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify the latest INJC holdings directly from Canary Capital
+        run: node scripts/update-injc-fund-holdings.mjs
+      - name: Publish dated verified report to GitHub Pages
+        shell: bash
+        run: |
+          set -eu
+          file="market-data/injc-fund-holdings.json"
+          if git diff --quiet -- "$file"; then
+            echo "No new issuer holdings."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          snapshot="$(mktemp)"
+          remote="$(mktemp)"
+          trap 'rm -f "$snapshot" "$remote"' EXIT
+          cp "$file" "$snapshot"
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin main
+            if git show "origin/main:$file" > "$remote" 2>/dev/null; then
+              if node -e '
+                const fs=require("node:fs");
+                const a=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+                const b=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
+                if(b.asOf>a.asOf)process.exit(0);
+                if(b.asOf===a.asOf&&Date.parse(b.verifiedAt||"")>=Date.parse(a.verifiedAt||""))process.exit(0);
+                process.exit(1);
+              ' "$snapshot" "$remote"; then
+                echo "Newer report already on main."
+                exit 0
+              fi
+            fi
+            git reset --hard origin/main
+            cp "$snapshot" "$file"
+            git add "$file"
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "data(injc): refresh issuer-reported INJ holdings and net assets"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep "$attempt"
+          done
+          echo "::error::Could not publish INJC holdings after retries"
+          exit 1
