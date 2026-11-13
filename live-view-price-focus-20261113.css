@@ -1,0 +1,222 @@
+/* INJ Node Official · Live View price-first responsive hierarchy · 2026-11-13.
+   Presentation-only: IDs, feeds, wallet scope, tick colors and Totem Pro remain intact.
+   Keep this stylesheet AFTER the active theme so the layout is consistent in every theme. */
+html[data-inj-page="night-view"] .shell{
+  overflow-x:hidden;
+}
+html[data-inj-page="night-view"] .content{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:stretch!important;
+  align-items:center!important;
+  gap:clamp(10px,1.5vh,20px)!important;
+  padding:clamp(2px,.5vh,8px) 0!important;
+}
+html[data-inj-page="night-view"] .price{
+  flex:1 1 auto;
+  min-height:0;
+  width:100%;
+  max-width:1500px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+html[data-inj-page="night-view"] .price-label{
+  font-size:clamp(13px,1.25vw,21px);
+  margin-bottom:clamp(5px,.7vh,11px);
+}
+html[data-inj-page="night-view"] .price-value{
+  font-size:clamp(88px,min(14vw,21vh),228px)!important;
+  line-height:1.06!important;
+  margin:clamp(4px,.7vh,12px) 0 clamp(7px,1vh,16px)!important;
+  font-variant-numeric:tabular-nums lining-nums;
+  white-space:nowrap;
+}
+html[data-inj-page="night-view"] .price-sub{
+  font-size:clamp(15px,1.4vw,23px);
+  gap:clamp(12px,1.9vw,27px);
+}
+html[data-inj-page="night-view"] .live-indicator{
+  font-size:clamp(12px,1.15vw,18px);
+}
+html[data-inj-page="night-view"] .ambient{
+  flex:0 0 auto;
+  align-self:center;
+  width:min(94%,1200px);
+  height:clamp(17px,2.8vh,38px);
+}
+html[data-inj-page="night-view"] .totem-metrics{
+  flex:0 0 auto;
+  align-self:center;
+  width:min(100%,1320px);
+  max-height:none;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(8px,1vw,15px);
+}
+html[data-inj-page="night-view"] .totem-card{
+  min-height:clamp(116px,18vh,194px);
+  padding:clamp(10px,1.3vh,17px) clamp(8px,1vw,15px)!important;
+  gap:clamp(3px,.55vh,7px);
+}
+html[data-inj-page="night-view"] .totem-card-icon{
+  width:clamp(22px,2vw,31px);
+  height:clamp(22px,2vw,31px);
+  margin-bottom:0;
+}
+html[data-inj-page="night-view"] .totem-card .eyebrow{
+  font-size:clamp(12px,1vw,16px);
+}
+html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+  font-size:clamp(23px,2.25vw,38px)!important;
+  line-height:1.14!important;
+}
+html[data-inj-page="night-view"] .totem-card :is(.fiat,#nightRewardFiat){
+  font-size:clamp(11px,.94vw,15px)!important;
+}
+html[data-inj-page="night-view"] .totem-card .estimated{
+  font-size:clamp(10px,.72vw,12px)!important;
+}
+html[data-inj-page="night-view"] .footer{
+  width:min(100%,1320px);
+  padding:clamp(8px,1vh,13px) clamp(5px,.8vw,13px);
+}
+html[data-inj-page="night-view"] .foot-item small{
+  font-size:clamp(10px,.8vw,13px)!important;
+  margin-bottom:3px;
+}
+html[data-inj-page="night-view"] .foot-item strong{
+  font-size:clamp(12px,1vw,17px)!important;
+}
+html[data-inj-page="night-view"] .data-note{
+  font-size:clamp(9px,.65vw,11px);
+  margin-top:4px;
+  min-height:0;
+}
+
+/* Phones: a compact information deck, centered beneath an oversized live price.
+   The data remains fully visible without the long blank gap between price and cards. */
+@media(max-width:699px){
+ html[data-inj-page="night-view"] .shell{
+  height:100dvh;
+  min-height:0;
+  padding:calc(env(safe-area-inset-top) + 9px) 12px calc(env(safe-area-inset-bottom) + 10px);
+  gap:clamp(8px,1vh,13px);
+ }
+ html[data-inj-page="night-view"] .top{min-height:42px}
+ html[data-inj-page="night-view"] .content{
+  flex:1 1 auto;
+  min-height:0;
+  justify-content:center!important;
+  gap:clamp(10px,1.6vh,17px)!important;
+  padding:0!important;
+ }
+ html[data-inj-page="night-view"] .price{
+  flex:0 0 auto;
+  justify-content:center;
+ }
+ html[data-inj-page="night-view"] .price-label{
+  font-size:12px;
+  letter-spacing:.16em;
+  margin-bottom:7px;
+ }
+ html[data-inj-page="night-view"] .price-value{
+  font-size:clamp(64px,17vw,102px)!important;
+  line-height:1.06!important;
+  margin:6px 0 7px!important;
+  font-weight:570!important;
+ }
+ html[data-inj-page="night-view"] .price-sub{font-size:clamp(14px,3.6vw,17px);gap:12px}
+ html[data-inj-page="night-view"] .live-indicator{font-size:clamp(11px,2.9vw,13px)}
+ html[data-inj-page="night-view"] .ambient{
+  width:min(95%,620px);
+  height:22px;
+  max-height:22px;
+ }
+ html[data-inj-page="night-view"] .totem-metrics{
+  flex:0 0 auto;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  width:100%;
+ }
+ html[data-inj-page="night-view"] .totem-card{
+  min-height:101px;
+  border-radius:14px;
+  padding:9px 7px!important;
+  gap:3px;
+ }
+ html[data-inj-page="night-view"] .totem-card-icon{
+  width:19px;height:19px;
+  margin:0;
+ }
+ html[data-inj-page="night-view"] .totem-card .eyebrow{
+  font-size:11px;line-height:1.15;
+ }
+ html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+  font-size:clamp(19px,5vw,27px)!important;
+  line-height:1.15!important;
+ }
+ html[data-inj-page="night-view"] .totem-card :is(.fiat,#nightRewardFiat){
+  font-size:clamp(10px,2.7vw,12px)!important;
+  line-height:1.2;
+ }
+ html[data-inj-page="night-view"] .totem-card-reward{
+  grid-column:1/-1;
+  min-height:102px;
+  padding:9px 9px!important;
+ }
+ html[data-inj-page="night-view"] .totem-card .estimated{
+  font-size:9px!important;
+  line-height:1.2;
+ }
+ html[data-inj-page="night-view"] footer{flex:0 0 auto}
+ html[data-inj-page="night-view"] .footer{padding:7px 3px;border-radius:13px}
+ html[data-inj-page="night-view"] .foot-item{padding:1px 4px}
+ html[data-inj-page="night-view"] .foot-item small{
+  font-size:9px!important;
+  margin-bottom:3px;
+ }
+ html[data-inj-page="night-view"] .foot-item strong{
+  font-size:clamp(10px,2.8vw,12px)!important;
+ }
+ html[data-inj-page="night-view"] .data-note{font-size:9px;margin-top:3px}
+}
+
+/* Short landscape / smaller phones: allow natural scrolling rather than clipping
+   the card numbers or the network status. */
+@media(max-height:650px){
+ html[data-inj-page="night-view"] .shell{
+  height:auto;
+  min-height:100dvh;
+  overflow-y:auto;
+ }
+ html[data-inj-page="night-view"] .content{
+  flex:1 0 auto;
+  min-height:0;
+  gap:9px!important;
+ }
+ html[data-inj-page="night-view"] .price{flex:0 0 auto}
+ html[data-inj-page="night-view"] .price-value{
+  font-size:clamp(54px,min(12vw,15vh),112px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card{
+  min-height:95px;
+ }
+}
+@media(max-width:380px){
+ html[data-inj-page="night-view"] .price-value{
+  font-size:clamp(59px,16.5vw,75px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card :is(#nightStaked,#nightAvailable,#nightReward){
+  font-size:19px!important;
+ }
+}
+@media(min-width:700px) and (min-height:900px) and (orientation:portrait){
+ html[data-inj-page="night-view"] .price-value{
+  font-size:clamp(104px,min(16vw,20vh),205px)!important;
+ }
+ html[data-inj-page="night-view"] .totem-card{
+  min-height:clamp(145px,17vh,210px);
+ }
+}
