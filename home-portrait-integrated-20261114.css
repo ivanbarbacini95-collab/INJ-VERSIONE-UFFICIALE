@@ -1,0 +1,120 @@
+/* INJ Node Official · 2026-11-14
+   Tall desktop portrait: use the full column for the live chart and seat
+   the three Home destinations in a single integrated strip above the dock.
+   Scoped away from phones, Lite, onboarding and other tabs. */
+@media screen and (min-width:900px) and (min-height:700px) and (orientation:portrait) {
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access){
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:"title" "wallet" "overview" "price" "metrics" "actions" "note"!important;
+    grid-template-rows:auto auto auto minmax(220px,1fr) auto auto auto!important;
+    align-content:stretch!important;
+    align-items:stretch!important;
+    row-gap:0!important;
+    height:calc(100dvh - 118px - env(safe-area-inset-bottom,0px))!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding-bottom:0!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-wallet-section{
+    margin-bottom:clamp(7px,1dvh,16px)!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryOverview.entry-overview{
+    align-self:stretch!important;
+    margin-top:0!important;
+    margin-bottom:0!important;
+    min-height:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card{
+    display:flex!important;
+    flex-direction:column!important;
+    align-self:stretch!important;
+    height:100%!important;
+    min-height:220px!important;
+    max-height:none!important;
+    margin-top:0!important;
+    margin-bottom:0!important;
+    overflow:hidden!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights .entry-sparkline.entry-price-chart{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights #entrySparkStage.entry-spark-stage{
+    flex:1 1 auto!important;
+    height:100%!important;
+    min-height:0!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryDesktopMetrics.entry-desktop-metrics{
+    align-self:end!important;
+    min-height:0!important;
+    margin-top:clamp(12px,1.4dvh,24px)!important;
+    margin-bottom:clamp(10px,1.2dvh,20px)!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44{
+    --inj-pro-link-height:clamp(76px,6dvh,100px);
+    display:grid!important;
+    grid-area:actions!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:var(--inj-pro-link-height)!important;
+    grid-auto-rows:0!important;
+    align-self:end!important;
+    height:var(--inj-pro-link-height)!important;
+    min-height:var(--inj-pro-link-height)!important;
+    max-height:var(--inj-pro-link-height)!important;
+    gap:0!important;
+    margin:0!important;
+    padding:0!important;
+    border-top:1px solid color-mix(in srgb,var(--accent) 22%,var(--line))!important;
+    border-bottom:1px solid color-mix(in srgb,var(--accent) 17%,var(--line))!important;
+    border-radius:0!important;
+    background:color-mix(in srgb,var(--surface) 94%,var(--theme-canvas))!important;
+    overflow:hidden!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action{
+    display:flex!important;
+    position:relative!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    grid-row:1!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    width:100%!important;
+    margin:0!important;
+    padding:8px 6px!important;
+    gap:5px!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    transform:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action::after{
+    content:""!important;
+    position:absolute!important;
+    display:block!important;
+    right:0!important;
+    top:23%!important;
+    bottom:23%!important;
+    width:1px!important;
+    height:auto!important;
+    border:0!important;
+    background:color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+    opacity:.75!important;
+    pointer-events:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action:hover{
+    background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) .entry-action-arrow{
+    display:none!important;
+  }
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-note{display:none!important}
+}
