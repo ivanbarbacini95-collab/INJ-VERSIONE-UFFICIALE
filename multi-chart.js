@@ -16,11 +16,15 @@
     {id:'1M',name:'1 MESE',nameEn:'1 MONTH',interval:'1M',ms:null}
   ];
   const groups = [defs.slice(0,2),defs.slice(2,4),defs.slice(4,6),defs.slice(6,8)];
+  // Desktop / external monitors show all eight existing timeframe charts.
+  // Narrow and short phone viewports retain the original swipeable pairs.
+  const desktopMedia=window.matchMedia('(min-width:900px) and (min-height:600px)');
+  const allCharts=()=>desktopMedia.matches;
   const cards = new Map();
   const state = {
     page:0,style:'candles',series:new Map(),loading:new Map(),lastLoad:new Map(),
     socket:null,lastTradeAt:0,reconnectTimer:0,retries:0,drawFrame:0,lastDraw:0,
-    zoom:null,resizeObserver:null,trades:[],closed:false,
+    zoom:null,resizeObserver:null,trades:[],closed:false,desktopMode:allCharts(),
     quote:NaN,shownQuote:NaN,lastQuoteChangeAt:0,quoteResetTimer:0
   };
   const rail = $('mcRail');
@@ -86,9 +90,9 @@
     queueDraw(true);
   }
   function setPage(page,move){
-    const next=Math.max(0,Math.min(groups.length-1,page));
+    const next=allCharts()?0:Math.max(0,Math.min(groups.length-1,page));
     state.page=next;
-    $('mcRangeHeading').textContent=['1m · 5m','15m · 1H','4H · 1D','1W · 1M'][next];
+    $('mcRangeHeading').textContent=allCharts()?'8 TF · 1m – 1M':['1m · 5m','15m · 1H','4H · 1D','1W · 1M'][next];
     $('mcPrev').disabled=next===0;
     $('mcNext').disabled=next===groups.length-1;
     document.querySelectorAll('.mc-dots button').forEach(button=>{
@@ -96,7 +100,7 @@
       button.classList.toggle('active',current);
       if(current)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
     });
-    if(move)rail.scrollTo({left:rail.clientWidth*next,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    if(move&&!allCharts())rail.scrollTo({left:rail.clientWidth*next,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
     ensureGroup(next);
     queueDraw(true);
   }
@@ -182,11 +186,11 @@
   }
   async function ensureGroup(index,force=false){
     if(!visible())return;
-    const list=groups[index];
-    // Two parallel REST requests at a time; the other page remains dormant.
+    const list=allCharts()?defs:groups[index];
+    // On monitors load all visible frames; on phones keep other pages dormant.
     let cursor=0;
     async function worker(){
-      while(cursor<list.length&&visible()&&state.page===index){
+      while(cursor<list.length&&visible()&&(allCharts()||state.page===index)){
         const def=list[cursor++];
         await ensureSeries(def,force);
       }
@@ -226,7 +230,7 @@
     const accent=styles.getPropertyValue('--mc-accent').trim()||green;
     // External portrait/landscape displays use a dedicated candle geometry.
     // Keep phone canvases and their original 7px candle cap unchanged.
-    const externalDisplay=window.innerWidth>=700 && window.innerHeight>=650 && width>=550;
+    const externalDisplay=(allCharts() && width>=220) || (window.innerWidth>=700 && window.innerHeight>=650 && width>=550);
     const portraitDisplay=window.innerHeight>window.innerWidth;
     const left=expanded?12:5,right=width-(externalDisplay? (expanded?80:72) : (expanded?57:45));
     const top=expanded?14:7,bottom=height-(externalDisplay? (expanded?36:30) : (expanded?29:21));
@@ -301,7 +305,7 @@
   function drawVisible(){
     if(!visible())return;
     paintQuote();
-    for(const def of groups[state.page]){
+    for(const def of (allCharts()?defs:groups[state.page])){
       const card=cards.get(def.id);
       if(card){updateChange(def);draw(card.canvas,def);}
     }
@@ -450,6 +454,7 @@
     button.addEventListener('click',()=>setPage(Number(button.dataset.page),true));
   });
   rail.addEventListener('scroll',()=>{
+    if(allCharts())return;
     const page=Math.round(rail.scrollLeft/Math.max(1,rail.clientWidth));
     if(page!==state.page)setPage(page,false);
   },{passive:true});
@@ -465,7 +470,13 @@
     state.resizeObserver.observe($('mcZoomCanvas').parentElement);
   }else window.addEventListener('resize',()=>queueDraw(true),{passive:true});
   window.addEventListener('resize',()=>{
-    rail.scrollTo({left:rail.clientWidth*state.page,behavior:'auto'});
+    if(state.desktopMode!==allCharts()){
+      state.desktopMode=allCharts();
+      rail.scrollTo({left:0,behavior:'auto'});
+      setPage(0,false);
+    }else if(!allCharts()){
+      rail.scrollTo({left:rail.clientWidth*state.page,behavior:'auto'});
+    }
     queueDraw(true);
   },{passive:true});
   document.addEventListener('visibilitychange',()=>{
@@ -501,7 +512,7 @@
   setInterval(()=>{
     if(!visible())return;
     updateFeed();
-    const stale=groups[state.page].some(d=>Date.now()-(state.lastLoad.get(d.id)||0)>90000);
+    const stale=(allCharts()?defs:groups[state.page]).some(d=>Date.now()-(state.lastLoad.get(d.id)||0)>90000);
     if(stale)ensureGroup(state.page,true);
     if(!state.socket||state.socket.readyState===WebSocket.CLOSED)connectSocket();
   },30000);
