@@ -104,18 +104,20 @@
       markIds('rewardsList', 'region');
       markIds('rewardEditorAddress rewardEditorInput', 'input');
     } else if (page === 'reward-ladder') {
-      markIds('ladderWalletName ladderRewardValue ladderRewardInj ladderStaked');
+      markIds('ladderWalletName ladderRewardValue ladderRewardInj ladderStaked ladderRate ladderNextTarget');
+      markIds('ladderSteps','region');
       markIds('ladderWalletPicker', 'input');
-      mark('.ladder-goal-editor-row input', 'input');
+      mark('.ladder-goal-editor-row input, #ladderGoalInput', 'input');
     } else if (page === 'night-view') {
-      markIds('nightStaked nightStakedFiat nightReward nightRewardFiat nightWalletScope');
+      markIds('nightStaked nightStakedFiat nightAvailable nightAvailableFiat nightReward nightRewardFiat');
     } else if (page === 'financial-freedom') {
       markIds('freedomWallet freedomCoverage freedomGoal freedomWorth freedomInj freedomDay freedomDayInj freedomMonth freedomSpendingTotal freedomStressCoverage freedomBudget freedomTargetInj freedomMissingInj freedomTier freedomSpendingSummaryCoverage');
       markIds('freedomTierTrack freedomLifestyle', 'region');
       markIds('freedomSpendingPrice', 'input');
     } else if (page === 'visualize-wealth') {
-      markIds('wealthTotal wealthTotalDetail wealthStaked wealthStakedDetail wealthAllWorth wealthAllStake wealthAllStakeInj wealthGrowthPointSimpleDaily wealthGrowthPointSimpleTotal wealthGrowthPointCompoundDaily wealthGrowthPointCompoundTotal wealthGrowthSimpleValue wealthGrowthSimpleFiat wealthGrowthCompoundValue wealthGrowthCompoundFiat wealthGrowthExtra wealthGrowthFinal wealthGrowthDaily wealthGrowthStart');
+      markIds('wealthWalletLabel wealthIncomeSelectedName wealthTotal wealthTotalDetail wealthStaked wealthStakedDetail wealthAllWorth wealthAllInj wealthAllStake wealthAllStakeInj wealthIncomeSelected1h wealthIncomeSelected1d wealthIncomeSelected1w wealthIncomeSelected1m wealthIncomeSelected1y wealthIncomeAll1h wealthIncomeAll1d wealthIncomeAll1w wealthIncomeAll1m wealthIncomeAll1y wealthGrowthPointSimpleDaily wealthGrowthPointSimpleTotal wealthGrowthPointCompoundDaily wealthGrowthPointCompoundTotal wealthGrowthSimpleValue wealthGrowthSimpleFiat wealthGrowthCompoundValue wealthGrowthCompoundFiat wealthGrowthExtra wealthGrowthFinal wealthGrowthDaily wealthGrowthStart');
       markIds('wealthGrowthPlot', 'region');
+      mark('.wealth-income-grid', 'region');
       markIds('wealthGrowthSimpleBar wealthGrowthCompoundBar', 'graphic');
     } else if (page === 'comparison') {
       markIds('capBarSourceValue capBarTargetValue capWalletName capWalletInj capWalletNow capWalletFuture');
@@ -132,6 +134,10 @@
       markIds('walletResult savedWalletStatus myRank');
       markIds('delegatorList', 'region');
       markIds('walletAddress', 'input');
+    } else if (page === 'cloud-sync') {
+      markIds('csPortableOutput csPortableInput', 'input');
+      markIds('csPortablePreview', 'region');
+      markIds('csLocalCount csCloudDifference');
     } else if (page === 'workspace') {
       markIds('wsSpecificWallet wsPromptValue');
       mark('.ws-card .private', 'value');
