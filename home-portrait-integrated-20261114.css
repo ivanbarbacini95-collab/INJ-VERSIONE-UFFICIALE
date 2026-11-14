@@ -2,7 +2,8 @@
    Tall desktop portrait: use the full column for the live chart and seat
    the three Home destinations in a single integrated strip above the dock.
    Scoped away from phones, Lite, onboarding and other tabs. */
-@media screen and (min-width:900px) and (min-height:700px) and (orientation:portrait) {
+@media screen and (min-width:900px) and (min-height:700px) and (orientation:portrait),
+       screen and (min-width:700px) and (min-height:900px) and (orientation:portrait) and (pointer:fine) {
   html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access){
     display:grid!important;
     grid-template-columns:minmax(0,1fr)!important;
@@ -18,7 +19,11 @@
     box-sizing:border-box!important;
     overflow:visible!important;
   }
-  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-wallet-section{
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-wallet-section{grid-area:wallet!important}
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryOverview{grid-area:overview!important}
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryInsights{grid-area:price!important}
+  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryDesktopMetrics{grid-area:metrics!important}
+    html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-wallet-section{
     margin-bottom:clamp(7px,1dvh,16px)!important;
   }
   html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > #entryOverview.entry-overview{
