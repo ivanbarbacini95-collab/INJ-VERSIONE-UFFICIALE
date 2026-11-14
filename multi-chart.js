@@ -18,7 +18,7 @@
   const groups = [defs.slice(0,2),defs.slice(2,4),defs.slice(4,6),defs.slice(6,8)];
   // Desktop / external monitors show all eight existing timeframe charts.
   // Narrow and short phone viewports retain the original swipeable pairs.
-  const desktopMedia=window.matchMedia('(min-width:900px) and (min-height:600px)');
+  const desktopMedia=window.matchMedia('(min-width:900px) and (min-height:600px), (min-width:700px) and (min-height:900px) and (pointer:fine)');
   const allCharts=()=>desktopMedia.matches;
   const cards = new Map();
   const state = {
