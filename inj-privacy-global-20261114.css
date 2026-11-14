@@ -134,3 +134,48 @@ html[data-inj-privacy="on"][data-inj-page="workspace"] :is(#wsTransferCode,#wsSo
 html[data-inj-privacy="on"][data-inj-page="validators"] #validatorList small {
   visibility:hidden!important;
 }
+
+/* Saved delegator records are injected after initial page load.
+   Hide saved-wallet amounts/addresses even when the rows are dynamically rebuilt. */
+html[data-inj-privacy="on"][data-inj-page="validators"] :is(
+  .my-rank-entry.saved,.delegator-row.saved,.wallet-item
+){
+  position:relative!important;
+  visibility:hidden!important;
+  user-select:none!important;
+}
+html[data-inj-privacy="on"][data-inj-page="validators"] :is(
+  .my-rank-entry.saved,.delegator-row.saved,.wallet-item
+)::after{
+  content:"•••••"!important;
+  visibility:visible!important;
+  position:absolute!important;
+  inset:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  color:var(--text,#cbd3d6)!important;
+  -webkit-text-fill-color:currentColor!important;
+  font:600 13px/1.2 var(--inj-chosen-face,system-ui,sans-serif)!important;
+  letter-spacing:.14em!important;
+  background:transparent!important;
+  pointer-events:none!important;
+}
+/* Dynamic Workspace widgets can rebuild after boot. Keep personal values
+   masked regardless of whether their original nodes were present at setup. */
+html[data-inj-privacy="on"][data-inj-page="workspace"] .ws-card .private{
+  position:relative!important;visibility:hidden!important;
+}
+html[data-inj-privacy="on"][data-inj-page="workspace"] .ws-card .private::after{
+  content:"•••••"!important;
+  visibility:visible!important;
+  position:absolute!important;
+  left:50%!important;top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  color:var(--text,#cbd3d6)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:transparent!important;
+  font:600 13px/1.2 var(--inj-chosen-face,system-ui,sans-serif)!important;
+  letter-spacing:.13em!important;
+  pointer-events:none!important;
+}
