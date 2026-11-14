@@ -62,7 +62,8 @@ html[data-theme="arctic"],html[data-theme="classic-white"]{--mc-price-line:#b987
 
 /* Desktop and external monitors: one native screen for all eight timeframes.
    Narrow mobile stays on the existing swipeable two-card pages. */
-@media screen and (min-width:900px) and (min-height:600px){
+@media screen and (min-width:900px) and (min-height:600px),
+       screen and (min-width:700px) and (min-height:900px) and (pointer:fine){
   html[data-inj-page="multi-chart"] .mc-main{min-height:0;overflow:hidden}
   html[data-inj-page="multi-chart"] .mc-rail{
     display:grid;
