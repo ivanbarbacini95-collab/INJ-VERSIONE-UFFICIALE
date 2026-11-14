@@ -97,3 +97,40 @@ html[data-inj-privacy="on"][data-inj-page="command-center"] .cc-validator-list {
 html[data-inj-privacy="on"] .inj-global-privacy-indicator {
   color:var(--muted,#aab7bd)!important;
 }
+/* Additional guarded areas: Workspace widgets are composed dynamically after
+   page load, and portable backups / admin wallet rows contain identifiers. */
+html[data-inj-privacy="on"][data-inj-page="workspace"] #wsGrid .ws-card-body,
+html[data-inj-privacy="on"][data-inj-page="admin-insights"] :is(#proWallets,#topWallets) {
+  position:relative!important;
+  visibility:hidden!important;
+  min-height:46px!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+html[data-inj-privacy="on"][data-inj-page="workspace"] #wsGrid .ws-card-body::after,
+html[data-inj-privacy="on"][data-inj-page="admin-insights"] :is(#proWallets,#topWallets)::after {
+  content:"•••••"!important;
+  position:absolute!important;
+  z-index:12!important;
+  inset:0!important;
+  display:flex!important;
+  visibility:visible!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font:600 17px/1.2 var(--inj-chosen-face,system-ui,sans-serif)!important;
+  letter-spacing:.15em!important;
+  color:var(--muted,var(--fg,#aab7bd))!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:transparent!important;
+  pointer-events:none!important;
+}
+html[data-inj-privacy="on"][data-inj-page="cloud-sync"] :is(#csPortableOutput,#csPortableInput),
+html[data-inj-privacy="on"][data-inj-page="workspace"] :is(#wsTransferCode,#wsSource,#wsSpecificWallet) {
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  text-shadow:none!important;
+  caret-color:transparent!important;
+}
+html[data-inj-privacy="on"][data-inj-page="validators"] #validatorList small {
+  visibility:hidden!important;
+}
