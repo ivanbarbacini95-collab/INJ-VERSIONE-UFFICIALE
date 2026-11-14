@@ -21,7 +21,7 @@
   const load = (k, fallback) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; } catch (_) { return fallback; } };
   const fmt = (n, places = 2) => Number(n).toLocaleString(state.lang === 'it' ? 'it-IT' : 'en-US',{ minimumFractionDigits: places, maximumFractionDigits: places });
   const money = (n, c = 'USD') => (c === 'EUR' ? '€ ' : '$ ') + fmt(n);
-  const shown = (v) => state.privacy ? '••••••' : v;
+  const shown = (v) => (state.privacy || document.documentElement.dataset.injPrivacy === 'on') ? '••••••' : v;
   const updateTexts = () => {
     document.querySelectorAll('[data-cash-it]').forEach((node) => {
       const label = state.lang === 'en' ? node.dataset.cashEn : node.dataset.cashIt;
@@ -487,7 +487,7 @@
   function boot() {
     state.history = (load(historyKey(),[]) || []).filter(p=>Number.isFinite(p?.t)&&Number.isFinite(p?.v)&&p.v>=0).sort((a,b)=>a.t-b.t).slice(-12000);
     state.target = Math.max(0,Number(load(KEY_TARGET,0))||0);
-    state.privacy = !!load(KEY_PRIVACY,false);
+    state.privacy = document.documentElement.dataset.injPrivacy === 'on';
     $('cashPrivacy').setAttribute('aria-pressed',String(state.privacy));
     $('cashGoalForm').addEventListener('submit',event=>{
       event.preventDefault();
@@ -497,8 +497,18 @@
     });
     $('cashPrivacy').addEventListener('click',()=>{
       state.privacy = !state.privacy;
-      store(KEY_PRIVACY,state.privacy);
+      if (window.INJPrivacy) window.INJPrivacy.set(state.privacy);
+      else {
+        try { localStorage.setItem('inj_monitor_privacy',state.privacy?'1':'0'); } catch (_) {}
+        document.documentElement.dataset.injPrivacy = state.privacy?'on':'off';
+        document.body.classList.toggle('privacy-on',state.privacy);
+      }
       $('cashPrivacy').setAttribute('aria-pressed',String(state.privacy));render();
+    });
+    window.addEventListener('inj:privacy',event=>{
+      state.privacy = !!event.detail?.active;
+      $('cashPrivacy').setAttribute('aria-pressed',String(state.privacy));
+      render();
     });
     $('cashCurrency').addEventListener('change',event=>{
       state.currency = event.target.value;

@@ -1,0 +1,99 @@
+/* INJ NODE · unified, presentation-only privacy across standalone pages.
+   No holdings are modified: this masks visual output, not underlying data. */
+html[data-inj-privacy="on"] [data-inj-privacy-mask="value"] {
+  position:relative!important;
+  visibility:hidden!important;
+  text-shadow:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+html[data-inj-privacy="on"] [data-inj-privacy-mask="value"]::after {
+  content:"•••••"!important;
+  position:absolute!important;
+  z-index:5!important;
+  top:50%!important;
+  left:50%!important;
+  transform:translate(-50%,-50%)!important;
+  display:inline-block!important;
+  visibility:visible!important;
+  width:max-content!important;
+  max-width:100%!important;
+  color:var(--text,var(--fg,#e3e7ea))!important;
+  -webkit-text-fill-color:currentColor!important;
+  font:600 clamp(13px,.72em,26px)/1.15 var(--inj-chosen-face,system-ui,sans-serif)!important;
+  letter-spacing:.13em!important;
+  white-space:nowrap!important;
+  text-shadow:none!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  pointer-events:none!important;
+}
+html[data-inj-privacy="on"] [data-inj-privacy-mask="region"] {
+  position:relative!important;
+  visibility:hidden!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+html[data-inj-privacy="on"] [data-inj-privacy-mask="region"]::after {
+  content:"•••••"!important;
+  display:flex!important;
+  visibility:visible!important;
+  position:absolute!important;
+  z-index:10!important;
+  inset:0!important;
+  justify-content:center!important;
+  align-items:center!important;
+  color:var(--muted,var(--fg,#aab7bd))!important;
+  -webkit-text-fill-color:currentColor!important;
+  font:600 clamp(13px,1.8vw,21px)/1.2 var(--inj-chosen-face,system-ui,sans-serif)!important;
+  letter-spacing:.18em!important;
+  white-space:nowrap!important;
+  background:transparent!important;
+  pointer-events:none!important;
+}
+html[data-inj-privacy="on"] [data-inj-privacy-mask="graphic"] {
+  visibility:hidden!important;
+  opacity:0!important;
+}
+html[data-inj-privacy="on"] [data-inj-privacy-mask="input"] {
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  text-shadow:none!important;
+  caret-color:transparent!important;
+}
+html[data-inj-privacy="on"] [data-inj-privacy-mask="input"]::placeholder {
+  color:var(--muted,#aab7bd)!important;
+  -webkit-text-fill-color:var(--muted,#aab7bd)!important;
+}
+html[data-inj-privacy="on"] [data-inj-privacy-mask="input"] option {
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+}
+/* Treasury: conceal underlying graph coordinates, colored performance cues,
+   tooltips, goal progress and allocation proportions. Public INJ price stays live. */
+html[data-inj-privacy="on"][data-inj-page="treasury"] :is(
+  #treasurySparkTooltip,#treasuryWorthTooltip,.treasury-chart-live-dot,
+  .treasury-spark-cursor,.treasury-worth-axis,
+  .treasury-ownership-track > *,#cashChartDetail
+){visibility:hidden!important;opacity:0!important;}
+html[data-inj-privacy="on"][data-inj-page="treasury"] :is(
+  .treasury-hero-pnl,.treasury-performance-cell,.treasury-performance-insights,
+  .treasury-allocation-row
+){color:var(--muted,#9ba9ae)!important;text-shadow:none!important;}
+html[data-inj-privacy="on"][data-inj-page="treasury"] :is(
+  .treasury-progress > i,.cash-reserve-progress > div
+){visibility:hidden!important;opacity:0!important;}
+html[data-inj-privacy="on"][data-inj-page="treasury"] #cashReservePanel :is(
+  .cash-token-list,.cash-yield-list
+){min-height:52px!important;}
+/* Hide saved account identity inside wallet selection surfaces. */
+html[data-inj-privacy="on"][data-inj-page="all-transactions"] :is(
+  .wallet-mask,.tx-info,.tx-field div,.tx-amount,.overview-line strong,.overview-amount
+){color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important;}
+html[data-inj-privacy="on"][data-inj-page="command-center"] .cc-validator-list {
+  visibility:hidden!important;
+}
+html[data-inj-privacy="on"] .inj-global-privacy-indicator {
+  color:var(--muted,#aab7bd)!important;
+}
