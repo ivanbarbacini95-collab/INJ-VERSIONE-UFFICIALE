@@ -1,644 +1,8 @@
 {
   "schema": 1,
-  "generatedAt": "2026-11-14T01:48:23.843Z",
+  "generatedAt": "2026-11-14T08:09:35.582Z",
   "type": "static-snapshot",
   "groups": {
-    "stocks": {
-      "quotes": [
-        {
-          "id": "aapl",
-          "name": "Apple",
-          "symbol": "AAPL",
-          "price": 356.27,
-          "change": 0.39168169522092455,
-          "previous": 354.88,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "msft",
-          "name": "Microsoft",
-          "symbol": "MSFT",
-          "price": 523.88,
-          "change": 0.1682600382409083,
-          "previous": 523,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nvda",
-          "name": "NVIDIA",
-          "symbol": "NVDA",
-          "price": 162.85,
-          "change": -2.009747878933754,
-          "previous": 166.19,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "jpm",
-          "name": "JPMorgan",
-          "symbol": "JPM",
-          "price": 346.19,
-          "change": 0.9830231608424223,
-          "previous": 342.82,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "bac",
-          "name": "Bank of America",
-          "symbol": "BAC",
-          "price": 51.02,
-          "change": 1.0097010492971847,
-          "previous": 50.51,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "xom",
-          "name": "ExxonMobil",
-          "symbol": "XOM",
-          "price": 170.59,
-          "change": 0.47708799623040754,
-          "previous": 169.78,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "cvx",
-          "name": "Chevron",
-          "symbol": "CVX",
-          "price": 219.89,
-          "change": 1.6362375779986005,
-          "previous": 216.35,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "lly",
-          "name": "Eli Lilly",
-          "symbol": "LLY",
-          "price": 1443.5,
-          "change": 1.2591631300199913,
-          "previous": 1425.55,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "jnj",
-          "name": "Johnson & Johnson",
-          "symbol": "JNJ",
-          "price": 285.75,
-          "change": 0.786540632054189,
-          "previous": 283.52,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "cat",
-          "name": "Caterpillar",
-          "symbol": "CAT",
-          "price": 600.2,
-          "change": -0.8392809939201551,
-          "previous": 605.28,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "ge",
-          "name": "GE Aerospace",
-          "symbol": "GE",
-          "price": 331.81,
-          "change": 0.2871305083721243,
-          "previous": 330.86,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "amzn",
-          "name": "Amazon",
-          "symbol": "AMZN",
-          "price": 266.66,
-          "change": -0.29165420281183074,
-          "previous": 267.44,
-          "time": 1794604500,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "tsla",
-          "name": "Tesla",
-          "symbol": "TSLA",
-          "price": 390.22,
-          "change": -1.8190967417285098,
-          "previous": 397.45,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "wmt",
-          "name": "Walmart",
-          "symbol": "WMT",
-          "price": 128.09,
-          "change": 1.5056660591172166,
-          "previous": 126.19,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "cost",
-          "name": "Costco",
-          "symbol": "COST",
-          "price": 1106.21,
-          "change": 1.2818047811318234,
-          "previous": 1092.21,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nee",
-          "name": "NextEra Energy",
-          "symbol": "NEE",
-          "price": 85.12,
-          "change": -0.19931996717083011,
-          "previous": 85.29,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "duk",
-          "name": "Duke Energy",
-          "symbol": "DUK",
-          "price": 129.16,
-          "change": 1.2940161555956342,
-          "previous": 127.51,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "googl",
-          "name": "Alphabet",
-          "symbol": "GOOGL",
-          "price": 295.77,
-          "change": -0.9809173083361267,
-          "previous": 298.7,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "meta",
-          "name": "Meta",
-          "symbol": "META",
-          "price": 641.69,
-          "change": 2.8992479273905136,
-          "previous": 623.61,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "amt",
-          "name": "American Tower",
-          "symbol": "AMT",
-          "price": 191.64,
-          "change": 0.9747615785868469,
-          "previous": 189.79,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "lin",
-          "name": "Linde",
-          "symbol": "LIN",
-          "price": 526.06,
-          "change": 0.6832666653907138,
-          "previous": 522.49,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "fcx",
-          "name": "Freeport-McMoRan",
-          "symbol": "FCX",
-          "price": 59.24,
-          "change": -2.001654259718777,
-          "previous": 60.45,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "adbe",
-          "name": "Adobe",
-          "symbol": "ADBE",
-          "price": 243.08,
-          "change": 1.9032447388278806,
-          "previous": 238.54,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "crm",
-          "name": "Salesforce",
-          "symbol": "CRM",
-          "price": 217.84,
-          "change": 0.12409799145103317,
-          "previous": 217.57,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "gs",
-          "name": "Goldman Sachs",
-          "symbol": "GS",
-          "price": 916.56,
-          "change": 0.32399299474605847,
-          "previous": 913.6,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "v",
-          "name": "Visa",
-          "symbol": "V",
-          "price": 425.76,
-          "change": 1.296661987580583,
-          "previous": 420.31,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "slb",
-          "name": "SLB",
-          "symbol": "SLB",
-          "price": 51.67,
-          "change": 1.492830485169927,
-          "previous": 50.91,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "abbv",
-          "name": "AbbVie",
-          "symbol": "ABBV",
-          "price": 295.03,
-          "change": 0.19697741552044956,
-          "previous": 294.45,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "de",
-          "name": "Deere",
-          "symbol": "DE",
-          "price": 673.54,
-          "change": -0.7734350830153613,
-          "previous": 678.79,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "hd",
-          "name": "Home Depot",
-          "symbol": "HD",
-          "price": 348.69,
-          "change": 0.1234709699649672,
-          "previous": 348.26,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "pg",
-          "name": "Procter & Gamble",
-          "symbol": "PG",
-          "price": 169.8,
-          "change": 1.053383324406365,
-          "previous": 168.03,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "pld",
-          "name": "Prologis",
-          "symbol": "PLD",
-          "price": 128.67,
-          "change": 0.09334889148189252,
-          "previous": 128.55,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nue",
-          "name": "Nucor",
-          "symbol": "NUE",
-          "price": 251.73,
-          "change": -3.4592521572387347,
-          "previous": 260.75,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nflx",
-          "name": "Netflix",
-          "symbol": "NFLX",
-          "price": 62.15,
-          "change": -0.8613814005423492,
-          "previous": 62.69,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "orcl",
-          "name": "Oracle",
-          "symbol": "ORCL",
-          "price": 125.35,
-          "change": -1.3846274880025211,
-          "previous": 127.11,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "avgo",
-          "name": "Broadcom",
-          "symbol": "AVGO",
-          "price": 347.01,
-          "change": -4.761774069601499,
-          "previous": 364.36,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "ms",
-          "name": "Morgan Stanley",
-          "symbol": "MS",
-          "price": 190.65,
-          "change": 0.7823650684569472,
-          "previous": 189.17,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "blk",
-          "name": "BlackRock",
-          "symbol": "BLK",
-          "price": 1222.91,
-          "change": 0.517832337396551,
-          "previous": 1216.61,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "cop",
-          "name": "ConocoPhillips",
-          "symbol": "COP",
-          "price": 142.28,
-          "change": 1.5850349850064172,
-          "previous": 140.06,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "eog",
-          "name": "EOG Resources",
-          "symbol": "EOG",
-          "price": 158.32,
-          "change": 1.7349955018635121,
-          "previous": 155.62,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "mrk",
-          "name": "Merck",
-          "symbol": "MRK",
-          "price": 147.76,
-          "change": 0.5512078938414433,
-          "previous": 146.95,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "unh",
-          "name": "UnitedHealth",
-          "symbol": "UNH",
-          "price": 407.46,
-          "change": 0.5751240342606101,
-          "previous": 405.13,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "hon",
-          "name": "Honeywell",
-          "symbol": "HON",
-          "price": 222.46,
-          "change": -0.1301907968574545,
-          "previous": 222.75,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "ups",
-          "name": "UPS",
-          "symbol": "UPS",
-          "price": 112.4,
-          "change": 1.8300416742163428,
-          "previous": 110.38,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "mcd",
-          "name": "McDonald's",
-          "symbol": "MCD",
-          "price": 271.97,
-          "change": -0.6066586266125662,
-          "previous": 273.63,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nke",
-          "name": "Nike",
-          "symbol": "NKE",
-          "price": 37.99,
-          "change": 0.6091101694915446,
-          "previous": 37.76,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "ko",
-          "name": "Coca-Cola",
-          "symbol": "KO",
-          "price": 99.25,
-          "change": 1.8575533661740584,
-          "previous": 97.44,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "pep",
-          "name": "PepsiCo",
-          "symbol": "PEP",
-          "price": 145.44,
-          "change": 2.235343736819906,
-          "previous": 142.26,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "so",
-          "name": "Southern Company",
-          "symbol": "SO",
-          "price": 93.59,
-          "change": 1.2112036336109133,
-          "previous": 92.47,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "exc",
-          "name": "Exelon",
-          "symbol": "EXC",
-          "price": 46.25,
-          "change": 1.3587552049090457,
-          "previous": 45.63,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "eqix",
-          "name": "Equinix",
-          "symbol": "EQIX",
-          "price": 1053.79,
-          "change": -1.7692515637089068,
-          "previous": 1072.77,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "o",
-          "name": "Realty Income",
-          "symbol": "O",
-          "price": 58.82,
-          "change": -0.7424907188660068,
-          "previous": 59.26,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "shw",
-          "name": "Sherwin-Williams",
-          "symbol": "SHW",
-          "price": 349.89,
-          "change": -0.1996634245129636,
-          "previous": 350.59,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "apd",
-          "name": "Air Products",
-          "symbol": "APD",
-          "price": 316.53,
-          "change": 0.10436432637570547,
-          "previous": 316.2,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "dis",
-          "name": "Walt Disney",
-          "symbol": "DIS",
-          "price": 118.97,
-          "change": 0.6258986720798498,
-          "previous": 118.23,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "t",
-          "name": "AT&T",
-          "symbol": "T",
-          "price": 22.18,
-          "change": 0,
-          "previous": 22.18,
-          "time": 1794604200,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "tmus",
-          "name": "T-Mobile US",
-          "symbol": "TMUS",
-          "price": 169.95,
-          "change": -0.6314681634800978,
-          "previous": 171.03,
-          "time": 1794603600,
-          "currency": "",
-          "source": "CNBC"
-        }
-      ],
-      "available": 57,
-      "fresh": 57,
-      "updatedAt": "2026-11-14T01:48:24.182Z",
-      "source": "CNBC",
-      "status": "complete"
-    },
     "indices": {
       "quotes": [
         {
@@ -648,7 +12,7 @@
           "price": 7561.67,
           "change": -0.4047468521152675,
           "previous": 7592.4,
-          "time": 1794606199,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -659,7 +23,7 @@
           "price": 25136.273,
           "change": -0.9060126050945194,
           "previous": 25366.093,
-          "time": 1794608159,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -670,7 +34,7 @@
           "price": 52347.55,
           "change": 0.09648720416375323,
           "previous": 52297.09,
-          "time": 1794606206,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -681,7 +45,7 @@
           "price": 2790.489,
           "change": 0,
           "previous": 2790.489,
-          "time": 1794605400,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -692,7 +56,7 @@
           "price": 6386.86,
           "change": -0.18940518645158555,
           "previous": 6398.98,
-          "time": 1794589200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -703,7 +67,7 @@
           "price": 26749.95,
           "change": -0.0819143071013273,
           "previous": 26771.88,
-          "time": 1794589200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -714,7 +78,7 @@
           "price": 8368.91,
           "change": 0.09029631543193695,
           "previous": 8361.36,
-          "time": 1794589502,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -725,7 +89,7 @@
           "price": 10902.56,
           "change": 0.36334044917236685,
           "previous": 10863.09,
-          "time": 1794587700,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -736,7 +100,7 @@
           "price": 61142.35,
           "change": 0.5310644505302164,
           "previous": 60819.36,
-          "time": 1794552303,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -747,7 +111,7 @@
           "price": 23637.6,
           "change": -1.545074567185445,
           "previous": 24008.55,
-          "time": 1794557320,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -758,7 +122,7 @@
           "price": 25144.3,
           "change": -0.6128615952583738,
           "previous": 25299.35,
-          "time": 1794563884,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -769,7 +133,7 @@
           "price": 9082.2,
           "change": -0.7062579262692825,
           "previous": 9146.8,
-          "time": 1794550034,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -780,7 +144,7 @@
           "price": 172457.76,
           "change": 0.6615815350430987,
           "previous": 171324.31,
-          "time": 1794604680,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -791,7 +155,7 @@
           "price": 27943.736,
           "change": -1.2211449830231924,
           "previous": 28289.188,
-          "time": 1794608159,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -802,7 +166,7 @@
           "price": 19.3,
           "change": 3.208556149732633,
           "previous": 18.7,
-          "time": 1794604501,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -813,7 +177,7 @@
           "price": 20020.1,
           "change": 0.2734717387493424,
           "previous": 19965.5,
-          "time": 1794587730,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -824,7 +188,7 @@
           "price": 15106.12,
           "change": -0.2858853435409703,
           "previous": 15149.43,
-          "time": 1794587400,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -835,14 +199,14 @@
           "price": 3634.353,
           "change": -0.5874726122385265,
           "previous": 3655.83,
-          "time": 1794553200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         }
       ],
       "available": 18,
       "fresh": 18,
-      "updatedAt": "2026-11-14T01:48:24.228Z",
+      "updatedAt": "2026-11-14T08:09:35.801Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -855,7 +219,7 @@
           "price": 170.28,
           "change": -2.0084019105714557,
           "previous": 173.77,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -866,7 +230,7 @@
           "price": 58.68,
           "change": 0.8074214052568252,
           "previous": 58.21,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -877,7 +241,7 @@
           "price": 64.96,
           "change": 0.9793253536452662,
           "previous": 64.33,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -888,7 +252,7 @@
           "price": 188.85,
           "change": 0.5430442421338277,
           "previous": 187.83,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -899,7 +263,7 @@
           "price": 168.78,
           "change": -0.38951841359773365,
           "previous": 169.44,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -910,7 +274,7 @@
           "price": 119.98,
           "change": -0.39847252199899375,
           "previous": 120.46,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -921,7 +285,7 @@
           "price": 92.35,
           "change": 1.416648363716222,
           "previous": 91.06,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -932,7 +296,7 @@
           "price": 44.04,
           "change": 0.5249942935402707,
           "previous": 43.81,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -943,7 +307,7 @@
           "price": 44.37,
           "change": 0.02254283137961277,
           "previous": 44.36,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -954,7 +318,7 @@
           "price": 52.23,
           "change": -0.21016431027895965,
           "previous": 52.34,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -965,7 +329,7 @@
           "price": 108.69,
           "change": 1.0505764224618686,
           "previous": 107.56,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -976,7 +340,7 @@
           "price": 486.75,
           "change": -2.98566958324199,
           "previous": 501.73,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -987,7 +351,7 @@
           "price": 150.55,
           "change": -0.42989417989416356,
           "previous": 151.2,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -998,7 +362,7 @@
           "price": 15.81,
           "change": -0.5660377358490565,
           "previous": 15.9,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1009,7 +373,7 @@
           "price": 71.51,
           "change": -0.3067057019378261,
           "previous": 71.73,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1020,14 +384,650 @@
           "price": 72.74,
           "change": 0.30336458907886943,
           "previous": 72.52,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         }
       ],
       "available": 16,
       "fresh": 16,
-      "updatedAt": "2026-11-14T01:48:24.248Z",
+      "updatedAt": "2026-11-14T08:09:35.821Z",
+      "source": "CNBC",
+      "status": "complete"
+    },
+    "stocks": {
+      "quotes": [
+        {
+          "id": "aapl",
+          "name": "Apple",
+          "symbol": "AAPL",
+          "price": 356.27,
+          "change": 0.39168169522092455,
+          "previous": 354.88,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "msft",
+          "name": "Microsoft",
+          "symbol": "MSFT",
+          "price": 523.88,
+          "change": 0.1682600382409083,
+          "previous": 523,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nvda",
+          "name": "NVIDIA",
+          "symbol": "NVDA",
+          "price": 162.85,
+          "change": -2.009747878933754,
+          "previous": 166.19,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "jpm",
+          "name": "JPMorgan",
+          "symbol": "JPM",
+          "price": 346.19,
+          "change": 0.9830231608424223,
+          "previous": 342.82,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "bac",
+          "name": "Bank of America",
+          "symbol": "BAC",
+          "price": 51.02,
+          "change": 1.0097010492971847,
+          "previous": 50.51,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "xom",
+          "name": "ExxonMobil",
+          "symbol": "XOM",
+          "price": 170.59,
+          "change": 0.47708799623040754,
+          "previous": 169.78,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "cvx",
+          "name": "Chevron",
+          "symbol": "CVX",
+          "price": 219.89,
+          "change": 1.6362375779986005,
+          "previous": 216.35,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "lly",
+          "name": "Eli Lilly",
+          "symbol": "LLY",
+          "price": 1443.5,
+          "change": 1.2591631300199913,
+          "previous": 1425.55,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "jnj",
+          "name": "Johnson & Johnson",
+          "symbol": "JNJ",
+          "price": 285.75,
+          "change": 0.786540632054189,
+          "previous": 283.52,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "cat",
+          "name": "Caterpillar",
+          "symbol": "CAT",
+          "price": 600.2,
+          "change": -0.8392809939201551,
+          "previous": 605.28,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "ge",
+          "name": "GE Aerospace",
+          "symbol": "GE",
+          "price": 331.81,
+          "change": 0.2871305083721243,
+          "previous": 330.86,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "amzn",
+          "name": "Amazon",
+          "symbol": "AMZN",
+          "price": 266.66,
+          "change": -0.29165420281183074,
+          "previous": 267.44,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "tsla",
+          "name": "Tesla",
+          "symbol": "TSLA",
+          "price": 390.22,
+          "change": -1.8190967417285098,
+          "previous": 397.45,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "wmt",
+          "name": "Walmart",
+          "symbol": "WMT",
+          "price": 128.09,
+          "change": 1.5056660591172166,
+          "previous": 126.19,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "cost",
+          "name": "Costco",
+          "symbol": "COST",
+          "price": 1106.21,
+          "change": 1.2818047811318234,
+          "previous": 1092.21,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nee",
+          "name": "NextEra Energy",
+          "symbol": "NEE",
+          "price": 85.12,
+          "change": -0.19931996717083011,
+          "previous": 85.29,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "duk",
+          "name": "Duke Energy",
+          "symbol": "DUK",
+          "price": 129.16,
+          "change": 1.2940161555956342,
+          "previous": 127.51,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "googl",
+          "name": "Alphabet",
+          "symbol": "GOOGL",
+          "price": 295.77,
+          "change": -0.9809173083361267,
+          "previous": 298.7,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "meta",
+          "name": "Meta",
+          "symbol": "META",
+          "price": 641.69,
+          "change": 2.8992479273905136,
+          "previous": 623.61,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "amt",
+          "name": "American Tower",
+          "symbol": "AMT",
+          "price": 191.64,
+          "change": 0.9747615785868469,
+          "previous": 189.79,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "lin",
+          "name": "Linde",
+          "symbol": "LIN",
+          "price": 526.06,
+          "change": 0.6832666653907138,
+          "previous": 522.49,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "fcx",
+          "name": "Freeport-McMoRan",
+          "symbol": "FCX",
+          "price": 59.24,
+          "change": -2.001654259718777,
+          "previous": 60.45,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "adbe",
+          "name": "Adobe",
+          "symbol": "ADBE",
+          "price": 243.08,
+          "change": 1.9032447388278806,
+          "previous": 238.54,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "crm",
+          "name": "Salesforce",
+          "symbol": "CRM",
+          "price": 217.84,
+          "change": 0.12409799145103317,
+          "previous": 217.57,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "gs",
+          "name": "Goldman Sachs",
+          "symbol": "GS",
+          "price": 916.56,
+          "change": 0.32399299474605847,
+          "previous": 913.6,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "v",
+          "name": "Visa",
+          "symbol": "V",
+          "price": 425.76,
+          "change": 1.296661987580583,
+          "previous": 420.31,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "slb",
+          "name": "SLB",
+          "symbol": "SLB",
+          "price": 51.67,
+          "change": 1.492830485169927,
+          "previous": 50.91,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "abbv",
+          "name": "AbbVie",
+          "symbol": "ABBV",
+          "price": 295.03,
+          "change": 0.19697741552044956,
+          "previous": 294.45,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "de",
+          "name": "Deere",
+          "symbol": "DE",
+          "price": 673.54,
+          "change": -0.7734350830153613,
+          "previous": 678.79,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "hd",
+          "name": "Home Depot",
+          "symbol": "HD",
+          "price": 348.69,
+          "change": 0.1234709699649672,
+          "previous": 348.26,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "pg",
+          "name": "Procter & Gamble",
+          "symbol": "PG",
+          "price": 169.8,
+          "change": 1.053383324406365,
+          "previous": 168.03,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "pld",
+          "name": "Prologis",
+          "symbol": "PLD",
+          "price": 128.67,
+          "change": 0.09334889148189252,
+          "previous": 128.55,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nue",
+          "name": "Nucor",
+          "symbol": "NUE",
+          "price": 251.73,
+          "change": -3.4592521572387347,
+          "previous": 260.75,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nflx",
+          "name": "Netflix",
+          "symbol": "NFLX",
+          "price": 62.15,
+          "change": -0.8613814005423492,
+          "previous": 62.69,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "orcl",
+          "name": "Oracle",
+          "symbol": "ORCL",
+          "price": 125.35,
+          "change": -1.3846274880025211,
+          "previous": 127.11,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "avgo",
+          "name": "Broadcom",
+          "symbol": "AVGO",
+          "price": 347.01,
+          "change": -4.761774069601499,
+          "previous": 364.36,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "ms",
+          "name": "Morgan Stanley",
+          "symbol": "MS",
+          "price": 190.65,
+          "change": 0.7823650684569472,
+          "previous": 189.17,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "blk",
+          "name": "BlackRock",
+          "symbol": "BLK",
+          "price": 1222.91,
+          "change": 0.517832337396551,
+          "previous": 1216.61,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "cop",
+          "name": "ConocoPhillips",
+          "symbol": "COP",
+          "price": 142.28,
+          "change": 1.5850349850064172,
+          "previous": 140.06,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "eog",
+          "name": "EOG Resources",
+          "symbol": "EOG",
+          "price": 158.32,
+          "change": 1.7349955018635121,
+          "previous": 155.62,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "mrk",
+          "name": "Merck",
+          "symbol": "MRK",
+          "price": 147.76,
+          "change": 0.5512078938414433,
+          "previous": 146.95,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "unh",
+          "name": "UnitedHealth",
+          "symbol": "UNH",
+          "price": 407.46,
+          "change": 0.5751240342606101,
+          "previous": 405.13,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "hon",
+          "name": "Honeywell",
+          "symbol": "HON",
+          "price": 222.46,
+          "change": -0.1301907968574545,
+          "previous": 222.75,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "ups",
+          "name": "UPS",
+          "symbol": "UPS",
+          "price": 112.4,
+          "change": 1.8300416742163428,
+          "previous": 110.38,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "mcd",
+          "name": "McDonald's",
+          "symbol": "MCD",
+          "price": 271.97,
+          "change": -0.6066586266125662,
+          "previous": 273.63,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nke",
+          "name": "Nike",
+          "symbol": "NKE",
+          "price": 37.99,
+          "change": 0.6091101694915446,
+          "previous": 37.76,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "ko",
+          "name": "Coca-Cola",
+          "symbol": "KO",
+          "price": 99.25,
+          "change": 1.8575533661740584,
+          "previous": 97.44,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "pep",
+          "name": "PepsiCo",
+          "symbol": "PEP",
+          "price": 145.44,
+          "change": 2.235343736819906,
+          "previous": 142.26,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "so",
+          "name": "Southern Company",
+          "symbol": "SO",
+          "price": 93.59,
+          "change": 1.2112036336109133,
+          "previous": 92.47,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "exc",
+          "name": "Exelon",
+          "symbol": "EXC",
+          "price": 46.25,
+          "change": 1.3587552049090457,
+          "previous": 45.63,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "eqix",
+          "name": "Equinix",
+          "symbol": "EQIX",
+          "price": 1053.79,
+          "change": -1.7692515637089068,
+          "previous": 1072.77,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "o",
+          "name": "Realty Income",
+          "symbol": "O",
+          "price": 58.82,
+          "change": -0.7424907188660068,
+          "previous": 59.26,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "shw",
+          "name": "Sherwin-Williams",
+          "symbol": "SHW",
+          "price": 349.89,
+          "change": -0.1996634245129636,
+          "previous": 350.59,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "apd",
+          "name": "Air Products",
+          "symbol": "APD",
+          "price": 316.53,
+          "change": 0.10436432637570547,
+          "previous": 316.2,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "dis",
+          "name": "Walt Disney",
+          "symbol": "DIS",
+          "price": 118.97,
+          "change": 0.6258986720798498,
+          "previous": 118.23,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "t",
+          "name": "AT&T",
+          "symbol": "T",
+          "price": 22.18,
+          "change": 0,
+          "previous": 22.18,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "tmus",
+          "name": "T-Mobile US",
+          "symbol": "TMUS",
+          "price": 169.95,
+          "change": -0.6314681634800978,
+          "previous": 171.03,
+          "time": 1794528000,
+          "currency": "",
+          "source": "CNBC"
+        }
+      ],
+      "available": 57,
+      "fresh": 57,
+      "updatedAt": "2026-11-14T08:09:35.855Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -1040,7 +1040,7 @@
           "price": 754.37,
           "change": -0.36321851225696866,
           "previous": 757.12,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1051,7 +1051,7 @@
           "price": 679.89,
           "change": -1.2031910719734862,
           "previous": 688.17,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1062,7 +1062,7 @@
           "price": 277.54,
           "change": -0.32322942106018937,
           "previous": 278.44,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1073,7 +1073,7 @@
           "price": 104.17,
           "change": 0.15383136236899464,
           "previous": 104.01,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1084,7 +1084,7 @@
           "price": 60.92,
           "change": -0.359829898593389,
           "previous": 61.14,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1095,7 +1095,7 @@
           "price": 79.38,
           "change": -0.4264927245358763,
           "previous": 79.72,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1106,7 +1106,7 @@
           "price": 355.45,
           "change": 0.1577953732142312,
           "previous": 354.89,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1117,7 +1117,7 @@
           "price": 96.47,
           "change": 0.031107424305276687,
           "previous": 96.44,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1128,7 +1128,7 @@
           "price": 693.38,
           "change": -0.3764367816091907,
           "previous": 696,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1139,7 +1139,7 @@
           "price": 371.11,
           "change": -0.40523858085985687,
           "previous": 372.62,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1150,7 +1150,7 @@
           "price": 523.15,
           "change": 0.1301510134553041,
           "previous": 522.47,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1161,7 +1161,7 @@
           "price": 36.12,
           "change": 0.5288060116893867,
           "previous": 35.93,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1172,7 +1172,7 @@
           "price": 76.94,
           "change": -0.05196154845414913,
           "previous": 76.98,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1183,14 +1183,14 @@
           "price": 72.88,
           "change": 0.12364335760404188,
           "previous": 72.79,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         }
       ],
       "available": 14,
       "fresh": 14,
-      "updatedAt": "2026-11-14T01:48:24.319Z",
+      "updatedAt": "2026-11-14T08:09:35.924Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -1331,7 +1331,7 @@
       ],
       "available": 12,
       "fresh": 12,
-      "updatedAt": "2026-11-14T01:48:24.343Z",
+      "updatedAt": "2026-11-14T08:09:35.929Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -1344,7 +1344,7 @@
           "price": 3887.6,
           "change": 0.059197487967455054,
           "previous": 3885.3,
-          "time": 1794441600,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1355,7 +1355,7 @@
           "price": 48.65,
           "change": -2.826325776490557,
           "previous": 50.065,
-          "time": 1794441600,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1366,7 +1366,7 @@
           "price": 88.92,
           "change": 0.20283975659229903,
           "previous": 88.74,
-          "time": 1794611624,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1377,7 +1377,7 @@
           "price": 96.08,
           "change": 0.2713420997703997,
           "previous": 95.82,
-          "time": 1794611587,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1388,7 +1388,7 @@
           "price": 3.242,
           "change": -2.934131736526946,
           "previous": 3.34,
-          "time": 1794611625,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1399,7 +1399,7 @@
           "price": 6.0635,
           "change": -2.1384764364105746,
           "previous": 6.196,
-          "time": 1794441600,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1410,7 +1410,7 @@
           "price": 446,
           "change": 0.7909604519773961,
           "previous": 442.5,
-          "time": 1794609596,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1421,7 +1421,7 @@
           "price": 1492.2,
           "change": -1.8547750591949463,
           "previous": 1520.4,
-          "time": 1794611605,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1432,7 +1432,7 @@
           "price": 1000,
           "change": 0.8572869389813498,
           "previous": 991.5,
-          "time": 1794611611,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1443,7 +1443,7 @@
           "price": 607,
           "change": 1.2932832707551078,
           "previous": 599.25,
-          "time": 1794609640,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1454,7 +1454,7 @@
           "price": 1232.75,
           "change": 1.1279737489745756,
           "previous": 1219,
-          "time": 1794609609,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         },
@@ -1465,14 +1465,14 @@
           "price": 18.4,
           "change": 0.9879253567508295,
           "previous": 18.22,
-          "time": 1794610800,
+          "time": null,
           "currency": "",
           "source": "CNBC"
         }
       ],
       "available": 12,
       "fresh": 12,
-      "updatedAt": "2026-11-14T01:48:24.422Z",
+      "updatedAt": "2026-11-14T08:09:35.936Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -1507,7 +1507,7 @@
           "price": 70.56,
           "change": -0.1273885350318471,
           "previous": 70.65,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1518,7 +1518,7 @@
           "price": 90.04,
           "change": -0.1884491741491967,
           "previous": 90.21,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1529,7 +1529,7 @@
           "price": 81.17,
           "change": 0.03697313285679904,
           "previous": 81.14,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1540,7 +1540,7 @@
           "price": 102.81,
           "change": -0.2328966521106257,
           "previous": 103.05,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1551,7 +1551,7 @@
           "price": 76.94,
           "change": -0.05196154845414913,
           "previous": 76.98,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1562,7 +1562,7 @@
           "price": 104.61,
           "change": -0.15271547198625335,
           "previous": 104.77,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1595,7 +1595,7 @@
           "price": 95.09,
           "change": -0.13652593992857787,
           "previous": 95.22,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1606,7 +1606,7 @@
           "price": 91.13,
           "change": -0.22991022553099372,
           "previous": 91.34,
-          "time": 1794604500,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         },
@@ -1617,14 +1617,14 @@
           "price": 103.58,
           "change": -0.3559403559403651,
           "previous": 103.95,
-          "time": 1794604200,
+          "time": 1794528000,
           "currency": "",
           "source": "CNBC"
         }
       ],
       "available": 13,
       "fresh": 13,
-      "updatedAt": "2026-11-14T01:48:24.540Z",
+      "updatedAt": "2026-11-14T08:09:35.999Z",
       "source": "CNBC",
       "status": "complete"
     }
