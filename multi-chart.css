@@ -89,9 +89,74 @@ html[data-theme="arctic"],html[data-theme="classic-white"]{--mc-price-line:#b987
   html[data-inj-page="multi-chart"] .mc-card-change{font-size:clamp(10px,.9vw,15px)}
   html[data-inj-page="multi-chart"] .mc-canvas-wrap{padding:0 3px 4px}
 }
-@media screen and (min-width:1400px) and (min-height:600px){
+@media screen and (min-width:1400px) and (min-height:700px) and (orientation:landscape) and (min-aspect-ratio:4/3){
   html[data-inj-page="multi-chart"] .mc-rail{
     grid-template-columns:repeat(4,minmax(0,1fr));
     grid-template-rows:repeat(2,minmax(0,1fr));
   }
+}
+
+
+/* INJ Node · Portrait-first monitor readability (14 Nov 2026).
+   Large portrait monitors may be 1440px or wider: never infer 4 columns from width alone.
+   The eight cards keep their chronological order in 2 columns × 4 rows. */
+@media screen and (min-width:900px) and (min-height:600px),
+       screen and (min-width:700px) and (min-height:900px) and (pointer:fine){
+ html[data-inj-page="multi-chart"] .mc-rail{
+   gap:clamp(10px,1.05vmin,18px);
+   padding:2px clamp(12px,1.4vw,26px) clamp(10px,1.25vh,20px);
+ }
+ html[data-inj-page="multi-chart"] .mc-card{
+   border-radius:clamp(11px,1vw,17px);
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+ }
+ html[data-inj-page="multi-chart"] .mc-card-head{
+   min-height:clamp(35px,3.3dvh,50px);
+   padding:clamp(6px,.65vh,11px) clamp(10px,.9vw,17px) 4px;
+ }
+ html[data-inj-page="multi-chart"] .mc-card-label{
+   font-size:clamp(14px,1vw,19px);
+   letter-spacing:.03em;
+ }
+ html[data-inj-page="multi-chart"] .mc-card-change{
+   font-size:clamp(12px,.83vw,16px);
+ }
+ html[data-inj-page="multi-chart"] .mc-expand{
+   width:32px;height:30px;flex:0 0 32px;
+ }
+ html[data-inj-page="multi-chart"] .mc-canvas-wrap{
+   padding:2px 5px 6px;
+ }
+}
+/* Explicit portrait override comes last to win against any width-specific layout. */
+@media screen and (min-width:700px) and (min-height:900px) and (orientation:portrait) and (pointer:fine),
+       screen and (min-width:900px) and (min-height:600px) and (orientation:portrait){
+ html[data-inj-page="multi-chart"] .mc-rail{
+   grid-template-columns:repeat(2,minmax(0,1fr));
+   grid-template-rows:repeat(4,minmax(0,1fr));
+ }
+}
+/* Avoid tiny candles on shorter desktop monitors: scroll vertically instead of crushing rows. */
+@media screen and (min-width:900px) and (min-height:600px) and (max-height:950px) and (max-width:1399px),
+       screen and (min-width:700px) and (min-height:900px) and (max-height:1050px) and (orientation:portrait) and (pointer:fine){
+ html[data-inj-page="multi-chart"] .mc-rail{
+   grid-template-columns:repeat(2,minmax(0,1fr));
+   grid-template-rows:repeat(4,minmax(230px,1fr));
+   overflow-x:hidden;
+   overflow-y:auto;
+   overscroll-behavior-y:contain;
+   scrollbar-width:thin;
+   scrollbar-color:var(--mc-border) transparent;
+   touch-action:pan-y;
+ }
+ html[data-inj-page="multi-chart"] .mc-rail::-webkit-scrollbar{display:block;width:5px}
+ html[data-inj-page="multi-chart"] .mc-rail::-webkit-scrollbar-thumb{background:var(--mc-border);border-radius:6px}
+}
+/* Wide landscape displays: four balanced charts per row, two rows total. */
+@media screen and (min-width:1400px) and (min-height:700px) and (orientation:landscape) and (min-aspect-ratio:4/3){
+ html[data-inj-page="multi-chart"] .mc-rail{
+   grid-template-columns:repeat(4,minmax(0,1fr));
+   grid-template-rows:repeat(2,minmax(0,1fr));
+   overflow:hidden;
+ }
 }
