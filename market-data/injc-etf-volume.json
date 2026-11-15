@@ -5,9 +5,9 @@
   "firstTradingSession": "2026-11-05",
   "timeZone": "America/New_York",
   "unit": "ETF shares",
-  "note": "Reported daily INJC ETF shares traded and same-session reported close used only for indicative valuation. Not fund flows. Latest session may be partial.",
-  "source": "Yahoo Finance · daily quote bars · potentially delayed",
-  "generatedAt": "2026-11-15T09:00:23.694Z",
+  "note": "Dated INJC ETF-share volume, not INJ token volume or fund inflows. Incomplete daily bars must not overwrite verified shares. Latest sessions may be revised when a reliable provider reports more complete data.",
+  "source": "Yahoo Finance daily bars; 2026-11-13 cross-checked against Stocknear and XMarketRadar",
+  "generatedAt": "2026-11-15T09:03:01.277Z",
   "sessions": [
     {
       "date": "2026-11-05",
@@ -41,8 +41,9 @@
     },
     {
       "date": "2026-11-13",
-      "volume": 579,
-      "close": 26.014999389648438
+      "volume": 8540,
+      "close": 26.03,
+      "verifiedSource": "https://www.stocknear.com/etf/INJC/history"
     }
   ]
 }
