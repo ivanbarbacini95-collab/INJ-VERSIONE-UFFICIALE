@@ -3,7 +3,8 @@
    colors (up/down), native zoom, manual Workspace layouts or app navigation.
    This targets tall desktop / large external portrait screens, not phones.
    It intentionally preserves the Home's stationary three-action launcher. */
-@media screen and (min-width:850px) and (min-height:1050px) and (max-aspect-ratio: 0.86) {
+@media screen and (min-width:700px) and (min-height:1000px) and (max-aspect-ratio:0.86) and (pointer:fine),
+       screen and (min-width:850px) and (min-height:1050px) and (max-aspect-ratio:0.86) {
   :root {
     --inj-portrait-gutter:clamp(18px,2.1vw,42px);
     --inj-portrait-gap:clamp(14px,1.45vh,30px);
