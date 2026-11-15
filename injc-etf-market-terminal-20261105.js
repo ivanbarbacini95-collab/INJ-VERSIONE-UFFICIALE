@@ -556,26 +556,37 @@
    ));
  }
  function renderPerformance(){
-   const data=lastQuote, today=nyKey(new Date());
-   const sameDay=Boolean(data?.quoteTime&&nyKey(new Date(data.quoteTime))===today);
-   const regular=sameDay&&data?.session==='regular';
-   // Never display a separate quote-feed volume that disagrees with the
-   // Trading Volume chart. Both metrics follow its current-session bars.
+   const data=lastQuote,today=nyKey(new Date());
    const volumeSnapshot=window.__injcEtfTradedShares;
-   const tradedShares=volumeSnapshot?.ticker==='INJC'&&volumeSnapshot.date===today
-     &&Number.isSafeInteger(volumeSnapshot.shares)&&volumeSnapshot.shares>=0
-       ?volumeSnapshot.shares:null;
-   setText('etfVolume',tradedShares!==null?count(tradedShares):'—');
-   setText('etfNotional',tradedShares!==null&&sameDay&&Number.isFinite(data?.price)&&data.price>0
-     ?shortUsd(tradedShares*data.price):'—');
+   const volumeDate=volumeSnapshot?.date;
+   const isCurrent=volumeDate===today;
+   // Keep Friday's reported shares visible on Saturday/Sunday/holidays, with
+   // an explicit historic label. When Nasdaq is open, never show yesterday's
+   // volume as today's. Both bar and summary read the SAME share snapshot.
+   const isLatestClosed=Boolean(volumeDate&&volumeDate<today&&!isTradingDay(today));
+   const valid=volumeSnapshot?.ticker==='INJC'&&(isCurrent||isLatestClosed)
+     &&Number.isSafeInteger(volumeSnapshot.shares)&&volumeSnapshot.shares>0;
+   const shares=valid?volumeSnapshot.shares:null;
+   const date=valid?volumeDate:today;
+   const quoteDate=data?.quoteTime?nyKey(new Date(data.quoteTime)):null;
+   const sameDay=quoteDate===date;
+   const regular=sameDay&&data?.session==='regular';
+   const referencePrice=isLatestClosed&&valid&&Number.isFinite(volumeSnapshot.price)&&volumeSnapshot.price>0
+     ?volumeSnapshot.price
+     :sameDay&&Number.isFinite(data?.price)&&data.price>0?data.price:null;
+   setText('etfVolume',shares!==null?count(shares):'—');
+   setText('etfNotional',shares!==null&&referencePrice!==null
+     ?shortUsd(shares*referencePrice):'—');
    setText('etfDayHigh',regular?usd(data.high):'—');
    setText('etfDayLow',regular?usd(data.low):'—');
    setText('etfDayOpen',regular?usd(data.open):'—');
    setText('etfPreviousClose',sameDay?usd(data.previous):'—');
-   setText('etfPerformanceSessionLabel',regular||tradedShares!==null
-     ?tr('SEDUTA '+today+' · NASDAQ','SESSION '+today+' · NASDAQ')
-     :tr('SEDUTA '+today+' · IN ATTESA DI SCAMBI',
-         'SESSION '+today+' · AWAITING TRADES'));
+   setText('etfPerformanceSessionLabel',valid&&date!==today
+     ?tr('ULTIMA SEDUTA '+date+' · NASDAQ','LAST SESSION '+date+' · NASDAQ')
+     :regular||shares!==null
+       ?tr('SEDUTA '+today+' · NASDAQ','SESSION '+today+' · NASDAQ')
+       :tr('SEDUTA '+today+' · IN ATTESA DI SCAMBI',
+           'SESSION '+today+' · AWAITING TRADES'));
  }
  function displayQuote(data,source){
    const prevTime=lastQuote?.quoteTime||0;
