@@ -433,12 +433,18 @@
        snapshotPts=snapshotIntraday(d);
        if(d?.ticker==='INJC'&&q?.quoteTime&&q.price&&q.session==='regular')
          rememberPrice(nyDay(Date.parse(q.quoteTime)),q.price,0);
+       // A dated regular-session quote can recover a partial archived day on
+       // mobile without ever assigning its volume to another session.
+       const quoteDate=Number.isFinite(Date.parse(q?.quoteTime||''))
+         ?nyDay(Date.parse(q.quoteTime)):'';
        if(d?.ticker==='INJC'&&q&&q.volume!==null&&q.volume!==undefined
-           &&q.session==='regular'&&Number.isFinite(Date.parse(q.quoteTime))
-           &&nyDay(Date.parse(q.quoteTime))===nyDay(Date.now())
-           &&Number.isSafeInteger(Number(q.volume))&&Number(q.volume)>=0){
-         mergeVolume(nyDay(Date.parse(q.quoteTime)),q.volume,0);
-         if(!lastVolumeSource)lastVolumeSource=tr('Snapshot INJC · dati potenzialmente ritardati','INJC snapshot · potential delay');
+           &&q.session==='regular'&&quoteDate>='2026-11-05'
+           &&quoteDate<=nyDay(Date.now())
+           &&Number.isSafeInteger(Number(q.volume))&&Number(q.volume)>0){
+         mergeVolume(quoteDate,q.volume,0);
+         if(!lastVolumeSource)lastVolumeSource=tr(
+           'Snapshot INJC '+quoteDate+' · dato potenzialmente parziale',
+           'INJC snapshot '+quoteDate+' · potentially partial');
        }
      }
      let yahooPts=[];
