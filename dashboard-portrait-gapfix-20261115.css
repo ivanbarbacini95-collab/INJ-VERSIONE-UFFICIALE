@@ -1,0 +1,101 @@
+/* Dashboard — compact portrait monitor geometry (2026-11-15).
+   Layout-only: does not modify market feeds, rewards, wallets, privacy or Home. */
+@media screen and (min-width:760px) and (min-height:1000px) and (max-aspect-ratio:0.86) {
+ html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell main#top {
+   display:flex!important;
+   flex-direction:column!important;
+   align-items:stretch!important;
+   justify-content:flex-start!important;
+   align-content:initial!important;
+   width:100%!important;
+   max-width:100%!important;
+   min-width:0!important;
+   height:auto!important;
+   min-height:0!important;
+   grid-template-rows:none!important;
+   grid-auto-rows:auto!important;
+   gap:clamp(14px,1.25vh,24px)!important;
+   box-sizing:border-box!important;
+ }
+ html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell main#top > :is(.wallet-dock,.aggregate-strip,.overview-grid,.metrics-grid,.analytics-grid) {
+   flex:0 0 auto!important;
+   width:100%!important;
+   max-width:100%!important;
+   min-width:0!important;
+   height:auto!important;
+   margin-block:0!important;
+   align-self:stretch!important;
+   box-sizing:border-box!important;
+ }
+ html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell main#top > .aggregate-strip[hidden] {
+   display:none!important;
+ }
+ /* Precisely one row for price and account portfolio, no implicit blank track. */
+ html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell main#top > .overview-grid {
+   display:grid!important;
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   grid-template-rows:auto!important;
+   grid-auto-rows:auto!important;
+   grid-auto-flow:row!important;
+   align-content:start!important;
+   align-items:stretch!important;
+   min-height:0!important;
+   gap:clamp(12px,1.2vw,22px)!important;
+ }
+ html[data-inj-page="index"] body:not(.entry-gate-open) #accountDetail > :is(#marketCard,#worthCard) {
+   grid-row:auto!important;
+   grid-column:auto!important;
+   min-width:0!important;
+   min-height:clamp(205px,13vh,280px)!important;
+   height:auto!important;
+   align-self:stretch!important;
+   box-sizing:border-box!important;
+ }
+ /* Five metrics: three legible cards, then two wider cards, no empty cell. */
+ html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell main#top > .metrics-grid {
+   display:grid!important;
+   grid-template-columns:repeat(6,minmax(0,1fr))!important;
+   grid-template-rows:auto auto!important;
+   grid-auto-rows:auto!important;
+   grid-auto-flow:row!important;
+   align-content:start!important;
+   align-items:stretch!important;
+   min-height:0!important;
+   gap:clamp(12px,1.1vh,20px)!important;
+ }
+ html[data-inj-page="index"] body:not(.entry-gate-open) #top > .metrics-grid > .data-card {
+   grid-row:auto!important;
+   grid-column:span 2!important;
+   min-width:0!important;
+   min-height:clamp(112px,8.6vh,158px)!important;
+   height:auto!important;
+   align-self:stretch!important;
+   box-sizing:border-box!important;
+ }
+ html[data-inj-page="index"] body:not(.entry-gate-open) #top > .metrics-grid > .data-card:nth-child(n+4) {
+   grid-column:span 3!important;
+ }
+ /* The analytics starts directly after balances instead of occupying
+    extra stretched grid tracks; each card retains its own controls. */
+ html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell main#top > .analytics-grid {
+   display:grid!important;
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   grid-template-rows:auto auto!important;
+   grid-auto-rows:auto!important;
+   grid-auto-flow:row!important;
+   align-content:start!important;
+   align-items:stretch!important;
+   min-height:0!important;
+   gap:clamp(12px,1.2vw,22px)!important;
+ }
+ html[data-inj-page="index"] body:not(.entry-gate-open) #top > .analytics-grid > .data-card {
+   min-width:0!important;
+   min-height:0!important;
+   height:auto!important;
+   box-sizing:border-box!important;
+ }
+ html[data-inj-page="index"] body:not(.entry-gate-open) #top > .analytics-grid > #validatorCard {
+   grid-column:1/-1!important;
+   grid-row:auto!important;
+ }
+}
