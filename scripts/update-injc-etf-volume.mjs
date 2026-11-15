@@ -44,16 +44,38 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
   incoming=rows;break;
  }catch(error){console.warn(host+': '+error.message);}
 }
+// The separate five-minute quote collector can observe a higher cumulative
+// exchange-session total than Yahoo's broken/incomplete daily bar. Its dated
+// cumulative value is a conservative lower bound, not a fabricated close.
+let quoteSnapshot=null;
+try{
+ const snapshot=JSON.parse(await fs.readFile('market-data/injc-etf-quotes.json','utf8'));
+ const q=snapshot?.ticker==='INJC'?snapshot.quote:null;
+ const time=Date.parse(q?.quoteTime||''),date=Number.isFinite(time)?nyDate(time):'';
+ const volume=Number(q?.volume),price=Number(q?.price);
+ if(q?.session==='regular'&&date>=first&&date<=today&&
+     Number.isSafeInteger(volume)&&volume>0&&Number.isFinite(price)&&price>0){
+   quoteSnapshot={date,volume,close:price};
+ }
+}catch(error){console.warn('Quote-snapshot cross-check unavailable:',error.message);}
+if(!incoming&&quoteSnapshot)incoming=new Map();
+if(incoming&&quoteSnapshot){
+ const daily=incoming.get(quoteSnapshot.date);
+ if(!daily||quoteSnapshot.volume>daily.volume){
+   incoming.set(quoteSnapshot.date,{
+     volume:quoteSnapshot.volume,close:daily?.close??quoteSnapshot.close
+   });
+ }
+}
 if(!incoming){
- console.log('Provider unavailable. Preserve prior reported historical volumes.');
+ console.log('Providers unavailable. Preserve prior reported historical volumes.');
  process.exit(0);
 }
 for(const [date,row] of incoming){
  const prev=previous.get(date);
  // Yahoo may return incomplete/corrupt daily volume bars even for old sessions.
  // Quarantine drastic downward revisions instead of corrupting stored history.
- if(date<today&&prev&&prev.volume>0&&
-    (row.volume<prev.volume*0.85||Boolean(prev.verifiedSource)&&row.volume<prev.volume)) {
+ if(date<today&&prev&&prev.volume>0&&row.volume<prev.volume) {
    console.warn('Reject suspicious INJC history revision:',date,
      'cached',prev?.volume??'none','provider',row.volume);
    continue;
