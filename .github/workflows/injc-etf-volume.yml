@@ -5,6 +5,10 @@ on:
   schedule:
     # Interval is UTC; cover the US regular market and its closing prints in winter/summer.
     - cron: '*/15 12-23 * * 1-5'
+    # UTC midnight catch-up: last Nasdaq prints, delayed adjustments, Friday close.
+    - cron: '7,37 0-3 * * 2-6'
+    # Weekend backfill: correct Friday even if its first closing snapshot was zero.
+    - cron: '17 9,16 * * 0,6'
   push:
     branches: [main]
     paths:
