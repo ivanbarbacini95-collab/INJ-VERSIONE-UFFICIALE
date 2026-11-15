@@ -152,7 +152,7 @@
  let volumeMode='history',volumeView='all',intradayPoints=[],intradaySource='';
  function validVolume(k,value){
    return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k>='2026-11-05'&&k<=nyDay(Date.now())&&
-     Number.isSafeInteger(value)&&value>=0;
+     Number.isSafeInteger(value)&&value>0;
  }
  function mergeVolume(k,v,priority=0){
    const volume=Number(v);
@@ -231,17 +231,25 @@
      volume:q.volume?.[i]===null||q.volume?.[i]===undefined?NaN:Number(q.volume[i])
    })));
  }
- // One canonical value for the Shares Traded metric and the displayed volume bars.
- // For the daily chart this is today's bar; for intraday bars it is their sum.
- // Missing sessions remain unavailable instead of falling back to a quote from another feed.
+ // One canonical session for chart bars AND the performance share count.
+ // On weekends the latest completed session may be shown, but must retain
+ // its own market date rather than masquerading as today's live volume.
  function publishTradingVolume(points,session){
    const today=nyDay(Date.now());
-   const rows=points.filter(p=>p.date===today&&Number.isSafeInteger(p.volume)&&p.volume>=0);
+   const weekday=new Date(today+'T12:00:00Z').getUTCDay();
+   const weekend=weekday===0||weekday===6;
+   let rows=points.filter(p=>p.date===today&&Number.isSafeInteger(p.volume)&&p.volume>0);
+   if(!rows.length&&weekend&&!session){
+     const latest=points.filter(p=>p.date<today&&Number.isSafeInteger(p.volume)&&p.volume>0).at(-1);
+     if(latest)rows=[latest];
+   }
    const shares=rows.length
      ?(session?rows.reduce((sum,p)=>sum+p.volume,0):rows.at(-1).volume):null;
-   const snapshot={ticker:'INJC',date:today,shares,
+   const date=rows.at(-1)?.date||today;
+   const price=Number(rows.at(-1)?.price)>0?Number(rows.at(-1).price):null;
+   const snapshot={ticker:'INJC',date,shares,price,
      source:session?intradaySource:lastVolumeSource};
-   window.__injcEtfTradedShares=snapshot;
+  window.__injcEtfTradedShares=snapshot;
    window.dispatchEvent(new CustomEvent('injc:traded-shares',{detail:snapshot}));
  }
  function drawVolume(newData=false){
