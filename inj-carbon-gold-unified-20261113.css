@@ -1,3 +1,5 @@
+@import url("./inj-portrait-clarity-20261115.css?v=global-responsive-1");
+@import url("./inj-responsive-fullscreen-20261115.css?v=global-responsive-1");
 /* INJ Node · 2026-11-13 · Carbon Gold continuity + borderless Home.
    Single late-loaded layer. No DOM replacement, no changes to wallet/chart logic.
    Every layout change is limited to the actual page/mode it belongs to. */

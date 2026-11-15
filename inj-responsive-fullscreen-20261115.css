@@ -1,0 +1,180 @@
+/* INJ Node | Universal viewport fit | 15 Nov 2026.
+   Geometry only: preserves chart data, pricing, saved Workspace positions,
+   privacy state, zoom lock, Home dock and native scroll ownership.
+   A page fills the available viewport; long content must remain scrollable. */
+:root{
+  --inj-fit-viewport:100vh;
+  --inj-fit-gutter:clamp(12px,1.35vw,36px);
+  --inj-fit-gap:clamp(10px,1vw,26px);
+}
+@supports (height:100dvh){
+  :root{--inj-fit-viewport:100dvh}
+}
+html[data-inj-page],html[data-inj-market]{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+}
+html[data-inj-page]:not([data-inj-viewport]) body,
+html[data-inj-market] body{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  min-height:var(--inj-fit-viewport);
+  overflow-x:clip;
+}
+/* Remove old width caps on the OUTER document, not on inner dialogs or
+   user-resized chart cards. Keep existing page-specific inset paddings. */
+html[data-inj-page="all-transactions"] body>main.shell,
+html[data-inj-page="network-status"] body>main.shell,
+html[data-inj-page="validators"] body>main.shell,
+html[data-inj-page="admin-insights"] body>main.shell,
+html[data-inj-page="night-view"] body>main.shell,
+html[data-inj-market] body>.shell,
+html[data-inj-page="injc-etf"] body>.etf-shell,
+html[data-inj-page="financial-freedom"] body>.freedom-page,
+html[data-inj-page="multi-chart"] body>.mc-app,
+html[data-inj-page="cloud-sync"] body>main,
+html[data-inj-page="comparison"] body>.cap-main,
+html[data-inj-page="visualize-wealth"] body>.wealth-main{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  box-sizing:border-box;
+}
+html[data-inj-page="all-transactions"] body>main.shell{
+  min-height:calc(var(--inj-fit-viewport) - 26px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+}
+html[data-inj-page="network-status"] body>main.shell,
+html[data-inj-page="validators"] body>main.shell,
+html[data-inj-page="night-view"] body>main.shell,
+html[data-inj-market] body>.shell,
+html[data-inj-page="injc-etf"] body>.etf-shell,
+html[data-inj-page="financial-freedom"] body>.freedom-page{
+  min-height:var(--inj-fit-viewport);
+}
+html[data-inj-page="night-view"] body>main.shell{
+  margin-inline:auto;
+  padding-inline:max(env(safe-area-inset-left,0px),var(--inj-fit-gutter))
+                 max(env(safe-area-inset-right,0px),var(--inj-fit-gutter));
+}
+/* Header / content pages grow into spare vertical space but do not clip on
+   compact landscape screens. */
+html[data-inj-page="admin-insights"] body,
+html[data-inj-page="cloud-sync"] body,
+html[data-inj-page="comparison"] body,
+html[data-inj-page="visualize-wealth"] body{
+  display:flex;
+  flex-direction:column;
+  min-height:var(--inj-fit-viewport);
+}
+html[data-inj-page="admin-insights"] body>main.shell,
+html[data-inj-page="cloud-sync"] body>main,
+html[data-inj-page="comparison"] body>.cap-main,
+html[data-inj-page="visualize-wealth"] body>.wealth-main{
+  flex:1 0 auto;
+}
+html[data-inj-page="injc-etf"] body>.etf-shell{
+  display:flex;
+  flex-direction:column;
+}
+html[data-inj-page="injc-etf"] body>.etf-shell>main{
+  flex:1 0 auto;
+  min-width:0;
+}
+html[data-inj-page="cloud-sync"] body>main{
+  padding-inline:max(env(safe-area-inset-left,0px),var(--inj-fit-gutter))
+                 max(env(safe-area-inset-right,0px),var(--inj-fit-gutter));
+}
+/* Dedicated terminals already manage viewport and scroll in viewport.css.
+   Change their available width, never body overflow/position or card geometry. */
+html[data-inj-page="treasury"] :is(.treasury-shell,.treasury-main),
+html[data-inj-page="live-rewards"] :is(.rewards-shell,.rewards-main),
+html[data-inj-page="command-center"] :is(.cc-shell,.cc-main),
+html[data-inj-page="live-charts"] :is(.live-page,.terminal-shell),
+html[data-inj-page="order-book"] :is(.book-page,.book-shell),
+html[data-inj-page="reward-ladder"] .ladder-main,
+html[data-inj-page="workspace"] body>main{
+  min-width:0;
+  max-width:none!important;
+  box-sizing:border-box;
+}
+html[data-inj-page="workspace"] body>main{
+  width:100%;
+}
+html[data-inj-page="multi-chart"] body>.mc-app{
+  height:var(--inj-fit-viewport);
+  min-height:0;
+}
+html[data-inj-page="multi-chart"] :is(.mc-main,.mc-rail,.mc-card,.mc-canvas-wrap){
+  min-width:0;
+  min-height:0;
+}
+/* Flex/grid descendants must shrink within their column; only the active
+   scrolling region should scroll, not the entire document sideways. */
+html[data-inj-page] :is(
+  .shell,.etf-shell,.etf-panel,.injc-panel,.treasury-panel,.treasury-grid,
+  .rewards-panel,.rewards-layout,.cap-panel,.cap-results-grid,.wealth-panel,
+  .wealth-results,.freedom-page,.cc-panel,.cc-market-stage,.mc-card,
+  .ws-grid,.ws-card,.book-shell,.live-page,.validator-list,.transaction-list
+),
+html[data-inj-market] :is(.shell,.overview,.panel,.inj-wm-grid,.heatmap-grid){
+  min-width:0;
+}
+html[data-inj-page] :is(.chart-stage,.chart-container,.plot,.mc-canvas-wrap),
+html[data-inj-market] :is(.chart-stage,.plot){
+  max-width:100%;
+  min-width:0;
+}
+/* Landscape tablets / external displays: fill the width using an adaptive
+   gutter. Do not force a portrait stack based on width alone. */
+@media screen and (min-width:700px) and (orientation:landscape){
+  html[data-inj-page="network-status"] body>main.shell,
+  html[data-inj-page="validators"] body>main.shell,
+  html[data-inj-page="admin-insights"] body>main.shell,
+  html[data-inj-page="all-transactions"] body>main.shell{
+    padding-inline:var(--inj-fit-gutter);
+  }
+  html[data-inj-page="injc-etf"] body>.etf-shell{
+    padding-inline:var(--inj-fit-gutter);
+  }
+}
+/* Tall portrait displays: larger balanced margins, not a narrow centered
+   860px desktop column. Dedicated portrait card layouts remain authoritative. */
+@media screen and (min-width:700px) and (orientation:portrait){
+  :root{
+    --inj-fit-gutter:clamp(16px,2.3vw,48px);
+    --inj-fit-gap:clamp(12px,1.35vh,28px);
+  }
+  html[data-inj-page="all-transactions"] body>main.shell,
+  html[data-inj-page="network-status"] body>main.shell,
+  html[data-inj-page="validators"] body>main.shell,
+  html[data-inj-page="admin-insights"] body>main.shell{
+    padding-inline:var(--inj-fit-gutter);
+  }
+  html[data-inj-page="injc-etf"] body>.etf-shell{
+    padding-inline:var(--inj-fit-gutter);
+  }
+}
+/* Very short landscape: scroll if content cannot fit. Never scale the whole
+   UI or hide financial controls to meet an artificial 100vh target. */
+@media screen and (orientation:landscape) and (max-height:540px){
+  :root{--inj-fit-gutter:clamp(8px,1.35vw,20px)}
+  html[data-inj-page="all-transactions"] body>main.shell,
+  html[data-inj-page="network-status"] body>main.shell,
+  html[data-inj-page="validators"] body>main.shell,
+  html[data-inj-page="night-view"] body>main.shell,
+  html[data-inj-page="injc-etf"] body>.etf-shell{
+    min-height:var(--inj-fit-viewport);
+    height:auto;
+  }
+}
+/* Print/export retains natural page dimensions. */
+@media print{
+  html[data-inj-page]:not([data-inj-viewport]) body,
+  html[data-inj-market] body,
+  html[data-inj-page] body>main.shell,
+  html[data-inj-page="injc-etf"] body>.etf-shell{
+    min-height:0!important;
+  }
+}
