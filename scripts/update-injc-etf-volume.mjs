@@ -12,9 +12,10 @@ const nyDate=ms=>{
 const today=nyDate(Date.now());
 const existing=JSON.parse(await fs.readFile(path,'utf8'));
 const previous=new Map((existing.sessions||[]).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)
- &&Number.isSafeInteger(Number(x.volume))&&Number(x.volume)>=0).map(x=>[x.date,{
+ &&Number.isSafeInteger(Number(x.volume))&&Number(x.volume)>0).map(x=>[x.date,{
   volume:Number(x.volume),
-  close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null
+  close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null,
+  ...(typeof x.verifiedSource==='string'&&/^https:\/\//.test(x.verifiedSource)?{verifiedSource:x.verifiedSource}:{})
  }]));
 let incoming=null;
 for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
@@ -31,9 +32,10 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
   const rows=new Map();
   times.forEach((time,i)=>{
    const date=nyDate(Number(time)*1000),volume=Number(q.volume?.[i]),close=Number(q.close?.[i]);
-   // A dated OHLC bar with valid share volume is required; 0 is valid if reported.
+   // Zero for a ticker that has actual traded prices is often an incomplete
+   // provider bar. Never publish it as a verified zero-volume session.
    if(date<first||date>today||q.volume?.[i]===null||q.volume?.[i]===undefined||!(close>0)
-      ||!Number.isSafeInteger(volume)||volume<0)return;
+      ||!Number.isSafeInteger(volume)||volume<=0)return;
    const day=new Date(date+'T12:00:00Z').getUTCDay();
    if(day===0||day===6)return;
    rows.set(date,{volume,close});
@@ -50,24 +52,28 @@ for(const [date,row] of incoming){
  const prev=previous.get(date);
  // Yahoo may return incomplete/corrupt daily volume bars even for old sessions.
  // Quarantine drastic downward revisions instead of corrupting stored history.
- if(date<today&&(!prev&&row.volume===0||
-   prev&&prev.volume>0&&(row.volume===0||row.volume<prev.volume*0.85))){
+ if(date<today&&prev&&prev.volume>0&&
+    (row.volume<prev.volume*0.85||Boolean(prev.verifiedSource)&&row.volume<prev.volume)) {
    console.warn('Reject suspicious INJC history revision:',date,
      'cached',prev?.volume??'none','provider',row.volume);
    continue;
  }
  // The ongoing session is cumulative; protect it against delayed snapshots.
  // Once a session is completed, accept plausible provider corrections.
+ const volume=date===today&&prev?Math.max(prev.volume,row.volume):row.volume;
  previous.set(date,{
-   volume:date===today&&prev?Math.max(prev.volume,row.volume):row.volume,
-   close:row.close>0?row.close:(prev?.close??null)
+   volume,
+   close:row.close>0?row.close:(prev?.close??null),
+   ...(prev?.verifiedSource&&volume===prev.volume?{verifiedSource:prev.verifiedSource}:{})
  });
 }
 const sessions=[...previous].filter(([date])=>date>=first&&date<=today)
  .sort(([a],[b])=>a.localeCompare(b))
- .map(([date,row])=>({date,volume:row.volume,close:row.close}));
+ .map(([date,row])=>({date,volume:row.volume,close:row.close,
+   ...(row.verifiedSource?{verifiedSource:row.verifiedSource}:{})}));
 const old=JSON.stringify((existing.sessions||[]).map(x=>({
- date:x.date,volume:x.volume,close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null
+ date:x.date,volume:x.volume,close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null,
+ ...(x.verifiedSource?{verifiedSource:x.verifiedSource}:{})
 })));
 if(JSON.stringify(sessions)===old){
  console.log('No new INJC share volume data. Existing cache unchanged.');
