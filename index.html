@@ -460,6 +460,22 @@
 <link rel="stylesheet" href="./home-dock-clearance-20261110.css?v=home-dock-clickable3">
 <link rel="stylesheet" href="./home-portrait-integrated-20261114.css?v=portrait-links-chart1">
 <link rel="stylesheet" href="./dashboard-portrait-gapfix-20261115.css?v=portrait-gapfix1">
+<style id="inj-home-no-purple-caps-20261115">
+/* All themes: remove the stray horizontal accent caps above the two
+   vertical dividers in Home's three destination shortcuts. Keep ::before
+   untouched: it draws the actual vertical dividers. */
+html[data-inj-page="index"][data-inj-home-tab="home"] body.entry-gate-open
+ #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action::after {
+  content:none!important;
+  display:none!important;
+  visibility:hidden!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+</style>
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
