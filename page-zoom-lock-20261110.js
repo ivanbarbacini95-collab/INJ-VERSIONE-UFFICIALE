@@ -166,3 +166,16 @@
     boot();
   }
 })();
+
+
+/* Shared portrait-monitor layout: keep it as an isolated late CSS layer.
+   The same zoom/privacy bootstrap runs on every official INJ Node page. */
+(() => {
+  'use strict';
+  if (document.querySelector('link[data-inj-portrait-clarity]')) return;
+  const style = document.createElement('link');
+  style.rel = 'stylesheet';
+  style.dataset.injPortraitClarity = '20261115';
+  style.href = './inj-portrait-clarity-20261115.css?v=20261115a';
+  document.head.appendChild(style);
+})();
