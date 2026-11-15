@@ -1,0 +1,408 @@
+/* INJ NODE · Vertical Monitor Clarity · 2026-11-15
+   Geometry and typography only; no data, chart series, wallet storage, privacy,
+   colors (up/down), native zoom, manual Workspace layouts or app navigation.
+   This targets tall desktop / large external portrait screens, not phones.
+   It intentionally preserves the Home's stationary three-action launcher. */
+@media screen and (min-width:850px) and (min-height:1050px) and (max-aspect-ratio: 0.86) {
+  :root {
+    --inj-portrait-gutter:clamp(18px,2.1vw,42px);
+    --inj-portrait-gap:clamp(14px,1.45vh,30px);
+    --inj-portrait-micro:clamp(13px,1.05vw + 2px,17px);
+    --inj-portrait-label:clamp(14px,1.1vw + 3px,19px);
+    --inj-portrait-copy:clamp(15px,1.15vw + 3px,21px);
+    --inj-portrait-number:clamp(24px,2.0vw + 5px,39px);
+    --inj-fluid-copy:var(--inj-portrait-copy);
+    --inj-fluid-label:var(--inj-portrait-label);
+    --inj-monitor-micro:var(--inj-portrait-micro);
+    --inj-monitor-label:var(--inj-portrait-label);
+    --inj-monitor-body:var(--inj-portrait-copy);
+    --inj-screen-gutter:var(--inj-portrait-gutter);
+    --inj-screen-panel-gap:var(--inj-portrait-gap);
+  }
+  html[data-inj-page],html[data-inj-market] {
+    overflow-x:clip;
+  }
+  html[data-inj-page] :is(.data-card,.metric-card,.treasury-panel,.rewards-panel,.injc-panel,.etf-panel,.cap-panel,.cc-panel,.wealth-panel,.ladder-panel,.ws-card),
+  html[data-inj-market] :is(.panel,.market-panel) {
+    min-width:0;
+    box-sizing:border-box;
+  }
+  html[data-inj-page] :is(.section-heading h2,.section-heading h3,.treasury-panel h2,.rewards-panel h2,.etf-panel h2,.injc-panel h2,.cc-panel h2,.freedom-section-heading),
+  html[data-inj-market] :is(.panel h2,.panel h3) {
+    font-size:clamp(19px,1.35vw + 6px,29px)!important;
+    line-height:1.24!important;
+    overflow-wrap:break-word;
+  }
+  html[data-inj-page] :is(.card-label,.treasury-kicker,.treasury-metric>span,.rewards-total-label,.injc-caption,.injc-stat>span,.etf-stat>span,.freedom-figure>span,.cc-panel-label,.mc-card-label,.ws-card-heading),
+  html[data-inj-market] :is(.panel-title,.card-label) {
+    font-size:var(--inj-portrait-label)!important;
+    line-height:1.3!important;
+  }
+
+  /* Dashboard: distribute its real sections through the tall display.
+     Do not force five rows when multi-wallet summary is hidden. */
+  html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell {
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:none!important;
+    min-height:100dvh!important;
+    height:auto!important;
+    margin:0 auto!important;
+    padding-inline:var(--inj-portrait-gutter)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell > .topbar {
+    flex:0 0 auto;
+    min-height:clamp(66px,5.2vh,94px)!important;
+    width:100%!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell > main#top {
+    display:flex!important;
+    flex:1 0 auto!important;
+    flex-direction:column!important;
+    justify-content:space-evenly!important;
+    align-items:stretch!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    min-height:calc(100dvh - 155px)!important;
+    height:auto!important;
+    gap:var(--inj-portrait-gap)!important;
+    padding-block:clamp(12px,1.15vh,24px)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell > main#top > :is(.wallet-dock,.aggregate-strip,.overview-grid,.metrics-grid,.analytics-grid) {
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .wallet-dock {
+    flex:0 0 auto!important;
+    min-height:clamp(94px,8.0vh,145px)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .saved-wallets {
+    min-width:0!important;
+    max-width:100%!important;
+    gap:clamp(12px,1.2vw,22px)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .wallet-mini-strip {
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scrollbar-width:thin;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .wallet-dock-title :is(span,strong,small),
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .wallet-mini-strip :is(span,small) {
+    font-size:var(--inj-portrait-micro)!important;
+    line-height:1.3!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .aggregate-strip:not([hidden]) {
+    flex:0 0 auto!important;
+    min-height:clamp(60px,5vh,90px)!important;
+    padding-block:clamp(10px,1.1vh,20px)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .aggregate-heading :is(span,strong,small),
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .aggregate-metric :is(span,small) {
+    font-size:var(--inj-portrait-micro)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .overview-grid {
+    flex:1 0 auto!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-rows:minmax(0,1fr)!important;
+    min-height:clamp(295px,20vh,420px)!important;
+    gap:var(--inj-portrait-gap)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .metrics-grid {
+    flex:0 0 auto!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-auto-rows:minmax(122px,auto)!important;
+    gap:clamp(11px,1.1vh,20px)!important;
+    align-items:stretch!important;
+    min-height:clamp(250px,18vh,360px)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .analytics-grid {
+    flex:1.35 0 auto!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:minmax(310px,1fr) minmax(175px,.52fr)!important;
+    grid-auto-flow:row!important;
+    min-height:clamp(530px,36vh,820px)!important;
+    gap:var(--inj-portrait-gap)!important;
+    align-items:stretch!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .analytics-grid > .validator-card {
+    grid-column:1/-1!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top :is(.overview-grid,.metrics-grid,.analytics-grid) > .data-card {
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:clamp(16px,1.7vw,29px)!important;
+    box-sizing:border-box!important;
+    overflow-wrap:break-word;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .card-label {
+    font-size:var(--inj-portrait-label)!important;
+    line-height:1.3!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top :is(#marketPrice,#netWorthUsd) {
+    font-size:clamp(44px,4.1vw + 7px,75px)!important;
+    line-height:1.08!important;
+    font-variant-numeric:tabular-nums;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .metric-value {
+    font-size:var(--inj-portrait-number)!important;
+    line-height:1.15!important;
+    font-variant-numeric:tabular-nums;
+    overflow-wrap:anywhere;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top :is(.hero-secondary,.market-range,.market-performance,.allocation-labels,.metric-card>small,.owned-total-difference,.worth-change) {
+    font-size:var(--inj-portrait-copy)!important;
+    line-height:1.35!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .market-tf-meta :is(span,small,strong,b,em),
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .method-note {
+    font-size:var(--inj-portrait-micro)!important;
+    line-height:1.35!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top :is(.reward-rate-grid,.target-stats) {
+    min-width:0!important;
+    gap:clamp(8px,1vw,18px)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top :is(.reward-rate-grid,.target-stats) :is(span,small) {
+    font-size:var(--inj-portrait-label)!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top :is(.reward-rate-grid,.target-stats) strong {
+    font-size:clamp(20px,1.7vw + 5px,34px)!important;
+    line-height:1.2!important;
+    overflow-wrap:anywhere;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .target-progress-copy {
+    font-size:clamp(23px,2.3vw + 4px,42px)!important;
+    overflow-wrap:anywhere;
+    line-height:1.2!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top .validator-list {
+    font-size:var(--inj-portrait-copy)!important;
+    min-height:0!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) > .app-shell > .dashboard-footer {
+    flex:0 0 auto!important;
+    padding-block:clamp(12px,1.1vh,22px)!important;
+    font-size:var(--inj-portrait-micro)!important;
+  }
+
+  /* The Home remains fixed as requested; improve short labels only without
+     expanding the launcher or moving it across the dock. */
+  html[data-inj-page="index"][data-inj-home-tab="home"] body.entry-gate-open #entryGate .entry-actions.entry-flat-v44 .inj-home-tile-title {
+    font-size:clamp(14px,1.12vw + 3px,19px)!important;
+    line-height:1.2!important;
+  }
+
+  /* Treasury and reward pages: two readable metrics per row, natural scrolling.
+     Avoid imposing chart geometry on the live data or tooltip layers. */
+  html[data-inj-page="treasury"] :is(.treasury-shell,.treasury-main,.treasury-grid) {
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="treasury"] .treasury-shell {
+    padding-inline:var(--inj-portrait-gutter)!important;
+    min-height:100dvh!important;
+    height:auto!important;
+    overflow:visible!important;
+  }
+  html[data-inj-page="treasury"] :is(.treasury-metrics,.treasury-allocation-metrics,.treasury-velocity-grid) {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:var(--inj-portrait-gap)!important;
+  }
+  html[data-inj-page="treasury"] :is(.treasury-panel,.treasury-metric) {
+    padding:clamp(15px,1.7vw,28px)!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="treasury"] :is(.treasury-metric strong,.treasury-chart-primary strong,.treasury-chart-side strong,.treasury-networth-current) {
+    font-size:var(--inj-portrait-number)!important;
+    line-height:1.2!important;
+    overflow-wrap:anywhere;
+  }
+  html[data-inj-page="treasury"] .treasury-hero-worth {
+    font-size:clamp(38px,3.5vw + 8px,68px)!important;
+  }
+  html[data-inj-page="treasury"] :is(.treasury-spark-stage,.treasury-worth-stage) {
+    min-width:0!important;
+    min-height:clamp(240px,20vh,410px)!important;
+  }
+  html[data-inj-page="live-rewards"] .rewards-layout {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:var(--inj-portrait-gap)!important;
+  }
+  html[data-inj-page="live-rewards"] :is(.reward-row,.rewards-total-panel) {
+    min-height:clamp(235px,19vh,360px)!important;
+  }
+  html[data-inj-page="live-rewards"] :is(.rewards-total-value,.reward-row strong) {
+    font-size:var(--inj-portrait-number)!important;
+    overflow-wrap:anywhere;
+  }
+
+  /* ETF/Market charts keep their own scale but gain room and usable labels. */
+  html[data-inj-page="injc-etf"] .etf-shell {
+    width:100%!important;
+    max-width:none!important;
+    padding-inline:var(--inj-portrait-gutter)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-page="injc-etf"] :is(.injc-price,.injc-aum-primary) {
+    font-size:clamp(40px,3.5vw + 8px,70px)!important;
+    line-height:1.12!important;
+    overflow-wrap:anywhere;
+  }
+  html[data-inj-page="injc-etf"] :is(.injc-chart-surface,.injc-holdings-chart) {
+    min-height:clamp(320px,28vh,550px)!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="injc-etf"] .injc-volume-graph {
+    min-height:clamp(220px,20vh,380px)!important;
+    min-width:0!important;
+  }
+  html[data-inj-page="injc-etf"] :is(.injc-stat,.injc-volume-metric) :is(strong,small,span) {
+    font-size:var(--inj-portrait-copy)!important;
+  }
+  html[data-inj-market] .shell {
+    width:100%!important;
+    max-width:none!important;
+    padding-inline:var(--inj-portrait-gutter)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-inj-market] :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-mi-snapshot) {
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:var(--inj-portrait-gap)!important;
+  }
+  html[data-inj-market] :is(.market-ticker,.panel,.toolbar) {
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  html[data-inj-market] .panel :is(span,small,button) {
+    font-size:var(--inj-portrait-micro);
+  }
+
+  /* Eight Multicharts: 2 x 4 on tall screens, not a miniature landscape strip. */
+  html[data-inj-page="multi-chart"] .mc-rail {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:repeat(4,minmax(0,1fr))!important;
+    gap:clamp(12px,1.05vh,22px)!important;
+    width:100%!important;
+    min-height:0!important;
+    height:100%!important;
+    padding:4px var(--inj-portrait-gutter) 14px!important;
+    overflow:hidden!important;
+  }
+  html[data-inj-page="multi-chart"] :is(.mc-page,.mc-grid) {
+    display:contents!important;
+  }
+  html[data-inj-page="multi-chart"] .mc-card {
+    min-width:0!important;
+    min-height:0!important;
+  }
+  html[data-inj-page="multi-chart"] .mc-card-head {
+    min-height:clamp(44px,3vh,58px)!important;
+    padding:9px 14px 6px!important;
+  }
+  html[data-inj-page="multi-chart"] .mc-card-label {
+    font-size:clamp(16px,1.15vw + 3px,21px)!important;
+  }
+  html[data-inj-page="multi-chart"] .mc-card-change {
+    font-size:clamp(14px,1vw + 3px,19px)!important;
+  }
+  html[data-inj-page="multi-chart"] .mc-canvas-wrap {
+    min-height:0!important;
+    flex:1 1 auto!important;
+  }
+  html[data-inj-page="multi-chart"] .mc-footer {display:none!important;}
+
+  /* Tools and secondary pages: genuine text growth, no page-wide CSS zoom.
+     Workspace retains each user's manually positioned/resized cards. */
+  html[data-inj-page="workspace"] :is(.ws-header,.ws-toolbar,.ws-card-head) {
+    gap:clamp(10px,1vw,18px)!important;
+  }
+  html[data-inj-page="workspace"] :is(.ws-card-heading,.ws-section-label,.ws-section-note,.ws-sub,.ws-data-status) {
+    font-size:var(--inj-portrait-micro)!important;
+    line-height:1.35!important;
+  }
+  html[data-inj-page="workspace"] :is(.ws-value,.ws-section-value) {
+    font-size:clamp(19px,1.5vw + 5px,32px)!important;
+    overflow-wrap:anywhere;
+  }
+  html[data-inj-page="financial-freedom"] .freedom-page {
+    width:100%!important;
+    max-width:none!important;
+    min-height:100dvh!important;
+    height:auto!important;
+    padding-inline:var(--inj-portrait-gutter)!important;
+  }
+  html[data-inj-page="financial-freedom"] :is(.freedom-overview,.freedom-lower-grid) {
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:var(--inj-portrait-gap)!important;
+  }
+  html[data-inj-page="financial-freedom"] :is(.freedom-figure-worth,.freedom-figure-daily,.freedom-figure-monthly) :is(strong,b) {
+    font-size:var(--inj-portrait-number)!important;
+  }
+  html[data-inj-page="reward-ladder"] .ladder-steps,
+  html[data-inj-page="comparison"] :is(.cap-picker-grid,.cap-results-grid),
+  html[data-inj-page="visualize-wealth"] :is(.wealth-all-grid,.wealth-income-grid) {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:var(--inj-portrait-gap)!important;
+  }
+  html[data-inj-page="command-center"] .cc-market-stage {
+    min-height:clamp(480px,40vh,850px)!important;
+  }
+  html[data-inj-page="live-charts"] :is(.terminal-shell,.chart-column,.chart-stage) {
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  html[data-inj-page="order-book"] :is(.book-page,.book-shell,.columns) {
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  html[data-inj-page="all-transactions"] :is(main,.transactions-main,.transaction-list),
+  html[data-inj-page="validators"] :is(main,.validator-list),
+  html[data-inj-page="cloud-sync"] :is(main,.panel),
+  html[data-inj-page="admin-insights"] :is(main,.panel) {
+    min-width:0!important;
+    max-width:100%!important;
+  }
+}
+
+/* Shorter portrait PC windows: retain clear cards but allow vertical scrolling.
+   Never shrink all eight chart plots until candles are impossible to read. */
+@media screen and (min-width:850px) and (max-aspect-ratio:0.86)
+  and (min-height:1050px) and (max-height:1300px) {
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .analytics-grid {
+    min-height:540px!important;
+  }
+  html[data-inj-page="multi-chart"] .mc-rail {
+    grid-template-rows:repeat(4,minmax(245px,1fr))!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    scrollbar-width:thin;
+  }
+}
+
+/* Large 4K portrait viewports: avoid five numbers in a tiny horizontal row. */
+@media screen and (min-width:1500px) and (min-height:2100px) and (orientation:portrait) {
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .metrics-grid {
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    grid-auto-rows:minmax(165px,auto)!important;
+    min-height:165px!important;
+  }
+  html[data-inj-page="index"] body:not(.entry-gate-open) #top > .analytics-grid {
+    min-height:750px!important;
+  }
+}
