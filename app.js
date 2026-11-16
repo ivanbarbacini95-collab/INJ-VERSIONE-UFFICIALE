@@ -8500,7 +8500,7 @@ function bindEvents() {
   $('entryMenuButton')?.addEventListener('click', (event) => {
     event.preventDefault();
     event.stopPropagation();
-    if (state.currentView !== 'home' || performance.now() < themeInteractionGuardUntil) return;
+    if (state.currentView !== 'home') return; // Menu must remain accessible immediately after switching themes.
     const open = !$('headerMenu')?.classList.contains('open');
     if (open) {
       setSearchOpen(false);
