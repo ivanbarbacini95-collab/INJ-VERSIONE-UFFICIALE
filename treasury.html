@@ -318,6 +318,86 @@
 
 <link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=carbon-only-20261113b">
 <link rel="stylesheet" href="./inj-carbon-gold-unified-20261113.css?v=carbon-vivid-trend-20261116a">
+
+<style id="treasury-allocation-metric-alignment-20261116">
+/* Treasury Allocation: consistent label / amount / fiat baselines on every theme.
+   Keep reward runway and live number transitions intact. */
+html[data-inj-page="treasury"] .treasury-allocation-metrics > .treasury-metric {
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:minmax(30px,auto) minmax(42px,auto) minmax(30px,auto);
+  align-content:center !important;
+  align-items:center !important;
+  justify-items:center !important;
+  row-gap:clamp(4px,.55vw,8px) !important;
+  text-align:center !important;
+  padding:clamp(12px,1.25vw,18px) !important;
+  min-width:0;
+  box-sizing:border-box;
+}
+html[data-inj-page="treasury"] .treasury-allocation-metrics > .treasury-metric > span {
+  grid-row:1;
+  align-self:center;
+  margin:0 !important;
+  width:100%;
+  text-align:center !important;
+}
+html[data-inj-page="treasury"] .treasury-allocation-metrics > .treasury-metric > strong,
+html[data-inj-page="treasury"] .treasury-allocation-metrics > .treasury-metric > .treasury-reward-value-runway {
+  grid-row:2;
+  align-self:center;
+  margin:0 !important;
+  min-width:0;
+  max-width:100%;
+  text-align:center !important;
+}
+html[data-inj-page="treasury"] .treasury-allocation-metrics > .treasury-metric > small {
+  grid-row:3;
+  align-self:center;
+  margin:0 !important;
+  width:100%;
+  text-align:center !important;
+}
+html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-wrap:nowrap !important;
+  width:100%;
+  gap:clamp(4px,.55vw,8px) !important;
+}
+html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway > strong {
+  flex:0 1 auto;
+  min-width:0;
+}
+@media (max-width:760px) {
+  html[data-inj-page="treasury"] .treasury-allocation-metrics > .treasury-metric {
+    grid-template-rows:minmax(28px,auto) minmax(38px,auto) minmax(26px,auto);
+    row-gap:5px !important;
+    padding:12px clamp(6px,2vw,12px) !important;
+    min-height:132px;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics > .treasury-metric > strong,
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway > strong {
+    font-size:clamp(.78rem,3.7vw,1.18rem) !important;
+    white-space:nowrap !important;
+    overflow-wrap:normal !important;
+    letter-spacing:-.03em !important;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-value-runway {
+    gap:4px !important;
+  }
+}
+@media (max-width:360px) {
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-runway {
+    gap:2px;
+  }
+  html[data-inj-page="treasury"] .treasury-allocation-metrics .treasury-reward-runway i {
+    width:3px;
+    height:3px;
+  }
+}
+</style>
 </head>
 <body>
   <div class="treasury-shell">
