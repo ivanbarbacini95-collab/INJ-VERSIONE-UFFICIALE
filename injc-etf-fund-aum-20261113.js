@@ -42,15 +42,15 @@
    const estimate=current&&fresh?current.injHeld*spot:null;
    put('injcFundUsd',estimate!==null?usd(estimate):
      current?usd(current.officialInjMarketValueUsd):'—');
-   put('injcFundUsdTag',estimate!==null?tr('STIMA LIVE · USD','LIVE ESTIMATE · USD'):
+   put('injcFundUsdTag',estimate!==null?tr('STIMA SPOT LIVE · USD','LIVE SPOT ESTIMATE · USD'):
      tr('VALORE UFFICIALE · USD','REPORTED VALUE · USD'));
    put('injcFundDate',current
      ?tr('Rilevazione ','Reported ')+labelDate(current.asOf)
      :tr('In attesa dei dati','Awaiting report'));
    const status=$('injcFundFreshness');
    if(status){
-     status.dataset.state=estimate!==null?'live':current?'reported':'unavailable';
-     status.textContent=estimate!==null?'LIVE':current?tr('REPORT','REPORT'):'—';
+     status.dataset.state=estimate!==null?'estimate':current?'reported':'unavailable';
+     status.textContent=estimate!==null?tr('STIMA','ESTIMATE'):current?tr('REPORT','REPORT'):'—';
    }
  }
  async function getJson(url,timeout=7500){
