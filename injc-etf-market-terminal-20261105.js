@@ -135,6 +135,48 @@
    const details=open?tr('Nasdaq aperto · New York','Nasdaq open · New York'):
      tr('Nasdaq chiuso · New York','Nasdaq closed · New York');
    el.title=details;textNode.title=details;el.setAttribute('aria-label',details);
+   renderQuoteFeedStatus();
+ }
+ /* OPEN/CLOSE describes the Nasdaq clock, not the market-data licence.
+    Never label a public cached trade as a streaming tick. */
+ function renderQuoteFeedStatus(){
+   const target=$('etfQuoteFeedStatus');
+   if(!target)return;
+   if(!lastQuote||!Number.isFinite(lastQuote.quoteTime)){
+     target.dataset.feedState='waiting';
+     target.textContent=tr('INJC · in attesa di uno scambio verificato',
+       'INJC · awaiting a timestamped trade');
+     return;
+   }
+   const state=marketState();
+   const age=Math.max(0,Date.now()-lastQuote.quoteTime);
+   const stamp=nyKey(new Date(lastQuote.quoteTime))+' '+fmtTime(lastQuote.quoteTime)+' NY';
+   const cached=/^Cached INJC/i.test(quoteSource);
+   const providerLive=lastQuote.providerRealTime===true &&
+     nyKey(new Date(lastQuote.quoteTime))===nyKey(new Date()) &&
+     (state==='open'||state==='pre');
+   let feedType,description;
+   if(cached){
+     feedType='snapshot';
+     description=tr('SNAPSHOT STORICO · non live','HISTORICAL SNAPSHOT · not live');
+   }else if(providerLive){
+     feedType='provider-realtime';
+     description=tr('REAL-TIME DICHIARATO DAL PROVIDER','PROVIDER-MARKED REAL-TIME');
+   }else if(state==='open'&&age>15*60000){
+     feedType='old-trade';
+     description=tr('ULTIMO SCAMBIO NON RECENTE · ritardo non determinabile',
+       'OLDER LAST TRADE · feed delay unverified');
+   }else if(state==='open'||state==='pre'){
+     feedType='public';
+     description=tr('FEED PUBBLICO · possibile ritardo','PUBLIC FEED · possible delay');
+   }else{
+     feedType='closed';
+     description=tr('ULTIMO SCAMBIO PUBBLICATO','LAST PUBLISHED TRADE');
+   }
+   target.dataset.feedState=feedType;
+   const provider=cached?'Snapshot':(quoteSource.split(' · ')[0]||'INJC');
+   const display=provider+' · '+description+' · '+stamp;
+   if(target.textContent!==display)target.textContent=display;
  }
  function changeClass(id,value){const el=$(id);if(!el)return;el.classList.toggle('up',Number.isFinite(value)&&value>0);el.classList.toggle('down',Number.isFinite(value)&&value<0);}
  function status(value,extra){
@@ -291,13 +333,17 @@
  async function getNasdaq(){
    // Request direct and backup concurrently: use the first valid exchange-timestamped quote.
    // Polling frequently cannot remove the latency of a delayed upstream market feed.
-   try{
-     return await Promise.any([
-       getJson('./api/injc-market-data?provider=nasdaq',5800).then(parseNasdaq),
-       getJson(nasdaqUrl(),4600).then(parseNasdaq),
-       getJson(nasdaqUrl(true),5600).then(parseNasdaq)
-     ]);
-   }catch(_){return null;}
+   const results=await Promise.allSettled([
+     getJson('./api/injc-market-data?provider=nasdaq',5800).then(parseNasdaq),
+     getJson(nasdaqUrl(),4600).then(parseNasdaq),
+     getJson(nasdaqUrl(true),5600).then(parseNasdaq)
+   ]);
+   // Prefer the newest timestamped trade, not the fastest response.
+   const valid=results.filter(row=>row.status==='fulfilled')
+     .map(row=>row.value)
+     .sort((a,b)=>b.quoteTime-a.quoteTime||
+       Number(b.providerRealTime===true)-Number(a.providerRealTime===true));
+   return valid[0]||null;
  }
  function withChart(quote,reference){
    const quoteDay=nyKey(new Date(quote.quoteTime));
@@ -697,9 +743,14 @@
      if(!incoming.cacheOnly)lastFeedSuccessAt=Date.now();
      displayQuote(incoming.data,incoming.source);
      const stale=Date.now()-(lastQuote?.quoteTime||0)>15*60000;
+     const providerLive=lastQuote?.providerRealTime===true &&
+       marketState()==='open' &&
+       nyKey(new Date(lastQuote.quoteTime))===nyKey(new Date());
      setText('etfSyncLabel',incoming.cacheOnly
        ?tr('ULTIMO DATO MEMORIZZATO','LAST STORED QUOTE')
-       :stale?tr('DATI RITARDATI','DELAYED DATA'):tr('QUOTAZIONE AGGIORNATA','QUOTE UPDATED'));
+       :providerLive?tr('NASDAQ · REAL-TIME DICHIARATO','NASDAQ · PROVIDER-MARKED REAL-TIME')
+       :stale?tr('ULTIMO SCAMBIO NON RECENTE','OLDER LAST TRADE')
+       :tr('FEED PUBBLICO · RITARDO POSSIBILE','PUBLIC FEED · POSSIBLE DELAY'));
    }catch(err){
      lastFeedFailureAt=Date.now();
      // Preserve the last verified quote. Connection status is separate from trade freshness.
