@@ -48,3 +48,12 @@
  .injc-managed-assets .injc-aum-primary{grid-template-columns:1fr}
  .injc-managed-assets .injc-aum-metric strong{font-size:25px}
 }
+
+/* INJC holdings mobile tooltip edge-safe · 2026-11-16 */
+.injc-managed-assets .injc-holdings-tooltip{
+ max-width:calc(100% - 12px);
+ box-sizing:border-box;
+ white-space:normal;
+ overflow-wrap:break-word;
+ text-align:center;
+}
