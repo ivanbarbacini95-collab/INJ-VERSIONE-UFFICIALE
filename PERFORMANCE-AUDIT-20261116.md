@@ -33,3 +33,8 @@
 - Introdurre un budget di regressione performance con test su hardware reale e rollout graduale.
 
 > Nota: questo documento è un audit statico e una prima ottimizzazione a basso rischio, **non** una certificazione di performance in browser. La `main` ufficiale resta immutata finché il ramo non viene verificato e integrato.
+
+## Esito prima esecuzione CI (PR #2)
+- **OK:** sintassi dei 3 file JS modificati, 3 test mirati su cache e Cloud Sync.
+- **Problemi già presenti:** i 4 test file Workspace hanno prodotto 30 successi e 6 errori, pur non essendo stati modificati da questa PR. Cinque errori partono dal mock DOM senza `document.addEventListener`; un test APR si aspetta un reward giornaliero senza il nuovo timestamp `aprUpdated` richiesto dal modello per i dati freschi. Non cambiare il codice di produzione per far passare test obsoleti.
+- I test Workspace vengono eseguiti e segnalati come **baseline non bloccante**, in attesa di una revisione separata della suite. Questo non equivale a un test funzionale passato delle pagine Workspace.
