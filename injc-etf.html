@@ -12,7 +12,9 @@
 <script>
 try {
   const theme=localStorage.getItem('inj_monitor_theme');
-  document.documentElement.dataset.theme=['navy','black','light','amber','ocean','chromatic','velvet','aqua','ocean-x-electric','ocean-x-ion','ocean-x-toxic','ocean-x-solar','carbon-gold'].includes(theme)?theme:'navy';
+  const allowed=['classic-black','classic-white','obsidian','arctic','orbit','carbon-gold'];
+   const previous={navy:'obsidian',black:'classic-black',light:'classic-white',amber:'obsidian',velvet:'orbit',aqua:'arctic'};
+   document.documentElement.dataset.theme=allowed.includes(theme)?theme:(previous[theme]||'obsidian');
   document.documentElement.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
 } catch (_) {}
 </script>
@@ -148,6 +150,21 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 .etf-filing-feed{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--etf-line);padding:12px 17px 15px;font-size:10px;color:var(--etf-muted);line-height:1.5}
 .etf-filing-feed a{color:var(--etf-accent);text-decoration:underline;text-underline-offset:3px}
 @media(max-width:540px){.head-right .refresh{display:grid!important;place-items:center!important;width:32px;height:32px;flex:none;font-size:18px}.status-pill{font-size:8px;padding:7px 8px}.head-right{gap:6px}}
+/* Report feed latency separately from the Nasdaq session OPEN/CLOSE indicator. */
+.injc-quote-reference .injc-quote-feed-status{
+ display:block;
+ margin:10px 0 0;
+ padding:10px 0 0;
+ border-top:1px solid var(--etf-line);
+ color:var(--etf-muted);
+ font-size:clamp(10px,1vw,12px);
+ line-height:1.55;
+ overflow-wrap:anywhere;
+ font-variant-numeric:tabular-nums;
+}
+.injc-quote-reference .injc-quote-feed-status[data-feed-state="provider-realtime"]{
+ color:var(--etf-up);
+}
 </style>
 <script defer src="./inj-node-insights-config.js?v=1"></script>
 <script defer src="./inj-node-telemetry.js?v=1"></script>
@@ -215,6 +232,7 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
   <div class="injc-quote-reference">
     <p id="etfReferenceNav" data-it="NAV iniziale 04/11/2026: $25,00 · riferimento del fondo, non prezzo di un primo scambio." data-en="Initial NAV 11/04/2026: $25.00 · fund reference, not an executed first-trade price.">NAV iniziale 04/11/2026: $25,00 · riferimento del fondo, non prezzo di un primo scambio.</p>
     <p data-it="Quotazione dell'ETF INJC, non di INJ spot. I dati pubblici possono essere ritardati." data-en="INJC ETF share quote, not INJ spot. Public market data may be delayed.">Quotazione dell'ETF INJC, non di INJ spot. I dati pubblici possono essere ritardati.</p>
+    <p id="etfQuoteFeedStatus" class="injc-quote-feed-status" data-feed-state="waiting" aria-live="off">Fonte INJC: in attesa di uno scambio con orario verificato</p>
   </div>
 </section>
 <section aria-label="Patrimonio INJ ETF" class="injc-managed-assets">
