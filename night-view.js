@@ -15,9 +15,9 @@
   obsidian:{bg:'#060b11',text:'#e8eef4',muted:'#90a5b8',accent:'#63b9e4',line:'#273747',surface:'#101924',up:'#6ed2a4',down:'#d88992'},
   arctic:{bg:'#f1f7fa',text:'#162b3b',muted:'#617e93',accent:'#267fa9',line:'#d2e0e9',surface:'#fff',up:'#198f6d',down:'#c05c69'},
   orbit:{bg:'#080b1a',text:'#e7e8fc',muted:'#939ab5',accent:'#a79bff',line:'#303b5a',surface:'#11182c',up:'#6ed2a4',down:'#d88992'},
-  'classic-black':{bg:'#030304',text:'#ededf2',muted:'#94949d',accent:'#d3d3db',line:'#303034',surface:'#111113',up:'#6ed2a4',down:'#d88992'},
+  'classic-black':{bg:'#030304',text:'#ededf2',muted:'#94949d',accent:'#d3d3db',line:'#303034',surface:'#111113',up:'#00ee96',down:'#ff465c'},
   'classic-white':{bg:'#ffffff',text:'#16191c',muted:'#656b74',accent:'#394a59',line:'#e0e2e5',surface:'#f7f8fa',up:'#198f6d',down:'#c05c69'},
-  'carbon-gold':{bg:'#0a0c0e',text:'#f5f0e7',muted:'#ada99e',accent:'#e5bf7f',line:'rgba(226,192,137,.19)',surface:'#15191d',up:'#4bd2a0',down:'#e77b89'},
+  'carbon-gold':{bg:'#0a0c0e',text:'#f5f0e7',muted:'#ada99e',accent:'#e5bf7f',line:'rgba(226,192,137,.19)',surface:'#15191d',up:'#00ee96',down:'#ff465c'},
  };
  function themeValues(){
   let selected='obsidian',fromParent=null;
@@ -44,7 +44,7 @@
   const p=themeValues();
   const colors=nightEnabled?
     {bg:'#000000',text:'#dce6e4',muted:'#85938f',accent:'#8bc9ba',
-      line:'#202d2c',surface:'#06100d',up:'#90d5b3',down:'#cf8c8e'}:p;
+      line:'#202d2c',surface:'#06100d',up:p.up,down:p.down}:p;
   const root=document.documentElement;
   root.dataset.nightMode=nightEnabled?'on':'off';
   root.dataset.theme=p.selected;
@@ -56,6 +56,7 @@
   }))root.style.setProperty(token,value);
   const themeTag=document.querySelector('meta[name="theme-color"]');
   if(themeTag)themeTag.content=nightEnabled?'#000000':(colors.bg.startsWith('#')?colors.bg:p.bg);
+  fitPriceToWidth(true); // font/theme changes are a geometry event, not a market tick
   const button=$('nightModeToggle');
   if(button){
    button.setAttribute('aria-pressed',String(nightEnabled));
@@ -73,7 +74,7 @@
  const unit=(v,d=2)=>fmt(v,d)+' <span class="unit">INJ</span>';
  const note=(id,value)=>{const node=$(id);if(node&&node.innerHTML!==value)node.innerHTML=value};
  const app=()=>{try{return parent!==window && parent.location.origin===location.origin && typeof parent.INJ_FINANCIAL_FREEDOM_SOURCE==='function'?parent.INJ_FINANCIAL_FREEDOM_SOURCE():null}catch(_){return null}};
- const state={price:null,tradeAt:0,lastTick:null,priceAt:0,change:null,tickerAt:0,networkAt:0,networkOk:null,networkAge:0,ws:null,wsRetry:0,walletAt:0,selected:'',scope:'selected',timer:0,fetching:false,lastDisplayedPrice:null,lastDisplayedCurrency:'',lastDisplayedText:'',directionTimer:0};
+ const state={price:null,tradeAt:0,lastTick:null,priceAt:0,change:null,tickerAt:0,networkAt:0,networkOk:null,networkAge:0,ws:null,wsRetry:0,walletAt:0,selected:'',scope:'selected',timer:0,fetching:false,lastDisplayedPrice:null,lastDisplayedCurrency:'',lastDisplayedText:'',directionTimer:0,lastDigitCueAt:0};
  function fallback(){
   try{
    const wallets=JSON.parse(localStorage.getItem('inj_monitor_wallets_v1')||'[]');
@@ -136,18 +137,18 @@
    }
   };
  }
- // Match Home: only digits whose visible values change flash green/red.
- // Currency symbols, separators and unaffected digits keep their normal color.
+ // Home parity: repaint every tick, flash ONLY changed digits.
+ // The 720ms visual throttle and 260ms cue match Home's stable numbers.
  function renderPriceDigits(node,oldText,newText,direction){
   const previousDigits=Array.from(String(oldText||'')).filter(char=>/\d/.test(char));
   const nextDigits=Array.from(String(newText||'')).filter(char=>/\d/.test(char));
-  let digitIndex=0;
   const offset=previousDigits.length-nextDigits.length;
+  let digitIndex=0;
   const fragment=document.createDocumentFragment();
   for(const char of newText){
-   if(!/\d/.test(char)){fragment.append(document.createTextNode(char));continue}
-   const originalIndex=digitIndex+offset;
-   const previous=originalIndex>=0&&originalIndex<previousDigits.length?previousDigits[originalIndex]:'';
+   if(!/\d/.test(char)){fragment.append(document.createTextNode(char));continue;}
+   const index=digitIndex+offset;
+   const previous=index>=0&&index<previousDigits.length?previousDigits[index]:'';
    const digit=document.createElement('span');
    digit.className='nv-price-digit';
    if(direction&&previous!==char)digit.classList.add('nv-digit-'+direction);
@@ -157,40 +158,42 @@
   }
   node.replaceChildren(fragment);
   clearTimeout(node._digitClearTimer);
+  node._digitClearTimer=null;
   if(direction){
    node._digitClearTimer=setTimeout(()=>{
     node.querySelectorAll('.nv-digit-up,.nv-digit-down').forEach(digit=>{
      digit.classList.remove('nv-digit-up','nv-digit-down');
     });
     node._digitClearTimer=null;
-   },430);
+   },260);
   }
  }
  function renderHomeStylePrice(usd,currency,rate){
   const node=$('nightPrice');
   if(!node)return;
   const current=usd>0?usd*rate:null;
-  const digits=usd>0?(usd<10?4:3):2;
+  const digits=usd>0?(usd<10?4:3):2; // identical Home decimal rule
   const text=current!==null?money(current,currency,digits):'—';
-  const previous=state.lastDisplayedPrice;
   const oldText=state.lastDisplayedText;
+  const previous=state.lastDisplayedPrice;
   const sameCurrency=state.lastDisplayedCurrency===currency;
   const changed=Boolean(oldText&&oldText!==text);
-  let direction='';
-  if(current!==null&&previous!==null&&sameCurrency&&changed){
-   const delta=usd-previous;
-   if(Math.abs(delta)>Math.max(1e-10,Math.abs(previous)*1e-11))
-    direction=delta>0?'up':'down';
+  const numericChange=current!==null&&previous!==null&&sameCurrency&&
+   Math.abs(usd-previous)>Math.max(1e-12,Math.abs(previous)*1e-10);
+  const direction=numericChange?(usd>previous?'up':'down'):'';
+  const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  let visualDirection='';
+  if(changed&&direction&&!reduceMotion&&performance.now()-state.lastDigitCueAt>=720){
+   visualDirection=direction;
+   state.lastDigitCueAt=performance.now();
   }
-  if(changed||!oldText){
-   renderPriceDigits(node,oldText,text,direction);
-  }
+  if(changed||!oldText)renderPriceDigits(node,oldText,text,visualDirection);
+  // The arrow tracks numeric ticks (even when rounded text is unchanged).
   if(direction){
    node.dataset.injQuoteDirection=direction;
    clearTimeout(state.directionTimer);
    state.directionTimer=setTimeout(()=>{
     node.removeAttribute('data-inj-quote-direction');
-    fitPriceToWidth();
    },1050);
   }else if(current===null||!sameCurrency){
    clearTimeout(state.directionTimer);
@@ -199,34 +202,37 @@
   state.lastDisplayedPrice=current!==null?usd:null;
   state.lastDisplayedCurrency=currency;
   state.lastDisplayedText=text;
-  fitPriceToWidth();
+  if(changed||!oldText)fitPriceToWidth();
  }
- let fitQueued=false;
- function fitPriceToWidth(){
+ let fitQueued=false,fitForce=false;
+ function fitPriceToWidth(force=false){
+  fitForce=fitForce||force;
   if(fitQueued)return;
   fitQueued=true;
   requestAnimationFrame(()=>{
    fitQueued=false;
    const node=$('nightPrice'),frame=node?.parentElement;
    if(!node||!frame)return;
-   // Portrait Totem uses CSS !important on the live price. Clear any
-   // prior inline fit, then calculate from the theme's current base size.
-   node.style.removeProperty('font-size');
-   const css=getComputedStyle(node),baseFont=parseFloat(css.fontSize);
    const available=Math.max(0,frame.clientWidth-24);
+   const text=state.lastDisplayedText||node.textContent||'';
+   // Tabular digits share width. Freeze geometry across ordinary ticks;
+   // only currency, digit-count, theme/font or viewport changes can refit.
+   const shape=text.replace(/\d/g,'8');
+   const css=getComputedStyle(node);
+   const signature=[state.lastDisplayedCurrency,shape,available,css.fontFamily,css.fontWeight].join('|');
+   if(!fitForce&&node._nvFitSignature===signature)return;
+   fitForce=false;
+   node._nvFitSignature=signature;
+   node.style.removeProperty('font-size');
+   const baseFont=parseFloat(getComputedStyle(node).fontSize);
    if(!(baseFont>0&&available>0))return;
-   // A DOM Range measures the real text glyphs, unlike scrollWidth on the
-   // block-level output (which reports the full container width).
    const range=document.createRange();
    range.selectNodeContents(node);
-   const textWidth=range.getBoundingClientRect().width;
-   // Reserve space for the up/down arrow even when it is currently hidden.
-   const widthNeeded=textWidth+baseFont*.29+10;
-   if(widthNeeded>available){
-    const fitted=Math.max(22,Math.floor(baseFont*available/widthNeeded*.975));
-    // IMPORTANT: normal inline fontSize loses to the !important portrait CSS,
-    // leaving 'USD' hidden by the shell's overflow-x clipping.
-    node.style.setProperty('font-size',fitted+'px','important');
+   const width=range.getBoundingClientRect().width;
+   // The reserved directional arrow must not cause a layout jump.
+   const required=width+baseFont*.29+10;
+   if(required>available){
+    node.style.setProperty('font-size',Math.max(22,Math.floor(baseFont*available/required*.975))+'px','important');
    }
   });
  }
@@ -380,8 +386,8 @@
   else{paint();connect();ticker();checkNetwork();}
  });
  window.addEventListener('online',()=>{connect();ticker();checkNetwork()});
- window.addEventListener('resize',fitPriceToWidth,{passive:true});
- document.fonts?.ready?.then(fitPriceToWidth);
+ window.addEventListener('resize',()=>fitPriceToWidth(true),{passive:true});
+ document.fonts?.ready?.then(()=>fitPriceToWidth(true));
  window.addEventListener('offline',()=>{state.ws?.close();state.ws=null;paint()});
  translate();connect();ticker();checkNetwork();paint();
  setInterval(()=>{if(!document.hidden)paint()},1000);
