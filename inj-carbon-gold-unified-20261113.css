@@ -871,3 +871,77 @@ html[data-inj-page="index"][data-inj-home-tab="etf"] body
  border:0!important;
  background:var(--theme-canvas,var(--bg,#07121b))!important;
 }
+
+
+/* 2026-11-16 · Carbon vivid signals, palette-scoped.
+   Carbon Gold (black/carbon finish) and the plain Black palette receive
+   clearer financial green/red; no theme-neutral data is recolored.
+   Applies to every INJ Node section sharing this late-loaded CSS. */
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"]){
+  --up:#00ee96;
+  --down:#ff465c;
+  --up-soft:rgba(0,238,150,.17);
+  --down-soft:rgba(255,70,92,.18);
+  --positive:var(--up);
+  --negative:var(--down);
+  --green:var(--up);
+  --red:var(--down);
+  --mc-green:var(--up);
+  --mc-red:var(--down);
+  --injc-up:var(--up);
+  --injc-down:var(--down);
+  --etf-up:var(--up);
+  --ws-performance-up:var(--up);
+  --ws-performance-down:var(--down);
+}
+
+/* Core numeric signals, incl. small legends and dashboard micro-indicators.
+   Keep OFFLINE/neutral, link accents, market session pills and gold details
+   unchanged unless they explicitly represent a directional signal. */
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ :is(.treasury-hero-pnl.positive>strong,.treasury-hero-pnl.positive>small,
+     .treasury-performance-cell.positive>strong,.injc-change.up,.injc-delta.up,
+     .injc-stat .up,.injc-flow-net strong.up,.mc-card-change.up,
+     .market-ticker-number.up,.overview-detail.up,.inj-market-tab-price[data-tone="up"],
+     #injLightPerf6h.positive){
+  color:var(--up)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ :is(.treasury-hero-pnl.negative>strong,.treasury-hero-pnl.negative>small,
+     .treasury-performance-cell.negative>strong,.injc-change.down,.injc-delta.down,
+     .injc-stat .down,.injc-flow-net strong.down,.mc-card-change.down,
+     .market-ticker-number.down,.overview-detail.down,.inj-market-tab-price[data-tone="down"],
+     #injLightPerf6h.negative){
+  color:var(--down)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ :is(#entryMarketPrice,#marketPrice)[data-inj-quote-direction="up"]::after{
+  color:var(--up)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ :is(#entryMarketPrice,#marketPrice)[data-inj-quote-direction="down"]::after{
+  color:var(--down)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ :is(.injc-flow-column.inflow,.injc-flow-track .inflow,.injc-legend-dot.inflow){
+  background-color:var(--up)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ :is(.injc-flow-column.outflow,.injc-flow-track .outflow,.injc-legend-dot.outflow){
+  background-color:var(--down)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ .treasury-worth-line.trend-up{
+  stroke:var(--up)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ .treasury-worth-line.trend-down{
+  stroke:var(--down)!important;
+}
+html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
+ :is(.mc-card-change.up,.mc-card-change.down,
+     .injc-change.up,.injc-change.down,
+     .injc-delta.up,.injc-delta.down,
+     .treasury-performance-cell.positive>strong,.treasury-performance-cell.negative>strong){
+  opacity:1!important;
+}
