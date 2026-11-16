@@ -38,3 +38,23 @@
 - **OK:** sintassi dei 3 file JS modificati, 3 test mirati su cache e Cloud Sync.
 - **Problemi già presenti:** i 4 test file Workspace hanno prodotto 30 successi e 6 errori, pur non essendo stati modificati da questa PR. Cinque errori partono dal mock DOM senza `document.addEventListener`; un test APR si aspetta un reward giornaliero senza il nuovo timestamp `aprUpdated` richiesto dal modello per i dati freschi. Non cambiare il codice di produzione per far passare test obsoleti.
 - I test Workspace vengono eseguiti e segnalati come **baseline non bloccante**, in attesa di una revisione separata della suite. Questo non equivale a un test funzionale passato delle pagine Workspace.
+
+## Inventario statico multi-pagina (esecuzione CI su PR #2)
+- Home: **48 JS e 11 CSS collegati**, totale **3.366.629 byte raw** di risorse linkate. Non è il volume realmente scaricato: esclude compressione, cache HTTP e richieste differite.
+- Pagine installazione icona alternativa: **35 JS + 102 CSS** per pagina; circa **2.890.769 byte raw** linkati per ciascuna. Potenziale target per consolidamento della cascata, ma non intervenire senza snapshot visuali per tutte le icone.
+- Market: 30 JS + 58 CSS (~1.012.239 byte); Treasury: 23 JS + 42 CSS (~877.205 byte); Workspace: 20 JS + 37 CSS (~701.182 byte).
+- **Nessuna risorsa CSS/JS dichiarata nelle pagine HTML risulta mancante** nella scansione statica.
+- La ricerca SHA-256 non ha trovato file CSS, JS, HTML, PNG o SVG perfettamente identici. Non esistono duplicati binari banali da cancellare.
+- Rilevate **22 risorse CSS/JS senza riferimenti letterali al basename** nei file runtime. Sono soltanto *candidati* all'analisi, non prova di inutilizzo: possono essere richiamati con URL costruiti a runtime, da pagine esterne o da altri processi. Non sono stati eliminati per proteggere il comportamento esistente.
+- Ricerca su file sorgenti: 95 occorrenze di `setInterval`, 126 di `requestAnimationFrame` e 75 di `new MutationObserver/ResizeObserver/IntersectionObserver`. Sono occorrenze statiche, **non** 296 processi contemporaneamente attivi. Il primo target misurato è sospendere gli intervalli disabilitati, già fatto per Cloud Sync.
+- Inventario replicabile da `node scripts/performance-inventory.cjs` nella PR; nessuna rimozione automatica è prevista.
+
+## CI della patch
+- Workflow `INJ Node lean-runtime checks`: esito **success**.
+- Sintassi modifiche: validata.
+- Test mirati PWA e Cloud Sync: **3/3 passati**.
+- Workspace storico: 30/36 test passati, **6 errori preesistenti** nei file Workspace non modificati. Il job li mantiene visibili come baseline non bloccante; devono essere sistemati in una modifica separata, senza cambiare i dati di produzione per far passare aspettative obsolete.
+- **Non** eseguiti in questa sessione: benchmarking di WebKit iOS, DevTools su device fisici, confronto screenshot su tutte le 25 pagine, test installazione offline su tutti i dispositivi. Pertanto non si afferma un aumento percentuale di velocità.
+
+## Stato del rilascio
+La PR #2 è intenzionalmente **in bozza**: l'ufficiale `main` resta identico. Pubblicazione e merge solo dopo verifica effettiva della PWA sui browser e dispositivi usati.
