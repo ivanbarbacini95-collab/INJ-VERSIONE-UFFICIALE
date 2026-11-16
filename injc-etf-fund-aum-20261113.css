@@ -5,7 +5,7 @@
 .injc-managed-assets .injc-aum-metric>span{display:block;color:var(--etf-muted);font-size:clamp(9px,1vw,11px);font-weight:650;letter-spacing:.09em;line-height:1.4}
 .injc-managed-assets .injc-aum-metric strong{display:block;color:var(--etf-text,inherit);font-variant-numeric:tabular-nums;font-size:clamp(22px,3.1vw,37px);font-weight:750;letter-spacing:-.05em;line-height:1.22;margin-top:12px;overflow-wrap:anywhere}
 .injc-managed-assets .injc-aum-freshness{font-size:10px;letter-spacing:.11em;font-weight:750;color:var(--etf-muted)}
-.injc-managed-assets .injc-aum-freshness[data-state="live"]{color:var(--injc-up,#2ab788)}
+.injc-managed-assets .injc-aum-freshness[data-state="estimate"]{color:var(--injc-up,#2ab788)}
 .injc-managed-assets .injc-holdings-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;margin-top:20px;padding:0 1px}
 .injc-managed-assets .injc-holdings-head>span{font-size:clamp(10px,1vw,12px);font-weight:740;letter-spacing:.08em;color:var(--etf-muted)}
 .injc-managed-assets .injc-holdings-tabs{display:flex;gap:4px;align-items:center}
