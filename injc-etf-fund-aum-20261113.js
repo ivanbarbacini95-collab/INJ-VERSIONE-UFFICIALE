@@ -183,7 +183,11 @@
    const py=row.y/(Number(svg.viewBox.baseVal.height)||rect.height)*rect.height;
    tip.textContent=labelDate(row.date)+' · '+fmt(row.injHeld,2)+' INJ';
    tip.hidden=false;
-   tip.style.left=Math.min(Math.max(px,70),rect.width-70)+'px';
+   // The number can be much wider than 140px on iPhones. Clamp using the
+   // tooltip's actual rendered width, not an assumed 70px half-width.
+   const tipWidth=Math.min(tip.getBoundingClientRect().width,Math.max(1,rect.width-12));
+   const half=tipWidth/2,margin=6;
+   tip.style.left=Math.max(half+margin,Math.min(rect.width-half-margin,px))+'px';
    tip.style.top=Math.max(8,py-38)+'px';
    const line=$('injcHoldingsCursor'),dot=$('injcHoldingsCursorDot');
    if(line){line.setAttribute('x1',row.x);line.setAttribute('x2',row.x);line.setAttribute('visibility','visible')}
