@@ -86,24 +86,7 @@
   groups.forEach(function(group){group.open=false});
  }
  function mountControl(){
-  /* All five themes are static; the motion switch is retired. */
-  return;
-  var picker=document.getElementById('themePicker');
-  if(!picker||document.getElementById('injThemeMotionSwitch'))return;
-  var row=document.createElement('div');row.id='injThemeMotionSwitch';row.className='theme-motion-switch';
-  row.innerHTML='<span class="theme-motion-label"><strong>Animazione ambientale</strong><small>Movimento leggero dello sfondo</small></span>'+
-   '<span class="theme-motion-options" role="group" aria-label="Motion mode">'+
-   '<button type="button" data-theme-motion-choice="static" aria-pressed="false">Statico</button>'+
-   '<button type="button" data-theme-motion-choice="dynamic" aria-pressed="true">Dinamico</button></span>';
-  picker.appendChild(row);
-  bindThemeFamilies(picker);
-  row.querySelectorAll('[data-theme-motion-choice]').forEach(function(button){
-   button.addEventListener('pointerdown',function(event){event.stopPropagation()},{passive:true});
-   button.addEventListener('click',function(event){
-    event.preventDefault();event.stopPropagation();setMotion(button.dataset.themeMotionChoice,true);
-   });
-  });
-  setMotion(currentMotion(),false);updateLabels();
+  // The motion switch was retired; six static themes are preserved.
  }
  /* An independent compositor layer makes the 20-second animation obvious on
     iOS Safari. It stays underneath the Home shell and never touches data. */
