@@ -52,6 +52,41 @@
      svg.insertBefore(overnight,before||null);
    }
 
+   // Clearly show the transition between last verified pre-market trade and
+   // first verified Nasdaq print. It is a dashed NON-DATA connector:
+   // no intermediate prices, volumes or touch targets are fabricated.
+   if(timeframe==='1d'){
+     const pre=points.map((p,index)=>({...p,index})).filter(p=>p.session==='pre').at(-1);
+     const regular=points.map((p,index)=>({...p,index}))
+       .find(p=>p.session==='regular'&&(!pre||p.time>pre.time));
+     if(pre&&regular&&regular.index>pre.index&&regular.time>pre.time){
+       const startX=x(pre.index),endX=x(regular.index);
+       if(endX>startX){
+         const bridge=sv('g',{'class':'injc-nontrading-bridge','pointer-events':'none'});
+         bridge.appendChild(sv('path',{
+           d:'M '+startX.toFixed(2)+' '+y(pre.close).toFixed(2)+' L '+endX.toFixed(2)+' '+y(regular.close).toFixed(2),
+           fill:'none',stroke:'var(--etf-muted)','stroke-opacity':'.84',
+           'stroke-width':'1.8','stroke-dasharray':'3.5 5.5','stroke-linecap':'round',
+           'vector-effect':'non-scaling-stroke'
+         }));
+         if(endX-startX>116){
+           const label=sv('text',{
+             x:(startX+endX)/2,y:plotBottom-10,'text-anchor':'middle',
+             fill:'var(--etf-muted)','font-size':10,'font-weight':650
+           });
+           label.textContent=language==='en'?'NO VERIFIED PRICES':'PREZZI NON DISPONIBILI';
+           bridge.appendChild(label);
+         }
+         const title=sv('title');
+         title.textContent=language==='en'
+           ?'Dashed connector links two actual trades; no prices are reported between them.'
+           :'Il tratteggio collega due scambi reali: nessun prezzo verificato è disponibile nell’intervallo.';
+         bridge.appendChild(title);
+         svg.appendChild(bridge);
+       }
+     }
+   }
+
    // A price must have its own time and value; never make non-trading periods selectable.
    const actual=points.map((p,i)=>({...p,index:i}))
      .filter(p=>Number.isFinite(p.time)&&Number.isFinite(p.close)&&p.close>0);
