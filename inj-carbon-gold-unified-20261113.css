@@ -817,3 +817,57 @@ html[data-inj-page="index"][data-theme]:not([data-theme="carbon-gold"]) body.das
  }
 }
 
+
+
+/* 2026-11-16 · ETF dock/viewport theme-safe repair.
+   The embedded ETF and the bottom navigation are siblings. Do not require
+   Home's hidden entry gate to be visible just to display ETF navigation.
+   Reserve EXACTLY the real dock height so there is no blank coloured strip,
+   no chart obstruction and no gap after an iOS PWA theme switch. */
+html[data-inj-page="index"][data-inj-home-tab="etf"]{
+ --inj-etf-dock-height:73px;
+}
+@media (max-width:700px) and (orientation:portrait){
+ html[data-inj-page="index"][data-inj-home-tab="etf"]{
+  --inj-etf-dock-height:71px;
+ }
+}
+@media (max-height:620px){
+ html[data-inj-page="index"][data-inj-home-tab="etf"]{
+  --inj-etf-dock-height:65px;
+ }
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body.entry-gate-open:not(.boot-loading):not(.menu-overlay-open):not(.drawer-open):not(.inj-section-open)
+ > #injPrimaryBottomNav#injPrimaryBottomNav#injPrimaryBottomNav{
+ display:grid!important;
+ opacity:1!important;
+ visibility:visible!important;
+ pointer-events:auto!important;
+ z-index:2147483500!important;
+ transform:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body
+ > #injEtfTabPanel:not([hidden]){
+ position:fixed!important;
+ top:0!important;
+ left:0!important;
+ right:0!important;
+ bottom:calc(var(--inj-etf-dock-height) + env(safe-area-inset-bottom,0px))!important;
+ inset-block-start:0!important;
+ inset-block-end:calc(var(--inj-etf-dock-height) + env(safe-area-inset-bottom,0px))!important;
+ height:auto!important;
+ min-height:0!important;
+ max-height:none!important;
+ overflow:hidden!important;
+ background:var(--theme-canvas,var(--bg,#07121b))!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="etf"] body
+ > #injEtfTabPanel:not([hidden]) > .inj-etf-tab-frame{
+ position:absolute!important;
+ inset:0!important;
+ width:100%!important;
+ height:100%!important;
+ overflow:auto!important;
+ border:0!important;
+ background:var(--theme-canvas,var(--bg,#07121b))!important;
+}
