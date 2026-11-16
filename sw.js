@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261116-etf-gapfix2';
+const CACHE_NAME = 'inj-node-v20261116-live-digit-parity';
 const BOOT_ASSETS = [
   './index.html',
   './cloud-sync.html?v=copy-paste-v1',
@@ -27,7 +27,7 @@ const BOOT_ASSETS = [
   './my-reward-portrait-20261110.js?v=portrait-desktop1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=settings-theme-20261116',
+  './app.js?v=live-digit-parity-20261116',
   './navigation.js?v=20261113-signature11',
   './home-bottom-tabs-20261030.js?v=20261110-liveview-one-layout3',
   './validators-launcher.js?v=20261111e',
@@ -39,8 +39,8 @@ const BOOT_ASSETS = [
   './network-live-ws.js?v=20261109-uptime-ws1',
   './network-history.css?v=20261110-uptime-history1',
   './all-transactions.html?v=20261113-signature11',
-  './night-view.html?v=portrait-price-fit-20261113',
-  './night-view.js?v=portrait-price-fit-20261113'
+  './night-view.html?v=20261116-home-digit-parity',
+  './night-view.js?v=home-digit-parity-20261116'
 ];
 const BOOT_FALLBACK = new URL('./index.html', self.registration.scope).href;
 
