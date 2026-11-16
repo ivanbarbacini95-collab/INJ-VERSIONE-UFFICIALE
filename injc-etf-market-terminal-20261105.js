@@ -549,7 +549,12 @@
    const regular=points.filter(p=>p.session!=='pre');
    const lastRegular=regular.at(-1)?.close,firstRegular=regular[0]?.close;
    const up=Number.isFinite(lastQuote?.change)?lastQuote.change>=0:Number.isFinite(lastRegular)&&Number.isFinite(firstRegular)?lastRegular>=firstRegular:points.at(-1).close>=points[0].close;
-   const normalColor=up?'#45c996':'#f4777f',preColor='#c59a40';
+   // Read the current palette rather than hardcoding muted trend colors.
+   // Pre-market amber remains distinct from regular-session up/down.
+   const rootColors=getComputedStyle(document.documentElement);
+   const bull=rootColors.getPropertyValue('--injc-up').trim()||'#45c996';
+   const bear=rootColors.getPropertyValue('--injc-down').trim()||'#f4777f';
+   const normalColor=up?bull:bear,preColor='#c59a40';
    // True pre-market price prints retain their own yellow sloping line, even after open.
    // Never turn overnight last-close placeholders into an invented price trajectory.
    const preActive=timeframe==='1d'&&points.some(p=>p.session==='pre');
