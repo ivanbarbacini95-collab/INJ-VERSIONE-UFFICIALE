@@ -2651,9 +2651,9 @@ function enterLiveViewFromGate() {
   setHeaderMenuOpen(false);
   setSearchOpen(false);
   if (typeof window.INJ_OPEN_SECTION === 'function') {
-    window.INJ_OPEN_SECTION('./night-view.html?embedded=live&v=20261111-digits-only1');
+    window.INJ_OPEN_SECTION('./night-view.html?embedded=live&v=20261116-home-digit-parity');
   } else {
-    location.href = './night-view.html?embedded=live&v=20261111-digits-only1';
+    location.href = './night-view.html?embedded=live&v=20261116-home-digit-parity';
   }
 }
 
