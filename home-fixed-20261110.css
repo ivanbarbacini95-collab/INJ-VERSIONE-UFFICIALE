@@ -78,3 +78,20 @@
   margin-top:3px!important;
  }
 }
+
+/* Fixed Home at every viewport size. Other tabs and overlays release this flag. */
+@media screen {
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-static="true"]:not([data-inj-view-mode="light"]):has(#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.visible),
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-static="true"]:not([data-inj-view-mode="light"]):has(#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.visible) body.entry-gate-open {
+ height:100dvh!important;min-height:0!important;max-height:100dvh!important;
+ overflow:hidden!important;overscroll-behavior:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-static="true"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.visible {
+ position:fixed!important;inset:0!important;width:100%!important;
+ height:100dvh!important;min-height:0!important;max-height:100dvh!important;
+ overflow:hidden!important;overscroll-behavior:none!important;
+}
+html[data-inj-page="index"][data-inj-home-tab="home"][data-inj-home-static="true"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.visible > .entry-gate-shell:not(.first-access) {
+ min-height:0!important;padding-bottom:0!important;
+}
+}

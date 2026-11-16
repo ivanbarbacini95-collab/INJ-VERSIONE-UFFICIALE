@@ -12,12 +12,14 @@
  let pending=false,dimension='',observer=null;
  const eligible=()=>{
   const gate=$('entryGate');
-  return media.matches && root.dataset.injPage==='index' &&
+  return root.dataset.injPage==='index' &&
    root.dataset.injHomeTab==='home' && root.dataset.injViewMode!=='light' &&
    document.body.classList.contains('entry-gate-open') &&
    !document.body.classList.contains('boot-loading') &&
    !document.body.classList.contains('inj-section-open') &&
    !document.body.classList.contains('menu-overlay-open') &&
+   !document.body.classList.contains('drawer-open') &&
+   !document.querySelector('dialog[open], .inj-content-frame, #injMarketEventsOverlay:not([hidden]), #injMarketPortal:not([hidden]), #injFreedomOverlay:not([hidden]), #converterView.open, #performanceTimelineView.open') &&
    !document.body.classList.contains('entry-live-launch') &&
    !document.body.classList.contains('focus-display-open') &&
    !document.body.classList.contains('pulse-view-open') &&
@@ -51,14 +53,12 @@
   const actions=gate?.querySelector('.entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44');
   if(!actions||!chart||!nav)return;
   root.dataset.injHomeStatic='true';
-  // If the dock-collision guard enabled scrolling, never freeze Home again.
-  if(root.dataset.injHomeDockClearance==='scroll'){
-   delete root.dataset.injHomeFit;
-   return;
-  }
+  delete root.dataset.injHomeDockClearance;
   root.dataset.injHomeFit='true';
   if(gate.scrollTop!==0)gate.scrollTop=0;
   if(window.scrollY>0)window.scrollTo(0,0);
+  // Desktop/tablet composition owns its chart sizing; only freeze its scroll origin.
+  if(!media.matches)return;
   const key=sizeKey();
   if(key!==dimension){
    dimension=key;
@@ -138,10 +138,10 @@
   // Previous Home versions could restore a saved vertical offset even when
   // CSS disallows touch scrolling. Explicitly keep its origin at zero.
   gate.addEventListener('scroll',()=>{
-   if(root.dataset.injHomeStatic==='true'&&root.dataset.injHomeDockClearance!=='scroll'&&gate.scrollTop!==0)gate.scrollTop=0;
+   if(root.dataset.injHomeStatic==='true'&&gate.scrollTop!==0)gate.scrollTop=0;
   },{passive:true});
   window.addEventListener('scroll',()=>{
-   if(root.dataset.injHomeStatic==='true'&&root.dataset.injHomeDockClearance!=='scroll'&&window.scrollY!==0)window.scrollTo(0,0);
+   if(root.dataset.injHomeStatic==='true'&&window.scrollY!==0)window.scrollTo(0,0);
   },{passive:true});
   for(const event of ['pageshow','resize','orientationchange','focus'])
    window.addEventListener(event,schedule,{passive:true});
