@@ -518,7 +518,9 @@
    const wrap=$('etfSvgWrap');if(!wrap)return;
    const sessionKey=nyKey(new Date());
    const points=graphPoints.filter(p=>Number.isFinite(p?.close)&&p.close>0&&
-     (timeframe!=='1d'||nyKey(new Date(p.time))===sessionKey));
+     Number.isFinite(p?.time)&&
+     (timeframe!=='1d'||nyKey(new Date(p.time))===sessionKey))
+     .sort((a,b)=>a.time-b.time);
    if(!points.length){
      wrap.replaceChildren();
      $('etfChartWaiting')?.classList.remove('hidden');
@@ -544,7 +546,13 @@
    const pad=Math.max((max-min)*.16,max*.001,.00001),lo=min-pad,hi=max+pad;
    const hasOvernightTail=timeframe==='1d'&&marketState()!=='open'&&points.at(-1)?.session!=='pre'&&points.at(-1)?.session!=='close-anchor';
    const activePlotWidth=hasOvernightTail?plotWidth*.78:plotWidth;
-   const x=i=>left+activePlotWidth*i/Math.max(points.length-1,1);
+   // Show actual time between verified intraday trades. The previous
+   // index-based layout exaggerated gaps between sparse price prints.
+   const firstTime=points[0].time,lastTime=points.at(-1).time;
+   const timed=timeframe==='1d'&&lastTime>firstTime;
+   const x=i=>left+activePlotWidth*(timed
+     ?(points[i].time-firstTime)/(lastTime-firstTime)
+     :i/Math.max(points.length-1,1));
    const y=v=>top+plotHeight*(hi-v)/Math.max(hi-lo,.00001);
    const regular=points.filter(p=>p.session!=='pre');
    const lastRegular=regular.at(-1)?.close,firstRegular=regular[0]?.close;
@@ -599,10 +607,15 @@
    }
    wrap.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+tr('Grafico INJC: pre-market giallo scuro, sessione regolare rossa o verde; tratteggio senza scambi','INJC chart: dark yellow pre-market, red or green regular session; dashed no-trade period')+'"><defs><linearGradient id="injcPreFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+preColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+preColor+'" stop-opacity="0"/></linearGradient><linearGradient id="injcNormalFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+normalColor+'" stop-opacity=".2"/><stop offset="1" stop-color="'+normalColor+'" stop-opacity="0"/></linearGradient></defs>'+grid+shapes+labels+dates+'</svg>';
    window.__injcEtfChartEnhance?.({wrap,points,timeframe,state:marketState(),x,y,left,top,plotRight,plotBottom,preColor,normalColor,hasOvernightTail,usd,lang,fmtTime});
+   const preIndices=preActive?phases[0].indices:[];
+   const separatedSessions=preIndices.length&&regularIndices.length&&
+     points[regularIndices[0]].time>points[preIndices.at(-1)].time;
    setText('etfChartDataLabel',tr(
      'INJC · '+points.length+' punti prezzo verificati · '+(points.length>=2?'tocca o passa il mouse per esplorare':'altri dati in arrivo')+
+       (separatedSessions?' · tratteggio grigio = intervallo senza prezzi verificati':'')+
        (hasOvernightTail?' · tratteggio giallo = ultima chiusura, non nuovi scambi':'')+' · i feed pubblici possono essere ritardati',
      'INJC · '+points.length+' verified price points · '+(points.length>=2?'touch or hover to inspect':'more data pending')+
+       (separatedSessions?' · grey dashes = period without verified prices':'')+
        (hasOvernightTail?' · yellow dashed = last close, not new trades':'')+' · public market feeds may be delayed'
    ));
  }
