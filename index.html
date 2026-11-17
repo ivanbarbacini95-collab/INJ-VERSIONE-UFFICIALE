@@ -10,6 +10,21 @@
 <meta content="#060b11" name="theme-color"/>
 <style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}html[data-theme="carbon-gold"],html[data-theme="carbon-gold"] body{background-color:#0a0c0e;color-scheme:dark}</style>
 
+<style id="inj-home-no-purple-caps-prepaint">
+/* Applied before external styles and independent of Home's runtime boot flags.
+   Prevent the two transient accent caps from flashing on dark themes.
+   Vertical separators are drawn with ::before and remain untouched. */
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action::after{
+ content:none!important;
+ display:none!important;
+ visibility:hidden!important;
+ background:none!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+</style>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="INJ Node" name="apple-mobile-web-app-title"/>
@@ -458,22 +473,7 @@
 <link rel="stylesheet" href="./inj-carbon-gold-unified-20261113.css?v=carbon-vivid-trend-20261116a">
 <link rel="stylesheet" href="./home-portrait-integrated-20261114.css?v=portrait-links-chart1">
 <link rel="stylesheet" href="./dashboard-portrait-gapfix-20261115.css?v=portrait-gapfix1">
-<style id="inj-home-no-purple-caps-20261115">
-/* All themes: remove the stray horizontal accent caps above the two
-   vertical dividers in Home's three destination shortcuts. Keep ::before
-   untouched: it draws the actual vertical dividers. */
-html[data-inj-page="index"][data-inj-home-tab="home"] body.entry-gate-open
- #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44
- > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action::after {
-  content:none!important;
-  display:none!important;
-  visibility:hidden!important;
-  background:none!important;
-  border:0!important;
-  box-shadow:none!important;
-}
-</style>
+
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
