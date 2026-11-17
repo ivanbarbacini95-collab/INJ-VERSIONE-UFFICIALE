@@ -1,34 +1,34 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261116-live-digit-parity';
+const CACHE_NAME = 'inj-node-v20261116-lean-runtime1';
 const BOOT_ASSETS = [
   './index.html',
+  './style.css?v=16.01.44',
+  './inj-home-overrides-20261106.css?v=perf1',
+  './app.js?v=live-digit-parity-20261116',
+  './navigation.js?v=20261113-signature11',
+  './assets/fonts/inj-geist.woff2',
+  './inj-geist-unified-20261112.css?v=geist-final1',
+  './inj-font-platform-unified-20261103.css?v=geist-final1',
+  './inj-font-switcher-20261029.js?v=geist-final1',
+  './inj-six-themes-20261103.js?v=20261113-signature11',
+  './inj-signature-collection-20261113.css?v=20261113-signature11',
+  './inj-carbon-gold-unified-20261113.css?v=carbon-vivid-trend-20261116a',
+  './home-fixed-20261110.css?v=home-fixed-all-20261116',
+  './home-fixed-20261110.js?v=home-fixed-all-20261116',
+  './manifest.webmanifest?v=20261102litepro1',
   './cloud-sync.html?v=copy-paste-v1',
   './cloud-sync-portable-20261113.js?v=copy-paste-v1',
   './cloud-sync-portable-20261113.css?v=copy-paste-v1',
-  './inj-signature-collection-20261113.css?v=20261113-signature11',
-  './inj-six-themes-20261103.js?v=20261113-signature11',
-  './inj-geist-unified-20261112.css?v=geist-final1',
-  './inj-carbon-gold-unified-20261113.css?v=carbon-vivid-trend-20261116a',
   './inj-portrait-clarity-20261115.css?v=global-responsive-1',
   './inj-responsive-fullscreen-20261115.css?v=global-responsive-1',
-  './assets/fonts/inj-geist.woff2',
-  './inj-font-switcher-20261029.js?v=geist-final1',
-  './inj-font-platform-unified-20261103.css?v=geist-final1',
   './live-view-totem-pro-20261112.css?v=geist-totem1',
   './page-zoom-lock-20261110.js?v=20261114-privacy1',
   './inj-privacy-global-20261114.css?v=20261114b',
-  './manifest.webmanifest?v=20261102litepro1',
-  './style.css?v=16.01.44',
-  './inj-home-overrides-20261106.css?v=perf1',
-  './home-fixed-20261110.js?v=home-fixed-all-20261116',
-  './home-fixed-20261110.css?v=home-fixed-all-20261116',
   './my-reward-portrait-20261110.js?v=portrait-desktop1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=live-digit-parity-20261116',
-  './navigation.js?v=20261113-signature11',
   './home-bottom-tabs-20261030.js?v=20261110-liveview-one-layout3',
   './validators-launcher.js?v=20261111e',
   './validators.html?v=20261113-signature11',
@@ -63,9 +63,24 @@ async function offlineMatch(url, allowHomeFallback) {
 function schedulePut(event, url, response) {
   if (!response.ok || response.type !== 'basic') return;
   const clone = response.clone();
-  event.waitUntil(caches.open(CACHE_NAME)
-    .then(cache => cache.put(cacheKey(url), clone))
-    .catch(() => {})); // Storage quota must not break the live application.
+  // Skip repeated disk writes only when HTTP validators prove that the
+  // cached asset is unchanged; otherwise always update the offline copy.
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const key = cacheKey(url);
+    const previous = await cache.match(key);
+    if (previous) {
+      const etag = response.headers.get('etag');
+      const oldEtag = previous.headers.get('etag');
+      if (etag && oldEtag && etag === oldEtag) return;
+      const modified = response.headers.get('last-modified');
+      const size = response.headers.get('content-length');
+      if (!etag && !oldEtag && modified && size &&
+          previous.headers.get('last-modified') === modified &&
+          previous.headers.get('content-length') === size) return;
+    }
+    await cache.put(key, clone);
+  })().catch(() => {})); // Cache failures must not block the live app.
 }
 self.addEventListener('install', event => {
   event.waitUntil((async () => {

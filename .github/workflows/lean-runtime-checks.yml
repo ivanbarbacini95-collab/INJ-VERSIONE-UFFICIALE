@@ -1,0 +1,31 @@
+name: INJ Node lean-runtime checks
+on:
+  pull_request:
+    paths:
+      - 'sw.js'
+      - 'cloud-sync-agent.js'
+      - 'inj-six-themes-20261103.js'
+      - 'tests/lean-runtime.test.cjs'
+      - '.github/workflows/lean-runtime-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check sw.js
+          node --check cloud-sync-agent.js
+          node --check inj-six-themes-20261103.js
+      - name: Static dependency and size inventory
+        run: node scripts/performance-inventory.cjs
+      - name: Focused PWA and Cloud Sync behavior tests
+        run: node --test tests/lean-runtime.test.cjs
+      - name: Existing workspace regression tests (pre-existing baseline)
+        continue-on-error: true
+        run: node --test workspace-charts.test.cjs workspace-model.test.cjs workspace-sections.test.cjs workspace-values.test.cjs
