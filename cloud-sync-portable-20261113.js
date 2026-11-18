@@ -7,6 +7,7 @@
  const FORMAT='inj-node-portable-backup', VERSION=1, MAX_BYTES=2000000;
  const keys=[
   'inj_monitor_wallets_v1','inj_monitor_address','inj_monitor_average_buy_price_v1',
+   'inj_node_wallet_sort_mode_v1',
   'inj_monitor_currency','inj_monitor_theme','inj_monitor_ui_style',
   'inj_monitor_privacy','inj_monitor_card_style','inj_monitor_targets_v1',
   'inj_monitor_compound_mode','inj_monitor_compound_weekly','inj_monitor_native_chart_range',
