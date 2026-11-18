@@ -2625,8 +2625,26 @@ function armModeExitLock(duration = 1250) {
 function modeLaunchAllowed() {
   const gate = $('entryGate');
   if (state.currentView !== 'home') return false;
+  // Expired timers may be suspended when an installed iOS PWA backgrounds.
+  // A finished Home transition must never leave its buttons permanently locked.
+  const lockUntil = Number(state.modeExitLockUntil || 0);
+  if (lockUntil > 0 && Date.now() >= lockUntil) {
+    state.modeExitLockUntil = 0;
+    window.clearTimeout(state.modeExitLockTimer);
+    document.body.classList.remove('mode-exit-lock');
+  }
   if (Date.now() < Number(state.modeExitLockUntil || 0)) return false;
-  if (document.body.classList.contains('mode-returning')) return false;
+  if (document.body.classList.contains('mode-returning')) {
+    const homeRestored = gate?.classList.contains('visible') &&
+      gate?.getAttribute('aria-hidden') === 'false' &&
+      !document.body.classList.contains('focus-display-open') &&
+      !document.body.classList.contains('pulse-view-open') &&
+      !document.body.classList.contains('live-charts-open') &&
+      !document.querySelector('dialog[open]');
+    if (homeRestored && lockUntil > 0 && Date.now() > lockUntil + 1000)
+      document.body.classList.remove('mode-returning');
+    else return false;
+  }
   if (!gate?.classList.contains('visible') || gate.classList.contains('immersive-underlay')) return false;
   if ($('focusDisplayDialog')?.classList.contains('is-closing') || $('pulseViewDialog')?.classList.contains('is-closing') || $('liveChartsDialog')?.classList.contains('is-closing')) return false;
   return !isFocusDisplayActive() && !isPulseViewActive() && !isLiveChartsActive();
@@ -2842,7 +2860,16 @@ function consumeEntryLaunchIntent(event) {
   state.entryLaunchIntent.delete(button);
   const freshPointerGesture = startedAt > 0 && performance.now() - startedAt < 1200;
   const trustedKeyboardActivation = event?.isTrusted === true && Number(event?.detail || 0) === 0;
-  return freshPointerGesture || trustedKeyboardActivation;
+  // iOS standalone can omit an earlier pointer/touch start when the browser
+  // resumes or retargets the touch sequence. A real, direct trusted click on
+  // the same visible launcher is still valid after the mode-exit lock expires.
+  // Programmatic clicks and clicks through open overlays remain blocked.
+  const trustedDirectClick = event?.isTrusted === true && Number(event?.detail || 0) > 0 &&
+    event.target?.closest?.('button') === button &&
+    !document.body.classList.contains('menu-overlay-open') &&
+    !document.body.classList.contains('inj-section-open') &&
+    !document.querySelector('dialog[open]');
+  return freshPointerGesture || trustedKeyboardActivation || trustedDirectClick;
 }
 
 function bindEntryLauncher(id, handler) {
@@ -5034,6 +5061,76 @@ async function ensureNetworkApr(force = false) {
   state.networkAprUpdated=checked.at;
   state.networkAprSource=checked.source+(checked.stale?' · CACHE':'');
   return state.networkApr;
+}
+
+// Independently verify the protocol APR even if wallet/market loading stalls.
+ // No fabricated APR, no extra polling while hidden, no stale value labeled live.
+let aprContinuityRunning = false;
+function startAprContinuity() {
+  if (window.__injAprContinuityStarted) return;
+  window.__injAprContinuityStarted = true;
+  const tick = async () => {
+    if (document.hidden || aprContinuityRunning || !window.INJ_STAKING_APR) return;
+    aprContinuityRunning = true;
+    const selected = state.address;
+    try {
+      const network = await window.INJ_STAKING_APR.load(false);
+      if (!network || network.stale) {
+        if (network && network.stale) {
+          state.networkApr = network.apr;
+          state.networkAprUpdated = network.at;
+          state.networkAprSource = network.source + ' · CACHE';
+        } else {
+          state.networkApr = 0;
+          state.networkAprUpdated = 0;
+          state.networkAprSource = '';
+        }
+        if (selected === state.address) state.personalApr = NaN;
+        if (state.currentView === 'dashboard') renderPortfolio();
+        return;
+      }
+      state.networkApr = network.apr;
+      state.networkAprUpdated = network.at;
+      state.networkAprSource = network.source;
+      if (!selected) return;
+      const verified = await window.INJ_STAKING_APR.wallet(selected, false);
+      if (state.address !== selected) return;
+      if (verified && !verified.stale && Number.isFinite(verified.apr)) {
+        state.personalApr = verified.apr;
+        state.weightedCommission = verified.weightedCommission;
+        const previous = state.walletSummaries[selected];
+        if (previous) {
+          state.walletSummaries[selected] = {
+            ...previous, personalApr: verified.apr, networkApr: verified.networkApr,
+            aprUpdated: verified.aprUpdated, aprSource: verified.source,
+            weightedCommission: verified.weightedCommission, validators: verified.validators
+          };
+          saveWalletSummaries();
+        }
+      } else {
+        state.personalApr = NaN;
+      }
+      if (state.currentView === 'dashboard') renderPortfolio();
+      renderWalletCards();
+    } catch (_) {
+      if (Date.now() - Number(state.networkAprUpdated || 0) >= window.INJ_STAKING_APR.maxCacheMs) {
+        state.networkApr = 0;
+        state.networkAprUpdated = 0;
+        state.networkAprSource = '';
+        if (selected === state.address) state.personalApr = NaN;
+      }
+      if (state.currentView === 'dashboard') renderPortfolio();
+    } finally {
+      aprContinuityRunning = false;
+    }
+  };
+  window.setInterval(() => { void tick(); }, 60_000);
+  window.addEventListener('online', () => { void tick(); }, { passive: true });
+  window.addEventListener('pageshow', () => { void tick(); }, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) void tick();
+  }, { passive: true });
+  window.setTimeout(() => { void tick(); }, 1000);
 }
 
 function activateWalletImmediately(address, requestedLabel = '') {
@@ -8764,6 +8861,7 @@ async function init() {
   } catch (_) {}
 
   bindEvents();
+  startAprContinuity();
   try {
     const url = new URL(window.location.href);
     if (url.searchParams.get('command-center') === 'pc-only') {
