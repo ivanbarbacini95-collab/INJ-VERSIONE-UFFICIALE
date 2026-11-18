@@ -1,11 +1,11 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261118-home-caps-a';
+const CACHE_NAME = 'inj-node-v20261118-wallet-sort-no-caps-b';
 const BOOT_ASSETS = [
   './index.html',
-  './cloud-sync.html?v=copy-paste-v1',
-  './cloud-sync-portable-20261113.js?v=copy-paste-v1',
+  './cloud-sync.html?v=wallet-order-20261118',
+  './cloud-sync-portable-20261113.js?v=wallet-order-20261118',
   './cloud-sync-portable-20261113.css?v=copy-paste-v1',
   './inj-signature-collection-20261113.css?v=20261113-signature11',
   './inj-six-themes-20261103.js?v=20261113-signature11',
@@ -21,13 +21,13 @@ const BOOT_ASSETS = [
   './inj-privacy-global-20261114.css?v=20261114b',
   './manifest.webmanifest?v=20261102litepro1',
   './style.css?v=16.01.44',
-  './inj-home-overrides-20261106.css?v=20261118-no-purple-caps-a',
+  './inj-home-overrides-20261106.css?v=20261118-no-purple-caps-b',
   './home-fixed-20261110.js?v=home-fixed-all-20261116',
   './home-fixed-20261110.css?v=home-fixed-all-20261116',
   './my-reward-portrait-20261110.js?v=portrait-desktop1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=balance-reconcile-20261118b',
+  './app.js?v=wallet-sort-no-purple-20261118a',
   './navigation.js?v=home-recovery-20261118b',
   './home-bottom-tabs-20261030.js?v=20261110-liveview-one-layout3',
   './validators-launcher.js?v=20261111e',
