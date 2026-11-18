@@ -2986,6 +2986,7 @@ const state = {
   validatorMeta: {},
   wallets: [],
   walletSummaries: {},
+  walletOrderMode: 'saved',
   entrySelectedAddress: '',
   entrySpark: { points: [], loadedAt: 0, loading: false, dayStart: 0, openPrice: 0, lastLiveSampleAt: 0, plot: null, inspectIndex: -1 },
   entryPnlTimeline: { address: '', rows: [], renderKey: '', frame: 0, saveAt: 0, lastPaintAt: 0, followLatest: true, inspectDay: 0, rolloverTimer: 0, rolloverAt: 0, lastHydrateAttempt: 0, metricMode: 'usd', emaVisible: true, layoutMode: 'fit', layoutPreferenceLoaded: false },
@@ -3154,6 +3155,48 @@ function shortAddress(value) {
   return text.length > 18 ? `${text.slice(0, 10)}…${text.slice(-6)}` : text;
 }
 
+/* Sorting is based only on verified INJ units (available + staked + rewards).
+   Never use the USD value or modify the selected wallet's address. */
+const WALLET_SORT_STORAGE_KEY = 'inj_node_wallet_sort_mode_v1';
+function walletInjSortValue(wallet) {
+  const row = state.walletSummaries[wallet.address];
+  const amount = Number(row?.total);
+  return row && Number(row.updated) > 0 && Number.isFinite(amount) && amount >= 0 ? amount : null;
+}
+function sortSavedWalletsByInj() {
+  if (state.walletOrderMode !== 'inj-desc' || state.wallets.length < 2) return false;
+  // Do not reorder the underlying carousel while someone is swiping it.
+  if (entryWalletGesture.active || entryWalletGesture.settling || entryWalletGesture.programmatic) return false;
+  const before = state.wallets.map(wallet => wallet.address).join('|');
+  state.wallets.sort((a, b) => {
+    const x = walletInjSortValue(a), y = walletInjSortValue(b);
+    if (x === null) return y === null ? 0 : 1;
+    if (y === null) return -1;
+    return y - x;
+  });
+  if (before === state.wallets.map(wallet => wallet.address).join('|')) return false;
+  try { saveWallets(); } catch (error) { console.warn('Wallet sort could not be persisted:', error); }
+  return true;
+}
+function renderWalletSortPreference() {
+  const button = $('walletSortModeButton');
+  const note = $('walletSortDescription');
+  if (!button) return;
+  const enabled = state.walletOrderMode === 'inj-desc';
+  const en = document.documentElement.lang === 'en';
+  button.setAttribute('aria-pressed', String(enabled));
+  button.textContent = enabled ? (en ? 'AUTO · INJ ↓' : 'AUTO · INJ ↓') : (en ? 'Saved order' : 'Ordine salvato');
+  if (note) note.textContent = enabled
+    ? (en ? 'Largest INJ total first · live on-chain refresh' : 'Dal maggior totale INJ al minore · aggiornamento live')
+    : (en ? 'Keep the current saved wallet order' : 'Mantieni l’ordine attualmente salvato');
+}
+function toggleWalletSortPreference() {
+  state.walletOrderMode = state.walletOrderMode === 'inj-desc' ? 'saved' : 'inj-desc';
+  try { localStorage.setItem(WALLET_SORT_STORAGE_KEY, state.walletOrderMode); }
+  catch (error) { console.warn('Unable to save wallet sorting preference:', error); }
+  renderWalletControls();
+}
+
 function loadSavedWallets() {
   let rows = [];
   try { rows = JSON.parse(localStorage.getItem('inj_monitor_wallets_v1') || '[]'); } catch (_) {}
@@ -3171,6 +3214,9 @@ function loadSavedWallets() {
     const cached = JSON.parse(localStorage.getItem('inj_monitor_summaries_v1') || '{}');
     state.walletSummaries = cached && typeof cached === 'object' ? cached : {};
   } catch (_) { state.walletSummaries = {}; }
+  try { state.walletOrderMode = localStorage.getItem(WALLET_SORT_STORAGE_KEY) === 'inj-desc' ? 'inj-desc' : 'saved'; }
+  catch (_) { state.walletOrderMode = 'saved'; }
+  sortSavedWalletsByInj();
   try { saveWallets(); } catch (error) {
     // Read-only/local storage failures must not discard wallets already read.
     console.warn('Unable to refresh saved wallet list:', error);
@@ -3433,6 +3479,8 @@ function renderMenuWalletContext() {
 }
 
 function renderWalletControls() {
+  sortSavedWalletsByInj();
+  renderWalletSortPreference();
   $('savedWalletCount').textContent = `${state.wallets.length} salvat${state.wallets.length === 1 ? 'o' : 'i'}`;
   renderMenuWalletContext();
   renderWalletCards();
@@ -3508,6 +3556,8 @@ function openWalletManager(address = '') {
 
 function renderWalletManager() {
   const host = $('walletManagerList');
+  if (!host) return;
+  renderWalletSortPreference();
   host.replaceChildren();
   if (!state.wallets.length) {
     const empty = document.createElement('div');
@@ -4069,6 +4119,9 @@ async function reconcileSelectedWalletBalances(force = false) {
       }
     }
     if (refreshDisplay) {
+      const reordered = sortSavedWalletsByInj();
+      if (reordered && state.currentView === 'home') renderEntryGate();
+      if (reordered && $('walletDialog')?.open && !document.activeElement?.closest?.('#walletManagerList')) renderWalletManager();
       if (state.currentView === 'home' && state.entrySelectedAddress === address)
         renderEntryOverview();
       if (balanceChanged || !previous.updated) {
@@ -4129,8 +4182,11 @@ async function refreshWalletSummaries(force = false) {
   const concurrency = MOBILE_EFFICIENCY ? Math.min(2, addresses.length) : Math.min(3, addresses.length);
   await Promise.all(Array.from({ length: concurrency }, worker));
   state.summariesLoading = false;
+  const reordered = sortSavedWalletsByInj();
   renderAggregate();
   renderWalletCards();
+  if (reordered && state.currentView === 'home') renderEntryGate();
+  if (reordered && $('walletDialog')?.open && !document.activeElement?.closest?.('#walletManagerList')) renderWalletManager();
   // Keep every saved wallet's displayed net APR in sync with its OWN
   // validators; do not reuse the currently selected wallet's commission.
   if(Date.now()-freedomAprLastAttempt>5*60_000){
@@ -8674,6 +8730,7 @@ function bindEvents() {
     });
   });
   $('walletManagerAddForm')?.addEventListener('submit', addWalletFromManager);
+  $('walletSortModeButton')?.addEventListener('click', toggleWalletSortPreference);
   $('walletManagerAddress')?.addEventListener('input', () => {
     if ($('walletManagerAddStatus')?.classList.contains('error')) {
       setWalletManagerAddStatus('Il wallet sarà salvato immediatamente.');
