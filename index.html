@@ -106,7 +106,7 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
 <link href="style.css?v=16.01.44" rel="stylesheet"/>
 <script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--theme-canvas').trim()||cs.getPropertyValue('--bg').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <!-- Ordered Home CSS: 126 legacy requests consolidated; all original rules retained. -->
-<link rel="stylesheet" href="./inj-home-overrides-20261106.css?v=20261118-no-purple-caps-a">
+<link rel="stylesheet" href="./inj-home-overrides-20261106.css?v=20261118-no-purple-caps-b">
 <link rel="stylesheet" href="./my-reward-portrait-20261110.css?v=portrait-desktop1">
 <script defer src="viewport.js?v=20261111-scrollperf1"></script>
 
@@ -124,6 +124,36 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
   
   
 
+<style id="inj-wallet-sort-and-home-cap-final">
+/* Native wallet manager option; color follows the currently active theme. */
+#walletDialog .wallet-manager-order{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  margin:10px 0 14px;padding:12px 14px;border-radius:13px;
+  background:var(--surface-soft,var(--surface,#141820));
+  border:1px solid var(--line,rgba(180,180,180,.18));box-sizing:border-box;
+}
+#walletDialog .wallet-manager-order-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 180px}
+#walletDialog .wallet-manager-order-copy strong{font-size:13px;color:var(--text,#f3f3f3)}
+#walletDialog .wallet-manager-order-copy small{font-size:11px;line-height:1.4;color:var(--muted-strong,var(--muted,#aaa))}
+#walletDialog #walletSortModeButton{min-height:38px;max-width:100%;padding:8px 12px;border-radius:10px;
+ border:1px solid var(--line-strong,var(--line,#444));background:var(--surface-strong,#23262b);
+ color:var(--text,#fff);font:600 12px/1.2 var(--inj-chosen-face,system-ui,sans-serif);cursor:pointer}
+#walletDialog #walletSortModeButton[aria-pressed="true"]{
+ border-color:var(--accent,#cdb185);color:var(--accent,#cdb185)}
+#walletDialog #walletSortModeButton:focus-visible{outline:2px solid var(--accent,#cdb185);outline-offset:2px}
+/* Last-resort startup guard: suppress the old horizontal accent caps without
+   changing theme colors or the intentional vertical dividers on Live/Treasury. */
+html[data-inj-page="index"] body #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action::after,
+html[data-inj-page="index"] body #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action > span::after,
+html[data-inj-page="index"] body #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action .inj-home-tile-title::after{
+ content:none!important;display:none!important;visibility:hidden!important;
+ width:0!important;height:0!important;background:none!important;
+ box-shadow:none!important;border:0!important;animation:none!important;pointer-events:none!important;
+}
+</style>
 <style id="injNode46HomeTheme">
 /* v16.00.49 — Theme-aligned Home launchers; Futures removed. */
 .entry-gate-shell:not(.first-access) .entry-actions.entry-flat-v44 > .entry-action {
@@ -1407,6 +1437,13 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
   <button id="walletManagerAddButton" class="wallet-manager-add-button" type="submit">+ AGGIUNGI WALLET</button>
   <small id="walletManagerAddStatus" class="wallet-manager-add-status" role="status" aria-live="polite">Il wallet viene salvato subito, anche se la rete è lenta.</small>
 </form>
+<div class="wallet-manager-order" aria-label="Ordinamento wallet salvati">
+  <div class="wallet-manager-order-copy">
+    <strong data-it="Ordina wallet" data-en="Sort wallets">Ordina wallet</strong>
+    <small id="walletSortDescription" aria-live="polite">Mantieni l’ordine attualmente salvato</small>
+  </div>
+  <button id="walletSortModeButton" class="wallet-manager-order-button" type="button" aria-pressed="false" aria-describedby="walletSortDescription">Ordine salvato</button>
+</div>
 <div class="wallet-manager-list" id="walletManagerList"></div>
 </dialog>
 <dialog aria-label="Stato rete e API INJ Node" class="system-status-dialog" id="systemStatusDialog">
@@ -1502,7 +1539,7 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
 </section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
 <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-<script defer src="app.js?v=balance-reconcile-20261118b"></script>
+<script defer src="app.js?v=wallet-sort-no-purple-20261118a"></script>
 <script defer src="./morning-brief.js?v=160737"></script>
 <script>
 (function(){
