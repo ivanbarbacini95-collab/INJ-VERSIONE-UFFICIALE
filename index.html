@@ -40,6 +40,34 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
  background:none!important;
  box-shadow:none!important;
 }
+/* Independent of the selected theme and active Home tab: no launch caps may
+   flash during startup, PWA restore, or a change of viewport. The intentional
+   vertical separators on Live View / Treasury (::before) are preserved. */
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44
+ > #entryDashboardButton.entry-action::before,
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+ > span:has(> .inj-home-tile-title)::before,
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+ > span:has(> .inj-home-tile-title)::after,
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
+ .inj-home-tile-title::before {
+ content:none!important;
+ display:none!important;
+ visibility:hidden!important;
+ width:0!important;
+ height:0!important;
+ background:none!important;
+ border:0!important;
+ box-shadow:none!important;
+ pointer-events:none!important;
+}
 </style>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -78,7 +106,7 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
 <link href="style.css?v=16.01.44" rel="stylesheet"/>
 <script>document.addEventListener('DOMContentLoaded',()=>{const cs=getComputedStyle(document.documentElement);const c=(cs.getPropertyValue('--theme-canvas').trim()||cs.getPropertyValue('--bg').trim());if(c)document.querySelector('meta[name="theme-color"]')?.setAttribute('content',c)},{once:true});</script>
 <!-- Ordered Home CSS: 126 legacy requests consolidated; all original rules retained. -->
-<link rel="stylesheet" href="./inj-home-overrides-20261106.css?v=perf1">
+<link rel="stylesheet" href="./inj-home-overrides-20261106.css?v=20261118-no-purple-caps-a">
 <link rel="stylesheet" href="./my-reward-portrait-20261110.css?v=portrait-desktop1">
 <script defer src="viewport.js?v=20261111-scrollperf1"></script>
 
