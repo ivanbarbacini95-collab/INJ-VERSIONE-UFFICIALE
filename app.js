@@ -4028,6 +4028,65 @@ async function loadWalletSummary(address) {
   return { available, nativeUsdc, staked, rewards: reward, total: available + staked + reward, updated: Date.now() };
 }
 
+// Fast read-only on-chain reconciliation. APR and validator metadata are intentionally
+// excluded: their slower cache/network cycle must never delay Available/Staked.
+let selectedBalanceProbeBusy = false;
+let selectedBalanceProbeLastAddress = '';
+let selectedBalanceProbeLastAt = 0;
+async function reconcileSelectedWalletBalances(force = false) {
+  if (document.hidden || navigator.onLine === false || !state.wallets.length) return;
+  const address = state.currentView === 'home'
+    ? (state.entrySelectedAddress || state.address) : state.address;
+  if (!validAddress(address) || selectedBalanceProbeBusy) return;
+  if (!force && address === selectedBalanceProbeLastAddress &&
+      Date.now() - selectedBalanceProbeLastAt < 2500) return;
+  selectedBalanceProbeBusy = true;
+  selectedBalanceProbeLastAddress = address;
+  selectedBalanceProbeLastAt = Date.now();
+  const requestedAt = Date.now();
+  try {
+    const fresh = await loadWalletSummary(address);
+    const previous = state.walletSummaries[address] || {};
+    // A newer completed read must not be replaced by an older in-flight response.
+    if (number(previous.updated) > requestedAt) return;
+    const balanceChanged = Math.abs(number(previous.available) - fresh.available) > 1e-8 ||
+      Math.abs(number(previous.staked) - fresh.staked) > 1e-8 ||
+      Math.abs(number(previous.nativeUsdc) - fresh.nativeUsdc) > 1e-6;
+    const rewardChanged = Math.abs(number(previous.rewards) - fresh.rewards) >= 0.00005;
+    const refreshDisplay = balanceChanged || rewardChanged || !previous.updated;
+    const priorAge = Date.now() - number(previous.updated);
+    state.walletSummaries[address] = { ...previous, ...fresh };
+    if (refreshDisplay || priorAge > 20000) saveWalletSummaries();
+    if (state.address === address) {
+      state.available = fresh.available;
+      state.staked = fresh.staked;
+      state.nativeUsdc = fresh.nativeUsdc;
+      state.rewards = fresh.rewards;
+      state.lastWalletUpdate = fresh.updated;
+      if (refreshDisplay && state.currentView === 'dashboard') {
+        renderPortfolio();
+        renderTarget();
+      }
+    }
+    if (refreshDisplay) {
+      if (state.currentView === 'home' && state.entrySelectedAddress === address)
+        renderEntryOverview();
+      if (balanceChanged || !previous.updated) {
+        renderAggregate();
+        renderWalletCards();
+      }
+      window.dispatchEvent(new CustomEvent('injnode:wallet-balances-reconciled', {
+        detail: { address, available: fresh.available, staked: fresh.staked, updated: fresh.updated }
+      }));
+    }
+  } catch (_) {
+    // Leave the last confirmed state in place; the next foreground probe retries.
+  } finally {
+    selectedBalanceProbeBusy = false;
+  }
+}
+window.INJ_REFRESH_SELECTED_WALLET_BALANCES = () => reconcileSelectedWalletBalances(true);
+
 async function refreshWalletSummaries(force = false) {
   if (state.summariesLoading || !state.wallets.length) return;
   const summaryCooldown = MOBILE_EFFICIENCY ? 12_000 : 8_000;
@@ -4054,7 +4113,11 @@ async function refreshWalletSummaries(force = false) {
     while (cursor < addresses.length) {
       const address = addresses[cursor++];
       try {
-        state.walletSummaries[address] = { ...state.walletSummaries[address], ...(await loadWalletSummary(address)) };
+        const startedAt = Date.now();
+        const snapshot = await loadWalletSummary(address);
+        // The priority on-chain probe may have finished while this slower worker ran.
+        if (number(state.walletSummaries[address]?.updated) > startedAt) continue;
+        state.walletSummaries[address] = { ...state.walletSummaries[address], ...snapshot };
         saveWalletSummaries();
         if (!MOBILE_EFFICIENCY) {
           renderAggregate();
@@ -5213,6 +5276,7 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
 
   try {
     // Primo stadio: i tre dati essenziali. Appena arrivano, aggiorniamo subito la UI.
+    const startedAt = Date.now();
     const [bank, delegations, rewards] = await Promise.all([
       lcd(`/cosmos/bank/v1beta1/balances/${address}`),
       lcd(`/cosmos/staking/v1beta1/delegations/${address}`),
@@ -5223,10 +5287,14 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
     const validatorRows = delegationRows(delegations);
     state.address = address;
     const balances = bank?.balances || [];
-    state.available = findInj(balances);
-    state.nativeUsdc = findNativeUsdc(balances);
-    state.staked = validatorRows.reduce((sum, item) => sum + item.amount, 0);
-    state.rewards = rewardTotal(rewards);
+    // Prefer a selected-wallet balance probe that completed after this request
+    // began; a delayed LCD/APR path must not move a confirmed balance backwards.
+    const newerBalances = number(state.walletSummaries[address]?.updated) > startedAt
+      ? state.walletSummaries[address] : null;
+    state.available = newerBalances ? number(newerBalances.available) : findInj(balances);
+    state.nativeUsdc = newerBalances ? number(newerBalances.nativeUsdc) : findNativeUsdc(balances);
+    state.staked = newerBalances ? number(newerBalances.staked) : validatorRows.reduce((sum, item) => sum + item.amount, 0);
+    state.rewards = newerBalances ? number(newerBalances.rewards) : rewardTotal(rewards);
 
     const previous = state.walletSummaries[address] || {};
     state.walletSummaries[address] = {
@@ -5270,7 +5338,8 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
       state.networkApr=checked.networkApr;
       state.networkAprUpdated=checked.aprUpdated;
       state.networkAprSource=checked.source;
-      state.staked=checked.staked;
+      // APR wallet snapshots may be cached for minutes. Never override the
+      // newer bank/staking balance with an APR-only validator snapshot.
     }
     state.walletSummaries[address] = {
       ...state.walletSummaries[address],
@@ -6026,6 +6095,20 @@ function returnDashboardToEntryGate() {
   gate.classList.add('visible', 'home-return-stable');
   gate.setAttribute('aria-hidden', 'false');
   window.INJ_HOME_SCROLL?.restore();
+  // Finish an interrupted Dashboard/immersive handoff before the first Home tap.
+  if (!isFocusDisplayActive() && !isPulseViewActive() && !isLiveChartsActive()) {
+    gate.classList.remove('leaving', 'immersive-underlay');
+    document.body.classList.remove('entry-live-launch', 'mode-returning');
+    if (Date.now() >= Number(state.modeExitLockUntil || 0)) {
+      state.modeExitLockUntil = 0;
+      window.clearTimeout(state.modeExitLockTimer);
+      document.body.classList.remove('mode-exit-lock');
+    }
+  }
+  if (window.INJ_BOTTOM_NAV?.active() !== 'home')
+    window.INJ_BOTTOM_NAV?.select('home');
+  window.INJ_SCROLL_GUARD?.refresh();
+  void reconcileSelectedWalletBalances(true);
 
   requestAnimationFrame(() => {
     document.body.classList.remove('dashboard-home-instant-return');
@@ -6054,7 +6137,7 @@ function goHome(source = 'internal') {
   // iOS can emit a delayed synthetic click after the close control is tapped.
   // Never let that second event start another navigation while the immersive
   // page is already fading away.
-  if (immersiveModeTransitioning()) return;
+  if (state.currentView !== 'dashboard' && immersiveModeTransitioning()) return;
 
   if (isFocusDisplayActive()) {
     state.currentView = 'home';
@@ -8950,6 +9033,18 @@ async function init() {
 
 scheduleBootSplashExit();
 init();
+// A confirmed claim/delegation is reflected at the next successful LCD read,
+// independently of APR refresh or the slower five-wallet summary cycle.
+window.setInterval(() => { void reconcileSelectedWalletBalances(false); }, 3200);
+window.setTimeout(() => { void reconcileSelectedWalletBalances(true); }, 1500);
+window.addEventListener('pageshow', () => { void reconcileSelectedWalletBalances(true); }, { passive: true });
+window.addEventListener('online', () => { void reconcileSelectedWalletBalances(true); }, { passive: true });
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) void reconcileSelectedWalletBalances(true);
+}, { passive: true });
+window.addEventListener('injnode:section:closed', () => {
+  void reconcileSelectedWalletBalances(true);
+});
 
 // v15.37 — INJ Node rebrand. Existing inj_monitor_* localStorage keys intentionally preserved for upgrade compatibility.
 
