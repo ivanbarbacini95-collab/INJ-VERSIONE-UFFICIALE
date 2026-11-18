@@ -3175,6 +3175,12 @@ function sortSavedWalletsByInj() {
     return y - x;
   });
   if (before === state.wallets.map(wallet => wallet.address).join('|')) return false;
+  // Pagination dots are indexed: rebuild them to match reordered wallet IDs.
+  $('entryWalletDots')?.replaceChildren();
+  entryWalletGesture.tracking = false;
+  entryWalletGesture.baseIndex = -1;
+  entryWalletGesture.targetIndex = -1;
+  removeEntryWalletCarouselStage();
   try { saveWallets(); } catch (error) { console.warn('Wallet sort could not be persisted:', error); }
   return true;
 }
