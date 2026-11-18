@@ -126,11 +126,15 @@ function home(){
 }
 // Retain the parent app while isolated sections run in their own document.
 let section=null,sectionLauncher=null,sectionCover=null;
+let sectionWatchdog=0,sectionOpenedAt=0;
+const SECTION_LOAD_TIMEOUT_MS=25_000;
 const androidStandalone=/Android/i.test(navigator.userAgent||'') &&
   Boolean(window.matchMedia?.('(display-mode: standalone)')?.matches ||
     window.matchMedia?.('(display-mode: fullscreen)')?.matches);
 let androidSectionHistoryActive=false;
 function closeSection(fromHistory=false){
+ window.clearTimeout(sectionWatchdog);
+ sectionWatchdog=0;sectionOpenedAt=0;
  if(!section)return;
  const undoAndroidHistory=androidStandalone&&androidSectionHistoryActive&&!fromHistory&&
    history.state?.injAndroidSection===true;
@@ -168,7 +172,10 @@ window.INJ_OPEN_SECTION=function(url){
    // CSS, scripts and document load have completed: never expose Safari's
    // temporary white about:blank document before this point.
    requestAnimationFrame(()=>{
-     if(section===currentSection)currentSection.dataset.ready='true';
+     if(section===currentSection){
+      currentSection.dataset.ready='true';
+      window.clearTimeout(sectionWatchdog);sectionWatchdog=0;
+    }
    });
    const currentLanguage=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';
    currentSection.contentWindow?.postMessage({type:'injnode:languagechange',language:currentLanguage},location.origin);
@@ -177,6 +184,14 @@ window.INJ_OPEN_SECTION=function(url){
  document.body.append(sectionCover,section);
  document.body.classList.add('inj-section-open');
  section.src=url;
+ sectionOpenedAt=Date.now();
+ section.addEventListener('error',()=>{
+   if(section===currentSection && currentSection.dataset.ready!=='true')closeSection();
+ },{once:true});
+ // Recover Home when a stalled iframe never completes its initial load.
+ sectionWatchdog=window.setTimeout(()=>{
+   if(section===currentSection && currentSection.dataset.ready!=='true')closeSection();
+ },SECTION_LOAD_TIMEOUT_MS);
  // Android's native system Back gesture/button closes an embedded section
  // instead of leaving the installed app. iOS keeps its gesture shield.
  if(androidStandalone){
@@ -188,6 +203,15 @@ window.INJ_OPEN_SECTION=function(url){
  // iOS section opens intentionally do not create a swipe-back history entry.
 };
 if(main){
+ // Backgrounded PWAs may suspend timeouts. Reclaim Home on foreground.
+ const repairPendingSection=()=>{
+   if(section && section.dataset.ready!=='true' && sectionOpenedAt>0 &&
+      Date.now()-sectionOpenedAt>=SECTION_LOAD_TIMEOUT_MS)closeSection();
+ };
+ window.addEventListener('pageshow',repairPendingSection,{passive:true});
+ document.addEventListener('visibilitychange',()=>{
+   if(!document.hidden)repairPendingSection();
+ },{passive:true});
  document.addEventListener('click',event=>{
   const link=event.target.closest('#entryMultiChartButton,#entryInjcEtfButton,#entryWorkspaceButton,#entryTreasuryButton,#entryLiveRewardsButton,#entryRewardLadderButton,#entryComparisonButton,#entryVisualizeWealthButton,#injAdminInsightsMenuButton,#injCloudSyncMenuButton');
   if(!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;
