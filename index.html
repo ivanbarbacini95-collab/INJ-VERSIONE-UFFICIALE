@@ -24,6 +24,22 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
  border:0!important;
  box-shadow:none!important;
 }
+/* Remove leftover launch-accent rails even during the prepaint/loading phase.
+   This does NOT affect the intentional vertical dividers (::before on tiles). */
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44::before,
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44::after,
+html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
+ .entry-gate-shell > .entry-actions.entry-flat-v44
+ > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) .inj-home-tile-title::after{
+ content:none!important;
+ display:none!important;
+ visibility:hidden!important;
+ border:0!important;
+ background:none!important;
+ box-shadow:none!important;
+}
 </style>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -148,7 +164,7 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
 <script defer src="./home-entry-feedback.js?v=160720"></script>
 <script defer src="./home-scroll-memory.js?v=return-stable-20261105a"></script>
 <script defer src="./cloud-sync-agent.js?v=20261027sync1"></script>
-<script defer src="navigation.js?v=nav-recovery-20261118a"></script>
+<script defer src="navigation.js?v=home-recovery-20261118b"></script>
 <script defer src="./i18n.js?v=20261028allsections1"></script>
 <script defer src="scroll-guard.js?v=160525"></script>
 <!-- INJ Node Home Vitality: unique theme-aware launcher art; no page-wide effects -->
@@ -1458,7 +1474,7 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
 </section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
 <script defer src="./staking-apr-source.js?v=20261109-shared2"></script>
-<script defer src="app.js?v=home-apr-continuity-20261118a"></script>
+<script defer src="app.js?v=balance-reconcile-20261118b"></script>
 <script defer src="./morning-brief.js?v=160737"></script>
 <script>
 (function(){
