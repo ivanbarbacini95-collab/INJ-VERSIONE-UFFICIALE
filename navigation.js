@@ -135,7 +135,15 @@ let androidSectionHistoryActive=false;
 function closeSection(fromHistory=false){
  window.clearTimeout(sectionWatchdog);
  sectionWatchdog=0;sectionOpenedAt=0;
- if(!section)return;
+ if(!section){
+   // A crashed/restored iOS iframe can leave a cover behind without a frame.
+   // Remove the invisible hit target so Home remains interactive.
+   sectionCover?.remove();sectionCover=null;
+   document.body.classList.remove('inj-section-open');
+   window.INJ_SCROLL_GUARD?.refresh();
+   window.dispatchEvent(new Event('injnode:section:closed'));
+   return;
+ }
  const undoAndroidHistory=androidStandalone&&androidSectionHistoryActive&&!fromHistory&&
    history.state?.injAndroidSection===true;
  androidSectionHistoryActive=false;
@@ -143,10 +151,11 @@ function closeSection(fromHistory=false){
  sectionCover?.remove();sectionCover=null;
  document.body.classList.remove('inj-section-open');
  // Native history never changes for section opens/closes; Home stays mounted.
- sectionLauncher?.focus({preventScroll:true});
+ try{sectionLauncher?.focus({preventScroll:true});}catch(_){}
  // Section iframe is gone: hand the native scroll surface back to Home.
  window.INJ_SCROLL_GUARD?.refresh();
  window.INJ_HOME_SCROLL?.restore();
+ window.dispatchEvent(new Event('injnode:section:closed'));
  // Back from a visible Android PWA section returns to Home. An explicit
  // in-app close also removes the temporary history entry.
  if(undoAndroidHistory)history.back();
