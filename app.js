@@ -2614,6 +2614,7 @@ function restoreEntryGateFromImmersive() {
 function armModeExitLock(duration = 1250) {
   const ms = Math.max(350, Number(duration) || 1250);
   state.modeExitLockUntil = Date.now() + ms;
+  state.modeExitLockStartedAt = Date.now();
   window.clearTimeout(state.modeExitLockTimer);
   document.body.classList.add('mode-exit-lock');
   state.modeExitLockTimer = window.setTimeout(() => {
@@ -2641,7 +2642,8 @@ function modeLaunchAllowed() {
       !document.body.classList.contains('pulse-view-open') &&
       !document.body.classList.contains('live-charts-open') &&
       !document.querySelector('dialog[open]');
-    if (homeRestored && lockUntil > 0 && Date.now() > lockUntil + 1000)
+    if (homeRestored && Number(state.modeExitLockStartedAt || 0) > 0 &&
+        Date.now() - Number(state.modeExitLockStartedAt) > 2600)
       document.body.classList.remove('mode-returning');
     else return false;
   }
