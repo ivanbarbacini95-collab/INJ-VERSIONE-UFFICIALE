@@ -3,7 +3,7 @@
 'use strict';
 const $=id=>document.getElementById(id),base=String(window.INJ_CLOUD_SYNC_URL||'').trim().replace(/\/$/,'');
 const validBase=/^https:\/\/[^/\s?#]+$/.test(base);
-const allow=k=>/^(?:inj_monitor_(?:wallets_v1|address|average_buy_price_v1|currency|theme|ui_style|privacy|card_style|targets_v1|compound_mode|compound_weekly|native_chart_range)|inj_node_(?:language_v1|crypto_favorites_v1|workspace_v1|workspace_histories_v1|timeline_layout_v1|comparison_selected_wallet_v1))$/.test(k);
+const allow=k=>/^(?:inj_monitor_(?:wallets_v1|address|average_buy_price_v1|currency|theme|ui_style|privacy|card_style|targets_v1|compound_mode|compound_weekly|native_chart_range)|inj_node_(?:language_v1|crypto_favorites_v1|workspace_v1|workspace_histories_v1|timeline_layout_v1|comparison_selected_wallet_v1|wallet_sort_mode_v1))$/.test(k);
 const parentAgent=()=>{try{return parent!==window&&parent.location.origin===location.origin?parent.INJCloudSyncAgent:null}catch(_){return null}};
 let token='',version=0,remote={},updatedAt=null,auto=false,busy=false,locallyLinked=false;
 const toB64=buffer=>{const bytes=new Uint8Array(buffer);let str='';for(const v of bytes)str+=String.fromCharCode(v);return btoa(str).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
