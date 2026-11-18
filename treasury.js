@@ -1985,6 +1985,15 @@ function renderWalletOwnership(){
   const total=r?number(r.total):NaN;
   return {address,name,total};
  });
+ /* Sort only the wallet ownership display, not Treasury addresses or totals. */
+ let autoSort=false;
+ try{autoSort=localStorage.getItem('inj_node_wallet_sort_mode_v1')==='inj-desc'}catch(_){}
+ if(autoSort)active.sort((a,b)=>{
+  const aKnown=Number.isFinite(a.total),bKnown=Number.isFinite(b.total);
+  if(!aKnown)return bKnown?1:0;
+  if(!bKnown)return -1;
+  return b.total-a.total;
+ });
  const overall=active.every(x=>Number.isFinite(x.total))?active.reduce((n,x)=>n+x.total,0):NaN;
  const complete=Number.isFinite(overall)&&overall>0;
  const english=ownershipIsEnglish();
@@ -2445,7 +2454,7 @@ function bindTreasuryHomeReturn() {
 
 function boot() {
   try { state.currency=localStorage.getItem('inj_monitor_currency')==='EUR'?'EUR':'USD'; } catch(_) {}
-  window.addEventListener('storage',e=>{if(e.key==='inj_monitor_wallets_v1')renderWalletOwnership();});
+  window.addEventListener('storage',e=>{if(e.key==='inj_monitor_wallets_v1'||e.key==='inj_node_wallet_sort_mode_v1')renderWalletOwnership();});
   hydrateSnapshot();hydrateHistory();hydrateWorthHistory();bindTreasuryHomeReturn();bindSparkInteraction();bindWorthInteraction();bindGrowthRangeControls();bindWorthRangeControls();render();
   void loadInjMarketHistory(state.worthRange);
   void restoreTimelineBackups().then(()=>{state.historyReady=true;render();void repairWorthHistoryAfterResume();});
