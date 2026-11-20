@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261120-shortcuts-opaque-a';
+const CACHE_NAME = 'inj-node-v20261120-shortcuts-soft-edge-b';
 const BOOT_ASSETS = [
   './index.html',
   './inj-light-financial-contrast-20261120.css?v=light-vivid1',
@@ -11,7 +11,7 @@ const BOOT_ASSETS = [
   './inj-signature-collection-20261113.css?v=20261113-signature11',
   './inj-six-themes-20261103.js?v=20261113-signature11',
   './inj-geist-unified-20261112.css?v=geist-final1',
-  './inj-carbon-gold-unified-20261113.css?v=home-shortcuts-opaque-20261120a',
+  './inj-carbon-gold-unified-20261113.css?v=home-shortcuts-soft-edge-20261120b',
   './inj-portrait-clarity-20261115.css?v=global-responsive-1',
   './inj-responsive-fullscreen-20261115.css?v=global-responsive-1',
   './assets/fonts/inj-geist.woff2',

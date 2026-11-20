@@ -66,15 +66,16 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
  gap:0!important;
  box-sizing:border-box!important;
  padding:7px 0!important;
- border:0!important;
- border-top:1px solid color-mix(in srgb,var(--accent) 21%,transparent)!important;
- border-bottom:1px solid color-mix(in srgb,var(--accent) 21%,transparent)!important;
+ /* Rounded, understated outline around the single opaque shortcut strip. */
+ border:1px solid color-mix(in srgb,var(--accent,var(--text,#8da2b0)) 15%,transparent)!important;
+ border-radius:clamp(13px,2vw,19px)!important;
  /* Shared opaque quick-access surface: follow the active theme, hide decorative ribbons. */
  background:var(--theme-canvas,#10161e)!important;
  background-color:var(--surface,#10161e)!important;
  background-color:rgb(from var(--surface,#10161e) r g b / 1)!important;
  background-image:none!important;
- box-shadow:none!important;
+ box-shadow:0 3px 12px color-mix(in srgb,var(--theme-canvas,#10161e) 20%,transparent)!important;
+ overflow:hidden!important;
  margin-top:var(--inj-home-links-gap,clamp(9px,1.4dvh,16px))!important;
 }
 html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
