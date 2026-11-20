@@ -13,10 +13,10 @@
  // Capture the active parent theme when embedded, not a second theme setting.
  const palettes={
   obsidian:{bg:'#060b11',text:'#e8eef4',muted:'#90a5b8',accent:'#63b9e4',line:'#273747',surface:'#101924',up:'#6ed2a4',down:'#d88992'},
-  arctic:{bg:'#f1f7fa',text:'#162b3b',muted:'#617e93',accent:'#267fa9',line:'#d2e0e9',surface:'#fff',up:'#198f6d',down:'#c05c69'},
+  arctic:{bg:'#f1f7fa',text:'#101010',muted:'#4c5056',accent:'#267fa9',line:'#d2e0e9',surface:'#fff',up:'#007f38',down:'#d01421'},
   orbit:{bg:'#080b1a',text:'#e7e8fc',muted:'#939ab5',accent:'#a79bff',line:'#303b5a',surface:'#11182c',up:'#6ed2a4',down:'#d88992'},
   'classic-black':{bg:'#030304',text:'#ededf2',muted:'#94949d',accent:'#d3d3db',line:'#303034',surface:'#111113',up:'#00ee96',down:'#ff465c'},
-  'classic-white':{bg:'#ffffff',text:'#16191c',muted:'#656b74',accent:'#394a59',line:'#e0e2e5',surface:'#f7f8fa',up:'#198f6d',down:'#c05c69'},
+  'classic-white':{bg:'#ffffff',text:'#101010',muted:'#4c5056',accent:'#394a59',line:'#e0e2e5',surface:'#f7f8fa',up:'#007f38',down:'#d01421'},
   'carbon-gold':{bg:'#0a0c0e',text:'#f5f0e7',muted:'#ada99e',accent:'#e5bf7f',line:'rgba(226,192,137,.19)',surface:'#15191d',up:'#00ee96',down:'#ff465c'},
  };
  function themeValues(){
@@ -44,7 +44,7 @@
   const p=themeValues();
   const colors=nightEnabled?
     {bg:'#000000',text:'#dce6e4',muted:'#85938f',accent:'#8bc9ba',
-      line:'#202d2c',surface:'#06100d',up:p.up,down:p.down}:p;
+      line:'#202d2c',surface:'#06100d',up:p.light?'#00ee96':p.up,down:p.light?'#ff465c':p.down}:p;
   const root=document.documentElement;
   root.dataset.nightMode=nightEnabled?'on':'off';
   root.dataset.theme=p.selected;

@@ -1,0 +1,91 @@
+/* INJ Node | White / Arctic Glass financial contrast, 2026-11-20.
+   One semantic palette for every light surface. Dark themes, chart data,
+   neutral states, amber warnings and ETF pre-market gold remain untouched.
+   Layered important declarations beat old unlayered theme-specific rules. */
+@layer inj-light-financial-contrast {
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) {
+  color-scheme:light!important;
+  --inj-light-ink:#101010;
+  --inj-light-secondary:#4c5056;
+  --inj-light-green:#007f38;
+  --inj-light-red:#d01421;
+  --text:var(--inj-light-ink)!important;
+  --muted:var(--inj-light-secondary)!important;
+  --muted-strong:#373b40!important;
+  --muted2:var(--muted-strong)!important;
+  --muted-2:var(--muted-strong)!important;
+  --up:var(--inj-light-green)!important;
+  --down:var(--inj-light-red)!important;
+  --positive:var(--up)!important;
+  --negative:var(--down)!important;
+  --green:var(--up)!important;
+  --red:var(--down)!important;
+  --up-soft:rgba(0,127,56,.12)!important;
+  --down-soft:rgba(208,20,33,.11)!important;
+  --fg:var(--text)!important;
+  --ink:var(--text)!important;
+  --mc-ink:var(--text)!important;
+  --mc-dim:var(--muted-strong)!important;
+  --mc-muted:var(--muted)!important;
+  --mc-green:var(--up)!important;
+  --mc-red:var(--down)!important;
+  --injc-up:var(--up)!important;
+  --injc-down:var(--down)!important;
+  --etf-ink:var(--text)!important;
+  --etf-muted:var(--muted)!important;
+  --etf-up:var(--up)!important;
+  --etf-down:var(--down)!important;
+  --ws-fg:var(--text)!important;
+  --ws-muted:var(--muted)!important;
+  --ws-performance-up:var(--up)!important;
+  --ws-performance-down:var(--down)!important;
+  --rl-text:var(--text)!important;
+  --rl-muted:var(--muted)!important;
+  --freedom-ink:var(--text)!important;
+ }
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"])[data-inj-page="injc-etf"] body {
+  --etf-ink:var(--text)!important;
+  --etf-muted:var(--muted)!important;
+  --injc-up:var(--up)!important;
+  --injc-down:var(--down)!important;
+ }
+ /* Numeric values, not containers or inverse-color heatmap labels. */
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(
+  .treasury-hero-pnl.positive>strong,.treasury-hero-pnl.positive>small,
+  .treasury-performance-cell.positive>strong,.injc-change.up,.injc-delta.up,
+  .injc-stat .up,.injc-flow-net strong.up,.mc-card-change.up,
+  .market-ticker-number.up,.overview-detail.up,.inj-market-tab-price[data-tone="up"],
+  .inj-light-meta.positive,#injLightPerf6h.positive,
+  .worth-change.positive,#entryMarketChange.positive,#marketChange.positive,
+  .inj-wm-tile.up .inj-wm-change,
+  .ws-candle-up
+ ) {color:var(--up)!important;}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(
+  .treasury-hero-pnl.negative>strong,.treasury-hero-pnl.negative>small,
+  .treasury-performance-cell.negative>strong,.injc-change.down,.injc-delta.down,
+  .injc-stat .down,.injc-flow-net strong.down,.mc-card-change.down,
+  .market-ticker-number.down,.overview-detail.down,.inj-market-tab-price[data-tone="down"],
+  .inj-light-meta.negative,#injLightPerf6h.negative,
+  .worth-change.negative,#entryMarketChange.negative,#marketChange.negative,
+  .inj-wm-tile.down .inj-wm-change,
+  .ws-candle-down
+ ) {color:var(--down)!important;}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(#entryMarketPrice,#marketPrice)[data-inj-quote-direction="up"]::after{color:var(--up)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(#entryMarketPrice,#marketPrice)[data-inj-quote-direction="down"]::after{color:var(--down)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(.mc-card-change.up,.mc-card-change.down,.injc-change.up,.injc-change.down,.injc-delta.up,.injc-delta.down,.treasury-performance-cell.positive>strong,.treasury-performance-cell.negative>strong,.inj-light-meta.positive,.inj-light-meta.negative){opacity:1!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(.injc-flow-column.inflow,.injc-flow-track .inflow,.injc-legend-dot.inflow){background-color:var(--up)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(.injc-flow-column.outflow,.injc-flow-track .outflow,.injc-legend-dot.outflow){background-color:var(--down)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) .treasury-worth-line.trend-up{stroke:var(--up)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) .treasury-worth-line.trend-down{stroke:var(--down)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) .treasury-worth-line.trend-flat{stroke:var(--text)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) #injLightPriceRow[data-direction="up"]{--inj-light-price-direction:var(--up)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) #injLightPriceRow[data-direction="down"]{--inj-light-price-direction:var(--down)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) #injLightHome .inj-light-chart-plot{--inj-light-plot:var(--text)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) #injLightHome .inj-light-chart-plot.positive{--inj-light-plot:var(--up)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) #injLightHome .inj-light-chart-plot.negative{--inj-light-plot:var(--down)!important}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(#injLightLineSvg,#injProCandleSvg) .inj-candle-up{color:var(--up)!important;stroke:var(--up)!important;fill:var(--up)!important;}
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"]) :is(#injLightLineSvg,#injProCandleSvg) .inj-candle-down{color:var(--down)!important;stroke:var(--down)!important;fill:var(--down)!important;}
+ /* The market heatmap intentionally uses dark tiles even in light themes:
+    use high-luminance versions on its inverse surface, not dark text. */
+ html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"])[data-inj-market] #marketHeatmap {--arctic-green:#16f5b3!important;--arctic-red:#ff5076!important;--positive:var(--arctic-green)!important;--negative:var(--arctic-red)!important;}
+}
