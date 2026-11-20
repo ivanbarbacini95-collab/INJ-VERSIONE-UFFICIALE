@@ -69,7 +69,11 @@ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="l
  border:0!important;
  border-top:1px solid color-mix(in srgb,var(--accent) 21%,transparent)!important;
  border-bottom:1px solid color-mix(in srgb,var(--accent) 21%,transparent)!important;
- background:transparent!important;
+ /* Shared opaque quick-access surface: follow the active theme, hide decorative ribbons. */
+ background:var(--theme-canvas,#10161e)!important;
+ background-color:var(--surface,#10161e)!important;
+ background-color:rgb(from var(--surface,#10161e) r g b / 1)!important;
+ background-image:none!important;
  box-shadow:none!important;
  margin-top:var(--inj-home-links-gap,clamp(9px,1.4dvh,16px))!important;
 }
