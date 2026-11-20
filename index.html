@@ -3,6 +3,36 @@
 <html data-inj-screen="boot" data-inj-page="index" data-inj-viewport="80" data-theme="obsidian" lang="it">
 <head>
 <meta charset="utf-8"/>
+<style id="inj-home-decoration-first-paint">
+/* First cascade layer: important rules win over legacy unlayered important
+   declarations, even while theme and Home state are being initialized.
+   No generated decoration on these three shortcuts; vertical dividers use
+   a static background instead of sharing the old horizontal cap pseudo-elements. */
+@layer inj-home-decoration-guard {
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44::before,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44::after,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::before,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::after,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) *::before,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) *::after {
+  content:none!important;display:none!important;visibility:hidden!important;
+  background:none!important;border:0!important;box-shadow:none!important;
+  animation:none!important;transition:none!important;pointer-events:none!important;
+ }
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) {
+  background-image:none!important;box-shadow:none!important;
+  border-top-color:transparent!important;border-bottom-color:transparent!important;
+  transition:none!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44 > :is(#entryLiveButton,#entryTreasuryButton) {
+  background-image:linear-gradient(color-mix(in srgb,var(--text,#c0c4ca) 18%,transparent),color-mix(in srgb,var(--text,#c0c4ca) 18%,transparent))!important;
+  background-size:1px 55%!important;background-position:left center!important;
+  background-repeat:no-repeat!important;background-attachment:scroll!important;
+ }
+}
+</style>
 <script>try{document.documentElement.dataset.injPrivacy=localStorage.getItem('inj_monitor_privacy')==='1'?'on':'off'}catch(_){document.documentElement.dataset.injPrivacy='off'}</script>
 <link data-inj-unified-privacy="1" rel="stylesheet" href="./inj-privacy-global-20261114.css?v=20261114a">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -10,65 +40,6 @@
 <meta content="#060b11" name="theme-color"/>
 <style id="inj-prepaint-canvas">html,body{background-color:#060b11;color-scheme:dark}html[data-theme="obsidian"],html[data-theme="obsidian"] body{background-color:#060b11}html[data-theme="arctic"],html[data-theme="arctic"] body{background-color:#f1f7fa;color-scheme:light}html[data-theme="orbit"],html[data-theme="orbit"] body{background-color:#080b1a}html[data-theme="classic-black"],html[data-theme="classic-black"] body{background-color:#030304;color-scheme:dark}html[data-theme="classic-white"],html[data-theme="classic-white"] body{background-color:#ffffff;color-scheme:light}html[data-theme="carbon-gold"],html[data-theme="carbon-gold"] body{background-color:#0a0c0e;color-scheme:dark}</style>
 
-<style id="inj-home-no-purple-caps-prepaint">
-/* Applied before external styles and independent of Home's runtime boot flags.
-   Prevent the two transient accent caps from flashing on dark themes.
-   Vertical separators are drawn with ::before and remain untouched. */
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44
- > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action::after{
- content:none!important;
- display:none!important;
- visibility:hidden!important;
- background:none!important;
- border:0!important;
- box-shadow:none!important;
-}
-/* Remove leftover launch-accent rails even during the prepaint/loading phase.
-   This does NOT affect the intentional vertical dividers (::before on tiles). */
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44::before,
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44::after,
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44
- > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) .inj-home-tile-title::after{
- content:none!important;
- display:none!important;
- visibility:hidden!important;
- border:0!important;
- background:none!important;
- box-shadow:none!important;
-}
-/* Independent of the selected theme and active Home tab: no launch caps may
-   flash during startup, PWA restore, or a change of viewport. The intentional
-   vertical separators on Live View / Treasury (::before) are preserved. */
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44
- > #entryDashboardButton.entry-action::before,
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44
- > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
- > span:has(> .inj-home-tile-title)::before,
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44
- > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
- > span:has(> .inj-home-tile-title)::after,
-html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-gate-shell > .entry-actions.entry-flat-v44
- > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action
- .inj-home-tile-title::before {
- content:none!important;
- display:none!important;
- visibility:hidden!important;
- width:0!important;
- height:0!important;
- background:none!important;
- border:0!important;
- box-shadow:none!important;
- pointer-events:none!important;
-}
-</style>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="INJ Node" name="apple-mobile-web-app-title"/>
@@ -141,18 +112,6 @@ html[data-inj-page="index"] #entryGate#entryGate#entryGate#entryGate#entryGate#e
 #walletDialog #walletSortModeButton[aria-pressed="true"]{
  border-color:var(--accent,#cdb185);color:var(--accent,#cdb185)}
 #walletDialog #walletSortModeButton:focus-visible{outline:2px solid var(--accent,#cdb185);outline-offset:2px}
-/* Last-resort startup guard: suppress the old horizontal accent caps without
-   changing theme colors or the intentional vertical dividers on Live/Treasury. */
-html[data-inj-page="index"] body #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action::after,
-html[data-inj-page="index"] body #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action > span::after,
-html[data-inj-page="index"] body #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate
- .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action .inj-home-tile-title::after{
- content:none!important;display:none!important;visibility:hidden!important;
- width:0!important;height:0!important;background:none!important;
- box-shadow:none!important;border:0!important;animation:none!important;pointer-events:none!important;
-}
 </style>
 <style id="injNode46HomeTheme">
 /* v16.00.49 — Theme-aligned Home launchers; Futures removed. */

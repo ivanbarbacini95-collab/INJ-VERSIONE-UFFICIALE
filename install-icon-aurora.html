@@ -3,6 +3,36 @@
 <html data-inj-screen="boot" data-inj-page="index" data-inj-viewport="80" data-theme="obsidian" lang="it">
 <head>
 <meta charset="utf-8"/>
+<style id="inj-home-decoration-first-paint">
+/* First cascade layer: important rules win over legacy unlayered important
+   declarations, even while theme and Home state are being initialized.
+   No generated decoration on these three shortcuts; vertical dividers use
+   a static background instead of sharing the old horizontal cap pseudo-elements. */
+@layer inj-home-decoration-guard {
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44::before,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44::after,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::before,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton)::after,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) *::before,
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) *::after {
+  content:none!important;display:none!important;visibility:hidden!important;
+  background:none!important;border:0!important;box-shadow:none!important;
+  animation:none!important;transition:none!important;pointer-events:none!important;
+ }
+ html[data-inj-page="index"] #entryGate .entry-gate-shell > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton) {
+  background-image:none!important;box-shadow:none!important;
+  border-top-color:transparent!important;border-bottom-color:transparent!important;
+  transition:none!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"])
+ body.entry-gate-open #entryGate .entry-gate-shell:not(.first-access)
+ > .entry-actions.entry-flat-v44 > :is(#entryLiveButton,#entryTreasuryButton) {
+  background-image:linear-gradient(color-mix(in srgb,var(--text,#c0c4ca) 18%,transparent),color-mix(in srgb,var(--text,#c0c4ca) 18%,transparent))!important;
+  background-size:1px 55%!important;background-position:left center!important;
+  background-repeat:no-repeat!important;background-attachment:scroll!important;
+ }
+}
+</style>
 <script>try{document.documentElement.dataset.injPrivacy=localStorage.getItem('inj_monitor_privacy')==='1'?'on':'off'}catch(_){document.documentElement.dataset.injPrivacy='off'}</script>
 <link data-inj-unified-privacy="1" rel="stylesheet" href="./inj-privacy-global-20261114.css?v=20261114a">
 <script id="inj-android-pwa-canonical-start">

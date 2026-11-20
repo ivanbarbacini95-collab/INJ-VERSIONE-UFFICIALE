@@ -101,20 +101,7 @@
     box-shadow:none!important;
     transform:none!important;
   }
-  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton).entry-action::after{
-    content:""!important;
-    position:absolute!important;
-    display:block!important;
-    right:0!important;
-    top:23%!important;
-    bottom:23%!important;
-    width:1px!important;
-    height:auto!important;
-    border:0!important;
-    background:color-mix(in srgb,var(--accent) 24%,var(--line))!important;
-    opacity:.75!important;
-    pointer-events:none!important;
-  }
+  /* Vertical dividers are painted by the early Home decoration layer. */
   html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 > :is(#entryDashboardButton,#entryLiveButton,#entryTreasuryButton).entry-action:hover{
     background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
   }
