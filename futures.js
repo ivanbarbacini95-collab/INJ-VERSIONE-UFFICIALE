@@ -72,23 +72,43 @@ function removePosition(id){state.positions=state.positions.filter(p=>p.id!==id)
 function clearForm(){state.activeId='';state.side='long';$('entryInput').value='';$('leverageInput').value='';$('marginInput').value='';$('marginModeInput').value='isolated';$('liquidationInput').value='';$('nameInput').value='';setSide('long');save();render()}
 function persistForm(){const p=draft();if(!(p.entry>0&&p.leverage>0&&p.margin>0))return;const existing=current();const item={...p,id:existing?.id||`f_${Date.now().toString(36)}`,updated:Date.now()};const idx=state.positions.findIndex(x=>x.id===item.id);if(idx>=0)state.positions[idx]=item;else state.positions.unshift(item);state.activeId=item.id;save();renderSaved();render()}
 let quotePending=false;
+function normalizeQuote(price,ts,kind){
+ price=Number(price);ts=Number(ts);
+ if(ts>1e17)ts/=1e6;else if(ts>1e14)ts/=1e3;else if(ts<1e11)ts*=1000;
+ if(!(Number.isFinite(price)&&price>0&&Number.isFinite(ts)&&Date.now()-ts<=30000&&ts<=Date.now()+10000))return null;
+ return {price,timestamp:ts,kind};
+}
+async function quoteJson(url,timeout=5500){
+ const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),timeout);
+ try{const r=await fetch(url,{cache:'no-store',signal:ctrl.signal,headers:{accept:'application/json'}});return r.ok?await r.json():null}catch(_){return null}finally{clearTimeout(timer)}
+}
+async function directKucoin(){
+ const base='https://api-futures.kucoin.com/api/v1/';
+ const [m,t]=await Promise.all([quoteJson(base+'mark-price/INJUSDTM/current',3600),quoteJson(base+'ticker?symbol=INJUSDTM',3600)]);
+ const md=m?.data,td=t?.data;
+ return (m?.code==='200000'&&md?.symbol==='INJUSDTM'?normalizeQuote(md.value,md.timePoint,'mark'):null)
+ ||(t?.code==='200000'&&td?.symbol==='INJUSDTM'?normalizeQuote(td.price,td.ts,'last'):null);
+}
 async function fetchPrice(){
  if(quotePending||document.hidden)return;quotePending=true;
- const ctrl=new AbortController();const timeout=setTimeout(()=>ctrl.abort(),6000);
- let price=0;
- try{const r=await fetch('https://api-futures.kucoin.com/api/v1/ticker?symbol=INJUSDTM',{cache:'no-store',signal:ctrl.signal});if(r.ok){const j=await r.json();price=n(j?.data?.price)}}catch(_){}finally{clearTimeout(timeout);quotePending=false}
- const badge=$('liveBadge'),feed=$('portfolioFeed');
- badge.classList.toggle('off',!(price>0));feed.classList.toggle('off',!(price>0));
- badge.textContent=price>0?'KUCOIN LIVE':'KUCOIN OFFLINE';feed.textContent=price>0?'LIVE':'OFFLINE';
- state.lastPrice=state.price;state.price=price>0?price:0;
- $('livePrice').textContent=price>0?'$'+fmt(price,4):'—';
- $('sourceValue').textContent=price>0?'KuCoin Futures':'—';
- $('updatedValue').textContent=price>0?new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}):(LANG()==='en'?'Market feed unavailable':'Feed mercato non disponibile');
- render();
+ try{
+  const j=await quoteJson('./api/futures-quote');
+  let q=j?.exchange==='KuCoin'&&j?.symbol==='INJUSDTM'&&['mark','last'].includes(j?.kind)?normalizeQuote(j.price,j.timestamp,j.kind):null;
+  if(!q)q=await directKucoin();
+  const badge=$('liveBadge'),feed=$('portfolioFeed'),live=!!q;
+  badge.classList.toggle('off',!live);feed.classList.toggle('off',!live);
+  badge.textContent=live?(q.kind==='mark'?'KUCOIN · MARK':'KUCOIN · LAST'):'KUCOIN OFFLINE';
+  feed.textContent=live?(q.kind==='mark'?'MARK LIVE':'LAST LIVE'):'OFFLINE';
+  state.lastPrice=state.price;state.price=live?q.price:0;
+  $('livePrice').textContent=live?'$'+fmt(q.price,4):'—';
+  $('sourceValue').textContent=live?(q.kind==='mark'?'KuCoin Mark Price':'KuCoin Last Price'):'—';
+  $('updatedValue').textContent=live?new Date(q.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}):(LANG()==='en'?'Market feed unavailable · retrying':'Feed non disponibile · riconnessione');
+  render();
+ }finally{quotePending=false}
 }
 async function loadEur(){try{const cached=n(localStorage.getItem('inj_monitor_eur_rate'));if(cached>0)state.eur=cached}catch(_){} }
 function render(){formToCurrent();renderSaved();renderPortfolio();renderSimulator()}
 function bind(){bindSimulator();document.querySelectorAll('[data-side]').forEach(b=>b.addEventListener('click',()=>setSide(b.dataset.side)));['entryInput','leverageInput','marginInput','marginModeInput','liquidationInput','nameInput'].forEach(id=>$(id).addEventListener('input',render));const spotInput=$('spotInjInput');if(spotInput){spotInput.value=state.spotStored?String(state.spot):'';spotInput.addEventListener('input',()=>{state.spot=Math.max(0,n(spotInput.value));state.spotStored=spotInput.value!=='';try{if(state.spotStored)localStorage.setItem(SPOT_STORAGE,String(state.spot));else localStorage.removeItem(SPOT_STORAGE)}catch(_){}renderPortfolio()})}$('positionForm').addEventListener('submit',e=>{e.preventDefault();persistForm()});$('clearButton').addEventListener('click',clearForm);$('newPositionButton').addEventListener('click',clearForm);$('futuresHome').addEventListener('click',e=>{e.preventDefault();try{sessionStorage.setItem('inj_node_return_tools','1')}catch(_){}let back=false;try{const ref=document.referrer?new URL(document.referrer):null;back=!!(ref&&ref.origin===location.origin&&(ref.pathname.endsWith('/index.html')||ref.pathname.endsWith('/'))&&history.length>1)}catch(_){}if(back)history.back();else location.replace('./index.html?tab=tools')});window.addEventListener('storage',e=>{if(e.key==='inj_monitor_theme')document.documentElement.dataset.theme=localStorage.getItem('inj_monitor_theme')||'obsidian';if(e.key==='inj_monitor_privacy')document.documentElement.dataset.injPrivacy=localStorage.getItem('inj_monitor_privacy')==='1'?'on':'off';if(e.key==='inj_monitor_currency')render();if(e.key==='inj_node_language_v1'){simTranslate();renderSimulator()}if(e.key===SIM_STAKED_STORAGE){const v=localStorage.getItem(SIM_STAKED_STORAGE);state.stakedStored=v!==null&&v!=='';state.staked=Math.max(0,n(v));$('simStakedInput').value=state.stakedStored?String(state.staked):'';renderSimulator()}if(e.key===SPOT_STORAGE){const raw=localStorage.getItem(SPOT_STORAGE);state.spotStored=raw!==null&&raw!=='';state.spot=Math.max(0,n(raw));if($('spotInjInput'))$('spotInjInput').value=state.spotStored?String(state.spot):'';renderPortfolio()}})}
-function init(){read();loadEur();bind();if(state.activeId&&state.positions.some(p=>p.id===state.activeId))loadPosition(state.activeId);else if(state.positions.length)loadPosition(state.positions[0].id);else render();fetchPrice();state.timer=setInterval(fetchPrice,2500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchPrice()})}
+function init(){read();loadEur();bind();if(state.activeId&&state.positions.some(p=>p.id===state.activeId))loadPosition(state.activeId);else if(state.positions.length)loadPosition(state.positions[0].id);else render();fetchPrice();state.timer=setInterval(fetchPrice,3000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)fetchPrice()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
