@@ -1,0 +1,146 @@
+<!doctype html>
+<html data-inj-page="futures" data-theme="obsidian" lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07121b">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>INJ NODE · Futures</title>
+<script>
+try{const t=localStorage.getItem('inj_monitor_theme');const root=document.documentElement;root.dataset.theme=({navy:'obsidian',black:'classic-black',light:'classic-white',amber:'carbon-gold'})[t]||(['obsidian','arctic','orbit','classic-black','classic-white','carbon-gold'].includes(t)?t:'obsidian');root.dataset.injPrivacy=localStorage.getItem('inj_monitor_privacy')==='1'?'on':'off';root.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';root.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';document.querySelector('meta[name="theme-color"]').content=({obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','classic-black':'#030304','classic-white':'#ffffff','carbon-gold':'#0a0c0e'})[root.dataset.theme]}catch(_){}
+</script>
+<link rel="stylesheet" href="./futures.css?v=20261121-futures1">
+<link rel="stylesheet" href="./viewport.css?v=16.00.14">
+<script defer src="./viewport.js?v=16.00.14"></script>
+<script defer src="./futures.js?v=20261121-futures1"></script>
+  <link rel="stylesheet" href="./top-clarity.css?v=16.00.45">
+<link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
+<link rel="stylesheet" href="./inj-privacy-global-20261114.css?v=20261114b">
+<script defer src="./page-zoom-lock-20261110.js?v=20261115-portrait1"></script>
+</head>
+<body>
+<div class="futures-shell">
+<header class="futures-header">
+<a class="futures-home" id="futuresHome" href="./index.html?tab=tools" aria-label="Torna a Tools" title="Tools">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+<div class="futures-title"><span>INJ NODE</span><strong>Futures</strong><small>KuCoin · INJ perpetual monitor</small></div>
+<div class="futures-market-head"><strong id="livePrice">—</strong><span class="live-badge" id="liveBadge"><i></i>KUCOIN · SYNC</span></div>
+</header>
+<main class="futures-main">
+<section class="portfolio-summary" aria-label="Riepilogo Futures KuCoin">
+<div class="portfolio-summary-head"><div><span class="eyebrow">PORTAFOGLIO FUTURES</span><strong>Totale posizioni</strong></div><span class="portfolio-live" id="portfolioFeed">SYNC</span></div>
+<div class="portfolio-summary-grid">
+<div><span>INVESTITO</span><strong id="portfolioInvested" data-inj-privacy-mask="value">—</strong><small id="portfolioCount" data-inj-privacy-mask="value">0 posizioni</small></div>
+<div><span>P/L LIVE</span><strong class="neutral" id="portfolioPnl" data-inj-privacy-mask="value">—</strong><small id="portfolioRoi" data-inj-privacy-mask="value">ROI —</small></div>
+<div><span>TOTALE + P/L</span><strong id="portfolioEquity" data-inj-privacy-mask="value">—</strong><small>Equity stimata</small></div>
+<div><span>EQUIVALENTE INJ</span><strong id="portfolioInj" data-inj-privacy-mask="value">—</strong><small>Al prezzo INJ live</small></div>
+</div>
+</section>
+
+<section class="spot-conversion" aria-label="Spot e simulazione chiusura Futures">
+  <div class="spot-conversion-head">
+    <div><span class="eyebrow">SPOT + FUTURES</span><strong>Quanti INJ avresti chiudendo le posizioni</strong></div>
+    <small>Stima live · fee, funding e slippage esclusi</small>
+  </div>
+  <div class="spot-conversion-grid">
+    <label class="spot-input-card">
+      <span>INJ SPOT POSSEDUTI</span>
+      <div class="spot-input-wrap"><input id="spotInjInput" data-inj-privacy-mask="input" inputmode="decimal" type="number" step="0.0001" min="0" placeholder="0,0000"><em>INJ</em></div>
+      <small>Salvato automaticamente</small>
+    </label>
+    <div><span>VALORE SPOT</span><strong id="spotValue" data-inj-privacy-mask="value">—</strong><small id="spotValueMeta" data-inj-privacy-mask="value">Al prezzo INJ live</small></div>
+    <div><span>INJ DAI FUTURES</span><strong id="futuresCloseInj" data-inj-privacy-mask="value">—</strong><small>Capitale + P/L convertiti</small></div>
+    <div class="spot-total-card"><span>INJ TOTALI SE CHIUDI</span><strong id="totalCloseInj" data-inj-privacy-mask="value">—</strong><small id="totalCloseValue" data-inj-privacy-mask="value">—</small></div>
+  </div>
+</section>
+
+<section class="hero-grid">
+<article class="position-card" id="positionCard">
+<div class="position-topline">
+<div><span class="eyebrow">POSIZIONE ATTIVA</span><div class="side-pills" role="group" aria-label="Direzione posizione"><button type="button" class="active long" data-side="long">LONG</button><button type="button" class="short" data-side="short">SHORT</button></div></div>
+<div class="market-mode"><span>KuCoin Futures</span><strong>INJUSDTM</strong></div>
+</div>
+<div class="position-value"><span>P/L LIVE</span><strong id="pnlValue" data-inj-privacy-mask="value">—</strong><small id="pnlPercent" data-inj-privacy-mask="value">ROI —</small></div>
+<div class="metrics-grid">
+<div><span>ENTRY</span><strong id="entryMetric" data-inj-privacy-mask="value">—</strong></div>
+<div><span>PREZZO LIVE</span><strong id="priceMetric">—</strong></div>
+<div><span>LEVA</span><strong id="leverageMetric" data-inj-privacy-mask="value">—</strong></div>
+<div><span>MARGINE</span><strong id="marginMetric" data-inj-privacy-mask="value">—</strong></div>
+<div><span>SIZE</span><strong id="sizeMetric" data-inj-privacy-mask="value">—</strong></div>
+<div><span>MOVIMENTO</span><strong id="moveMetric" data-inj-privacy-mask="value">—</strong></div>
+</div>
+<div class="range-block">
+<div class="range-labels"><span id="liqLabel">LIQ. INDICATIVA</span><span>ENTRY</span><span>LIVE</span></div>
+<div class="range-track" data-inj-privacy-mask="graphic"><i class="range-fill" id="rangeFill"></i><b class="marker liq" id="liqMarker"></b><b class="marker entry" id="entryMarker"></b><b class="marker live" id="liveMarker"></b></div>
+<div class="range-values"><span id="liqValue" data-inj-privacy-mask="value">—</span><span id="rangeEntry" data-inj-privacy-mask="value">—</span><span id="rangeLive">—</span></div>
+</div>
+<div class="position-note" id="positionNote">Inserisci i dati della posizione per iniziare.</div>
+</article>
+
+<aside class="setup-card">
+<div class="setup-head"><div><span class="eyebrow">SETUP POSIZIONE</span><strong>Parametri KuCoin</strong></div><button type="button" id="newPositionButton">Nuova</button></div>
+<form id="positionForm" autocomplete="off">
+<div class="form-grid">
+<label><span>Prezzo di entrata</span><div class="input-unit"><input id="entryInput" data-inj-privacy-mask="input" inputmode="decimal" type="number" step="0.0001" min="0" placeholder="5,4200"><em>USDT</em></div></label>
+<label><span>Leva</span><div class="input-unit"><input id="leverageInput" data-inj-privacy-mask="input" inputmode="decimal" type="number" step="1" min="1" max="100" placeholder="5"><em>×</em></div></label>
+<label><span>Margine</span><div class="input-unit"><input id="marginInput" data-inj-privacy-mask="input" inputmode="decimal" type="number" step="0.01" min="0" placeholder="1000"><em>USDT</em></div></label>
+<label><span>Modalità</span><select id="marginModeInput" data-inj-privacy-mask="input"><option value="isolated">Isolated</option><option value="cross">Cross</option></select></label>
+<label class="wide"><span>Prezzo liquidazione KuCoin <small>(opzionale)</small></span><div class="input-unit"><input id="liquidationInput" data-inj-privacy-mask="input" inputmode="decimal" type="number" step="0.0001" min="0" placeholder="Lascia vuoto per stima"><em>USDT</em></div></label>
+<label class="wide"><span>Nome posizione</span><input id="nameInput" data-inj-privacy-mask="input" maxlength="34" placeholder="Es. INJ Long 5x"></label>
+</div>
+<div class="form-actions"><button type="button" class="ghost" id="clearButton">Azzera</button><button type="submit" class="primary">Salva posizione</button></div>
+</form>
+</aside>
+</section>
+
+
+<!-- v16.00.48 · Scenario Lab / P&L + INJ simulator -->
+<section class="simulation-panel" id="futuresSimulator" aria-label="Simulatore scenari Futures">
+  <div class="simulation-head">
+    <div><span class="eyebrow" data-sim-it="SCENARIO LAB" data-sim-en="SCENARIO LAB">SCENARIO LAB</span><strong data-sim-it="Simulatore P/L &amp; INJ" data-sim-en="P/L &amp; INJ simulator">Simulatore P/L &amp; INJ</strong><small data-sim-it="Sposta il prezzo e osserva come cambiano capitale e INJ equivalenti" data-sim-en="Change the price to preview capital and INJ equivalents">Sposta il prezzo e osserva come cambiano capitale e INJ equivalenti</small></div>
+    <span class="simulation-pill" data-sim-it="SOLO SIMULAZIONE" data-sim-en="SIMULATION ONLY">SOLO SIMULAZIONE</span>
+  </div>
+  <div class="simulation-controls">
+    <label><span data-sim-it="POSIZIONI DA SIMULARE" data-sim-en="POSITIONS TO SIMULATE">POSIZIONI DA SIMULARE</span><select id="simScope"><option value="active" data-sim-it="Posizione selezionata" data-sim-en="Selected position">Posizione selezionata</option><option value="all" data-sim-it="Tutte le posizioni salvate" data-sim-en="All saved positions">Tutte le posizioni salvate</option></select></label>
+    <label><span data-sim-it="PREZZO IPOTETICO INJ" data-sim-en="HYPOTHETICAL INJ PRICE">PREZZO IPOTETICO INJ</span><div class="simulation-input-wrap"><input type="number" id="simPriceInput" min="0.0001" step="0.0001" inputmode="decimal" placeholder="0.0000" aria-label="Prezzo ipotetico INJ"><em>USDT</em></div></label>
+    <label><span data-sim-it="INJ IN STAKING" data-sim-en="STAKED INJ">INJ IN STAKING</span><div class="simulation-input-wrap"><input type="number" id="simStakedInput" data-inj-privacy-mask="input" min="0" step="0.0001" inputmode="decimal" placeholder="0.0000" aria-label="INJ in staking"><em>INJ</em></div></label>
+    <button type="button" id="simReset" class="sim-reset" data-sim-it="Prezzo attuale" data-sim-en="Live price">Prezzo attuale</button>
+  </div>
+  <div class="sim-slide-wrap"><input id="simPriceSlider" type="range" min="0.001" max="10" value="5" step="0.0001" aria-label="Varia prezzo simulato"><div class="sim-price-meta"><span id="simLiveLabel">LIVE —</span><span id="simPriceChange">SCENARIO —</span></div></div>
+  <div class="sim-presets" role="group" aria-label="Scenari rapidi"><span data-sim-it="VARIAZIONE DA LIVE" data-sim-en="CHANGE FROM LIVE">VARIAZIONE DA LIVE</span><button type="button" data-sim-shift="-25">−25%</button><button type="button" data-sim-shift="-10">−10%</button><button type="button" data-sim-shift="-5">−5%</button><button type="button" data-sim-shift="5">+5%</button><button type="button" data-sim-shift="10">+10%</button><button type="button" data-sim-shift="25">+25%</button></div>
+  <div class="simulation-metrics" aria-live="polite">
+    <div class="sim-metric sim-primary"><span data-sim-it="P/L SIMULATO" data-sim-en="SIMULATED P/L">P/L SIMULATO</span><strong id="simPnl" data-inj-privacy-mask="value">—</strong><small id="simPnlDiff" data-inj-privacy-mask="value">—</small></div>
+    <div class="sim-metric"><span data-sim-it="ROI SIMULATO" data-sim-en="SIMULATED ROI">ROI SIMULATO</span><strong id="simRoi" data-inj-privacy-mask="value">—</strong><small data-sim-it="Su margine iniziale" data-sim-en="On initial margin">Su margine iniziale</small></div>
+    <div class="sim-metric"><span data-sim-it="EQUITY FUTURES" data-sim-en="FUTURES EQUITY">EQUITY FUTURES</span><strong id="simEquity" data-inj-privacy-mask="value">—</strong><small data-sim-it="Margine + P/L stimato" data-sim-en="Margin + estimated P/L">Margine + P/L stimato</small></div>
+    <div class="sim-metric"><span data-sim-it="INJ EQUIVALENTI FUTURES" data-sim-en="FUTURES INJ EQUIVALENT">INJ EQUIVALENTI FUTURES</span><strong id="simInj" data-inj-privacy-mask="value">—</strong><small data-sim-it="Equity convertita al prezzo ipotetico" data-sim-en="Equity / hypothetical price">Equity convertita al prezzo ipotetico</small></div>
+    <div class="sim-metric"><span data-sim-it="VARIAZIONE INJ DA LIVE" data-sim-en="INJ CHANGE VS LIVE">VARIAZIONE INJ DA LIVE</span><strong id="simInjDiff" data-inj-privacy-mask="value">—</strong><small data-sim-it="INJ equivalenti, non reward generati" data-sim-en="Equivalent INJ, not earned rewards">INJ equivalenti, non reward generati</small></div>
+    <div class="sim-metric sim-grand"><span data-sim-it="INJ TOTALI IPOTETICI" data-sim-en="TOTAL HYPOTHETICAL INJ">INJ TOTALI IPOTETICI</span><strong id="simTotalInj" data-inj-privacy-mask="value">—</strong><small id="simTotalMeta" data-inj-privacy-mask="value">Futures + Spot + Staking</small></div>
+  </div>
+  <div class="sim-bottom"><div class="sim-alert" id="simAlert" data-inj-privacy-mask="value" role="status"></div><p data-sim-it="Stima teorica: margine × leva / entry, P/L lineare in USDT. Fee, funding e slippage esclusi. Gli INJ aumentano o diminuiscono solo come equivalenza di acquisto alla chiusura: non sono INJ guadagnati automaticamente. Attenzione alla liquidazione." data-sim-en="Theoretical estimate: margin × leverage / entry, linear USDT P/L. Fees, funding and slippage excluded. INJ amounts represent hypothetical conversion after closing, not INJ automatically earned. Beware of liquidation.">Stima teorica: margine × leva / entry, P/L lineare in USDT. Fee, funding e slippage esclusi. Gli INJ aumentano o diminuiscono solo come equivalenza di acquisto alla chiusura: non sono INJ guadagnati automaticamente. Attenzione alla liquidazione.</p></div>
+</section>
+
+<section class="secondary-grid">
+<article class="mini-card">
+<div class="mini-head"><span class="eyebrow">RISCHIO</span><strong>Distanza liquidazione</strong></div>
+<div class="risk-value"><strong id="liqDistance" data-inj-privacy-mask="value">—</strong><small id="liqMeta">Stima semplice · commissioni/funding esclusi</small></div>
+</article>
+<article class="mini-card">
+<div class="mini-head"><span class="eyebrow">PRODUZIONE</span><strong>Quantità posizione</strong></div>
+<div class="risk-value"><strong id="quantityValue" data-inj-privacy-mask="value">—</strong><small>INJ teorici equivalenti</small></div>
+</article>
+<article class="mini-card">
+<div class="mini-head"><span class="eyebrow">MERCATO</span><strong>Fonte prezzo</strong></div>
+<div class="risk-value"><strong id="sourceValue">—</strong><small id="updatedValue">In attesa…</small></div>
+</article>
+</section>
+
+<section class="saved-panel">
+<div class="saved-head"><div><span class="eyebrow">POSIZIONI SALVATE</span><strong>I tuoi trade monitorati</strong></div><span id="savedCount" data-inj-privacy-mask="value">0</span></div>
+<div class="saved-list" id="savedList" data-inj-privacy-mask="region"><div class="empty-state">Nessuna posizione salvata.</div></div>
+</section>
+<footer>INJ NODE · by IB</footer>
+</main>
+</div>
+</body>
+</html>
