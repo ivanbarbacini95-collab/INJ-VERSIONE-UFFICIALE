@@ -144,7 +144,7 @@ html[data-inj-market] :is(.chart-stage,.plot){
 @media screen and (min-width:700px) and (orientation:portrait){
   :root{
     --inj-fit-gutter:clamp(16px,2.3vw,48px);
-    --inj-fit-gap:clamp(12px,1.35vh,28px);
+    --inj-fit-gap:clamp(10px,1.2vw,20px);
   }
   html[data-inj-page="all-transactions"] body>main.shell,
   html[data-inj-page="network-status"] body>main.shell,
@@ -177,4 +177,43 @@ html[data-inj-market] :is(.chart-stage,.plot){
   html[data-inj-page="injc-etf"] body>.etf-shell{
     min-height:0!important;
   }
+}
+
+/* 2026-11-21: orientation-based density, independent of device type.
+   Do not resize custom Workspace cards, Fullscreen or Home. */
+@media screen and (orientation:portrait) and (min-width:600px) {
+ :root {
+   --inj-fit-gutter:clamp(12px,1.8vw,30px);
+   --inj-fit-gap:clamp(10px,1.2vw,20px);
+   --inj-portrait-gutter:var(--inj-fit-gutter);
+   --inj-portrait-gap:var(--inj-fit-gap);
+ }
+ html[data-inj-page="treasury"] :is(.treasury-metrics,.treasury-allocation-metrics,.treasury-velocity-grid),
+ html[data-inj-page="live-rewards"] .rewards-layout {
+   gap:var(--inj-fit-gap)!important;
+   align-content:start!important;
+   grid-auto-rows:auto!important;
+ }
+ html[data-inj-page="live-rewards"] :is(.reward-row,.rewards-total-panel) {
+   min-height:clamp(150px,20vw,225px)!important;
+ }
+ html[data-inj-page="treasury"] :is(.treasury-spark-stage,.treasury-worth-stage) {
+   min-height:clamp(220px,28vw,360px)!important;
+ }
+ html[data-inj-page="injc-etf"] :is(.injc-chart-surface,.injc-holdings-chart) {
+   min-height:clamp(250px,38vw,440px)!important;
+ }
+ html[data-inj-page="injc-etf"] .injc-volume-graph {
+   min-height:clamp(180px,24vw,320px)!important;
+ }
+}
+html[data-inj-page="futures"] :is(.futures-shell,.futures-main) {
+ width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box;
+}
+html[data-inj-page="futures"] .futures-shell {min-height:var(--inj-fit-viewport)}
+@media screen and (orientation:portrait) and (min-width:600px) and (max-width:899px) {
+ html[data-inj-page="futures"] .simulation-metrics {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media screen and (orientation:landscape) and (max-height:540px) {
+ html[data-inj-page="futures"] .futures-main {min-height:0;height:auto}
 }

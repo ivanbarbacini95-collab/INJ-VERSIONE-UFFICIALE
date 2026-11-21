@@ -1,9 +1,10 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261121-futures-wallet3';
+const CACHE_NAME = 'inj-node-v20261121-adaptive-portrait1';
 const BOOT_ASSETS = [
   './index.html',
+  './dashboard-portrait-gapfix-20261115.css?v=compact-20261121',
   './inj-light-financial-contrast-20261120.css?v=light-vivid1',
   './cloud-sync.html?v=wallet-order-20261118',
   './cloud-sync-portable-20261113.js?v=wallet-order-20261118',
@@ -11,9 +12,9 @@ const BOOT_ASSETS = [
   './inj-signature-collection-20261113.css?v=20261113-signature11',
   './inj-six-themes-20261103.js?v=20261113-signature11',
   './inj-geist-unified-20261112.css?v=geist-final1',
-  './inj-carbon-gold-unified-20261113.css?v=home-shortcuts-soft-edge-20261120b',
+  './inj-carbon-gold-unified-20261113.css?v=orientation-20261121',
   './inj-portrait-clarity-20261115.css?v=global-responsive-1',
-  './inj-responsive-fullscreen-20261115.css?v=global-responsive-1',
+  './inj-responsive-fullscreen-20261115.css?v=orientation-20261121',
   './assets/fonts/inj-geist.woff2',
   './inj-font-switcher-20261029.js?v=geist-final1',
   './inj-font-platform-unified-20261103.css?v=geist-final1',
