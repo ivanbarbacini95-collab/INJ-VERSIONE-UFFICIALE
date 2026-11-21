@@ -9,10 +9,10 @@
 <script>
 try{const t=localStorage.getItem('inj_monitor_theme');const root=document.documentElement;root.dataset.theme=({navy:'obsidian',black:'classic-black',light:'classic-white',amber:'carbon-gold'})[t]||(['obsidian','arctic','orbit','classic-black','classic-white','carbon-gold'].includes(t)?t:'obsidian');root.dataset.injPrivacy=localStorage.getItem('inj_monitor_privacy')==='1'?'on':'off';root.dataset.injFont=localStorage.getItem('inj_node_font_v1')==='slim'?'slim':'bold';root.lang=localStorage.getItem('inj_node_language_v1')==='en'?'en':'it';document.querySelector('meta[name="theme-color"]').content=({obsidian:'#060b11',arctic:'#f1f7fa',orbit:'#080b1a','classic-black':'#030304','classic-white':'#ffffff','carbon-gold':'#0a0c0e'})[root.dataset.theme]}catch(_){}
 </script>
-<link rel="stylesheet" href="./futures.css?v=20261121-futures-feed2">
+<link rel="stylesheet" href="./futures.css?v=20261121-futures-wallet3">
 <link rel="stylesheet" href="./viewport.css?v=16.00.14">
 <script defer src="./viewport.js?v=16.00.14"></script>
-<script defer src="./futures.js?v=20261121-futures-feed2"></script>
+<script defer src="./futures.js?v=20261121-futures-wallet3"></script>
   <link rel="stylesheet" href="./top-clarity.css?v=16.00.45">
 <link rel="stylesheet" href="./inj-geist-unified-20261112.css?v=geist-final1">
 <link rel="stylesheet" href="./inj-privacy-global-20261114.css?v=20261114b">
@@ -101,10 +101,14 @@ try{const t=localStorage.getItem('inj_monitor_theme');const root=document.docume
     <div><span class="eyebrow" data-sim-it="SCENARIO LAB" data-sim-en="SCENARIO LAB">SCENARIO LAB</span><strong data-sim-it="Simulatore P/L &amp; INJ" data-sim-en="P/L &amp; INJ simulator">Simulatore P/L &amp; INJ</strong><small data-sim-it="Sposta il prezzo e osserva come cambiano capitale e INJ equivalenti" data-sim-en="Change the price to preview capital and INJ equivalents">Sposta il prezzo e osserva come cambiano capitale e INJ equivalenti</small></div>
     <span class="simulation-pill" data-sim-it="SOLO SIMULAZIONE" data-sim-en="SIMULATION ONLY">SOLO SIMULAZIONE</span>
   </div>
+  <div class="sim-wallet-context">
+    <div><span data-sim-it="WALLET SELEZIONATO" data-sim-en="SELECTED WALLET">WALLET SELEZIONATO</span><strong id="simWalletName" data-inj-privacy-mask="value">—</strong><small id="simWalletStatus" role="status">—</small></div>
+    <div><span data-sim-it="INJ DISPONIBILI" data-sim-en="AVAILABLE INJ">INJ DISPONIBILI</span><strong id="simWalletAvailable" data-inj-privacy-mask="value">—</strong><small data-sim-it="Saldo automatico" data-sim-en="Automatic balance">Saldo automatico</small></div>
+  </div>
   <div class="simulation-controls">
     <label><span data-sim-it="POSIZIONI DA SIMULARE" data-sim-en="POSITIONS TO SIMULATE">POSIZIONI DA SIMULARE</span><select id="simScope"><option value="active" data-sim-it="Posizione selezionata" data-sim-en="Selected position">Posizione selezionata</option><option value="all" data-sim-it="Tutte le posizioni salvate" data-sim-en="All saved positions">Tutte le posizioni salvate</option></select></label>
     <label><span data-sim-it="PREZZO IPOTETICO INJ" data-sim-en="HYPOTHETICAL INJ PRICE">PREZZO IPOTETICO INJ</span><div class="simulation-input-wrap"><input type="number" id="simPriceInput" min="0.0001" step="0.0001" inputmode="decimal" placeholder="0.0000" aria-label="Prezzo ipotetico INJ"><em>USDT</em></div></label>
-    <label><span data-sim-it="INJ IN STAKING" data-sim-en="STAKED INJ">INJ IN STAKING</span><div class="simulation-input-wrap"><input type="number" id="simStakedInput" data-inj-privacy-mask="input" min="0" step="0.0001" inputmode="decimal" placeholder="0.0000" aria-label="INJ in staking"><em>INJ</em></div></label>
+    <label><span data-sim-it="INJ IN STAKING" data-sim-en="STAKED INJ">INJ IN STAKING</span><div class="simulation-input-wrap"><input type="number" id="simStakedInput" readonly data-inj-privacy-mask="input" min="0" step="0.0001" inputmode="decimal" placeholder="0.0000" aria-label="INJ in staking del wallet selezionato"><em>INJ</em></div></label>
     <button type="button" id="simReset" class="sim-reset" data-sim-it="Prezzo attuale" data-sim-en="Live price">Prezzo attuale</button>
   </div>
   <div class="sim-slide-wrap"><input id="simPriceSlider" type="range" min="0.001" max="10" value="5" step="0.0001" aria-label="Varia prezzo simulato"><div class="sim-price-meta"><span id="simLiveLabel">LIVE —</span><span id="simPriceChange">SCENARIO —</span></div></div>
@@ -115,7 +119,7 @@ try{const t=localStorage.getItem('inj_monitor_theme');const root=document.docume
     <div class="sim-metric"><span data-sim-it="EQUITY FUTURES" data-sim-en="FUTURES EQUITY">EQUITY FUTURES</span><strong id="simEquity" data-inj-privacy-mask="value">—</strong><small data-sim-it="Margine + P/L stimato" data-sim-en="Margin + estimated P/L">Margine + P/L stimato</small></div>
     <div class="sim-metric"><span data-sim-it="INJ EQUIVALENTI FUTURES" data-sim-en="FUTURES INJ EQUIVALENT">INJ EQUIVALENTI FUTURES</span><strong id="simInj" data-inj-privacy-mask="value">—</strong><small data-sim-it="Equity convertita al prezzo ipotetico" data-sim-en="Equity / hypothetical price">Equity convertita al prezzo ipotetico</small></div>
     <div class="sim-metric"><span data-sim-it="VARIAZIONE INJ DA LIVE" data-sim-en="INJ CHANGE VS LIVE">VARIAZIONE INJ DA LIVE</span><strong id="simInjDiff" data-inj-privacy-mask="value">—</strong><small data-sim-it="INJ equivalenti, non reward generati" data-sim-en="Equivalent INJ, not earned rewards">INJ equivalenti, non reward generati</small></div>
-    <div class="sim-metric sim-grand"><span data-sim-it="INJ TOTALI IPOTETICI" data-sim-en="TOTAL HYPOTHETICAL INJ">INJ TOTALI IPOTETICI</span><strong id="simTotalInj" data-inj-privacy-mask="value">—</strong><small id="simTotalMeta" data-inj-privacy-mask="value">Futures + Spot + Staking</small></div>
+    <div class="sim-metric sim-grand"><span data-sim-it="INJ TOTALI IPOTETICI" data-sim-en="TOTAL HYPOTHETICAL INJ">INJ TOTALI IPOTETICI</span><strong id="simTotalInj" data-inj-privacy-mask="value">—</strong><small id="simTotalMeta" data-inj-privacy-mask="value">Wallet selezionato + Futures</small></div>
   </div>
   <div class="sim-bottom"><div class="sim-alert" id="simAlert" data-inj-privacy-mask="value" role="status"></div><p data-sim-it="Stima teorica: margine × leva / entry, P/L lineare in USDT. Fee, funding e slippage esclusi. Gli INJ aumentano o diminuiscono solo come equivalenza di acquisto alla chiusura: non sono INJ guadagnati automaticamente. Attenzione alla liquidazione." data-sim-en="Theoretical estimate: margin × leverage / entry, linear USDT P/L. Fees, funding and slippage excluded. INJ amounts represent hypothetical conversion after closing, not INJ automatically earned. Beware of liquidation.">Stima teorica: margine × leva / entry, P/L lineare in USDT. Fee, funding e slippage esclusi. Gli INJ aumentano o diminuiscono solo come equivalenza di acquisto alla chiusura: non sono INJ guadagnati automaticamente. Attenzione alla liquidazione.</p></div>
 </section>
