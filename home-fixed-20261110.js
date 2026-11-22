@@ -9,7 +9,7 @@
  const root=document.documentElement;
  const media=matchMedia('(max-width:700px) and (orientation:portrait)');
  const $=id=>document.getElementById(id);
- let pending=false,dimension='',observer=null;
+ let pending=0,dimension='',observer=null;
  const eligible=()=>{
   const gate=$('entryGate');
   return root.dataset.injPage==='index' &&
@@ -39,12 +39,11 @@
   if(root.dataset.injHomeStaticLevel!==value)root.dataset.injHomeStaticLevel=value;
  }
  function schedule(){
-  if(pending)return;
-  pending=true;
-  requestAnimationFrame(layout);
+  if(pending||document.hidden)return;
+  pending=requestAnimationFrame(layout);
  }
  function layout(){
-  pending=false;
+  pending=0;
   if(!eligible()){
    if(root.dataset.injHomeStatic)delete root.dataset.injHomeStatic;
    return;
@@ -143,9 +142,17 @@
   window.addEventListener('scroll',()=>{
    if(root.dataset.injHomeStatic==='true'&&window.scrollY!==0)window.scrollTo(0,0);
   },{passive:true});
-  for(const event of ['pageshow','resize','orientationchange','focus'])
+  for(const event of ['resize','orientationchange'])
    window.addEventListener(event,schedule,{passive:true});
-  document.addEventListener('visibilitychange',schedule,{passive:true});
+  const resumeLayout=()=>{
+   if(document.hidden)return;
+   if(pending)cancelAnimationFrame(pending);
+   pending=0;
+   schedule();
+  };
+  window.addEventListener('pageshow',resumeLayout,{passive:true});
+  window.addEventListener('focus',resumeLayout,{passive:true});
+  document.addEventListener('visibilitychange',resumeLayout,{passive:true});
   window.visualViewport?.addEventListener('resize',schedule,{passive:true});
   window.visualViewport?.addEventListener('scroll',schedule,{passive:true});
   nav.addEventListener('toggle',schedule,{passive:true});

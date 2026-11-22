@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261121-adaptive-portrait1';
+const CACHE_NAME = 'inj-node-v20261122-foreground1';
 const BOOT_ASSETS = [
   './index.html',
   './dashboard-portrait-gapfix-20261115.css?v=compact-20261121',
@@ -24,14 +24,15 @@ const BOOT_ASSETS = [
   './manifest.webmanifest?v=20261102litepro1',
   './style.css?v=16.01.44',
   './inj-home-overrides-20261106.css?v=20261118-no-purple-caps-b',
-  './home-fixed-20261110.js?v=home-fixed-all-20261116',
+  './home-fixed-20261110.js?v=foreground-20261122a',
   './home-fixed-20261110.css?v=home-fixed-all-20261116',
   './my-reward-portrait-20261110.js?v=portrait-desktop1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
-  './app.js?v=wallet-sort-no-purple-20261118b',
-  './navigation.js?v=home-recovery-20261118b',
-  './home-bottom-tabs-20261030.js?v=20261121-futures1',
+  './app.js?v=foreground-20261122a',
+  './navigation.js?v=foreground-20261122a',
+  './scroll-guard.js?v=foreground-20261122a',
+  './home-bottom-tabs-20261030.js?v=foreground-20261122a',
   './validators-launcher.js?v=20261111e',
   './validators.html?v=20261113-signature11',
   './validators.css?v=20261111e',

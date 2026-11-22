@@ -216,7 +216,8 @@ html[data-inj-page="index"] body #entryGate
  nav.setAttribute('aria-label','Navigazione principale');
  const buttons=new Map();
  // Require a gesture that started on this tab; reject ghost/retargeted clicks.
- const tabIntent=new WeakMap();
+ let tabIntent=new WeakMap();
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)tabIntent=new WeakMap();},{passive:true});
  function rememberTabGesture(event){
   const target=event.target?.closest?.('.inj-bottom-tab');
   if(target&&nav.contains(target))tabIntent.set(target,performance.now());
@@ -367,7 +368,15 @@ html[data-inj-page="index"] body #entryGate
  gate.addEventListener('scroll',scheduleDockRefresh,{passive:true});
  window.addEventListener('resize',scheduleDockRefresh,{passive:true});
  window.visualViewport?.addEventListener('resize',scheduleDockRefresh,{passive:true});
- window.addEventListener('pageshow',scheduleDockRefresh,{passive:true});
+ const resumeDock=()=>{
+  if(document.hidden)return;
+  if(revealFrame)cancelAnimationFrame(revealFrame);
+  revealFrame=0;
+  updateDockReveal();
+  syncTopLayer();
+ };
+ window.addEventListener('pageshow',resumeDock,{passive:true});
+ document.addEventListener('visibilitychange',resumeDock,{passive:true});
  const modeDockObserver=new MutationObserver(scheduleDockRefresh);
  modeDockObserver.observe(root,{attributes:true,attributeFilter:['data-inj-view-mode','data-inj-mode-transition']});
 

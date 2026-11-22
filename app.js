@@ -5141,7 +5141,12 @@ function maintainMarketRealtime() {
   if (connected && age > 15_000) connectMarketSocket(true);
 }
 
+let lastRealtimeResumeAt = 0;
 function resumeRealtimeData(forceWalletSummaries = false) {
+  if (document.hidden) return;
+  const now = Date.now();
+  if (!forceWalletSummaries && now - lastRealtimeResumeAt < 1500) return;
+  lastRealtimeResumeAt = now;
   if (navigator.onLine === false) {
     setStatus('offline', 'Offline');
     renderDataFreshness();
@@ -5940,7 +5945,9 @@ function closeLiveChartsView({ revealDashboard = true, animate = false } = {}) {
     }
     prepareImmersiveHomeCrossfade();
     overlay.classList.add('is-closing');
-    window.setTimeout(() => finishImmersiveHomeCrossfade(overlay, 'live-charts-open'), 460);
+    window.setTimeout(() => {
+      if (overlay.classList.contains('is-closing')) finishImmersiveHomeCrossfade(overlay, 'live-charts-open');
+    }, 460);
     return;
   }
 
@@ -6083,8 +6090,10 @@ function prepareImmersiveHomeCrossfade() {
 
 function finishImmersiveHomeCrossfade(overlay, bodyOpenClass) {
   const gate = $('entryGate');
-  overlay?.classList.remove('is-closing', 'mode-active');
-  overlay?.classList.add('mode-parked');
+  // A foreground repair may have already retired this transition.
+  if (!overlay?.classList.contains('is-closing') && !overlay?.classList.contains('mode-active')) return;
+  overlay.classList.remove('is-closing', 'mode-active');
+  overlay.classList.add('mode-parked');
   document.body.classList.remove(bodyOpenClass, 'mode-returning', 'entry-live-launch');
   gate?.classList.remove('return-crossfade', 'return-crossfade-visible', 'immersive-underlay', 'mode-return', 'return-front');
   gate?.classList.add('visible');
@@ -6113,6 +6122,7 @@ function closeFocusDisplay({ revealDashboard = true, animate = false } = {}) {
     prepareImmersiveHomeCrossfade();
     dialog.classList.add('is-closing');
     window.setTimeout(() => {
+      if (!dialog.classList.contains('is-closing')) return;
       finishImmersiveHomeCrossfade(dialog, 'focus-display-open');
       // Fully retire the Live View layer; a parked but displayed fixed overlay
       // could still capture Dashboard swipes on iPhone PWA.
@@ -7129,7 +7139,9 @@ function closePulseView({ revealDashboard = true, animate = false } = {}) {
     }
     prepareImmersiveHomeCrossfade();
     overlay.classList.add('is-closing');
-    window.setTimeout(() => finishImmersiveHomeCrossfade(overlay, 'pulse-view-open'), 620);
+    window.setTimeout(() => {
+      if (overlay.classList.contains('is-closing')) finishImmersiveHomeCrossfade(overlay, 'pulse-view-open');
+    }, 620);
     return;
   }
 
@@ -8460,7 +8472,7 @@ function registerPwa() {
     // Android standalone must repair a stale worker without waiting for every
     // chart/font/image request to complete the window load event.
     const refreshWorker = () => {
-      navigator.serviceWorker.register('./sw.js?v=home-apr-20261118a',{updateViaCache:'none'})
+      navigator.serviceWorker.register('./sw.js?v=foreground-20261122a',{updateViaCache:'none'})
         .then(registration => registration.update())
         .catch(() => {});
     };
@@ -8958,13 +8970,8 @@ function bindEvents() {
   });
   window.addEventListener('online', () => resumeRealtimeData(true));
   window.addEventListener('offline', () => { setStatus('offline', 'Offline'); renderDataFreshness(); });
-  document.addEventListener('visibilitychange', () => {
-    // Do not deliberately tear down live feeds while the page is hidden. iOS may
-    // suspend JavaScript on its own; as soon as the page is visible we reconcile
-    // every live source immediately.
-    if (!document.hidden) resumeRealtimeData(false);
-  });
-  window.addEventListener('focus', () => { if (!document.hidden) resumeRealtimeData(false); }, { passive: true });
+  // Foreground recovery is centralized below; visibility and focus often
+  // arrive together on standalone WebKit.
 }
 
 
@@ -9230,18 +9237,88 @@ window.addEventListener('pagehide', () => {
   state.marketMotionFrame = 0;
   state.marketMotionLastFrame = 0;
 });
-window.addEventListener('pageshow', (event) => {
-  requestAnimationFrame(() => {
-    try { resumeRealtimeData(Boolean(event.persisted)); } catch (_) {}
-    if (state.currentView === 'dashboard') window.setTimeout(() => healDashboardScrollState({ force: true }), 0);
-  });
-});
-
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && state.currentView === 'dashboard') {
-    requestAnimationFrame(() => healDashboardScrollState({ force: true }));
+// Resume input independently of market/network tasks. A suspended WebKit
+// timeout can leave a CSS hit-test lock even after its wall-clock expiry.
+function recoverForegroundInput() {
+  const body = document.body;
+  const gate = $('entryGate');
+  if (!body || !gate) return;
+  Object.assign(mobileFastTap, { pointerId:null, button:null, moved:false, lastButton:null, lastAt:0 });
+  state.entryLaunchIntent = new WeakMap();
+  const expired = Date.now() >= Number(state.modeExitLockUntil || 0);
+  if (expired) {
+    state.modeExitLockUntil = 0;
+    window.clearTimeout(state.modeExitLockTimer);
+    body.classList.remove('mode-exit-lock');
   }
+  const modes = [
+    ['focusDisplayDialog','focus-display-open'],
+    ['pulseViewDialog','pulse-view-open'],
+    ['liveChartsDialog','live-charts-open']
+  ];
+  // Only finish a stale Home return; never dismiss a genuinely active view.
+  if (expired && state.currentView === 'home' && body.classList.contains('mode-returning')) {
+    for (const [id, openClass] of modes) {
+      const overlay = $(id);
+      if (overlay && (overlay.classList.contains('is-closing') || overlay.classList.contains('mode-active')) && !overlay.hidden) {
+        finishImmersiveHomeCrossfade(overlay, openClass);
+        overlay.hidden = true;
+        overlay.setAttribute('aria-hidden','true');
+      }
+    }
+    if (!isFocusDisplayActive() && !isPulseViewActive() && !isLiveChartsActive()) {
+      gate.classList.remove('immersive-underlay','mode-return','leaving');
+      gate.classList.add('visible');
+      gate.setAttribute('aria-hidden','false');
+      body.classList.add('entry-gate-open');
+      body.classList.remove('mode-returning','entry-live-launch');
+    }
+  }
+  for (const [id, openClass] of modes) {
+    const overlay = $(id);
+    if (overlay?.classList.contains('mode-parked')) {
+      overlay.hidden = true;
+      overlay.setAttribute('aria-hidden','true');
+      body.classList.remove(openClass);
+    }
+  }
+  if (state.currentView === 'dashboard') healDashboardScrollState({force:false});
+  window.INJ_SCROLL_GUARD?.refresh();
+}
+let foregroundTimer = 0, foregroundForce = false, foregroundHidden = document.hidden;
+let lastForegroundRecoveryAt = 0;
+function scheduleForegroundRecovery(force = false) {
+  if (document.hidden) return;
+  const now = Date.now();
+  if (foregroundHidden || force || now-lastForegroundRecoveryAt>1500) {
+    foregroundHidden = false;
+    lastForegroundRecoveryAt = now;
+    recoverForegroundInput();
+  }
+  foregroundForce = foregroundForce || force;
+  if (foregroundTimer) return;
+  foregroundTimer = window.setTimeout(() => {
+    foregroundTimer = 0;
+    const refresh = foregroundForce;
+    foregroundForce = false;
+    if (!document.hidden) {
+      try { resumeRealtimeData(refresh); } catch (_) {}
+    }
+  }, 80);
+}
+window.addEventListener('pageshow', event => scheduleForegroundRecovery(Boolean(event.persisted)), {passive:true});
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    foregroundHidden = true;
+    window.clearTimeout(foregroundTimer);
+    foregroundTimer = 0;
+    foregroundForce = false;
+    return;
+  }
+  scheduleForegroundRecovery(false);
 });
+window.addEventListener('focus', () => scheduleForegroundRecovery(false), {passive:true});
+document.addEventListener('resume', () => scheduleForegroundRecovery(false), {passive:true});
 
 // v15.99.4 — Home P/L Timeline: persistent 24H candles + viewport-based Y autoscaling and historical horizontal scroll.
 

@@ -5,7 +5,7 @@
   const root = document.documentElement;
   if (root.dataset.injPage !== 'index') return;
   const $ = id => document.getElementById(id);
-  let scheduled = false;
+  let scheduled = 0;
   // Safari PWA may suspend a page during Home -> Dashboard's 380ms exit.
   // The normal timer can be deferred indefinitely; recover an orphaned Home
   // layer without intercepting wheel/touch events or changing scroll position.
@@ -26,7 +26,7 @@
       (has(el, 'mode-active') || has(el, 'is-closing'));
   };
   function reconcile() {
-    scheduled = false;
+    scheduled = 0;
     const body = document.body;
     if (!body) return;
     const gate = $('entryGate');
@@ -121,9 +121,14 @@
     }
   }
   function refresh() {
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(reconcile);
+    if (scheduled || document.hidden) return;
+    scheduled = requestAnimationFrame(reconcile);
+  }
+  function foregroundRefresh() {
+    if (document.hidden) return;
+    if (scheduled) cancelAnimationFrame(scheduled);
+    scheduled = 0;
+    reconcile();
   }
   function init() {
     if (!document.body) return;
@@ -138,9 +143,9 @@
         attributes:true, attributeFilter:['class','hidden','aria-hidden']
       });
     }
-    window.addEventListener('pageshow', refresh, { passive:true });
+    window.addEventListener('pageshow', foregroundRefresh, { passive:true });
     window.addEventListener('popstate', refresh, { passive:true });
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+    document.addEventListener('visibilitychange', foregroundRefresh, {passive:true});
     // WebKit may miss a transition repaint. Repair after a gesture only if
     // its scroll mode is demonstrably stale; never cancel native touch.
     document.addEventListener('touchend', () => {

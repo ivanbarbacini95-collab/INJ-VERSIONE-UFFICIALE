@@ -214,10 +214,15 @@ window.INJ_OPEN_SECTION=function(url){
 if(main){
  // Backgrounded PWAs may suspend timeouts. Reclaim Home on foreground.
  const repairPendingSection=()=>{
+   if(!section && (sectionCover || document.body.classList.contains('inj-section-open'))) {
+     closeSection();
+     return;
+   }
    if(section && section.dataset.ready!=='true' && sectionOpenedAt>0 &&
       Date.now()-sectionOpenedAt>=SECTION_LOAD_TIMEOUT_MS)closeSection();
  };
  window.addEventListener('pageshow',repairPendingSection,{passive:true});
+ window.addEventListener('focus',repairPendingSection,{passive:true});
  document.addEventListener('visibilitychange',()=>{
    if(!document.hidden)repairPendingSection();
  },{passive:true});
