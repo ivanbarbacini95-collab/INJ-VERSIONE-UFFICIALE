@@ -212,7 +212,14 @@
    const current=Boolean(lastQuote?.quoteTime&&nyKey(new Date(lastQuote.quoteTime))===nowKey&&Date.now()-lastQuote.quoteTime<1200000);
    const fresh=Boolean(current&&lastQuote?.providerRealTime===true&&Date.now()-lastQuote.quoteTime<90000&&Date.now()-lastGoodAt<180000);
    status(state,state==='open'&&lastQuote?.session!=='regular'?'pending':fresh?'fresh':'stale');
-   if(lastChartPhase!==state){lastChartPhase=state;if(graphPoints.length)drawGraph();}
+   if(lastChartPhase!==state){
+     const previousPhase=lastChartPhase;
+     lastChartPhase=state;
+     if(graphPoints.length)drawGraph();
+     if(previousPhase!==null&&(state==='open'||state==='pre')&&!document.hidden){
+       refreshFastNasdaq();refreshMarket();refreshPriceRange(true);
+     }
+   }
    renderFeedIndicator();
    const count=$('etfOpenCountdown'),label=$('etfCountdownLabel');
    if(count&&label){
@@ -546,7 +553,8 @@
      (timeframe!=='1d'||nyKey(new Date(p.time))===sessionKey))
      .sort((a,b)=>a.time-b.time);
    if(!points.length){
-     wrap.replaceChildren();
+     lastChartRenderSignature='';
+     if(wrap.firstChild)wrap.replaceChildren();
      $('etfChartWaiting')?.classList.remove('hidden');
      setText('etfChartDataLabel',timeframe==='1d'
         ?tr('Seduta '+sessionKey+' · in attesa di nuovi scambi INJC verificati',
@@ -561,6 +569,12 @@
    const rect=wrap.getBoundingClientRect();
    const w=Math.max(220,Math.round(rect.width||wrap.clientWidth||360));
    const h=Math.max(220,Math.round(rect.height||wrap.clientHeight||330));
+   // Keep the existing SVG and touch/crosshair state when feed returns the same bars.
+   const signature=timeframe+'|'+sessionKey+'|'+marketState()+'|'+w+'x'+h+'|'+
+     (lastQuote?.change??'')+'|'+document.documentElement.dataset.theme+'|'+
+     points.map(p=>p.time+':'+p.close+':'+p.session).join(';');
+   if(signature===lastChartRenderSignature)return;
+   lastChartRenderSignature=signature;
    const right=Math.max(75,Math.min(94,Math.round(w*.205)));
    const left=18,top=33,bottom=45,plotRight=w-right,plotBottom=h-bottom;
    const plotWidth=Math.max(1,plotRight-left),plotHeight=Math.max(1,plotBottom-top);
@@ -777,11 +791,14 @@
    }finally{fastQuoteBusy=false;}
  }
  async function refreshMarket(){
-   if(busy||document.hidden)return;
+   if(document.hidden)return;
+   if(busy){marketRefreshQueued=true;return;}
    busy=true;
+   const requestedTimeframe=timeframe;
    setText('etfSyncLabel',tr('SINCRONIZZAZIONE','SYNCING'));
    try{
      const incoming=await getQuote();
+     if(requestedTimeframe!==timeframe){marketRefreshQueued=true;return;}
      if(!incoming.cacheOnly)lastFeedSuccessAt=Date.now();
      displayQuote(incoming.data,incoming.source);
      const stale=Date.now()-(lastQuote?.quoteTime||0)>15*60000;
@@ -799,7 +816,10 @@
      setText('etfSyncLabel',tr('FEED NON DISPONIBILE','FEED UNAVAILABLE'));
      renderFeedIndicator();
      renderStatus();
-   }finally{busy=false}
+   }finally{
+     busy=false;
+     if(marketRefreshQueued&&!document.hidden){marketRefreshQueued=false;refreshMarket();}
+   }
  }
  function isVerifiedFlow(row){
    return Boolean(row&&/^\d{4}-\d\d-\d\d$/.test(row.date)&&/^https:\/\//.test(row.source||'')
@@ -903,13 +923,25 @@
 
    document.addEventListener('keydown',event=>{if(event.key==='Escape')toggleExpandedChart(false);});
    document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshMarket();refreshFlows();refreshPriceRange();renderStatus()}});
-   window.addEventListener('pageshow',()=>{refreshMarket();refreshPriceRange();renderStatus()});
+   window.addEventListener('pageshow',event=>{if(event.persisted){refreshMarket();refreshPriceRange(true);renderStatus()}});
+   window.addEventListener('online',()=>{refreshFastNasdaq();refreshMarket();renderStatus()});
    window.addEventListener('storage',event=>{if(event.key==='inj_node_language_v1')location.reload()});
    window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data?.type==='injnode:etf:language')location.reload()});
    renderStatus();renderFlows();drawGraph();renderPriceRange();
    refreshFastNasdaq();refreshMarket();refreshFlows();refreshPriceRange();
-   refreshTimer=setInterval(()=>{if(!document.hidden)refreshMarket()},15000);
-   setInterval(()=>{if(!document.hidden)refreshFastNasdaq()},10000);
+   // Poll relative to request completion: no overlapping chart or ticker calls.
+   const pollMarket=async()=>{
+     if(!document.hidden&&navigator.onLine!==false)await refreshMarket();
+     const phase=marketState();
+     refreshTimer=setTimeout(pollMarket,phase==='open'?30000:phase==='pre'?45000:120000);
+   };
+   const pollNasdaq=async()=>{
+     if(!document.hidden&&navigator.onLine!==false)await refreshFastNasdaq();
+     const phase=marketState();
+     setTimeout(pollNasdaq,phase==='open'?10000:phase==='pre'?16000:120000);
+   };
+   refreshTimer=setTimeout(pollMarket,24000);
+   setTimeout(pollNasdaq,10000);
    marketPulseTimer=setInterval(()=>{if(!document.hidden){renderStatus();if(flowDayKey!==nyKey(new Date()))renderFlows()}},1000);
    setInterval(()=>{if(!document.hidden)refreshFlows()},300000);
    setInterval(()=>{if(!document.hidden)refreshPriceRange()},60000);
