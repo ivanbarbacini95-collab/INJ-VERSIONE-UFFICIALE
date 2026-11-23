@@ -165,6 +165,13 @@ html[data-inj-etf-embedded="1"],html[data-inj-etf-embedded="1"] body{
 .injc-quote-reference .injc-quote-feed-status[data-feed-state="provider-realtime"]{
  color:var(--etf-up);
 }
+.injc-quote-reference .injc-quote-feed-status[data-feed-state="unavailable"],
+.injc-quote-reference .injc-quote-feed-status[data-feed-state="old-trade"]{
+ color:var(--injc-down,#f16d77);
+}
+.injc-quote-reference .injc-quote-feed-status[data-feed-state="snapshot"]{
+ color:var(--etf-gold);
+}
 </style>
 <script defer src="./inj-node-insights-config.js?v=1"></script>
 <script defer src="./inj-node-telemetry.js?v=1"></script>
