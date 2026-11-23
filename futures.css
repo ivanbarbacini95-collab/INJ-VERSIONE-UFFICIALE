@@ -56,3 +56,31 @@
 
 /* Selected-wallet context: isolated to Scenario Lab. */
 .sim-wallet-context{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin:0 23px 18px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}.sim-wallet-context>div{min-width:0;display:flex;flex-direction:column;gap:5px;padding:12px 14px;background:var(--panel)}.sim-wallet-context span{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.07em}.sim-wallet-context strong{font-size:16px;color:var(--text);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.sim-wallet-context small{font-size:10px;color:var(--muted)}#simStakedInput[readonly]{cursor:default;border-color:var(--line);background:var(--panel)}@media(max-width:600px){.sim-wallet-context{margin:0 14px 14px}.sim-wallet-context>div{padding:10px}.sim-wallet-context strong{font-size:13px}}
+
+/* 2026-11-23 — Futures header price legibility: clear live price at every viewport. */
+.futures-market-head > #livePrice{
+  display:block;
+  color:var(--text);
+  font-size:clamp(23px,2.2vw,30px);
+  font-weight:900;
+  line-height:1.08;
+  letter-spacing:-.025em;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+  white-space:nowrap;
+}
+@media(max-width:900px){
+  .futures-market-head{gap:6px}
+  .futures-market-head > #livePrice{font-size:clamp(22px,3.5vw,27px)}
+  .futures-market-head .live-badge{font-size:9px;line-height:1.25;letter-spacing:.065em}
+}
+@media(max-width:540px){
+  .futures-header{min-height:76px;column-gap:8px}
+  .futures-market-head > #livePrice{font-size:23px}
+  .futures-market-head .live-badge{font-size:9px}
+}
+@media(max-width:360px){
+  .futures-header{column-gap:5px}
+  .futures-market-head > #livePrice{font-size:20px}
+  .futures-market-head .live-badge{font-size:8px}
+}
