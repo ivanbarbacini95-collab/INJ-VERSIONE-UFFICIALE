@@ -470,7 +470,7 @@
        ';'+intradayPoints.map(p=>p.time+':'+p.volume+':'+p.price).join(',')+
        ';'+[...dailyPrice].map(([k,v])=>k+':'+v.price).join(',');
      if(signature!==volumeSnapshot){volumeSnapshot=signature;drawVolume(true);}
-     else queueVolumeDraw();
+     // An unchanged feed must not tear down and rebuild the volume SVG.
    }catch(error){console.warn('INJC traded-volume chart:',error.message);drawVolume();}
    finally{volumeLoading=false;}
  }
@@ -508,9 +508,16 @@
    });
    $('etfRefresh')?.addEventListener('click',refreshVolume);
    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshVolume();});
-   window.addEventListener('pageshow',refreshVolume);
+   window.addEventListener('pageshow',event=>{if(event.persisted)refreshVolume();});
+   window.addEventListener('online',refreshVolume);
    refreshVolume();
-   setInterval(()=>{if(!document.hidden)refreshVolume();},30000);
+   // Historic daily bars change less often than the quote; minimize mobile data and DOM work.
+   const pollVolume=async()=>{
+     if(!document.hidden&&navigator.onLine!==false)await refreshVolume();
+     const open=$('etfChartSession')?.dataset.state==='open';
+     setTimeout(pollVolume,open?60000:180000);
+   };
+   setTimeout(pollVolume,60000);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
  else bind();
