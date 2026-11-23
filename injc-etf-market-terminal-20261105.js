@@ -114,7 +114,7 @@
  let lastChartPhase=null, lastFeedSuccessAt=0, lastFeedFailureAt=0, fastQuoteBusy=false;
  let nasdaqRequest=null, nasdaqCached=null, nasdaqCheckedAt=0, nasdaqProxyCheckedAt=0;
  let marketRefreshQueued=false, lastChartRenderSignature='';
- let nasdaqTimer=null, rescheduleSessionPolls=null;
+ let nasdaqTimer=null, rescheduleSessionPolls=null, pollGeneration=0;
  let observedPrePrints=[], observedPreDay='';
  let currentDisplayedSession=nyKey(new Date());
  const ranges={ '1d':['1d','1m'],'5d':['5d','5m'],'1mo':['1mo','30m'],'3mo':['3mo','1d'],'1y':['1y','1d'] };
@@ -934,20 +934,29 @@
    refreshFastNasdaq();refreshMarket();refreshFlows();refreshPriceRange();
    // Poll relative to request completion: no overlapping chart or ticker calls.
    const pollMarket=async()=>{
+     const generation=pollGeneration;
      try{if(!document.hidden&&navigator.onLine!==false)await refreshMarket();}
+     catch(error){console.warn('INJC chart refresh:',error.message);}
      finally{
-       const phase=marketState();
-       refreshTimer=setTimeout(pollMarket,phase==='open'?30000:phase==='pre'?45000:120000);
+       if(generation===pollGeneration){
+         const phase=marketState();
+         refreshTimer=setTimeout(pollMarket,phase==='open'?30000:phase==='pre'?45000:120000);
+       }
      }
    };
    const pollNasdaq=async()=>{
+     const generation=pollGeneration;
      try{if(!document.hidden&&navigator.onLine!==false)await refreshFastNasdaq();}
+     catch(error){console.warn('INJC last-sale refresh:',error.message);}
      finally{
-       const phase=marketState();
-       nasdaqTimer=setTimeout(pollNasdaq,phase==='open'?10000:phase==='pre'?16000:120000);
+       if(generation===pollGeneration){
+         const phase=marketState();
+         nasdaqTimer=setTimeout(pollNasdaq,phase==='open'?10000:phase==='pre'?16000:120000);
+       }
      }
    };
    rescheduleSessionPolls=()=>{
+     pollGeneration++;
      clearTimeout(refreshTimer);clearTimeout(nasdaqTimer);
      refreshTimer=setTimeout(pollMarket,marketState()==='open'?30000:45000);
      nasdaqTimer=setTimeout(pollNasdaq,marketState()==='open'?10000:16000);
