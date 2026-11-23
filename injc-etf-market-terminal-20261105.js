@@ -112,6 +112,8 @@
  const fmtTime=ms=>new Date(ms).toLocaleTimeString(lang()==='en'?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',timeZone:'America/New_York'});
  let timeframe='1d', busy=false, lastQuote=null, lastGoodAt=0, quoteSource='', graphPoints=[], refreshTimer=null, marketPulseTimer=null, flowsHistory=[], flowDayKey=null, plottedFlowsFirstTime=true;
  let lastChartPhase=null, lastFeedSuccessAt=0, lastFeedFailureAt=0, fastQuoteBusy=false;
+ let nasdaqRequest=null, nasdaqCached=null, nasdaqCheckedAt=0, nasdaqProxyCheckedAt=0;
+ let marketRefreshQueued=false, lastChartRenderSignature='';
  let observedPrePrints=[], observedPreDay='';
  let currentDisplayedSession=nyKey(new Date());
  const ranges={ '1d':['1d','1m'],'5d':['5d','5m'],'1mo':['1mo','30m'],'3mo':['3mo','1d'],'1y':['1y','1d'] };
@@ -154,9 +156,15 @@
    const cached=/^Cached INJC/i.test(quoteSource);
    const providerLive=lastQuote.providerRealTime===true &&
      nyKey(new Date(lastQuote.quoteTime))===nyKey(new Date()) &&
+     age<90000 && Date.now()-lastFeedSuccessAt<180000 &&
      (state==='open'||state==='pre');
+   const disconnected=navigator.onLine===false ||
+     (lastFeedFailureAt>lastFeedSuccessAt && Date.now()-lastFeedFailureAt<60000);
    let feedType,description;
-   if(cached){
+   if(disconnected){
+     feedType='unavailable';
+     description=tr('FEED NON DISPONIBILE · ultimo scambio salvato','FEED UNAVAILABLE · last saved trade');
+   }else if(cached){
      feedType='snapshot';
      description=tr('SNAPSHOT STORICO · non live','HISTORICAL SNAPSHOT · not live');
    }else if(providerLive){
@@ -331,19 +339,35 @@
    return viaProxy?'https://proxy.cors.dev/'+direct:direct;
  }
  async function getNasdaq(){
-   // Request direct and backup concurrently: use the first valid exchange-timestamped quote.
-   // Polling frequently cannot remove the latency of a delayed upstream market feed.
-   const results=await Promise.allSettled([
-     getJson('./api/injc-market-data?provider=nasdaq',5800).then(parseNasdaq),
-     getJson(nasdaqUrl(),4600).then(parseNasdaq),
-     getJson(nasdaqUrl(true),5600).then(parseNasdaq)
-   ]);
-   // Prefer the newest timestamped trade, not the fastest response.
-   const valid=results.filter(row=>row.status==='fulfilled')
-     .map(row=>row.value)
-     .sort((a,b)=>b.quoteTime-a.quoteTime||
+   // One pending lookup is shared by the quote ticker and the full chart.
+   if(nasdaqRequest)return nasdaqRequest;
+   if(nasdaqCheckedAt&&Date.now()-nasdaqCheckedAt<8500)return nasdaqCached;
+   nasdaqRequest=(async()=>{
+     const results=await Promise.allSettled([
+       getJson('./api/injc-market-data?provider=nasdaq',5800).then(parseNasdaq),
+       getJson(nasdaqUrl(),4600).then(parseNasdaq)
+     ]);
+     const valid=results.filter(row=>row.status==='fulfilled').map(row=>row.value);
+     valid.sort((a,b)=>b.quoteTime-a.quoteTime||
        Number(b.providerRealTime===true)-Number(a.providerRealTime===true));
-   return valid[0]||null;
+     const newest=valid[0]||null;
+     // Use the optional public proxy only when necessary, and with a cooldown.
+     const needsFallback=!newest||
+       ((marketState()==='open'||marketState()==='pre')&&Date.now()-newest.quoteTime>180000);
+     if(needsFallback&&Date.now()-nasdaqProxyCheckedAt>=45000){
+       nasdaqProxyCheckedAt=Date.now();
+       try{valid.push(parseNasdaq(await getJson(nasdaqUrl(true),5600)));}
+       catch(_){}
+     }
+     valid.sort((a,b)=>b.quoteTime-a.quoteTime||
+       Number(b.providerRealTime===true)-Number(a.providerRealTime===true));
+     return valid[0]||null;
+   })();
+   try{
+     nasdaqCached=await nasdaqRequest;
+     nasdaqCheckedAt=Date.now();
+     return nasdaqCached;
+   }finally{nasdaqRequest=null;}
  }
  function withChart(quote,reference){
    const quoteDay=nyKey(new Date(quote.quoteTime));
