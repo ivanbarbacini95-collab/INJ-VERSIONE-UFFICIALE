@@ -89,3 +89,62 @@
     use high-luminance versions on its inverse surface, not dark text. */
  html:is([data-theme="classic-white"],[data-theme="arctic"],[data-theme="light"],[data-theme="aqua"]):not([data-night-mode="on"])[data-inj-market] #marketHeatmap {--arctic-green:#16f5b3!important;--arctic-red:#ff5076!important;--positive:var(--arctic-green)!important;--negative:var(--arctic-red)!important;}
 }
+
+/* 2026-11-24 | Arctic Glass: unified icy surfaces, scoped to this theme.
+   Keep financial colors, heatmap fills, Night View and geometry unchanged. */
+@layer inj-light-financial-contrast {
+ html[data-theme="arctic"]:not([data-night-mode="on"]):not([data-inj-page="night-view"]) {
+  --surface:#ffffff!important;
+  --surface-strong:#f1f8fb!important;
+  --surface-soft:#e4f0f6!important;
+  --line:rgba(59,108,137,.19)!important;
+  --line-strong:rgba(46,99,130,.30)!important;
+  --arctic-card:linear-gradient(145deg,#ffffff 0%,#f5fafc 58%,#eaf4f9 100%);
+  --arctic-shadow:0 5px 18px rgba(44,88,116,.07),inset 0 1px 0 rgba(255,255,255,.9);
+  --card-gradient:var(--arctic-card)!important;
+  --market-gradient:var(--arctic-card)!important;
+  --inj-theme-panel:var(--arctic-card)!important;
+  --floating-surface:#ffffff!important;
+  --dialog-gradient:linear-gradient(145deg,#ffffff,#edf6fa)!important;
+ }
+ /* Dashboard data only; do not change the Home launcher or wallet rail. */
+ html[data-theme="arctic"][data-inj-page="index"]:not([data-night-mode="on"])
+ body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell #top
+ :is(.data-card,#marketCard,#worthCard) {
+  background:var(--arctic-card)!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--arctic-shadow)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+ }
+ html[data-theme="arctic"]:not([data-night-mode="on"])
+ #injMyRewardPanel .inj-myreward-stake-card {
+  background:var(--arctic-card)!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--arctic-shadow)!important;
+ }
+ html[data-theme="arctic"]:not([data-night-mode="on"]):is([data-inj-page="treasury"],[data-inj-page="live-rewards"],[data-inj-page="command-center"])
+ :is(.treasury-panel,.treasury-allocation-panel,.treasury-velocity-panel,.treasury-milestone-panel,.treasury-session-panel,.treasury-networth-panel,.treasury-performance-panel,.cash-reserve-panel,.cash-network-card,.rewards-list-panel,.rewards-total-panel,.cc-panel) {
+  background:var(--arctic-card)!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--arctic-shadow)!important;
+ }
+ html[data-theme="arctic"]:not([data-night-mode="on"]):is([data-inj-page="all-transactions"],[data-inj-page="network-status"],[data-inj-market]) {
+  --panel:var(--surface)!important;
+  --raised:var(--surface-strong)!important;
+  --border:var(--line)!important;
+  --sub:var(--surface-strong)!important;
+ }
+ html[data-theme="arctic"][data-inj-page="workspace"]:not([data-night-mode="on"]) {
+  --ws-panel:var(--surface-strong)!important;
+  --ws-line:var(--line)!important;
+ }
+ html[data-theme="arctic"][data-inj-page="multi-chart"]:not([data-night-mode="on"]) {
+  --mc-panel:var(--surface)!important;
+  --mc-border:var(--line)!important;
+ }
+ html[data-theme="arctic"][data-inj-page="injc-etf"]:not([data-night-mode="on"]) body {
+  --etf-card:var(--surface)!important;
+  --etf-line:var(--line)!important;
+ }
+}

@@ -1,11 +1,11 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261122-foreground1';
+const CACHE_NAME = 'inj-node-v20261124-arctic-glass1';
 const BOOT_ASSETS = [
   './index.html',
   './dashboard-portrait-gapfix-20261115.css?v=compact-20261121',
-  './inj-light-financial-contrast-20261120.css?v=light-vivid1',
+  './inj-light-financial-contrast-20261120.css?v=arctic-glass-20261124a',
   './cloud-sync.html?v=wallet-order-20261118',
   './cloud-sync-portable-20261113.js?v=wallet-order-20261118',
   './cloud-sync-portable-20261113.css?v=copy-paste-v1',
@@ -115,7 +115,8 @@ self.addEventListener('fetch', event => {
   // HTTP caching and a single offline fallback, without duplicated variants.
   event.respondWith((async () => {
     try {
-      const response = await fetch(request, navigation ? { cache: 'no-store' } : undefined);
+      const sharedTheme = /\/inj-light-financial-contrast-20261120\.css$/.test(url.pathname);
+      const response = await fetch(request, navigation ? { cache: 'no-store' } : sharedTheme ? { cache: 'no-cache' } : undefined);
       schedulePut(event, url, response);
       return response;
     } catch (_) {
