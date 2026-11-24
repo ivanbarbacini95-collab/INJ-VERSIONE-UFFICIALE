@@ -12,7 +12,7 @@
   const NETWORK_INTERVAL = 30000;
   const PRICE_INTERVAL = 25000;
   const MAX_ESTIMATE_AGE = 60000;
-  const LCDS = ['https://sentry.lcd.injective.network:443', 'https://lcd.injective.network', 'https://1rpc.io/inj-lcd'];
+  const LCDS = ['https://sentry.lcd.injective.network:443', 'https://lcd.injective.network', 'https://1rpc.io/inj-lcd','https://injective-rest.publicnode.com'];
   const $ = (id) => document.getElementById(id);
   const validAddress = (a) => /^inj1[a-z0-9]{38,60}$/i.test(String(a || ''));
   const finite = (n) => n !== '' && n !== null && n !== undefined && Number.isFinite(Number(n)) ? Number(n) : null;
@@ -144,7 +144,8 @@ function addGoal(event) {
       state.rows[wallet.address] = {
         address: wallet.address, reward: reward !== null && reward >= 0 ? reward : null,
         stake: stake !== null && stake >= 0 ? stake : null,
-        apr: storedApr !== null && storedApr > 0 && storedApr <= 100 ? storedApr : null,
+        apr: storedApr !== null && storedApr >= 0 && storedApr <= 100 ? storedApr : null,
+        aprAt:finite(row.aprUpdated)||0,aprCached:true,
         commission: commission !== null && commission >= 0 && commission <= 1 ? commission : null,
         at: reward !== null && reward >= 0 ? finite(row.updated) || 0 : 0,
         verified: false, cachedAt: finite(row.updated) || 0
@@ -263,7 +264,7 @@ function addGoal(event) {
     return Number.isFinite(value) && value>=0 ? value : null;
   }
   function parseDelegations(data){
-    if(!Array.isArray(data?.delegation_responses)) return null;
+    if(!Array.isArray(data?.delegation_responses)||data?.pagination?.next_key) return null;
     const value=data.delegation_responses.reduce((sum,x)=>sum+fromWei(x?.balance?.amount),0);
     return Number.isFinite(value) && value>=0 ? value : null;
   }
@@ -272,7 +273,7 @@ function addGoal(event) {
       try{
         const [rewards,stake] = await Promise.all([
           getJSON(root+'/cosmos/distribution/v1beta1/delegators/'+address+'/rewards'),
-          getJSON(root+'/cosmos/staking/v1beta1/delegations/'+address)
+          getJSON(root+'/cosmos/staking/v1beta1/delegations/'+address+'?pagination.limit=1000')
         ]);
         const reward=parseRewards(rewards),staked=parseDelegations(stake);
         if(reward!==null && staked!==null) return {reward,stake:staked};
@@ -289,7 +290,7 @@ function addGoal(event) {
   function aprFor(row){
     // Validator activity and commission are already accounted for in the
     // common wallet APR: never recalculate an approximate gross yield.
-    return row.apr;
+    return row.aprAt>0&&Date.now()-row.aprAt<window.INJ_STAKING_APR.maxCacheMs?row.apr:null;
   }
   async function syncNetwork(){
     if(state.syncing || !state.visible || !state.wallets.length)return;
@@ -297,24 +298,19 @@ function addGoal(event) {
     $('ladderRefresh').disabled=true;
     render();
     try{
-      await fetchOfficialApr();
-      const list=await Promise.all(state.wallets.map(async w=>({
-        chain:await getWalletNetwork(w.address),
-        staking:await window.INJ_STAKING_APR.wallet(w.address)
-      })));
+      void fetchOfficialApr().catch(()=>{});
+      const list=await Promise.all(state.wallets.map(async w=>{
+        const [chain,staking]=await Promise.allSettled([getWalletNetwork(w.address),window.INJ_STAKING_APR.wallet(w.address)]);
+        return {address:w.address,chain:chain.status==='fulfilled'?chain.value:null,staking:staking.status==='fulfilled'?staking.value:null};
+      }));
       const now=Date.now();
-      list.forEach(({chain,staking},i)=>{
-        if(!chain)return;
-        const address=state.wallets[i].address;
+      list.forEach(({address,chain,staking})=>{
         const row=state.rows[address];
-        if(!row)return;
-        row.reward=chain.reward;
-        row.stake=staking?.staked ?? chain.stake;
-        row.apr=staking && Number.isFinite(staking.apr) && !staking.stale ? staking.apr : null;
-        row.commission=staking && Number.isFinite(staking.weightedCommission)
-          ? staking.weightedCommission : null;
-        row.at=now;
-        row.verified=true;
+        if(!row||!state.wallets.some(w=>w.address===address))return;
+        if(chain){row.reward=chain.reward;row.stake=chain.stake;row.at=now;row.verified=true;}else row.verified=false;
+        if(staking&&Number.isFinite(staking.apr)&&now-Number(staking.aprUpdated)<window.INJ_STAKING_APR.maxCacheMs&&now-Number(staking.updatedAt)<window.INJ_STAKING_APR.maxCacheMs){
+          row.apr=staking.apr;row.aprAt=Math.min(staking.aprUpdated,staking.updatedAt);row.aprCached=Boolean(staking.stale)||String(staking.source).includes('non disponibile');row.commission=staking.weightedCommission;
+        }else row.aprCached=true;
       });
       if(list.some(item=>item.chain))state.networkAt=now;
     }finally{
@@ -385,8 +381,8 @@ function addGoal(event) {
       const rate=apr!==null && row.stake>0?row.stake*apr/100/YEAR_SECONDS:0;
       staking+=row.stake;
       if(row.stake>0 && apr===null)rateReady=false;
-      if(row.at && row.stake>0 && apr!==null && now>row.at && now-row.at<=MAX_ESTIMATE_AGE)estimation=true;
-      reward+=row.reward + (row.at && apr!==null && row.stake>0 ? rate*Math.min(MAX_ESTIMATE_AGE,Math.max(0,now-row.at))/1000 : 0);
+      if(row.verified && !row.aprCached && row.at && row.stake>0 && apr!==null && now>row.at && now-row.at<=MAX_ESTIMATE_AGE)estimation=true;
+      reward+=row.reward + (row.verified && !row.aprCached && row.at && apr!==null && row.stake>0 && now-row.at<=MAX_ESTIMATE_AGE ? rate*Math.max(0,now-row.at)/1000 : 0);
       rateInjSec+=rate;
     });
     const hasPrice=positive(state.price);
@@ -397,7 +393,7 @@ function addGoal(event) {
       rateInjSec:rateReady?rateInjSec:null,
       estimation,
       all:addresses.length,missing:0,
-      someCached:rows.some(x=>!x.verified),
+      someCached:rows.some(x=>!x.verified||now-x.at>MAX_ESTIMATE_AGE||x.aprCached),
       lastConfirmed:Math.min(...rows.map(x=>x.at||0))
     };
   }
@@ -491,11 +487,13 @@ function addGoal(event) {
     });
     window.addEventListener('pageshow',()=>{
       state.visible=!document.hidden;
-      if(state.visible){openPriceSocket();render();}
+      if(state.visible){void Promise.allSettled([syncNetwork(),refreshPrice()]);openPriceSocket();render();}
     });
+    window.addEventListener('online',()=>{if(state.visible){void Promise.allSettled([syncNetwork(),refreshPrice()]);openPriceSocket();}});
     window.addEventListener('pagehide',stopSocket);
     window.addEventListener('storage',(event)=>{
       if(event.key===LANGUAGE_KEY){applyLanguage();pickWallet();render();}
+      if(event.key===WALLETS_KEY){loadWallets();pickWallet();render();void syncNetwork();}
       if(event.key===GOALS_KEY){loadGoals();buildCards();applyLanguage();render();}
       if(event.key===SELECTED_KEY && state.mode==='single'){
         const next=state.wallets.find(x=>x.address===event.newValue);
