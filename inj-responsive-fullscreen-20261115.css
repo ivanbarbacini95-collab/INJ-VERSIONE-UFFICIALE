@@ -217,3 +217,82 @@ html[data-inj-page="futures"] .futures-shell {min-height:var(--inj-fit-viewport)
 @media screen and (orientation:landscape) and (max-height:540px) {
  html[data-inj-page="futures"] .futures-main {min-height:0;height:auto}
 }
+
+/* 2026-11-24 | iPad and touch tablet layout.
+   Use viewport dimensions, not UA sniffing. Preserve native scrolling,
+   chart canvas ownership, theme colors and custom Workspace layouts. */
+@media screen and (min-width:700px) and (max-width:1400px) and (min-height:550px) and (any-pointer:coarse) {
+ :root {
+  --inj-fit-gutter:clamp(14px,1.8vw,26px);
+  --inj-fit-gap:clamp(10px,1.2vw,18px);
+  --inj-portrait-gutter:var(--inj-fit-gutter);
+  --inj-portrait-gap:var(--inj-fit-gap);
+ }
+ html[data-inj-page]:not([data-inj-page="workspace"]) :is(.treasury-panel,.rewards-panel,.injc-panel,.etf-panel,.cc-panel,.cap-panel,.wealth-panel,.ladder-panel),
+ html[data-inj-market] :is(.panel,.market-panel) {
+  min-width:0!important;max-width:100%;box-sizing:border-box;
+ }
+ html[data-inj-page] :is(.treasury-shell,.rewards-shell,.etf-shell,.freedom-page),
+ html[data-inj-market] body>.shell {
+  padding-left:max(var(--inj-fit-gutter),env(safe-area-inset-left,0px))!important;
+  padding-right:max(var(--inj-fit-gutter),env(safe-area-inset-right,0px))!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell #top .wallet-mini-strip {
+  min-width:0!important;max-width:100%!important;overflow-x:auto!important;
+ }
+ html[data-inj-page="treasury"] :is(.treasury-metrics,.treasury-allocation-metrics,.treasury-velocity-grid),
+ html[data-inj-page="live-rewards"] .rewards-layout,
+ html[data-inj-page="reward-ladder"] .ladder-steps,
+ html[data-inj-page="comparison"] :is(.cap-picker-grid,.cap-results-grid),
+ html[data-inj-page="visualize-wealth"] :is(.wealth-all-grid,.wealth-income-grid) {
+  gap:var(--inj-fit-gap)!important;grid-auto-rows:auto!important;align-content:start!important;
+ }
+ html[data-inj-page="treasury"] :is(.treasury-metric strong,.treasury-chart-primary strong,.treasury-chart-side strong),
+ html[data-inj-page="live-rewards"] :is(.rewards-total-value,.reward-row strong) {
+  min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;
+ }
+ html[data-inj-page="live-rewards"] :is(.reward-row,.rewards-total-panel) {
+  min-height:clamp(135px,19dvh,210px)!important;
+ }
+ html[data-inj-page="injc-etf"] :is(.injc-chart-surface,.injc-holdings-chart),
+ html[data-inj-page="treasury"] :is(.treasury-spark-stage,.treasury-worth-stage) {
+  min-height:clamp(220px,32dvh,390px)!important;
+ }
+ html[data-inj-page="injc-etf"] .injc-volume-graph {min-height:clamp(170px,23dvh,280px)!important}
+ html[data-inj-page="multi-chart"] :is(.mc-card,.mc-canvas-wrap) {min-width:0;min-height:0}
+ html[data-inj-page="index"] :is(#entryMenuButton,#entryPrivacyButton,#menuCloseButton) {
+  min-width:44px;min-height:44px;
+ }
+}
+@media screen and (min-width:700px) and (max-width:1400px) and (min-height:550px) and (orientation:portrait) and (any-pointer:coarse) {
+ html[data-inj-page="treasury"] :is(.treasury-metrics,.treasury-allocation-metrics,.treasury-velocity-grid),
+ html[data-inj-page="live-rewards"] .rewards-layout,
+ html[data-inj-page="reward-ladder"] .ladder-steps,
+ html[data-inj-page="comparison"] :is(.cap-picker-grid,.cap-results-grid),
+ html[data-inj-page="visualize-wealth"] :is(.wealth-all-grid,.wealth-income-grid) {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="financial-freedom"] :is(.freedom-overview,.freedom-lower-grid) {
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ html[data-inj-market] :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-mi-snapshot) {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
+@media screen and (min-width:900px) and (max-width:1400px) and (min-height:550px) and (orientation:landscape) and (any-pointer:coarse) {
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main#top {
+  min-height:0!important;height:auto!important;max-height:none!important;align-content:start!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main#top > :is(.overview-grid,.metrics-grid,.analytics-grid) {
+  min-height:0!important;height:auto!important;grid-auto-rows:auto!important;gap:var(--inj-fit-gap)!important;align-content:start!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell > main#top > :is(.overview-grid,.analytics-grid) {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-inj-page="index"] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell #top > .analytics-grid > #validatorCard {grid-column:1/-1!important}
+ html[data-inj-page="live-rewards"] .rewards-layout,
+ html[data-inj-page="reward-ladder"] .ladder-steps {grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html[data-inj-market] :is(.inj-wm-grid,.inj-wm-grid.indices,.inj-wm-grid.sectors,.inj-mi-snapshot) {
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
