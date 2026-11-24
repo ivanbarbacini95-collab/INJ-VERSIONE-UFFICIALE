@@ -659,6 +659,87 @@
 }
 
 </style>
+<style id="inj-lite-vivid-colors-20261124">
+
+
+/* Lite-only semantic color layer. Keep Pro, theme surfaces, layout and data untouched. */
+html[data-inj-page="index"] body #injLightHome#injLightHome{
+ --lite-up:#00e676;--lite-down:#ff405d;--lite-ink:#f5f8fc;--lite-muted:#b7c3cf;
+ --lite-accent:#27e0b2;--lite-up-ink:#00e676;--lite-down-ink:#ff526a;
+}
+html[data-inj-page="index"][data-theme="classic-black"] body #injLightHome#injLightHome{--lite-accent:#00e6ad;--lite-ink:#ffffff;--lite-muted:#c0c4ca;}
+html[data-inj-page="index"][data-theme="orbit"] body #injLightHome#injLightHome{--lite-accent:#ad9bff;--lite-muted:#bfc5e2;}
+html[data-inj-page="index"]:is([data-theme="classic-white"],[data-theme="arctic"]) body #injLightHome#injLightHome{
+ --lite-up:#008b45;--lite-down:#db163c;--lite-up-ink:#007a3d;--lite-down-ink:#c31232;
+ --lite-ink:#101820;--lite-muted:#465665;--lite-accent:#00728b;
+}
+html[data-inj-page="index"][data-theme="classic-white"] body #injLightHome#injLightHome{--lite-ink:#111111;--lite-muted:#4a515a;--lite-accent:#006d62;}
+html[data-inj-page="index"] body #injLightHome#injLightHome :is(.inj-light-brand,.inj-light-address,.inj-light-value,.inj-light-chart-head h2,#injLightRewardText){color:var(--lite-ink)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-light-brand span{opacity:1!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome :is(.inj-light-eyebrow,.inj-light-kicker,.inj-light-meta,.inj-light-chart-sub,.inj-light-reward-note,.inj-light-wallet-chevron,.inj-light-footer,.inj-light-price-tick,#injLightTimeAxis,.inj-light-axis span,.inj-light-value small,#injLightRewardText small){
+ color:var(--lite-muted)!important;opacity:1!important;
+}
+html[data-inj-page="index"] body #injLightHome#injLightHome :is(#injLightChange,#injLightPerf6h).positive{color:var(--lite-up-ink)!important;opacity:1!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome :is(#injLightChange,#injLightPerf6h).negative{color:var(--lite-down-ink)!important;opacity:1!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightPriceRow{--inj-light-price-direction:var(--lite-ink)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightPriceRow[data-direction="up"]{--inj-light-price-direction:var(--lite-up-ink)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightPriceRow[data-direction="down"]{--inj-light-price-direction:var(--lite-down-ink)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightPriceRow :is(#injLightPrice,#injLightPriceArrow){color:var(--inj-light-price-direction)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightChartPlot{
+ --inj-light-performance-color:var(--lite-accent)!important;
+ --inj-light-plot:var(--lite-accent)!important;
+ --inj-light-dot:var(--lite-accent)!important;
+}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightChartPlot[data-performance="positive"]{--inj-light-performance-color:var(--lite-up)!important;--inj-light-plot:var(--lite-up)!important;--inj-light-dot:var(--lite-up)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightChartPlot[data-performance="negative"]{--inj-light-performance-color:var(--lite-down)!important;--inj-light-plot:var(--lite-down)!important;--inj-light-dot:var(--lite-down)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightLineSvg .inj-candle-up{fill:var(--lite-up)!important;stroke:var(--lite-up)!important;opacity:1!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightLineSvg .inj-candle-down{fill:var(--lite-down)!important;stroke:var(--lite-down)!important;opacity:1!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightLineSvg .inj-candle-body{stroke:none!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightLineSvg .inj-candle-wick{stroke-width:1.15!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightLineSvg .inj-six-hour-line-path,
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightGraphLine{stroke:var(--inj-light-performance-color)!important;stroke-width:2.4!important;stroke-opacity:1!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightLineSvg .inj-six-hour-line-area,
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightGraphArea{fill:var(--inj-light-performance-color)!important;fill-opacity:.11!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome :is(#injLightLineMarkerSvg .inj-candle-last-dot,#injLightLineMarkerSvg .inj-candle-last-halo,#injLightGraphDot,#injLightGraphHalo){fill:var(--inj-light-performance-color)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightChartPlot #injLightPriceNow{
+ color:var(--lite-ink)!important;
+ border-color:var(--inj-light-performance-color)!important;
+ background:color-mix(in srgb,var(--inj-light-performance-color) 15%,var(--theme-canvas,var(--bg)))!important;
+ opacity:1!important;
+}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLiteCurrentPriceGuide{
+ background:repeating-linear-gradient(to right,var(--inj-light-performance-color) 0 4px,transparent 4px 10px)!important;
+ opacity:.7!important;
+}
+html[data-inj-page="index"] body #injLightHome#injLightHome :is(#injLightRewardFiat,#injLightReward,.inj-light-reward-head > span:last-child){color:var(--lite-up-ink)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-light-reward{border-color:color-mix(in srgb,var(--lite-accent) 48%,var(--line))!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-light-live{color:var(--lite-accent)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-light-status{background:var(--lite-accent)!important;box-shadow:0 0 9px color-mix(in srgb,var(--lite-accent) 55%,transparent)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome #injLightModeToggle svg{stroke:var(--lite-accent)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-lite-chart-segment button{color:var(--lite-muted)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-lite-chart-segment button[aria-pressed="true"]{
+ color:var(--lite-accent)!important;border-color:var(--lite-accent)!important;
+ background:color-mix(in srgb,var(--lite-accent) 13%,var(--surface,var(--theme-canvas)))!important;
+}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-lite-chart-segment button:focus-visible{outline-color:var(--lite-accent)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-light-wallet-option[aria-selected="true"]{border-color:var(--lite-accent)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-light-wallet-option[aria-selected="true"] > span:last-child{color:var(--lite-accent)!important;}
+html[data-inj-page="index"] body #injLightHome#injLightHome .inj-candle-inspect-tooltip{color:var(--lite-ink)!important;border-color:var(--lite-accent)!important;}
+
+/* Carbon Gold keeps the signature carbon/champagne surfaces. Financial
+   colors are intentionally separate from the decorative gold accent. */
+html[data-inj-page="index"][data-theme="carbon-gold"] body #injLightHome#injLightHome{
+ --lite-up:#00ee96;--lite-down:#ff465c;--lite-up-ink:#00ee96;--lite-down-ink:#ff526a;
+ --lite-accent:#f3cd78;--lite-ink:#fff7e9;--lite-muted:#c9c2b6;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body #injLightHome#injLightHome #injLightModeToggle{
+ color:var(--lite-accent)!important;
+ border-color:color-mix(in srgb,var(--lite-accent) 72%,var(--line,#44403a))!important;
+ background:color-mix(in srgb,var(--lite-accent) 13%,var(--surface,#151719))!important;
+}
+html[data-inj-page="index"][data-theme="carbon-gold"] body #injLightHome#injLightHome #injLightModeToggle svg{stroke:var(--lite-accent)!important;}
+html[data-inj-page="index"][data-theme="carbon-gold"] body #injLightHome#injLightHome #injLightModeToggle > span{opacity:1!important;}
+</style>
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
