@@ -12,8 +12,8 @@ const reduceMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const HOME='home', REWARD='reward';
 const tabs=[
  {id:'overview',it:'My Reward',en:'My Reward'},
- {id:'live',it:'Live Reward',en:'Live Reward',url:'./live-rewards.html?embedded=my-reward'},
- {id:'ladder',it:'Reward Ladder',en:'Reward Ladder',url:'./reward-ladder.html?embedded=my-reward'}
+ {id:'live',it:'Live Reward',en:'Live Reward',url:'./live-rewards.html?embedded=my-reward&v=20261124-reward-health1'},
+ {id:'ladder',it:'Reward Ladder',en:'Reward Ladder',url:'./reward-ladder.html?embedded=my-reward&v=20261124-reward-health1'}
 ];
 const fmt=(value,digits)=>Number(value).toLocaleString(isEn()?'en-US':'it-IT',{minimumFractionDigits:digits,maximumFractionDigits:digits});
 const money=(value,currency)=>Number(value).toLocaleString(isEn()?'en-US':'it-IT',{style:'currency',currency,minimumFractionDigits:2,maximumFractionDigits:2});
@@ -72,7 +72,8 @@ function renderSummary(){
  const validPrice=price!==null&&price>0&&rate!==null;
  // Only interpolate a recent verified on-chain reward, never fabricate an
  // initial balance or continue indefinitely when network data stop arriving.
- const delta=verified&&age<35000&&apr>0&&staked>0?
+ const aprCached=Boolean(selected?.aprCached);
+ const delta=verified&&navigator.onLine!==false&&!aprCached&&age<35000&&apr>0&&staked>0?
     staked*(apr/100)*Math.min(age,20000)/(365.25*86400000):0;
  const displayedReward=verified?reward+delta:null;
  const baseline=verified?fmt(staked,4)+' INJ':'—';
@@ -84,13 +85,13 @@ function renderSummary(){
  note('injMyRewardAccrued',earnings);
  note('injMyRewardRewardValue',rewardFiat);
  note('injMyRewardPrice',price>0?money(price,'USD'):'—');
- note('injMyRewardApr',apr>0?fmt(apr,2)+'%':'—');
+ note('injMyRewardApr',apr!==null&&apr>=0?(aprCached?'≈ ':'')+fmt(apr,3)+'%':'—');
  const badge=$('injMyRewardStatus');
  if(badge){
-  badge.dataset.state=!verified?'loading':!currentData?'stale':age<35000&&apr>0?'live':'verified';
+  badge.dataset.state=!verified?'loading':!currentData?'stale':delta>0?'live':'verified';
   badge.textContent=!verified?tr('SINCRONIZZAZIONE','SYNCING'):
    !currentData?tr('DATI DA AGGIORNARE','STALE DATA'):
-   age<35000&&apr>0?tr('STIMA LIVE','LIVE ESTIMATE'):
+   delta>0?tr('STIMA LIVE','LIVE ESTIMATE'):
    tr('DATO VERIFICATO','VERIFIED DATA');
  }
  note('injMyRewardUpdated',!updated||!Number.isFinite(age)?tr('In attesa dei dati on-chain','Waiting for on-chain data'):
@@ -228,7 +229,7 @@ function sync(){
  const open=root.dataset.injHomeTab===REWARD;
  if(open!==wasOpen){
   wasOpen=open;
-  if(open){select('overview');renderSummary();}
+  if(open){select('overview');renderSummary();void window.INJ_REFRESH_SELECTED_WALLET_BALANCES?.();}
   else {
    // Stop heavy native views and network loops outside Reward.
    for(const obj of frames.values()){
@@ -236,7 +237,7 @@ function sync(){
    }
   }
  }
- if(open&&Date.now()-lastEnrichAt>90000&&typeof window.INJ_FINANCIAL_FREEDOM_ENRICH_APR==='function'){
+ if(open&&!document.hidden&&navigator.onLine!==false&&Date.now()-lastEnrichAt>60000&&typeof window.INJ_FINANCIAL_FREEDOM_ENRICH_APR==='function'){
    lastEnrichAt=Date.now();
    // Ask the existing verified validator/APR engine for any missing wallet APR.
    // This is rate limited and never substitutes a global APR for the wallet.
@@ -251,6 +252,7 @@ function init(){
  const observer=new MutationObserver(sync);
  observer.observe(root,{attributes:true,attributeFilter:['data-inj-home-tab']});
  window.addEventListener('pageshow',sync);
+ window.addEventListener('online',()=>{if(root.dataset.injHomeTab===REWARD){lastEnrichAt=0;void window.INJ_REFRESH_SELECTED_WALLET_BALANCES?.();sync();}});
  window.addEventListener('injnode:languagechange',updateLabels);
  document.addEventListener('visibilitychange',sync);
  timer=setInterval(sync,450);
