@@ -1074,10 +1074,10 @@ function overallSystemSnapshot() {
           : { mode: 'offline', state: 'NON DISPONIBILE', meta: 'Wallet non aggiornato' };
   const apr = !online
     ? { mode: 'offline', state: 'OFFLINE', meta: 'Nessuna connessione' }
-    : state.networkAprUpdated && aprAge < 5 * 60_000 && !String(state.networkAprSource).includes('CACHE')
+    : state.networkAprUpdated && aprAge < 5 * 60_000 && !String(state.networkAprSource).includes('CACHE') && !String(state.networkAprSource).includes('non disponibile')
       ? { mode: 'online', state: 'ONLINE', meta: `APR ${formatFreshAge(state.networkAprUpdated)}` }
       : state.networkApr > 0
-        ? { mode: 'warn', state: 'CACHE', meta: 'Valore precedente disponibile' }
+        ? { mode: 'warn', state: String(state.networkAprSource).includes('non disponibile')?'STIMA':'CACHE', meta: String(state.networkAprSource).includes('non disponibile')?'Fonte ufficiale · verifica on-chain assente':'Valore precedente disponibile' }
         : { mode: 'warn', state: 'IN ATTESA', meta: 'Calcolo APR in corso' };
   const services = { internet, market, lcd, apr };
   const modes = Object.values(services).map((item) => item.mode);
@@ -5188,6 +5188,10 @@ async function loadValidator(row) {
 async function ensureNetworkApr(force = false) {
   const checked=await window.INJ_STAKING_APR.load(force);
   if(!checked){
+    if(state.networkAprUpdated && Date.now()-state.networkAprUpdated<window.INJ_STAKING_APR.maxCacheMs){
+      if(!state.networkAprSource.includes('CACHE')) state.networkAprSource+=' · CACHE';
+      return state.networkApr;
+    }
     state.networkApr=0;state.networkAprUpdated=0;state.networkAprSource='';
     throw Error('APR non verificabile');
   }
@@ -5219,24 +5223,25 @@ function startAprContinuity() {
           state.networkAprUpdated = 0;
           state.networkAprSource = '';
         }
-        if (selected === state.address) state.personalApr = NaN;
-        if (state.currentView === 'dashboard') renderPortfolio();
-        return;
+      } else {
+        state.networkApr = network.apr;
+        state.networkAprUpdated = network.at;
+        state.networkAprSource = network.source;
       }
-      state.networkApr = network.apr;
-      state.networkAprUpdated = network.at;
-      state.networkAprSource = network.source;
       if (!selected) return;
       const verified = await window.INJ_STAKING_APR.wallet(selected, false);
       if (state.address !== selected) return;
-      if (verified && !verified.stale && Number.isFinite(verified.apr)) {
+      if (verified && Number.isFinite(verified.apr) && Date.now()-Number(verified.aprUpdated)<window.INJ_STAKING_APR.maxCacheMs && Date.now()-Number(verified.updatedAt)<window.INJ_STAKING_APR.maxCacheMs) {
+        state.networkApr=verified.networkApr;
+        state.networkAprUpdated=verified.aprUpdated;
+        state.networkAprSource=verified.source+(verified.stale?' · CACHE':'');
         state.personalApr = verified.apr;
         state.weightedCommission = verified.weightedCommission;
         const previous = state.walletSummaries[selected];
         if (previous) {
           state.walletSummaries[selected] = {
             ...previous, personalApr: verified.apr, networkApr: verified.networkApr,
-            aprUpdated: verified.aprUpdated, aprSource: verified.source,
+            aprUpdated: verified.aprUpdated, aprSource: state.networkAprSource,
             weightedCommission: verified.weightedCommission, validators: verified.validators
           };
           saveWalletSummaries();
@@ -5399,14 +5404,14 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
     await aprPromise;
     if (requestId !== state.walletRequest) return;
 
-    const valid=Boolean(checked&&!checked.stale&&Number.isFinite(checked.apr));
+    const valid=Boolean(checked&&Number.isFinite(checked.apr)&&Date.now()-Number(checked.aprUpdated)<window.INJ_STAKING_APR.maxCacheMs&&Date.now()-Number(checked.updatedAt)<window.INJ_STAKING_APR.maxCacheMs);
     state.validators=checked?.validators||await Promise.all(validatorRows.map(loadValidator));
     state.personalApr=valid?checked.apr:NaN;
     state.weightedCommission=valid?checked.weightedCommission:NaN;
-    if(checked&&!checked.stale){
+    if(valid){
       state.networkApr=checked.networkApr;
       state.networkAprUpdated=checked.aprUpdated;
-      state.networkAprSource=checked.source;
+      state.networkAprSource=checked.source+(checked.stale?' · CACHE':'');
       // APR wallet snapshots may be cached for minutes. Never override the
       // newer bank/staking balance with an APR-only validator snapshot.
     }
@@ -7218,7 +7223,9 @@ function renderPortfolio() {
   setValue('rewardsUsd', money(state.rewards * state.price), state.rewards * state.price, { flash: false });
   const aprCurrent=Number.isFinite(state.personalApr)&&state.personalApr>=0&&state.networkAprUpdated&&
     Date.now()-state.networkAprUpdated<window.INJ_STAKING_APR.maxCacheMs;
-  setValue('aprValue', aprCurrent?`${state.personalApr.toFixed(3)}%`:'—',
+  const aprCached=aprCurrent&&(String(state.networkAprSource).includes('CACHE')||Date.now()-state.networkAprUpdated>=5*60_000);
+  const aprEstimate=aprCurrent&&String(state.networkAprSource).includes('non disponibile');
+  setValue('aprValue', aprCurrent?`${aprCached||aprEstimate?'≈ ':''}${state.personalApr.toFixed(3)}%`:'—',
     aprCurrent?state.personalApr:NaN);
   $('aprValue').title=aprCurrent
     ?`APR netto stimato · ${state.networkAprSource} · ${formatFreshAge(state.networkAprUpdated)}`
