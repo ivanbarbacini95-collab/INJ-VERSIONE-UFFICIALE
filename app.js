@@ -1074,7 +1074,7 @@ function overallSystemSnapshot() {
           : { mode: 'offline', state: 'NON DISPONIBILE', meta: 'Wallet non aggiornato' };
   const apr = !online
     ? { mode: 'offline', state: 'OFFLINE', meta: 'Nessuna connessione' }
-    : state.networkAprUpdated && aprAge < 10 * 60_000
+    : state.networkAprUpdated && aprAge < 5 * 60_000 && !String(state.networkAprSource).includes('CACHE')
       ? { mode: 'online', state: 'ONLINE', meta: `APR ${formatFreshAge(state.networkAprUpdated)}` }
       : state.networkApr > 0
         ? { mode: 'warn', state: 'CACHE', meta: 'Valore precedente disponibile' }
@@ -2937,7 +2937,8 @@ function bindDashboardHomeLauncher() {
 const LCD_ENDPOINTS = [
   'https://sentry.lcd.injective.network:443',
   'https://lcd.injective.network',
-  'https://1rpc.io/inj-lcd'
+  'https://1rpc.io/inj-lcd',
+  'https://injective-rest.publicnode.com'
 ];
 
 const state = {
@@ -4028,11 +4029,11 @@ async function lcd(path){
   // Slow LCD nodes must not delay each wallet by 9s before trying another.
   const hosts=[...LCD_ENDPOINTS].sort((a,b)=>(a===preferredHomeLcd?-1:0)-(b===preferredHomeLcd?-1:0));
   const healthy=hosts.filter(base=>(homeLcdCooldown.get(base)||0)<Date.now());
-  const candidates=healthy.length?healthy:hosts;
+  const candidates=[...healthy,...hosts.filter(base=>!healthy.includes(base))];
   let lastError;
   for(const [index,base] of candidates.entries()){
     try{
-      const data=await fetchJson(base+path,index===candidates.length-1?4000:2500);
+      const data=await fetchJson(base+path,index===candidates.length-1?6500:4500);
       preferredHomeLcd=base;
       homeLcdCooldown.delete(base);
       state.endpoint=base;
@@ -5156,6 +5157,7 @@ function resumeRealtimeData(forceWalletSummaries = false) {
   void loadMarket();
   if (state.address && !state.loading) void loadWallet(false, state.address);
   void refreshWalletSummaries(forceWalletSummaries);
+  void ensureNetworkApr(false).catch(()=>{}).finally(renderSystemStatus);
   void loadEntryMarketMatrixAnchors(false);
   if (isLiveChartsActive()) void loadLiveChartsHistory(true);
   if ((state.marketTargetPrice > 0 || state.marketRawPrice > 0) && !state.marketMotionFrame) startGlobalMarketMotion(700);
@@ -8780,7 +8782,7 @@ function bindEvents() {
   $('entrySystemStatusButton')?.addEventListener('click', openSystemStatus);
   $('focusDisplaySystemButton')?.addEventListener('click', openSystemStatus);
   $('closeSystemStatusButton')?.addEventListener('click', closeSystemStatus);
-  $('systemStatusRefreshButton')?.addEventListener('click', async () => { renderSystemStatus(); await Promise.allSettled([loadMarket(), state.address ? loadWallet(false, state.address) : Promise.resolve()]); renderSystemStatus(); });
+  $('systemStatusRefreshButton')?.addEventListener('click', async () => { const button=$('systemStatusRefreshButton'); if(button.disabled)return; button.disabled=true; homeLcdCooldown.clear(); try { connectMarketSocket(false); await Promise.allSettled([loadMarket(), state.address && !state.loading ? loadWallet(false, state.address) : reconcileSelectedWalletBalances(true), refreshWalletSummaries(true), ensureNetworkApr(true)]); } finally { button.disabled=false; renderSystemStatus(); } });
   $('systemStatusDialog')?.addEventListener('click', (event) => { if (event.target === $('systemStatusDialog')) closeSystemStatus(); });
   $('manageWalletsMenuButton').addEventListener('click', () => {
     setHeaderMenuOpen(false);
