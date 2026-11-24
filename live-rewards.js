@@ -13,7 +13,8 @@ const CLAIM_REBOUND_GUARD_MS = 45000;
 const LCD_ENDPOINTS = [
   'https://sentry.lcd.injective.network:443',
   'https://lcd.injective.network',
-  'https://1rpc.io/inj-lcd'
+  'https://1rpc.io/inj-lcd',
+  'https://injective-rest.publicnode.com'
 ];
 const MANAGED_ADDRESSES = Object.freeze([
   'inj1cqvjau8tl4ge874crfaj6gkw55pnn6n2vmwdhv',
@@ -122,14 +123,15 @@ function currentReward(row,now=Date.now()){
   const base=Math.max(0,number(row.confirmedReward));
   const at=number(row.lastNetworkAt);
   const age=at>0?Math.max(0,now-at):Infinity;
-  if(age>60000)return base;
+  if(!row.online||!aprUsable(row)||row.aprCached||age>60000)return base;
   return base+Math.max(0,number(row.ratePerMs))*age;
 }
+function aprUsable(row){return row.aprVerified&&Number(row.aprAt)>0&&Date.now()-row.aprAt<window.INJ_STAKING_APR.maxCacheMs;}
 function currentTotal() {
   const now=Date.now();
   return state.rows.reduce((sum,row)=>sum + currentReward(row,now),0);
 }
-function totalDailyRate() { return state.rows.reduce((sum,row)=>sum + Math.max(0,row.ratePerMs) * 86400000,0); }
+function totalDailyRate() { return state.rows.every(row=>aprUsable(row))?state.rows.reduce((sum,row)=>sum + Math.max(0,row.ratePerMs) * 86400000,0):NaN; }
 
 function readLabels() {
   const matched = new Map();
@@ -171,7 +173,7 @@ function saveLabel(address,label) {
    and the between-sync accrual estimate remains based on staked INJ × net APR.
    Every wallet has its own pace; the labels are relative to these five wallets. */
 let expandedVelocityAddress='';
-function velocityActive(row){return Boolean(row.aprVerified && row.staked>0 && row.ratePerMs>0)}
+function velocityActive(row){return Boolean(aprUsable(row) && !row.aprCached && row.online && row.staked>0 && row.ratePerMs>0)}
 function velocityPeriod(row){
   const highest=Math.max(...state.rows.map(r=>velocityActive(r)?r.ratePerMs:0),0);
   if(!velocityActive(row)||highest<=0)return 0;
@@ -302,10 +304,10 @@ function renderRows() {
     existing.delete(row.address);
     node.classList.toggle('offline',!row.online);
     const name=node.querySelector('[data-wallet-name]');if(name)name.textContent=row.label;
-    const rate=node.querySelector('[data-rate]');if(rate)rate.textContent=`${formatRate(row.ratePerMs*86400000,6)} INJ`;
+    const rate=node.querySelector('[data-rate]');if(rate)rate.textContent=aprUsable(row)?`${formatRate(row.ratePerMs*86400000,6)} INJ`:'—';
     const staked=node.querySelector('[data-staked]');if(staked)staked.textContent=row.staked>0?`${formatStaked(row.staked)} INJ`:'—';
-    const apr=node.querySelector('[data-apr]');if(apr)apr.textContent=row.apr>0?`${row.apr.toFixed(3)}%`:'—';
-    const live=node.querySelector('.row-live b');if(live)live.textContent=row.synced?(row.confidence==='hold'?copy('VERIFICA','VERIFY'):'ON-CHAIN'):copy('SYNC','SYNC');
+    const apr=node.querySelector('[data-apr]');if(apr)apr.textContent=aprUsable(row)?`${row.aprCached||row.aprEstimated?'≈ ':''}${row.apr.toFixed(3)}%`:'—';
+    const live=node.querySelector('.row-live b');if(live)live.textContent=row.synced?(!row.online?copy('CACHE','CACHED'):row.confidence==='hold'?copy('VERIFICA','VERIFY'):'ON-CHAIN'):copy('SYNC','SYNC');
      updateVelocityDetails(node,row);
   });
   existing.forEach((node)=>node.remove());
@@ -368,15 +370,15 @@ function renderFrame(frameNow = 0) {
       setRewardLiveText(fiat,'—',NaN);
     }
   });
-  setRewardLiveText($('rewardsTotal'),syncedCount?formatInj(total,8):'—',syncedCount?total:NaN);
-  setRewardLiveText($('rewardsTotalFiat'),syncedCount?fiatFromInj(total):'—',syncedCount?total*state.price:NaN);
-  if($('rewardsTotalDay'))$('rewardsTotalDay').textContent=`${formatRate(totalDailyRate(),6)} INJ`;
+  setRewardLiveText($('rewardsTotal'),syncedCount===state.rows.length?formatInj(total,8):'—',syncedCount===state.rows.length?total:NaN);
+  setRewardLiveText($('rewardsTotalFiat'),syncedCount===state.rows.length?fiatFromInj(total):'—',syncedCount===state.rows.length?total*state.price:NaN);
+  if($('rewardsTotalDay'))$('rewardsTotalDay').textContent=Number.isFinite(totalDailyRate())?`${formatRate(totalDailyRate(),6)} INJ`:'—';
   const totalStaked=state.rows.reduce((sum,row)=>sum+Math.max(0,number(row.staked)),0);
-  if($('rewardsTotalStaked'))$('rewardsTotalStaked').textContent=totalStaked>0?`${formatStaked(totalStaked)} INJ`:'—';
+  if($('rewardsTotalStaked'))$('rewardsTotalStaked').textContent=state.rows.every(row=>row.stakeKnown)?`${formatStaked(totalStaked)} INJ`:'—';
   const weightedAprNumerator=state.rows.reduce((sum,row)=>sum + Math.max(0,number(row.staked))*Math.max(0,number(row.apr)),0);
   const weightedApr=totalStaked>0?weightedAprNumerator/totalStaked:0;
-  const complete=state.rows.every(row=>!(row.staked>0)||row.aprVerified);
-  if($('rewardsApr'))$('rewardsApr').textContent=complete&&weightedApr>0?`${weightedApr.toFixed(3)}%`:'—';
+  const complete=state.rows.every(row=>aprUsable(row));
+  if($('rewardsApr'))$('rewardsApr').textContent=complete&&totalStaked>0?`${state.rows.some(row=>row.aprCached||row.aprEstimated)?'≈ ':''}${weightedApr.toFixed(3)}%`:'—';
 }
 async function fetchJson(url,timeout=7000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const response=await fetch(url,{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error(`HTTP ${response.status}`);return await response.json();}finally{clearTimeout(timer)}}
 let preferredLcd=null;
@@ -384,11 +386,11 @@ const lcdCooldownUntil=new Map();
 async function lcd(path){
   const hosts=[...LCD_ENDPOINTS].sort((a,b)=>(a===preferredLcd?-1:0)-(b===preferredLcd?-1:0));
   const active=hosts.filter(base=>(lcdCooldownUntil.get(base)||0)<Date.now());
-  const candidates=active.length?active:hosts;
+  const candidates=[...active,...hosts.filter(base=>!active.includes(base))];
   let lastError;
   for(const [index,base] of candidates.entries()){
     try{
-      const value=await fetchJson(base+path,index===candidates.length-1?4000:2500);
+      const value=await fetchJson(base+path,index===candidates.length-1?6500:4500);
       preferredLcd=base;
       lcdCooldownUntil.delete(base);
       return value;
@@ -409,7 +411,7 @@ async function rewardFromEndpoint(base,address){
   const path=`/cosmos/distribution/v1beta1/delegators/${address}/rewards`;
   const data=await fetchJson(base+path,6500);
   const value=rewardTotal(data);
-  if(!Number.isFinite(value)||value<0)throw new Error('Invalid reward');
+  if(!Array.isArray(data?.total)||!Number.isFinite(value)||value<0)throw new Error('Invalid reward');
   return value;
 }
 function rewardTolerance(row,a,b){
@@ -433,7 +435,7 @@ async function loadPendingRewardConfirmed(address,row){
   const path=`/cosmos/distribution/v1beta1/delegators/${address}/rewards`;
   const requests=LCD_ENDPOINTS.filter(Boolean).map(base=>({base,promise:fetchJson(base+path,4500).then(data=>{
     const value=rewardTotal(data);
-    if(!Number.isFinite(value)||value<0)throw new Error('Reward on-chain non valido');
+    if(!Array.isArray(data?.total)||!Number.isFinite(value)||value<0)throw new Error('Reward on-chain non valido');
     return value;
   })}));
   // Tre LCD letti in parallelo. Un claim richiede due nodi diversi che
@@ -467,11 +469,10 @@ async function loadDelegation(address,networkApr){
   // One verified wallet/validator APR source across Dashboard, Reward and Workspace.
   const data=await window.INJ_STAKING_APR.wallet(address);
   if(!data||!(data.networkApr>0))throw new Error('Wallet APR not verified');
-  if(!(data.staked>0))return {address,staked:0,apr:0,validatorCount:0,aprVerified:true};
-  if(!Number.isFinite(data.apr)||Math.abs(data.networkApr-networkApr)>1e-8)
-    throw new Error('Inconsistent network APR');
-  return {address,staked:data.staked,apr:data.apr,
-    validatorCount:data.validators.length,aprVerified:!data.stale};
+  if(Date.now()-Number(data.aprUpdated)>=window.INJ_STAKING_APR.maxCacheMs||Date.now()-Number(data.updatedAt)>=window.INJ_STAKING_APR.maxCacheMs)throw Error('Expired APR');
+  if(data.staked>0&&!Number.isFinite(data.apr))throw Error('Unavailable wallet APR');
+  return {address,staked:data.staked,apr:data.staked>0?data.apr:0,
+    validatorCount:data.validators.length,aprVerified:true,aprAt:Math.min(data.aprUpdated,data.updatedAt),aprCached:Boolean(data.stale),aprEstimated:String(data.source).includes('non disponibile')};
 }
 
 /*
@@ -522,7 +523,8 @@ async function syncRewardFlow(force=false){
     const recent=state.rows.filter(row=>row.lastNetworkAt>0&&Date.now()-row.lastNetworkAt<30000).length;
     if($('rewardsWalletStatus'))$('rewardsWalletStatus').textContent=recent+'/5 LIVE';
     if(recent){
-      $('rewardsLiveBadge')?.classList.remove('sync','error');
+      $('rewardsLiveBadge')?.classList.remove('error');
+      $('rewardsLiveBadge')?.classList.toggle('sync',recent!==state.rows.length);
     }else{
       $('rewardsLiveBadge')?.classList.remove('sync');
       $('rewardsLiveBadge')?.classList.add('error');
@@ -548,7 +550,7 @@ async function syncStatus(force=false){
     const apr=await loadApr();
     state.apr=apr>0?apr:0;
     if(!(state.apr>0)){
-      state.rows.forEach(row=>{row.aprVerified=false;row.apr=0;row.ratePerMs=0;});
+      state.rows.forEach(row=>{row.aprCached=true;if(!aprUsable(row)){row.aprVerified=false;row.ratePerMs=0;}});
       state.lastStatusSync=Date.now();
       renderRows();
       return;
@@ -562,13 +564,14 @@ async function syncStatus(force=false){
       )
     );
     settled.forEach((entry)=>{
-      if(!entry.ok)return;
+      if(!entry.ok){const failed=state.rows.find(row=>row.address===entry.address);if(failed)failed.aprCached=true;return;}
       const row=state.rows.find((item)=>item.address===entry.value.address);
       if(!row)return;
       row.staked=Math.max(0,number(entry.value.staked));
       row.apr=Math.max(0,number(entry.value.apr));
       row.validatorCount=Math.max(0,number(entry.value.validatorCount));
       row.aprVerified=Boolean(entry.value.aprVerified);
+      row.aprAt=entry.value.aprAt;row.aprCached=entry.value.aprCached;row.aprEstimated=entry.value.aprEstimated;row.stakeKnown=true;
       const modelRate=row.staked*Math.max(0,row.apr)/100/YEAR_MS;
       // Ogni wallet scorre al SUO APR effettivo, ponderato sui validator
       // a cui e' realmente delegato. Il saldo disponibile resta escluso.
