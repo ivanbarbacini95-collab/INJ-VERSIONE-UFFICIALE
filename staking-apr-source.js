@@ -34,13 +34,15 @@
       return await response.json();
     } finally { clearTimeout(timer); }
   }
+  let preferredLcd = LCDS[0];
   async function lcd(path) {
-    let error;
-    for (const base of LCDS) {
-      try { return await json(base + path, 5500); }
-      catch (e) { error = e; }
+    const primary = preferredLcd;
+    try { return await json(primary + path, 4500); }
+    catch (_) {
+      const result = await Promise.any(LCDS.filter(base => base !== primary).map(async base => ({ base, data: await json(base + path, 6500) })));
+      preferredLcd = result.base;
+      return result.data;
     }
-    throw error || new Error('Injective LCD unavailable');
   }
   function header(data) {
     return data?.block?.header || data?.sdk_block?.header || null;
@@ -89,6 +91,10 @@
       // is sufficient only to accept a consistent official quote (not a 1.34% spike).
       apr = quoted;
       source = 'Injective UI · verifica emissioni';
+    } else if (bounded(quoted) && !bounded(gross)) {
+      // Official network quote can support a net estimate, not independent verification.
+      apr = quoted;
+      source = 'Injective UI · verifica on-chain non disponibile';
     }
     if (!bounded(apr)) throw new Error('APR cannot be independently verified');
     const result = {
@@ -148,7 +154,8 @@
     const rows = await Promise.all(delegated.map(async row => {
       const response = await lcd('/cosmos/staking/v1beta1/validators/' + row.operator);
       const v = response?.validator;
-      const commission = Number(v?.commission?.commission_rates?.rate);
+      const rawCommission = v?.commission?.commission_rates?.rate;
+      const commission = rawCommission == null || rawCommission === '' ? NaN : Number(rawCommission);
       const status = String(v?.status || '');
       if (!v || !Number.isFinite(commission) || commission < 0 ||
           commission > 1 || !status) throw new Error('Validator metadata missing');
@@ -176,7 +183,12 @@
     const id = String(address || '').trim().toLowerCase();
     if (!/^inj1[0-9a-z]{38,60}$/.test(id)) return null;
     const base = await load(force);
-    if (!base) return null;
+    if (!base) {
+      const previous = walletRows[id];
+      const age = Date.now() - Number(previous?.updatedAt);
+      return previous && age >= 0 && age < MAX_CACHE_MS && Number.isFinite(previous.apr)
+        ? { ...previous, stale: true } : null;
+    }
     const cached = storedWallet(id, base);
     if (!force && cached && Date.now() - cached.updatedAt < WALLET_REFRESH_MS)
       return { ...cached, stale: Boolean(base.stale) };
