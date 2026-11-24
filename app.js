@@ -162,6 +162,7 @@ window.INJ_FINANCIAL_FREEDOM_SOURCE = function () {
           return Number.isFinite(active)&&active>=0&&state.networkAprUpdated&&
             Date.now()-state.networkAprUpdated<window.INJ_STAKING_APR.maxCacheMs?active:null;
         })(),
+        aprCached: !row?.aprUpdated || Date.now()-Number(row.aprUpdated)>=5*60_000 || /CACHE|non disponibile/.test(String(row.aprSource||state.networkAprSource||'')),
         updated:metric(row,'updated') || 0
       };
     })
