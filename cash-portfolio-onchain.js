@@ -16,7 +16,7 @@
     'So11111111111111111111111111111111111111112':{symbol:'wSOL',name:'Wrapped SOL',kind:'token'},
     '9BEcn9aPEmhSPbPQeFGjidRiEKki46fVQDyPpSQXPA2D':{symbol:'jlUSDC',name:'Jupiter Lend USDC',kind:'receipt'}
   });
-  const INJ_LCD = ['https://sentry.lcd.injective.network:443','https://lcd.injective.network','https://1rpc.io/inj-lcd'];
+  const INJ_LCD = ['https://sentry.lcd.injective.network:443','https://lcd.injective.network','https://1rpc.io/inj-lcd','https://injective-rest.publicnode.com'];
   const SOL_RPC = ['https://public.rpc.solanavibestation.com','https://api.mainnet-beta.solana.com','https://rpc.solanatracker.io/public','https://solana-rpc.publicnode.com'];
   const JUP_LEND = 'https://api.jup.ag/lend/v1/earn';
   const JUP_TOKENS = 'https://api.jup.ag/tokens/v2/search?query=';
