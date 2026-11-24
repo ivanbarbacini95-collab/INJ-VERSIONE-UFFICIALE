@@ -17,7 +17,7 @@
     '9BEcn9aPEmhSPbPQeFGjidRiEKki46fVQDyPpSQXPA2D':{symbol:'jlUSDC',name:'Jupiter Lend USDC',kind:'receipt'}
   });
   const INJ_LCD = ['https://sentry.lcd.injective.network:443','https://lcd.injective.network','https://1rpc.io/inj-lcd','https://injective-rest.publicnode.com'];
-  const SOL_RPC = ['https://public.rpc.solanavibestation.com','https://api.mainnet-beta.solana.com','https://rpc.solanatracker.io/public','https://solana-rpc.publicnode.com'];
+  const SOL_RPC = ['https://solana-rpc.publicnode.com','https://api.mainnet-beta.solana.com','https://public.rpc.solanavibestation.com','https://rpc.solanatracker.io/public'];
   const JUP_LEND = 'https://api.jup.ag/lend/v1/earn';
   const JUP_TOKENS = 'https://api.jup.ag/tokens/v2/search?query=';
   const USDC_SOL_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
@@ -58,6 +58,28 @@
     if (result.error || !result.result) throw new Error(result.error && result.error.message || 'Solana RPC unavailable');
     return result.result;
   }
+  // Independently fail over each RPC operation; a Token-2022 or native SOL
+  // failure must never hide a successfully verified legacy SPL stablecoin.
+  async function solRead(method,params,validate,hosts=SOL_RPC) {
+    let last;
+    for(let i=0;i<hosts.length;i+=2){
+      try{
+        return await Promise.any(hosts.slice(i,i+2).map(async host=>{
+          const result=await rpc(host,method,params,1);
+          if(!validate(result))throw new Error('Invalid Solana RPC result');
+          return result.value;
+        }));
+      }catch(e){last=e;}
+    }
+    throw last||new Error('Solana RPC unavailable');
+  }
+  const validTokenRows=(result,mint)=>Array.isArray(result?.value)&&result.value.every(row=>{
+    const info=row?.account?.data?.parsed?.info,bal=info?.tokenAmount;
+    return !!info?.mint&&(!mint||info.mint===mint)&&(!info.owner||info.owner===SOL_ACCOUNT)&&
+      /^\d+$/.test(String(bal?.amount??''))&&Number.isInteger(bal?.decimals)&&bal.decimals>=0&&bal.decimals<=30&&
+      (![USDC_SOL_MINT,USDT_SOL_MINT].includes(info.mint)||bal.decimals===6);
+  });
+  const tokenRead=filter=>solRead('getTokenAccountsByOwner',[SOL_ACCOUNT,filter,{encoding:'jsonParsed',commitment:'confirmed'}],r=>validTokenRows(r,filter.mint));
   function qty(raw,decimals=0) {
     if(!/^\d+$/.test(String(raw ?? ''))) throw new Error('Non-numeric balance');
     const n=BigInt(raw),d=Math.max(0,Math.min(30,Number(decimals)||0)),p=10n**BigInt(d);
@@ -140,35 +162,39 @@
     return {assets:results,usdc:results.find(a=>a.kind==='stable'&&a.symbol==='USDC')?.amount.value||0};
   }
   async function solanaBank() {
-    let responses, error;
-    for (const host of SOL_RPC) {
-      try {
-        responses=await Promise.all([
-          rpc(host,'getBalance',[SOL_ACCOUNT,{commitment:'confirmed'}],1),
-          rpc(host,'getTokenAccountsByOwner',[SOL_ACCOUNT,{programId:SOL_PROGRAMS[0]},{encoding:'jsonParsed',commitment:'confirmed'}],2),
-          rpc(host,'getTokenAccountsByOwner',[SOL_ACCOUNT,{programId:SOL_PROGRAMS[1]},{encoding:'jsonParsed',commitment:'confirmed'}],3)
-        ]);
-        if(!Array.isArray(responses[1].value)||!Array.isArray(responses[2].value))throw new Error('Invalid SPL accounts');
-        break;
-      } catch(e){responses=null;error=e;}
-    }
-    if(!responses)throw error||new Error('Solana unavailable');
-    const assets=[];
-    const lamports=String(responses[0].value??'0');
-    if(qty(lamports,9).positive)assets.push(token('Solana','SOL','native',lamports,9,'SOL disponibile',LOGOS.sol,'SOL'));
-    const byMint=new Map();
-    let unsupported=0;
-    for(const arr of [responses[1].value,responses[2].value]) {
-      for(const row of arr) {
-        const info=row?.account?.data?.parsed?.info;
-        const mint=info?.mint;
-        const bal=info?.tokenAmount;
-        if(!mint||!bal||!/^\d+$/.test(String(bal.amount))){unsupported++;continue;}
-        const dec=Number(bal.decimals)||0, existing=byMint.get(mint);
-        if(existing&&existing.dec!==dec)throw new Error('Inconsistent token decimals');
-        byMint.set(mint,{dec,raw:(existing?.raw||0n)+BigInt(bal.amount)});
+    const [native,legacy,extensions]=await Promise.allSettled([
+      solRead('getBalance',[SOL_ACCOUNT,{commitment:'confirmed'}],r=>Number.isSafeInteger(r?.value)&&r.value>=0),
+      tokenRead({programId:SOL_PROGRAMS[0]}),
+      tokenRead({programId:SOL_PROGRAMS[1]})
+    ]);
+    const assets=[],byMint=new Map(),known=new Set();
+    const receipt='9BEcn9aPEmhSPbPQeFGjidRiEKki46fVQDyPpSQXPA2D';
+    const reserveMints=[USDC_SOL_MINT,USDT_SOL_MINT,receipt];
+    let inventoryPartial=native.status!=='fulfilled'||legacy.status!=='fulfilled'||extensions.status!=='fulfilled';
+    if(native.status==='fulfilled'&&qty(String(native.value),9).positive)
+      assets.push(token('Solana','SOL','native',String(native.value),9,'SOL disponibile',LOGOS.sol,'SOL'));
+    function collect(rows){
+      for(const row of rows){
+        const info=row.account.data.parsed.info,bal=info.tokenAmount,mint=info.mint;
+        const existing=byMint.get(mint);
+        if(existing&&existing.dec!==bal.decimals)throw new Error('Inconsistent token decimals');
+        byMint.set(mint,{dec:bal.decimals,raw:(existing?.raw||0n)+BigInt(bal.amount)});
       }
     }
+    if(legacy.status==='fulfilled'){
+      collect(legacy.value);
+      reserveMints.forEach(m=>known.add(m));
+    }else{
+      // Direct mint filters bypass RPC restrictions on program-wide indexes.
+      const targeted=await Promise.allSettled(reserveMints.map(mint=>tokenRead({mint})));
+      targeted.forEach((r,i)=>{if(r.status==='fulfilled'){collect(r.value);known.add(reserveMints[i]);}});
+    }
+    if(extensions.status==='fulfilled'){
+      // Canonical reserve mints are legacy SPL, not Token-2022.
+      collect(extensions.value.filter(row=>!reserveMints.includes(row.account.data.parsed.info.mint)));
+    }
+    if(!known.size&&native.status!=='fulfilled'&&extensions.status!=='fulfilled')throw new Error('Solana RPC unavailable');
+    const reserveComplete=reserveMints.every(m=>known.has(m));
     await enrichSolanaMetadata([...byMint.keys()]);
     let missing=0;
     for(const [mint,amount]of byMint){
@@ -186,13 +212,14 @@
     }
     return {
       assets,
-      usdc:assets.find(a=>a.kind==='stable'&&a.symbol==='USDC')?.amount.value||0,
-      usdt:assets.find(a=>a.kind==='stable'&&a.symbol==='USDT')?.amount.value||0,
-      unsupported
+      usdc:known.has(USDC_SOL_MINT)?(assets.find(a=>a.mint===USDC_SOL_MINT)?.amount.value??0):null,
+      usdt:known.has(USDT_SOL_MINT)?(assets.find(a=>a.mint===USDT_SOL_MINT)?.amount.value??0):null,
+      reserveComplete,inventoryPartial,unsupported:0
     };
   }
   function asRatePercent(raw) {
     // Jupiter REST data has historically used fractions (0.06=6%) and 1e4 basis points.
+    if(raw==null||raw==='')return null;
     const n=Number(raw);
     if(!Number.isFinite(n)||n<0)return null;
     const v=n>100?n/100:n<=1?n*100:n;
@@ -223,12 +250,14 @@
       const rowToken=row?.token||{};
       const tokenId=String(rowToken.address||rowToken.id||'');
       const market=markets?.find(x=>x.address===tokenId||marketMint(x)===tokenId);
-      const asset=String(rowToken.assetAddress||rowToken.asset?.address||marketMint(market)||tokenId);
-      const decimals=Number(rowToken.decimals??market?.asset?.decimals??market?.decimals);
-      if(!Number.isInteger(decimals)||decimals<0||decimals>30)continue;
-      let amount;
-      try { amount=qty(String(row.underlyingAssets),decimals).value; } catch (_) {continue;}
-      if(!Number.isFinite(amount)||amount<=0)continue;
+      const knownAsset=MINTS[tokenId]?.kind==='receipt'&&MINTS[tokenId]?.symbol==='jlUSDC'?USDC_SOL_MINT:'';
+      const asset=String(rowToken.assetAddress||rowToken.asset?.address||marketMint(market)||knownAsset||tokenId);
+      const decimals=Number(asset===USDC_SOL_MINT||asset===USDT_SOL_MINT?6:(rowToken.asset?.decimals??market?.asset?.decimals??rowToken.decimals??market?.decimals));
+      if(!Number.isInteger(decimals)||decimals<0||decimals>30)throw new Error('Unknown Jupiter decimals');
+      if(!market&&!knownAsset&&!rowToken.assetAddress&&!rowToken.asset?.address&&asset!==USDC_SOL_MINT&&asset!==USDT_SOL_MINT)throw new Error('Unknown Jupiter asset');
+      const amount=qty(String(row.underlyingAssets),decimals).value;
+      if(!Number.isFinite(amount)||amount<0)throw new Error('Invalid Jupiter balance');
+      if(amount===0)continue;
       const symbol=asset===USDC_SOL_MINT?'USDC':asset===USDT_SOL_MINT?'USDT':
         String(market?.asset?.symbol||rowToken.symbol||'TOKEN').replace(/^jl/i,'').slice(0,15);
       const stable=asset===USDC_SOL_MINT||asset===USDT_SOL_MINT;
@@ -258,6 +287,7 @@
             const e=entries.find(x=>x&&(!x.ownerAddress||x.ownerAddress===SOL_ACCOUNT)&&
               (x.address===p.shareMint||x.address===p.assetMint));
             if(!e)continue;
+            if(e.earnings==null||e.earnings==='')continue;
             const raw=Number(e.earnings);
             if(!Number.isFinite(raw)||raw<0)continue;
             const decimals=p.stable?6:p.decimals;
@@ -273,7 +303,7 @@
     const [delegated,rewards,stakingRate]=await Promise.allSettled([
       lcd('/cosmos/staking/v1beta1/delegations/'+encodeURIComponent(INJ_ACCOUNT)+'?pagination.limit=200'),
       lcd('/cosmos/distribution/v1beta1/delegators/'+encodeURIComponent(INJ_ACCOUNT)+'/rewards'),
-      window.INJ_STAKING_APR.wallet(INJ_ACCOUNT)
+      Promise.resolve().then(()=>window.INJ_STAKING_APR.wallet(INJ_ACCOUNT))
     ]);
     if(delegated.status==='rejected')throw new Error('Staking Injective non verificabile');
     const delegations=delegated.value?.delegation_responses;
@@ -301,16 +331,19 @@
   }
   async function scan() {
     const done=await Promise.allSettled([injectiveBank(),solanaBank(),injectiveYield(),jupiterEarn()]);
+    const sol=done[1].status==='fulfilled'?done[1].value:null;
+    let jupiter=done[3].status==='fulfilled'?done[3].value:null;
+    if(jupiter&&sol?.assets.some(a=>a.kind==='receipt'&&a.amount.positive&&!jupiter.positions.some(p=>p.shareMint===a.mint||p.assetMint===USDC_SOL_MINT)))jupiter=null;
     return {
       inj:done[0].status==='fulfilled'?done[0].value:null,
-      sol:done[1].status==='fulfilled'?done[1].value:null,
+      sol,
       yield:done[2].status==='fulfilled'?done[2].value:null,
-      jupiter:done[3].status==='fulfilled'?done[3].value:null,
+      jupiter,
       errors:{
         inj:done[0].status==='rejected',
         sol:done[1].status==='rejected',
         yield:done[2].status==='rejected',
-        jupiter:done[3].status==='rejected'
+        jupiter:!jupiter
       }
     };
   }
