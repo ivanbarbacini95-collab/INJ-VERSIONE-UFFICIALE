@@ -512,7 +512,8 @@
 /* Official Home Pro: desktop portrait uses one viewport grid; only the chart
    absorbs spare height. Keep existing wallet data, themes, dock and shortcuts. */
 @media screen and (min-width:701px) and (min-height:800px) and (orientation:portrait),
-       screen and (min-width:600px) and (min-height:800px) and (orientation:portrait) and (pointer:fine) {
+       screen and (min-width:600px) and (min-height:800px) and (orientation:portrait) and (pointer:fine),
+       screen and (min-width:900px) and (max-width:1400px) and (min-height:600px) and (orientation:landscape) and (any-pointer:coarse) {
  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open{
  --inj-home-portrait-gutter:clamp(16px,2.2vw,40px);
  --inj-home-portrait-top:clamp(12px,1.25dvh,26px);
@@ -614,6 +615,49 @@
 @media screen and (min-width:600px) and (max-width:820px) and (min-height:800px) and (orientation:portrait) and (pointer:fine) {
  html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > #entryDesktopMetrics.entry-desktop-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 }
+
+/* iPad / touch tablets: fixed Pro Home, adaptive chart and safe-area spacing.
+   All other tabs, overlays and first-access retain their native scrolling. */
+@media screen and (min-width:701px) and (max-width:1400px) and (min-height:600px) and (any-pointer:coarse) {
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible:not(:has(.first-access)) {
+  padding-inline:max(16px,2vw,env(safe-area-inset-left,0px)) max(16px,2vw,env(safe-area-inset-right,0px))!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > .entry-wallet-section, html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) #entryWallets {min-width:0!important;max-width:100%!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) #entryWallets {overflow-x:auto!important;overflow-y:hidden!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > #entryDesktopMetrics.entry-desktop-metrics {display:grid!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {--inj-pro-link-height:clamp(65px,8dvh,88px)}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) .entry-action .inj-home-tile-title {font-size:clamp(13px,1.5vw,18px)!important}
+}
+@media screen and (min-width:701px) and (max-width:899px) and (min-height:800px) and (orientation:portrait) and (any-pointer:coarse) {
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > #entryDesktopMetrics.entry-desktop-metrics {grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) #entryDesktopMetrics > .entry-desktop-metric {padding:7px 10px!important}
+}
+@media screen and (min-width:900px) and (max-width:1400px) and (min-height:600px) and (orientation:landscape) and (any-pointer:coarse) {
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open {
+  --inj-home-portrait-top:clamp(8px,1.1dvh,16px);
+  --inj-home-portrait-spacing:clamp(6px,1dvh,12px);
+  --inj-home-portrait-bottom:calc(96px + env(safe-area-inset-bottom,0px));
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) {
+  grid-template-columns:minmax(0,0.86fr) minmax(0,1.14fr)!important;
+  grid-template-areas:"title title" "wallet wallet" "overview price" "metrics price" "actions actions" "note note"!important;
+  grid-template-rows:auto auto auto minmax(0,1fr) auto 0!important;
+  column-gap:clamp(10px,1.3vw,20px)!important;
+  row-gap:clamp(5px,.8dvh,10px)!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > #entryOverview.entry-overview {padding-block:clamp(8px,1dvh,14px)!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) #entryOverview .entry-market-mini > strong {font-size:clamp(27px,3vw,44px)!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) #entryOverview .entry-overview-worth > strong {font-size:clamp(22px,2.5vw,36px)!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > #entryDesktopMetrics.entry-desktop-metrics {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-self:start!important;margin:0!important;gap:7px!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) #entryDesktopMetrics > .entry-desktop-metric {padding:clamp(6px,.9dvh,12px) 10px!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) #entryDesktopMetrics > .entry-desktop-metric > strong {font-size:clamp(16px,1.8vw,24px)!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > #entryInsights.entry-price-card {min-height:0!important;height:100%!important}
+ html[data-inj-page="index"][data-inj-home-tab="home"]:not([data-inj-view-mode="light"]) body.entry-gate-open #entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate#entryGate.entry-gate.visible > .entry-gate-shell:not(.first-access) > .entry-actions.entry-flat-v44 {--inj-pro-link-height:clamp(64px,8dvh,82px)}
+}
+
 </style>
 </head>
 <body class="boot-loading">
