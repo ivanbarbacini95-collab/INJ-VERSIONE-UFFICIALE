@@ -4,7 +4,8 @@ const INJ_DECIMALS = 1e18;
 const LCD_ENDPOINTS = [
   'https://sentry.lcd.injective.network:443',
   'https://lcd.injective.network',
-  'https://1rpc.io/inj-lcd'
+  'https://1rpc.io/inj-lcd',
+  'https://injective-rest.publicnode.com'
 ];
 const REWARD_CHAIN_REFRESH_MS = 8000;
 const REWARD_DROP_EPSILON = 1e-10;
@@ -380,10 +381,16 @@ function milestone(total) {
 function hydrateSnapshot() {
   try {
     const cached = JSON.parse(localStorage.getItem(SNAPSHOT_KEY) || 'null');
-    if (cached && number(cached.total) > 0) { state.data = cached; state.updatedAt = number(cached.updatedAt); }
+    if (cached && Number.isFinite(cached.total) && cached.total >= 0) {
+      state.data = {...cached,liveWallets:0}; state.updatedAt = number(cached.updatedAt);
+      state.aprUpdatedAt=number(cached.aprUpdatedAt);
+      state.aprEstimated=Boolean(cached.aprEstimated);
+      state.aprCached=true;
+      for(const address of TREASURY_ADDRESSES){const row=cached.walletRows?.[address];if(row&&row.address===address&&['available','staked','rewards','total'].every(k=>Number.isFinite(row[k])&&row[k]>=0))state.walletRows[address]=row;}
+    }
   } catch (_) {}
 }
-function persistSnapshot(data) { try { localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(data)); } catch (_) {} }
+function persistSnapshot(data) { try { localStorage.setItem(SNAPSHOT_KEY, JSON.stringify({...data,aprUpdatedAt:state.aprUpdatedAt,aprEstimated:state.aprEstimated,walletRows:state.walletRows})); } catch (_) {} }
 function normalizeTimeline(rows) {
   const cleaned = (Array.isArray(rows) ? rows : [])
     .map((row) => ({
@@ -2045,7 +2052,7 @@ function render() {
   const total=number(data.total),available=number(data.available),staked=number(data.staked),rewards=number(data.rewards),apr=state.aprUpdatedAt&&data.apr!=null&&Date.now()-state.aprUpdatedAt<window.INJ_STAKING_APR.maxCacheMs&&Number.isFinite(Number(data.apr))?Number(data.apr):NaN,worth=total*state.price;
   const allocation=treasuryAllocationPercentages(staked,available,rewards,2);
   const stakedPct=allocation.display.staked,availablePct=allocation.display.available,rewardsPct=allocation.display.rewards;
-  const daily=staked>0&&apr>0?staked*(apr/100)/365:0;
+  const daily=Number.isFinite(apr)?staked*(apr/100)/365:NaN;
   const rv={hour:daily/24,day:daily,month:daily*30.4375,year:daily*365};
   const m=milestone(total);
   const fixed=Math.max(0,total).toFixed(2),[wholeRaw,decimals='00']=fixed.split('.');
@@ -2068,9 +2075,9 @@ function render() {
   setLiveValue('treasuryStakeRatio',`${stakedPct.toFixed(2)}%`,stakedPct,true);setLiveValue('treasuryStakedPct',`${stakedPct.toFixed(2)}%`,stakedPct,true);setLiveValue('treasuryAvailablePct',`${availablePct.toFixed(2)}%`,availablePct,true);setLiveValue('treasuryRewardsPct',`${rewardsPct.toFixed(2)}%`,rewardsPct,true);
   renderAllocationPie(staked,available,rewards,total,allocation);
   renderWalletOwnership();
-  setLiveValue('treasuryApr',Number.isFinite(apr)?`APR NETTO ${apr.toFixed(3)}%`:'APR NETTO —',apr,true);
-  setLiveValue('treasuryRewardHour',treasuryInj(rv.hour,5),rv.hour,true);setLiveValue('treasuryRewardDay',treasuryInj(rv.day,4),rv.day,true);setLiveValue('treasuryRewardMonth',treasuryInj(rv.month,3),rv.month,true);setLiveValue('treasuryRewardYear',treasuryInj(rv.year,2),rv.year,true);
-  setLiveValue('treasuryRewardHourWorth',state.price>0?money(rv.hour*state.price,2):'—',state.price>0?rv.hour*state.price:NaN,true);setLiveValue('treasuryRewardDayWorth',state.price>0?money(rv.day*state.price,2):'—',state.price>0?rv.day*state.price:NaN,true);setLiveValue('treasuryRewardMonthWorth',state.price>0?money(rv.month*state.price,2):'—',state.price>0?rv.month*state.price:NaN,true);setLiveValue('treasuryRewardYearWorth',state.price>0?money(rv.year*state.price,2):'—',state.price>0?rv.year*state.price:NaN,true);
+  setLiveValue('treasuryApr',Number.isFinite(apr)?`APR NETTO ${state.aprCached||state.aprEstimated||Date.now()-state.aprUpdatedAt>=5*60000?'≈ ':''}${apr.toFixed(3)}%`:'APR NETTO —',apr,true);
+  setLiveValue('treasuryRewardHour',Number.isFinite(rv.hour)?treasuryInj(rv.hour,5):'—',rv.hour,true);setLiveValue('treasuryRewardDay',Number.isFinite(rv.day)?treasuryInj(rv.day,4):'—',rv.day,true);setLiveValue('treasuryRewardMonth',Number.isFinite(rv.month)?treasuryInj(rv.month,3):'—',rv.month,true);setLiveValue('treasuryRewardYear',Number.isFinite(rv.year)?treasuryInj(rv.year,2):'—',rv.year,true);
+  setLiveValue('treasuryRewardHourWorth',state.price>0&&Number.isFinite(rv.hour)?money(rv.hour*state.price,2):'—',state.price>0?rv.hour*state.price:NaN,true);setLiveValue('treasuryRewardDayWorth',state.price>0&&Number.isFinite(rv.day)?money(rv.day*state.price,2):'—',state.price>0?rv.day*state.price:NaN,true);setLiveValue('treasuryRewardMonthWorth',state.price>0&&Number.isFinite(rv.month)?money(rv.month*state.price,2):'—',state.price>0?rv.month*state.price:NaN,true);setLiveValue('treasuryRewardYearWorth',state.price>0&&Number.isFinite(rv.year)?money(rv.year*state.price,2):'—',state.price>0?rv.year*state.price:NaN,true);
   setLiveValue('treasuryMilestoneTitle',`${m.next.toLocaleString('it-IT')} INJ`,m.next,true);setLiveValue('treasuryMilestonePct',`${m.progress.toFixed(1)}%`,m.progress,true);$('treasuryMilestoneBar').style.width=`${m.progress}%`;setLiveValue('treasuryMilestoneCurrent',`${total.toLocaleString('it-IT',{maximumFractionDigits:2})} INJ`,total,true);setLiveValue('treasuryMilestoneRemaining',`${m.remaining.toLocaleString('it-IT',{maximumFractionDigits:2})} INJ mancanti`,m.remaining,true);
   $('treasuryWalletCount').textContent=data.walletCount>0?(number(data.liveWallets)<number(data.walletCount)?`${data.liveWallets}/${data.walletCount} wallet live`:`${data.walletCount} wallet`):'—';
   $('treasuryUpdated').textContent=data.updatedAt?`Updated ${new Date(data.updatedAt).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`:'Sync';
@@ -2102,11 +2109,11 @@ async function lcd(path){
   const now=Date.now();
   const hosts=[...LCD_ENDPOINTS].sort((a,b)=>(a===preferredLcd?-1:0)-(b===preferredLcd?-1:0));
   const healthy=hosts.filter(base=>(lcdCooldownUntil.get(base)||0)<now);
-  const candidates=healthy.length?healthy:hosts;
+  const candidates=[...healthy,...hosts.filter(base=>!healthy.includes(base))];
   let lastError;
   for(const [index,base] of candidates.entries()){
     try{
-      const result=await fetchJson(base+path,index===candidates.length-1?4000:2500);
+      const result=await fetchJson(base+path,index===candidates.length-1?6500:4500);
       preferredLcd=base;
       lcdCooldownUntil.delete(base);
       return result;
@@ -2123,7 +2130,7 @@ function rewardTotal(data) { return (data?.total||[]).filter((coin)=>coin?.denom
 async function rewardFromEndpoint(base,address){
   const data=await fetchJson(`${base}/cosmos/distribution/v1beta1/delegators/${address}/rewards`,6500);
   const reward=rewardTotal(data);
-  if(!Number.isFinite(reward)||reward<0)throw new Error('Reward on-chain non valido');
+  if(!Array.isArray(data?.total)||!Number.isFinite(reward)||reward<0)throw new Error('Reward on-chain non valido');
   return reward;
 }
 function rewardCompareTolerance(a,b,address=''){
@@ -2203,12 +2210,11 @@ function reconcilePendingClaim(previous,observed,at=Date.now()){
 }
 function commitWalletRow(address,row,renderNow=true){
   state.walletRows[address]=row;
-  const rows=Object.values(state.walletRows);
-  if(!rows.length)return;
+  const rows=TREASURY_ADDRESSES.map(address=>state.walletRows[address]).filter(Boolean);
+  if(rows.length!==TREASURY_ADDRESSES.length)return;
   const totals=treasuryTotalsFromRows(rows);
   const updatedAt=Date.now();
-  state.data={...state.data,...totals,walletCount:TREASURY_ADDRESSES.length,liveWallets:rows.length,updatedAt};
-  state.updatedAt=updatedAt;
+  state.data={...state.data,...totals,walletCount:TREASURY_ADDRESSES.length,updatedAt:state.data?.updatedAt||updatedAt};
   persistSnapshot(state.data);
   if(renderNow){
     if(state.rewardRenderFrame)cancelAnimationFrame(state.rewardRenderFrame);
@@ -2217,8 +2223,9 @@ function commitWalletRow(address,row,renderNow=true){
 }
 async function loadWallet(address) {
   const previous=state.walletRows[address];
-  const previousReward=number(previous?.rewards);
-  const [bank,delegations,rewardRead]=await Promise.all([lcd(`/cosmos/bank/v1beta1/balances/${address}`),lcd(`/cosmos/staking/v1beta1/delegations/${address}`),loadConfirmedReward(address,previousReward)]);
+  const previousReward=previous?number(previous.rewards):NaN;
+  const [bank,delegations,rewardRead]=await Promise.all([lcd(`/cosmos/bank/v1beta1/balances/${address}?pagination.limit=1000`),lcd(`/cosmos/staking/v1beta1/delegations/${address}?pagination.limit=1000`),loadConfirmedReward(address,previousReward)]);
+  if(!Array.isArray(bank?.balances)||!Array.isArray(delegations?.delegation_responses)||bank?.pagination?.next_key||delegations?.pagination?.next_key)throw Error('Incomplete wallet response');
   const available=findInj(bank?.balances||[]),staked=delegationTotal(delegations),reward=number(rewardRead.reward),updatedAt=Date.now();
   let row={address,available,staked,rewards:reward,total:available+staked+reward,updatedAt,
     lastClaimAt:number(previous?.lastClaimAt),preClaimReward:number(previous?.preClaimReward)};
@@ -2266,7 +2273,7 @@ async function refreshTreasuryChainRewards(force=false){
           // Poi riconciliamo col saldo bank reale. Se il bank e' ancora in propagazione
           // conserviamo l'importo atteso; una vera uscita dal wallet resta rilevabile.
           try{
-            const [bank,delegations]=await Promise.all([lcd(`/cosmos/bank/v1beta1/balances/${address}`),lcd(`/cosmos/staking/v1beta1/delegations/${address}`)]);
+            const [bank,delegations]=await Promise.all([lcd(`/cosmos/bank/v1beta1/balances/${address}?pagination.limit=1000`),lcd(`/cosmos/staking/v1beta1/delegations/${address}?pagination.limit=1000`)]);
             const observedAvailable=findInj(bank?.balances||[]),observedStaked=delegationTotal(delegations);
             const observed={...next,available:observedAvailable,staked:observedStaked,total:observedAvailable+observedStaked+reward,updatedAt:Date.now()};
             next=reconcilePendingClaim(next,observed,observed.updatedAt);
@@ -2294,13 +2301,15 @@ async function loadApr(force=false){
   aprRequest=(async()=>{
     const rates=await Promise.all(TREASURY_ADDRESSES.map(address=>
       window.INJ_STAKING_APR.wallet(address,force)));
-    if(rates.some(row=>!row||row.stale||
+    if(rates.some(row=>!row||Date.now()-Number(row.aprUpdated)>=window.INJ_STAKING_APR.maxCacheMs||Date.now()-Number(row.updatedAt)>=window.INJ_STAKING_APR.maxCacheMs||
         (row.staked>0&&!Number.isFinite(row.apr))))return null;
     const staked=rates.reduce((sum,row)=>sum+row.staked,0);
     if(!(staked>0))return null;
     const weighted=rates.reduce((sum,row)=>sum+(row.apr||0)*row.staked,0)/staked;
     if(!Number.isFinite(weighted)||weighted<0)return null;
-    state.aprUpdatedAt=Date.now();
+    state.aprUpdatedAt=Math.min(...rates.map(row=>Number(row.aprUpdated)));
+    state.aprCached=rates.some(row=>row.stale);
+    state.aprEstimated=rates.some(row=>String(row.source).includes('non disponibile'));
     return weighted;
   })();
   try{return await aprRequest;}finally{aprRequest=null;}
@@ -2316,12 +2325,13 @@ async function loadTreasury(force=false) {
       Date.now()-state.aprUpdatedAt<window.INJ_STAKING_APR.maxCacheMs?
       Number(state.data.apr):null;
     // APR is optional for balances: a slow APR host cannot blank the Treasury.
-    void loadApr().then(next=>{
+    void loadApr(force).then(next=>{
       if(Number.isFinite(next)&&next>=0){
         latestApr=next;
-        if(state.data){state.data.apr=latestApr;render();}
+        if(state.data){state.data.apr=latestApr;persistSnapshot(state.data);render();}
       }else if(state.data){
-        state.data.apr=null;
+        state.aprCached=true;
+        if(Date.now()-state.aprUpdatedAt>=window.INJ_STAKING_APR.maxCacheMs)state.data.apr=null;
         render();
       }
     }).catch(()=>{});
@@ -2358,6 +2368,8 @@ async function loadTreasury(force=false) {
     const data={ok:true,...totals,apr:latestApr,walletCount:TREASURY_ADDRESSES.length,liveWallets:rows.length,updatedAt:Date.now()};
     state.data=data;state.updatedAt=data.updatedAt;state.fullRefreshAt=data.updatedAt;persistSnapshot(data);if(rows.length===TREASURY_ADDRESSES.length)recordHistory(data.total,data.updatedAt);state.treasuryReady=rows.length===TREASURY_ADDRESSES.length;recordCurrentWorth(true);badge.classList.remove('error');badge.classList.toggle('sync',rows.length<TREASURY_ADDRESSES.length);void repairWorthHistoryAfterResume();
   } catch(error) {
+    state.treasuryReady=false;
+    if(state.data)state.data.liveWallets=0;
     badge.classList.remove('sync');badge.classList.add('error');$('treasuryUpdated').textContent='Rete Injective temporaneamente non disponibile';
   } finally { state.loading=false;render(); }
 }
