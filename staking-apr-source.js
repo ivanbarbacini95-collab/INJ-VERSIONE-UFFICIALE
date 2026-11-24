@@ -6,7 +6,7 @@
   'use strict';
   const STORE = 'inj_node_verified_staking_apr_v1';
   const OFFICIAL = 'https://api.ui.injective.network/api/v1/cache/stats/apr';
-  const LCDS = ['https://sentry.lcd.injective.network:443', 'https://lcd.injective.network', 'https://1rpc.io/inj-lcd'];
+  const LCDS = ['https://sentry.lcd.injective.network:443', 'https://lcd.injective.network', 'https://1rpc.io/inj-lcd', 'https://injective-rest.publicnode.com'];
   const REFRESH_MS = 5 * 60_000;
   const MAX_CACHE_MS = 30 * 60_000;
   const ASSUMED_MINT_BLOCK_SECONDS = 0.5;
@@ -37,7 +37,7 @@
   async function lcd(path) {
     let error;
     for (const base of LCDS) {
-      try { return await json(base + path, 3600); }
+      try { return await json(base + path, 5500); }
       catch (e) { error = e; }
     }
     throw error || new Error('Injective LCD unavailable');
