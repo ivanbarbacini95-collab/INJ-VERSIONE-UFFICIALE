@@ -740,6 +740,47 @@ html[data-inj-page="index"][data-theme="carbon-gold"] body #injLightHome#injLigh
 html[data-inj-page="index"][data-theme="carbon-gold"] body #injLightHome#injLightHome #injLightModeToggle svg{stroke:var(--lite-accent)!important;}
 html[data-inj-page="index"][data-theme="carbon-gold"] body #injLightHome#injLightHome #injLightModeToggle > span{opacity:1!important;}
 </style>
+<style id="inj-dashboard-wallet-density-20261125">
+/* Dashboard only: smaller saved-account tiles; preserve native scroll, theme and controls. */
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock {
+  min-height:0!important; height:auto!important;
+  padding-block:3px!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock > .saved-wallets {
+  min-height:0!important; gap:4px!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock .wallet-dock-title {
+  margin-block:0!important; padding-block:0!important; gap:4px!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock #walletCards.wallet-mini-strip {
+  gap:6px!important; padding-block:5px 7px!important;
+  min-height:0!important; height:auto!important;
+  align-items:stretch!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock #walletCards.wallet-mini-strip > .wallet-mini {
+  box-sizing:border-box!important;
+  flex:0 0 clamp(210px,66vw,254px)!important;
+  width:clamp(210px,66vw,254px)!important;
+  min-width:0!important; max-width:calc(100vw - 32px)!important;
+  min-height:0!important; height:auto!important;
+  margin-block:0!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock #walletCards.wallet-mini-strip > .wallet-mini > .wallet-mini-main {
+  min-width:0!important; min-height:44px!important; height:auto!important;
+  padding-block:7px!important;
+  row-gap:3px!important; column-gap:6px!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock #walletCards.wallet-mini-strip > .wallet-mini .wallet-mini-heading {
+  min-width:0!important; gap:3px 5px!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock #walletCards.wallet-mini-strip > .wallet-mini :is(.wallet-mini-name,.wallet-mini-address) {
+  min-width:0!important; max-width:100%!important;
+  overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important;
+}
+html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell main#top > .wallet-dock #walletCards.wallet-mini-strip > .wallet-mini :is(.wallet-mini-total,.wallet-mini-worth) {
+  min-width:0!important; white-space:nowrap!important;
+}
+</style>
 </head>
 <body class="boot-loading">
 <div aria-label="Avvio INJ Node" aria-live="polite" aria-atomic="true" class="boot-splash node-pulse-splash" id="bootSplash" role="status">
