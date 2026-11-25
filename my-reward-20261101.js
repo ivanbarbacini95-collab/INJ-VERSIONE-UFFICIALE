@@ -13,8 +13,7 @@ const HOME='home', REWARD='reward';
 const tabs=[
  {id:'overview',it:'My Reward',en:'My Reward'},
  {id:'live',it:'Live Reward',en:'Live Reward',url:'./live-rewards.html?embedded=my-reward&v=20261124-reward-health1'},
- {id:'ladder',it:'Reward Ladder',en:'Reward Ladder',url:'./reward-ladder.html?embedded=my-reward&v=20261124-reward-health1'},
- {id:'compound',it:'Smart Compound',en:'Smart Compound',url:'./smart-compound.html?embedded=my-reward&v=testnet-1'}
+ {id:'ladder',it:'Reward Ladder',en:'Reward Ladder',url:'./reward-ladder.html?embedded=my-reward&v=20261124-reward-health1'}
 ];
 const fmt=(value,digits)=>Number(value).toLocaleString(isEn()?'en-US':'it-IT',{minimumFractionDigits:digits,maximumFractionDigits:digits});
 const money=(value,currency)=>Number(value).toLocaleString(isEn()?'en-US':'it-IT',{style:'currency',currency,minimumFractionDigits:2,maximumFractionDigits:2});
