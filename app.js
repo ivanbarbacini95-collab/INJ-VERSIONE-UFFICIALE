@@ -4088,16 +4088,18 @@ async function readWalletBalanceSnapshot(address) {
         fetchJson(base+`/cosmos/staking/v1beta1/delegations/${address}`,timeout),
         fetchJson(base+`/cosmos/distribution/v1beta1/delegators/${address}/rewards`,timeout)
       ]);
-      if (!Array.isArray(bank?.balances) || !Array.isArray(delegations?.delegation_responses) ||
-          !Array.isArray(rewards?.total)) throw new Error('Incomplete wallet balance snapshot');
+      const validList=(obj,key)=>obj!=null&&Object.prototype.hasOwnProperty.call(obj,key)&&
+        (obj[key]===null||Array.isArray(obj[key]));
+      if (!validList(bank,'balances') || !validList(delegations,'delegation_responses') ||
+          !validList(rewards,'total')) throw new Error('Incomplete wallet balance snapshot');
       preferredHomeLcd=base;
       homeLcdCooldown.delete(base);
       state.endpoint=base;
       const indicator=$('endpointLabel');
       if(indicator)indicator.textContent=`API · ${new URL(base).hostname}`;
       const validatorRows=delegationRows(delegations);
-      const available=findInj(bank.balances);
-      const nativeUsdc=findNativeUsdc(bank.balances);
+      const available=findInj(bank.balances||[]);
+      const nativeUsdc=findNativeUsdc(bank.balances||[]);
       const staked=validatorRows.reduce((sum,item)=>sum+item.amount,0);
       const reward=rewardTotal(rewards);
       return {summary:{available,nativeUsdc,staked,rewards:reward,total:available+staked+reward,updated:Date.now()},validatorRows};
@@ -4136,17 +4138,19 @@ async function reconcileSelectedWalletBalances(force = false) {
   selectedBalanceProbeBusy = true;
   selectedBalanceProbeLastAddress = address;
   selectedBalanceProbeLastAt = Date.now();
-  const requestedAt = Date.now();
   try {
     const fresh = await loadWalletSummary(address);
     const previous = state.walletSummaries[address] || {};
     // A newer completed read must not be replaced by an older in-flight response.
-    if (number(previous.updated) > requestedAt) return;
+    if (number(previous.updated) > fresh.updated) return;
+    const selectedStateChanged = state.address === address &&
+      (Math.abs(state.available-fresh.available)>1e-8 || Math.abs(state.staked-fresh.staked)>1e-8 ||
+       Math.abs(state.nativeUsdc-fresh.nativeUsdc)>1e-6 || Math.abs(state.rewards-fresh.rewards)>=0.00005);
     const balanceChanged = Math.abs(number(previous.available) - fresh.available) > 1e-8 ||
       Math.abs(number(previous.staked) - fresh.staked) > 1e-8 ||
       Math.abs(number(previous.nativeUsdc) - fresh.nativeUsdc) > 1e-6;
     const rewardChanged = Math.abs(number(previous.rewards) - fresh.rewards) >= 0.00005;
-    const refreshDisplay = balanceChanged || rewardChanged || !previous.updated;
+    const refreshDisplay = balanceChanged || rewardChanged || selectedStateChanged || !previous.updated;
     const priorAge = Date.now() - number(previous.updated);
     state.walletSummaries[address] = { ...previous, ...fresh };
     if (refreshDisplay || priorAge > 20000) saveWalletSummaries();
