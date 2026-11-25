@@ -148,3 +148,85 @@
   --etf-line:var(--line)!important;
  }
 }
+
+
+/* 2026-11-25 | White: opaque white card surfaces across the app.
+   Preserve semantic colors, chart fills, heatmap tiles and Night View. */
+@layer inj-light-financial-contrast {
+ html[data-theme="classic-white"]:not([data-night-mode="on"]):not([data-inj-page="night-view"]) {
+  --surface:#fff!important;
+  --surface-strong:#fff!important;
+  --surface-soft:#fff!important;
+  --surface2:#fff!important;
+  --surface-2:#fff!important;
+  --surface-3:#fff!important;
+  --panel:#fff!important;
+  --panel-strong:#fff!important;
+  --raised:#fff!important;
+  --sub:#fff!important;
+  --card-gradient:linear-gradient(#fff,#fff)!important;
+  --market-gradient:linear-gradient(#fff,#fff)!important;
+  --inj-theme-panel:#fff!important;
+  --floating-surface:#fff!important;
+  --dialog-gradient:linear-gradient(#fff,#fff)!important;
+  --ws-panel:#fff!important;
+  --mc-panel:#fff!important;
+  --rl-panel:#fff!important;
+  --etf-card:#fff!important;
+  --line:rgba(0,0,0,.10)!important;
+  --line-strong:rgba(0,0,0,.16)!important;
+  --inj-white-card-shadow:0 3px 12px rgba(0,0,0,.045);
+ }
+ html[data-theme="classic-white"]:not([data-night-mode="on"]):not([data-inj-page="night-view"]) body {
+  --surface:#fff!important;
+  --surface-strong:#fff!important;
+  --surface-soft:#fff!important;
+  --panel:#fff!important;
+  --panel-strong:#fff!important;
+  --raised:#fff!important;
+  --ws-panel:#fff!important;
+  --mc-panel:#fff!important;
+  --rl-panel:#fff!important;
+  --etf-card:#fff!important;
+  --card-gradient:linear-gradient(#fff,#fff)!important;
+  --market-gradient:linear-gradient(#fff,#fff)!important;
+ }
+ /* Explicit card containers, not badges, heatmap cells or controls. */
+ html[data-theme="classic-white"]:not([data-night-mode="on"]):not([data-inj-page="night-view"]) :is(
+  .data-card,.metric-card,#marketCard,#worthCard,.market-card,.worth-card,
+  .available-card,.total-owned-card,.apr-card,.reward-tracker-card,
+  .tracker-card,.tracker-panel,.target-card,.validator-card,.market-terminal-card,
+  .native-chart-panel,.morning-brief-card,.inj-myreward-stake-card,
+  .menu-tile,.menu-language-card,.menu-system-card,.menu-treasury-reset-card,.menu-install-card,
+  .entry-price-card,.entry-overview,.converter-page-card,.pi-panel,
+  .treasury-panel,.treasury-allocation-panel,.treasury-velocity-panel,
+  .treasury-milestone-panel,.treasury-session-panel,.treasury-networth-panel,
+  .treasury-performance-panel,.cash-reserve-panel,.cash-network-card,
+  .rewards-list-panel,.rewards-total-panel,.reward-editor-card,
+  .cc-panel,.cap-panel,.cs-card,.panel,.uptime-panel,.wallet-panel,
+  .injc-price-card,.injc-panel,.injc-aum-panel,.mc-card,
+  .ws-card:not([data-style="bare"]),.orderbook-panel,.indicator-panel,.search-panel
+ ) {
+  background:#fff!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--inj-white-card-shadow)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+ }
+ /* Dashboard: override the legacy gradient/glass skin including decorative overlays. */
+ html[data-theme="classic-white"][data-inj-page="index"]:not([data-night-mode="on"])
+ body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell #top
+ :is(.data-card,#marketCard,#worthCard,.metric-card) {
+  background:#fff!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--inj-white-card-shadow)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+ }
+ html[data-theme="classic-white"][data-inj-page="index"]:not([data-night-mode="on"])
+ body.dashboard-scroll-ready:not(.entry-gate-open) > .app-shell #top
+ :is(.data-card,#marketCard,#worthCard,.metric-card)::before {
+  background:none!important;
+  box-shadow:none!important;
+ }
+}
