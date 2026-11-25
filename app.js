@@ -4072,18 +4072,53 @@ function rewardTotal(data) {
     .reduce((sum, coin) => sum + fromWei(coin.amount), 0);
 }
 
+// One in-flight balance snapshot per wallet. Keep bank, delegation and
+// distribution reads on the same LCD host; a failed leg retries the entire set.
+const walletBalanceReads = new Map();
+async function readWalletBalanceSnapshot(address) {
+  const hosts = [...LCD_ENDPOINTS].sort((a,b)=>(a===preferredHomeLcd?-1:0)-(b===preferredHomeLcd?-1:0));
+  const healthy = hosts.filter(base=>(homeLcdCooldown.get(base)||0)<Date.now());
+  const candidates = [...healthy,...hosts.filter(base=>!healthy.includes(base))];
+  let lastError;
+  for (const [index,base] of candidates.entries()) {
+    try {
+      const timeout = index===candidates.length-1?6500:4500;
+      const [bank, delegations, rewards] = await Promise.all([
+        fetchJson(base+`/cosmos/bank/v1beta1/balances/${address}`,timeout),
+        fetchJson(base+`/cosmos/staking/v1beta1/delegations/${address}`,timeout),
+        fetchJson(base+`/cosmos/distribution/v1beta1/delegators/${address}/rewards`,timeout)
+      ]);
+      if (!Array.isArray(bank?.balances) || !Array.isArray(delegations?.delegation_responses) ||
+          !Array.isArray(rewards?.total)) throw new Error('Incomplete wallet balance snapshot');
+      preferredHomeLcd=base;
+      homeLcdCooldown.delete(base);
+      state.endpoint=base;
+      const indicator=$('endpointLabel');
+      if(indicator)indicator.textContent=`API · ${new URL(base).hostname}`;
+      const validatorRows=delegationRows(delegations);
+      const available=findInj(bank.balances);
+      const nativeUsdc=findNativeUsdc(bank.balances);
+      const staked=validatorRows.reduce((sum,item)=>sum+item.amount,0);
+      const reward=rewardTotal(rewards);
+      return {summary:{available,nativeUsdc,staked,rewards:reward,total:available+staked+reward,updated:Date.now()},validatorRows};
+    } catch(error) {
+      lastError=error;
+      homeLcdCooldown.set(base,Date.now()+15000);
+    }
+  }
+  throw lastError||new Error('Rete Injective non disponibile');
+}
+function getWalletBalanceSnapshot(address) {
+  const pending=walletBalanceReads.get(address);
+  if(pending)return pending;
+  const request=readWalletBalanceSnapshot(address).finally(()=>{
+    if(walletBalanceReads.get(address)===request)walletBalanceReads.delete(address);
+  });
+  walletBalanceReads.set(address,request);
+  return request;
+}
 async function loadWalletSummary(address) {
-  const [bank, delegations, rewards] = await Promise.all([
-    lcd(`/cosmos/bank/v1beta1/balances/${address}`),
-    lcd(`/cosmos/staking/v1beta1/delegations/${address}`),
-    lcd(`/cosmos/distribution/v1beta1/delegators/${address}/rewards`)
-  ]);
-  const balances = bank?.balances || [];
-  const available = findInj(balances);
-  const nativeUsdc = findNativeUsdc(balances);
-  const staked = delegationRows(delegations).reduce((sum, item) => sum + item.amount, 0);
-  const reward = rewardTotal(rewards);
-  return { available, nativeUsdc, staked, rewards: reward, total: available + staked + reward, updated: Date.now() };
+  return (await getWalletBalanceSnapshot(address)).summary;
 }
 
 // Fast read-only on-chain reconciliation. APR and validator metadata are intentionally
@@ -5352,24 +5387,18 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
   try {
     // Primo stadio: i tre dati essenziali. Appena arrivano, aggiorniamo subito la UI.
     const startedAt = Date.now();
-    const [bank, delegations, rewards] = await Promise.all([
-      lcd(`/cosmos/bank/v1beta1/balances/${address}`),
-      lcd(`/cosmos/staking/v1beta1/delegations/${address}`),
-      lcd(`/cosmos/distribution/v1beta1/delegators/${address}/rewards`)
-    ]);
+    const {summary:fresh,validatorRows} = await getWalletBalanceSnapshot(address);
     if (requestId !== state.walletRequest) return;
 
-    const validatorRows = delegationRows(delegations);
     state.address = address;
-    const balances = bank?.balances || [];
     // Prefer a selected-wallet balance probe that completed after this request
     // began; a delayed LCD/APR path must not move a confirmed balance backwards.
     const newerBalances = number(state.walletSummaries[address]?.updated) > startedAt
       ? state.walletSummaries[address] : null;
-    state.available = newerBalances ? number(newerBalances.available) : findInj(balances);
-    state.nativeUsdc = newerBalances ? number(newerBalances.nativeUsdc) : findNativeUsdc(balances);
-    state.staked = newerBalances ? number(newerBalances.staked) : validatorRows.reduce((sum, item) => sum + item.amount, 0);
-    state.rewards = newerBalances ? number(newerBalances.rewards) : rewardTotal(rewards);
+    state.available = newerBalances ? number(newerBalances.available) : fresh.available;
+    state.nativeUsdc = newerBalances ? number(newerBalances.nativeUsdc) : fresh.nativeUsdc;
+    state.staked = newerBalances ? number(newerBalances.staked) : fresh.staked;
+    state.rewards = newerBalances ? number(newerBalances.rewards) : fresh.rewards;
 
     const previous = state.walletSummaries[address] || {};
     state.walletSummaries[address] = {
@@ -5379,7 +5408,7 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
       staked: state.staked,
       rewards: state.rewards,
       total: state.available + state.staked + state.rewards,
-      updated: Date.now()
+      updated: newerBalances ? newerBalances.updated : fresh.updated
     };
     state.lastWalletUpdate = state.walletSummaries[address].updated;
     setWalletSkeleton(false);
@@ -5426,7 +5455,8 @@ async function loadWallet(showFeedback = true, requestedAddress = '', requestedL
       networkApr:state.networkApr,
       aprUpdated:valid?state.networkAprUpdated:0,
       aprSource:valid?state.networkAprSource:'',
-      updated:Date.now()
+      // APR metadata is not a new balance read.
+      updated:state.walletSummaries[address].updated
     };
     state.lastWalletUpdate = state.walletSummaries[address].updated;
     saveWalletSummaries();
@@ -7216,7 +7246,7 @@ function renderPortfolio() {
   }
   setValue('ownedTotalInj', formatInj(totalInj).replace(/ INJ$/, ''), totalInj);
   setValue('ownedTotalUsd', money(totalInj * state.price), totalInj * state.price);
-  const ownedVsStaked = Math.max(0, totalInj - state.staked);
+  const ownedVsStaked = Math.max(0, state.available + state.rewards);
   setValue('ownedVsStakedInj', formatInj(ownedVsStaked), ownedVsStaked);
   setValue('stakedInj', formatInj(state.staked).replace(/ INJ$/, ''), state.staked);
   setValue('stakedUsd', money(state.staked * state.price), state.staked * state.price);
@@ -9115,7 +9145,8 @@ scheduleBootSplashExit();
 init();
 // A confirmed claim/delegation is reflected at the next successful LCD read,
 // independently of APR refresh or the slower five-wallet summary cycle.
-window.setInterval(() => { void reconcileSelectedWalletBalances(false); }, 3200);
+window.setInterval(() => { void reconcileSelectedWalletBalances(false); }, 2600);
+window.addEventListener('focus', () => { void reconcileSelectedWalletBalances(true); }, { passive:true });
 window.setTimeout(() => { void reconcileSelectedWalletBalances(true); }, 1500);
 window.addEventListener('pageshow', () => { void reconcileSelectedWalletBalances(true); }, { passive: true });
 window.addEventListener('online', () => { void reconcileSelectedWalletBalances(true); }, { passive: true });
