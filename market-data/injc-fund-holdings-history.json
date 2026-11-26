@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "ticker": "INJC",
   "source": "https://canaryetfs.com/injc/",
-  "updatedAt": "2026-11-25",
+  "updatedAt": "2026-11-27",
   "points": [
     {
       "date": "2026-11-13",
@@ -39,6 +39,10 @@
     {
       "date": "2026-11-25",
       "injHeld": 2009643.01464
+    },
+    {
+      "date": "2026-11-27",
+      "injHeld": 2009797.45606
     }
   ]
 }

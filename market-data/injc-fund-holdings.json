@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "ticker": "INJC",
-  "asOf": "2026-11-25",
-  "injHeld": 2009643.01464,
-  "officialNetAssetsUsd": 11627028,
-  "officialInjMarketValueUsd": 11628316.99,
+  "asOf": "2026-11-27",
+  "injHeld": 2009797.45606,
+  "officialNetAssetsUsd": 12062106,
+  "officialInjMarketValueUsd": 12063013.35,
   "sharesOutstanding": 630000,
   "source": "https://canaryetfs.com/injc/",
   "sourceType": "issuer_holdings",
-  "verifiedAt": "2026-11-25T08:52:52.236Z"
+  "verifiedAt": "2026-11-26T12:54:21.510Z"
 }
