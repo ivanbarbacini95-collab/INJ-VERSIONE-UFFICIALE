@@ -12,8 +12,8 @@ const reduceMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const HOME='home', REWARD='reward';
 const tabs=[
  {id:'overview',it:'My Reward',en:'My Reward'},
- {id:'live',it:'Live Reward',en:'Live Reward',url:'./live-rewards.html?embedded=my-reward&v=20261124-reward-health1'},
- {id:'ladder',it:'Reward Ladder',en:'Reward Ladder',url:'./reward-ladder.html?embedded=my-reward&v=20261124-reward-health1'}
+ {id:'live',it:'Live Reward',en:'Live Reward',url:'./live-rewards.html?embedded=my-reward&v=20261126-reward-fit1'},
+ {id:'ladder',it:'Reward Ladder',en:'Reward Ladder',url:'./reward-ladder.html?embedded=my-reward&v=20261126-reward-fit1'}
 ];
 const fmt=(value,digits)=>Number(value).toLocaleString(isEn()?'en-US':'it-IT',{minimumFractionDigits:digits,maximumFractionDigits:digits});
 const money=(value,currency)=>Number(value).toLocaleString(isEn()?'en-US':'it-IT',{style:'currency',currency,minimumFractionDigits:2,maximumFractionDigits:2});
@@ -109,11 +109,12 @@ function embeddedStyle(frame,tab){
   const style=doc.createElement('style');
   style.id='injRewardNativeScroll';
   style.textContent=`html[data-inj-reward-embedded="true"],html[data-inj-reward-embedded="true"] body{
-  height:auto!important;min-height:100%!important;max-height:none!important;
+  height:100%!important;min-height:0!important;max-height:none!important;
   overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
   overscroll-behavior-y:auto!important;touch-action:pan-y!important}
+ html[data-inj-reward-embedded="true"] body{height:auto!important;min-height:100%!important;overflow:visible!important}
  html[data-inj-reward-embedded="true"] body :is(.rewards-close,.ladder-back,.ladder-home,.home){display:none!important}
- html[data-inj-reward-embedded="true"] body :is(.rewards-shell,.ladder-shell,.ladder-main){height:auto!important;min-height:100%!important;max-height:none!important;overflow:visible!important}
+ html[data-inj-reward-embedded="true"] body :is(.rewards-shell,.ladder-shell,.ladder-main){height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
  html[data-inj-reward-embedded="true"] body .rewards-header{position:relative!important;top:0!important;grid-template-columns:1fr auto!important;padding-top:12px!important}
  html[data-inj-reward-embedded="true"] body .rewards-total-panel{position:relative!important;top:0!important}
  @media(max-width:820px){html[data-inj-reward-embedded="true"] body .rewards-layout{grid-template-columns:minmax(0,1fr)!important}}
@@ -135,6 +136,25 @@ function embeddedStyle(frame,tab){
   },{passive:true});
  }catch(_){}
 }
+let fitRaf=0;
+function fitRewardFrame(){
+ if(fitRaf)return;
+ fitRaf=requestAnimationFrame(()=>{
+  fitRaf=0;
+  if(root.dataset.injHomeTab!==REWARD||!panel)return;
+  const active=frames.get(current)?.host;
+  if(!active||active.hidden)return;
+  const gate=$('entryGate');
+  const viewport=window.visualViewport;
+  const visibleBottom=Math.min(gate?.getBoundingClientRect().bottom||innerHeight,(viewport?.offsetTop||0)+(viewport?.height||innerHeight));
+  const top=active.getBoundingClientRect().top;
+  const height=Math.max(160,Math.floor(visibleBottom-top-8));
+  if(Number.isFinite(height))panel.style.setProperty('--inj-reward-frame-height',height+'px');
+ });
+}
+window.addEventListener('resize',fitRewardFrame,{passive:true});
+window.visualViewport?.addEventListener('resize',fitRewardFrame,{passive:true});
+window.addEventListener('pageshow',fitRewardFrame,{passive:true});
 function switchFrame(tab){
  for(const [id,obj] of frames){
   const active=id===tab;
@@ -157,6 +177,7 @@ function select(id){
  });
  $('injMyRewardOverview').hidden=id!=='overview';
  switchFrame(id);
+ fitRewardFrame();
  if(id==='overview')renderSummary();
 }
 function createPanel(actions){
@@ -195,7 +216,7 @@ function createPanel(actions){
   const frame=document.createElement('iframe');
   frame.className='inj-myreward-frame';frame.title=tab.it;frame.loading='lazy';
   frame.referrerPolicy='same-origin';
-  frame.addEventListener('load',()=>embeddedStyle(frame,tab));
+  frame.addEventListener('load',()=>{embeddedStyle(frame,tab);fitRewardFrame()});
   host.append(frame);viewport.append(host);
   frames.set(tab.id,{host,frame,url:tab.url});
  });
