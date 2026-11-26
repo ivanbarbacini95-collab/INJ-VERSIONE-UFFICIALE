@@ -451,6 +451,25 @@
   document.querySelectorAll('.mc-dots button').forEach(button=>{
     button.addEventListener('click',()=>setPage(Number(button.dataset.page),true));
   });
+  // Native horizontal swipe/trackpad scrolling; vertical mouse wheel pages by pair.
+  let wheelDelta=0,wheelAt=0,wheelLock=false,wheelEnd=0;
+  rail.addEventListener('wheel',e=>{
+    if(e.ctrlKey||e.metaKey||zoom.open||Math.abs(e.deltaX)>Math.abs(e.deltaY)||!e.deltaY)return;
+    e.preventDefault();
+    const now=performance.now();
+    if(now-wheelAt>220){wheelDelta=0;wheelLock=false;}
+    wheelAt=now;
+    clearTimeout(wheelEnd);
+    wheelEnd=setTimeout(()=>{wheelLock=false;wheelDelta=0;},220);
+    if(wheelLock)return;
+    const delta=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?rail.clientHeight:1);
+    if(Math.sign(delta)!==Math.sign(wheelDelta))wheelDelta=0;
+    wheelDelta+=delta;
+    if(Math.abs(wheelDelta)<40)return;
+    wheelLock=true;
+    setPage(state.page+Math.sign(wheelDelta),true);
+    wheelDelta=0;
+  },{passive:false});
   rail.addEventListener('scroll',()=>{
     const page=Math.round(rail.scrollLeft/Math.max(1,rail.clientWidth));
     if(page!==state.page)setPage(page,false);
