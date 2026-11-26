@@ -1,10 +1,10 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261126-asset-watchlist2';
+const CACHE_NAME = 'inj-node-v20261126-reward-window-fit1';
 const BOOT_ASSETS = [
   './index.html',
-  './my-reward-20261101.js?v=20261125-reward-clean1',
+  './my-reward-20261101.js?v=20261126-reward-fit1',
   './dashboard-portrait-gapfix-20261115.css?v=window-fit-20261126',
   './inj-light-financial-contrast-20261120.css?v=arctic-glass-20261124a',
   './cloud-sync.html?v=wallet-order-20261118',
@@ -13,7 +13,7 @@ const BOOT_ASSETS = [
   './inj-signature-collection-20261113.css?v=20261113-signature11',
   './inj-six-themes-20261103.js?v=20261113-signature11',
   './inj-geist-unified-20261112.css?v=geist-final1',
-  './inj-carbon-gold-unified-20261113.css?v=orientation-20261121',
+  './inj-carbon-gold-unified-20261113.css?v=reward-fit-20261126',
   './inj-portrait-clarity-20261115.css?v=global-responsive-1',
   './inj-responsive-fullscreen-20261115.css?v=ipad-20261124',
   './assets/fonts/inj-geist.woff2',
@@ -27,7 +27,7 @@ const BOOT_ASSETS = [
   './inj-home-overrides-20261106.css?v=20261118-no-purple-caps-b',
   './home-fixed-20261110.js?v=foreground-20261122a',
   './home-fixed-20261110.css?v=home-fixed-all-20261116',
-  './my-reward-portrait-20261110.js?v=portrait-desktop1',
+  './my-reward-portrait-20261110.js?v=reward-fit1',
   './my-reward-portrait-20261110.css?v=portrait-desktop1',
   './staking-apr-source.js?v=20261109-shared2',
   './app.js?v=foreground-20261122a',
