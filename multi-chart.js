@@ -16,6 +16,21 @@
     {id:'1M',name:'1 MESE',nameEn:'1 MONTH',interval:'1M',ms:null}
   ];
   const groups = [defs.slice(0,2),defs.slice(2,4),defs.slice(4,6),defs.slice(6,8)];
+  const HISTORY_LIMIT=500;
+  const emaPeriods=[12,26,50,200];
+  // Seed with the first N actual candle closes; do not invent missing history.
+  function emaValues(rows,period){
+    const values=Array(rows.length).fill(null);
+    if(rows.length<period)return values;
+    let ema=0;
+    for(let i=0;i<period;i++)ema+=rows[i].c;
+    ema/=period;values[period-1]=ema;
+    const alpha=2/(period+1);
+    for(let i=period;i<rows.length;i++){
+      ema+=alpha*(rows[i].c-ema);values[i]=ema;
+    }
+    return values;
+  }
   // Every viewport uses two charts per page; monitor typography remains independent.
   const monitorMedia=window.matchMedia('(min-width:900px) and (min-height:600px), (min-width:700px) and (min-height:900px) and (pointer:fine)');
   const cards = new Map();
@@ -98,7 +113,7 @@
       button.classList.toggle('active',current);
       if(current)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
     });
-    if(move)rail.scrollTo({left:rail.clientWidth*next,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    if(move)rail.scrollTo({left:rail.clientWidth*next,behavior:'auto'});
     ensureGroup(next);
     queueDraw(true);
   }
@@ -121,7 +136,7 @@
     if(bucket<last.t)return;
     if(bucket>last.t){
       rows.push({t:bucket,o:price,h:price,l:price,c:price});
-      if(rows.length>96)rows.splice(0,rows.length-96);
+      if(rows.length>HISTORY_LIMIT)rows.splice(0,rows.length-HISTORY_LIMIT);
       return;
     }
     last.h=Math.max(last.h,price);last.l=Math.min(last.l,price);last.c=price;
@@ -130,7 +145,7 @@
     if(!Array.isArray(raw))throw Error('Not a kline array');
     return raw.map(r=>({t:Number(r[0]),o:Number(r[1]),h:Number(r[2]),l:Number(r[3]),c:Number(r[4])}))
       .filter(r=>Number.isFinite(r.t)&&r.t>0&&r.o>0&&r.c>0&&r.h>=Math.max(r.o,r.c)&&r.l>0&&r.l<=Math.min(r.o,r.c))
-      .sort((a,b)=>a.t-b.t).slice(-96);
+      .sort((a,b)=>a.t-b.t).slice(-HISTORY_LIMIT);
   }
   async function fetchRows(def){
     const bases=['https://data-api.binance.vision','https://api.binance.com','https://api1.binance.com'];
@@ -138,7 +153,7 @@
       const controller=new AbortController();
       const timer=setTimeout(()=>controller.abort(),7500);
       try{
-        const url=base+'/api/v3/klines?symbol=INJUSDT&interval='+encodeURIComponent(def.interval)+'&limit=96';
+        const url=base+'/api/v3/klines?symbol=INJUSDT&interval='+encodeURIComponent(def.interval)+'&limit='+HISTORY_LIMIT;
         const response=await fetch(url,{cache:'no-store',signal:controller.signal,credentials:'omit'});
         if(!response.ok)throw Error('HTTP '+response.status);
         const rows=validateRows(await response.json());
@@ -230,8 +245,12 @@
     // Keep phone canvases and their original 7px candle cap unchanged.
     const externalDisplay=(monitorMedia.matches && width>=220) || (window.innerWidth>=700 && window.innerHeight>=650 && width>=550);
     const portraitDisplay=window.innerHeight>window.innerWidth;
-    const left=expanded?12:5,right=width-(externalDisplay? (expanded?80:72) : (expanded?57:45));
-    const top=expanded?14:7,bottom=height-(externalDisplay? (expanded?36:30) : (expanded?29:21));
+    const axisFont=externalDisplay?(expanded?14:12):(expanded?11:10);
+    const light=['arctic','classic-white'].includes(document.documentElement.dataset.theme);
+    const emaColors=light?['#a86900','#0079b7','#b42c9b','#7644c4']:['#ffbb36','#42c5ff','#ff6bc6','#b69aff'];
+    const left=expanded?12:7,right=width-(externalDisplay? (expanded?90:78) : (expanded?70:58));
+    const top=height>=130?26:19,bottom=height-(externalDisplay? (expanded?36:30) : (expanded?29:21));
+    if(right-left<30||bottom-top<15)return;
     const plotW=Math.max(1,right-left),plotH=Math.max(1,bottom-top);
     const maxBars=externalDisplay
       ? Math.max(24,Math.min(expanded?(portraitDisplay?56:76):(portraitDisplay?48:72),
@@ -240,16 +259,24 @@
     const shown=rows.slice(-maxBars);
     let hi=-Infinity,lo=Infinity;
     for(const p of shown){hi=Math.max(hi,p.h);lo=Math.min(lo,p.l);}
+    const overlays=emaPeriods.map((period,i)=>({period,color:emaColors[i],values:emaValues(rows,period).slice(-shown.length)}));
+    for(const overlay of overlays)for(const value of overlay.values){
+      if(Number.isFinite(value)){hi=Math.max(hi,value);lo=Math.min(lo,value);}
+    }
     if(!(hi>0&&lo>0))return;
     const spread=Math.max(hi-lo,hi*0.0015);
     hi+=spread*0.10;lo=Math.max(0,lo-spread*.10);
     const mapY=p=>top+(hi-p)/(hi-lo)*plotH;
     const step=plotW/shown.length;
     ctx.lineWidth=1;ctx.strokeStyle=dim;ctx.globalAlpha=.13;
-    for(const ratio of [.25,.5,.75]){
-      const y=top+plotH*ratio;
+    const tickCount=Math.max(2,Math.min(7,Math.floor(plotH/34)));
+    for(let i=0;i<=tickCount;i++){
+      const y=top+plotH*i/tickCount;
       ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
     }
+    ctx.globalAlpha=1;
+    ctx.strokeStyle=dim;ctx.globalAlpha=.25;
+    ctx.beginPath();ctx.moveTo(right,top);ctx.lineTo(right,bottom);ctx.stroke();
     ctx.globalAlpha=1;
     if(state.style==='lines'){
       ctx.strokeStyle=accent;ctx.lineWidth=expanded?2:1.6;ctx.lineJoin='round';ctx.lineCap='round';
@@ -273,6 +300,29 @@
         ctx.fillRect(x-bodyWidth/2,y1,bodyWidth,Math.max(1.2,y2-y1));
       });
     }
+    // Overlay the four EMAs on both candles and line charts, clipped to the plot.
+    ctx.save();ctx.beginPath();ctx.rect(left,top,plotW,plotH);ctx.clip();
+    for(const overlay of overlays){
+      ctx.strokeStyle=overlay.color;ctx.lineWidth=expanded?1.8:1.35;ctx.lineJoin='round';
+      ctx.beginPath();let started=false;
+      overlay.values.forEach((value,i)=>{
+        if(!Number.isFinite(value)){started=false;return;}
+        const x=left+(i+.5)*step,y=mapY(value);
+        if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+      });ctx.stroke();
+    }
+    ctx.restore();
+    // Compact legend; a dash explicitly marks insufficient candle history.
+    const legendFont=width<330?9:11;
+    ctx.font=legendFont+'px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+    const cell=(width-left-8)/overlays.length;
+    overlays.forEach((overlay,i)=>{
+      const available=Number.isFinite(overlay.values.at(-1));
+      const x=left+i*cell;
+      ctx.fillStyle=available?overlay.color:dim;
+      ctx.fillRect(x,7,8,2);
+      ctx.fillText('EMA '+overlay.period+(available?'':' —'),x+11,8,Math.max(1,cell-12));
+    });
     const last=shown[shown.length-1];
     if(last?.c>0){
       const y=mapY(last.c);
@@ -281,14 +331,24 @@
       ctx.setLineDash([3,4]);ctx.strokeStyle=priceLine;ctx.lineWidth=.9;ctx.globalAlpha=.82;
       ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
       ctx.setLineDash([]);ctx.globalAlpha=1;
-      ctx.font=(externalDisplay?(expanded?'14':'12'):(expanded?'11':'9'))+'px system-ui,sans-serif';
-      ctx.textAlign='left';ctx.textBaseline='middle';
-      ctx.fillStyle=ink;ctx.fillText(priceLabel(last.c),right+3,Math.max(top+5,Math.min(bottom-5,y)));
     }
-    ctx.font=(externalDisplay?(expanded?'14':'12'):(expanded?'11':'9'))+'px system-ui,sans-serif';
+    ctx.font=axisFont+'px system-ui,sans-serif';
     ctx.fillStyle=dim;ctx.textBaseline='middle';ctx.textAlign='left';
-    ctx.fillText(priceLabel(hi),right+3,top+5);
-    ctx.fillText(priceLabel(lo),right+3,bottom-5);
+    const currentY=last?.c>0?Math.max(top+axisFont/2,Math.min(bottom-axisFont/2,mapY(last.c))):NaN;
+    for(let i=0;i<=tickCount;i++){
+      const value=hi-(hi-lo)*i/tickCount;
+      const y=Math.max(top+axisFont/2,Math.min(bottom-axisFont/2,top+plotH*i/tickCount));
+      if(Number.isFinite(currentY)&&Math.abs(y-currentY)<axisFont+6)continue;
+      ctx.fillText(priceLabel(value),right+5,y,width-right-7);
+    }
+    if(Number.isFinite(currentY)){
+      const priceColor=styles.getPropertyValue('--mc-price-line').trim()||'#ffd84a';
+      ctx.fillStyle=priceColor;
+      ctx.fillRect(right+2,currentY-axisFont*.8,width-right-4,axisFont*1.6);
+      ctx.fillStyle=light?'#ffffff':'#121212';
+      ctx.fillText(priceLabel(last.c),right+5,currentY,width-right-9);
+    }
+    ctx.fillStyle=dim;
     const timeLabel=t=>{
       const d=new Date(t);
       if(def.ms&&def.ms<=3600000)return d.toLocaleTimeString(en()?'en-US':'it-IT',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'});
