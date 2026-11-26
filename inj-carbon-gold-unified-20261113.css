@@ -932,3 +932,106 @@ html:is([data-theme="carbon-gold"],[data-theme="classic-black"])
      .treasury-performance-cell.positive>strong,.treasury-performance-cell.negative>strong){
   opacity:1!important;
 }
+
+/* 2026-11-26 | Full-window geometry, independent of selected theme.
+   Keep dedicated chart canvases and the fixed Home dock under their own layout.
+   Reward documents own their scroll; the parent iframe never clips wallet rows. */
+@media screen and (min-width:700px), screen and (pointer:fine) {
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate.visible {
+  overflow-x:hidden!important;overflow-y:auto!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate .entry-gate-shell:not(.first-access) {
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  width:100%!important;max-width:none!important;height:auto!important;min-height:100%!important;max-height:none!important;
+  padding:clamp(6px,1vw,16px)!important;overflow:visible!important;box-sizing:border-box!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate .entry-gate-shell:not(.first-access)>.entry-actions.entry-flat-v44 {
+  display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+  width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;max-height:none!important;
+  margin:0!important;overflow:visible!important;align-items:stretch!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #entryGate#entryGate #injMyRewardPanel {
+  display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+  width:100%!important;max-width:none!important;min-width:0!important;min-height:0!important;
+  height:auto!important;max-height:none!important;margin:0!important;padding:0!important;overflow:visible!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #injMyRewardPanel .inj-myreward-nav-row {
+  flex:0 0 auto!important;min-width:0!important;max-width:100%!important;margin-bottom:8px!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #injMyRewardPanel .inj-myreward-viewport {
+  display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-width:0!important;
+  height:auto!important;max-height:none!important;overflow:visible!important;width:100%!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #injMyRewardPanel .inj-myreward-frame-host:not([hidden]) {
+  display:block!important;width:100%!important;max-width:none!important;min-width:0!important;
+  height:var(--inj-reward-frame-height,calc(100dvh - 100px))!important;min-height:160px!important;max-height:none!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #injMyRewardPanel .inj-myreward-frame-host[hidden],
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #injMyRewardPanel #injMyRewardOverview[hidden] {display:none!important}
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #injMyRewardPanel iframe.inj-myreward-frame {
+  display:block!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;border:0!important;
+ }
+ html[data-inj-page="index"][data-inj-home-tab="reward"] body #injMyRewardPanel .inj-myreward-overview:not([hidden]) {
+  width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;overflow:visible!important;
+ }
+ /* Other reading/data destinations use full width; preserve chart-specific sizing. */
+ html[data-inj-page]:is([data-inj-page="treasury"],[data-inj-page="command-center"],[data-inj-page="live-charts"],[data-inj-page="order-book"]) body :is(.treasury-main,.cc-main,.terminal-shell,.book-shell),
+ html[data-inj-page]:is([data-inj-page="reward-ladder"],[data-inj-page="comparison"],[data-inj-page="visualize-wealth"]) body :is(.ladder-main,.cap-main,.wealth-main),
+ html[data-inj-market] body>.shell {
+  width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;
+ }
+}
+/* Standalone and embedded reward pages: root is the only vertical scroll owner. */
+html[data-inj-page="live-rewards"],html[data-inj-page="reward-ladder"] {
+ height:100%!important;min-height:0!important;max-height:none!important;overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior-y:contain!important;
+}
+html[data-inj-page="live-rewards"] body,html[data-inj-page="reward-ladder"] body {
+ position:static!important;height:auto!important;min-height:100%!important;max-height:none!important;
+ overflow:visible!important;overscroll-behavior:auto!important;touch-action:pan-y!important;
+}
+html[data-inj-page="live-rewards"] body .rewards-shell,
+html[data-inj-page="reward-ladder"] body :is(.ladder-shell,.ladder-main) {
+ width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:0!important;max-height:none!important;
+ margin:0!important;overflow:visible!important;box-sizing:border-box!important;
+}
+html[data-inj-page="live-rewards"] body .rewards-shell {
+ display:block!important;padding:clamp(8px,1.4vw,26px)!important;
+}
+html[data-inj-page="live-rewards"] body :is(.rewards-main,.rewards-layout) {
+ height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;
+}
+html[data-inj-page="live-rewards"] body .rewards-main {display:grid!important;grid-template-rows:auto auto!important;align-content:start!important}
+html[data-inj-page="live-rewards"] body .rewards-layout {
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important;
+ grid-auto-rows:auto!important;align-items:stretch!important;align-content:start!important;gap:clamp(8px,1vw,18px)!important;
+}
+html[data-inj-page="live-rewards"] body :is(.rewards-list-panel,.rewards-list) {
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;
+}
+html[data-inj-page="live-rewards"] body .rewards-list-head {display:grid!important}
+html[data-inj-page="live-rewards"] body .rewards-total-panel {grid-row:1!important;position:relative!important;top:auto!important;height:auto!important;min-height:clamp(210px,32vh,320px)!important;max-height:none!important;width:100%!important}
+html[data-inj-page="live-rewards"] body .rewards-list-panel {grid-row:2!important;width:100%!important}
+html[data-inj-page="live-rewards"] body .reward-row {height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;min-width:0!important}
+html[data-inj-page="live-rewards"] body .rewards-intro {flex-wrap:wrap!important;min-width:0!important}
+html[data-inj-page="live-rewards"] body .rewards-sync-meta {white-space:normal!important}
+@media screen and (min-width:850px) {
+ html[data-inj-page="live-rewards"] body .rewards-layout {
+  grid-template-columns:minmax(0,1.65fr) minmax(0,1fr)!important;
+ }
+ html[data-inj-page="live-rewards"] body .rewards-total-panel {grid-column:2!important;grid-row:1!important;align-self:start!important}
+ html[data-inj-page="live-rewards"] body .rewards-list-panel {grid-column:1!important;grid-row:1!important}
+ html[data-inj-page="live-rewards"] body .reward-row {
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:auto!important;
+  align-items:center!important;gap:clamp(8px,1vw,16px)!important;padding:clamp(9px,1.1vw,18px)!important;
+ }
+ html[data-inj-page="live-rewards"] body .reward-live-number {min-width:0!important;max-width:100%!important;justify-items:end!important;text-align:right!important;padding-left:0!important}
+ html[data-inj-page="live-rewards"] body .reward-live-number strong {min-width:0!important;max-width:100%!important;overflow-wrap:anywhere!important;font-size:clamp(14px,1.5vw,23px)!important}
+}
+@media screen and (min-width:700px) and (orientation:portrait) {
+ html[data-inj-page="live-rewards"] body .rewards-layout {grid-template-columns:minmax(0,1fr)!important}
+ html[data-inj-page="live-rewards"] body .rewards-total-panel {grid-column:1!important;grid-row:1!important}
+ html[data-inj-page="live-rewards"] body .rewards-list-panel {grid-column:1!important;grid-row:2!important}
+}
+html[data-inj-page="reward-ladder"] body .ladder-main {padding-inline:clamp(12px,2vw,36px)!important}
