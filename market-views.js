@@ -48,14 +48,14 @@
  const watchCoins=()=>{const lookup=new Map(all().map(c=>[c.id,c]));return watch().map(w=>{const c=lookup.get(w.id);return c&&String(c.symbol).toUpperCase()===w.symbol?c:null}).filter(Boolean)};
  let etfQuote=null,etfBusy=false;
  function showETF(){
-  if(section==='favorites')return false;
+  if(section==='favorites'||!etfQuote)return false;
   const q=String($('search')?.value||'').trim().toLowerCase(),d=$('direction')?.value||'all';
   return (!q||'injc canary staked inj etf'.includes(q))&&(d==='all'||(Number.isFinite(etfQuote?.change)&&(d==='up'?etfQuote.change>=0:etfQuote.change<0)));
  }
  function etfRow(){
   const q=etfQuote, stamp=q?new Date(q.time).toLocaleString(en()?'en-US':'it-IT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
   const price=q?new Intl.NumberFormat(en()?'en-US':'it-IT',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(q.price):'—';
-  return '<a class="inj-watch-etf" href="./injc-etf.html" target="_top"><span class="inj-etf-icon">I</span><span class="inj-etf-name"><strong>INJC <small>ETF</small></strong><span>Canary Staked INJ ETF</span></span><span class="inj-etf-quote"><strong>'+escape(price)+'</strong><small class="'+tone(q?.change)+'">'+escape(q?percent(q.change):'—')+'</small><small>'+escape(stamp?tr('Ultima quotazione ','Last quote ')+stamp:tr('Dato non disponibile','Quote unavailable'))+'</small></span></a>';
+  return '<a class="inj-watch-etf" href="./injc-etf.html" target="_top"><span class="inj-etf-identity"><span class="inj-etf-icon">I</span><span class="inj-etf-name"><strong>INJC <small>ETF</small></strong><span>Canary Staked INJ ETF</span></span></span><span class="inj-etf-quote"><strong>'+escape(price)+'</strong></span><span class="inj-etf-performance '+tone(q?.change)+'">'+escape(q?percent(q.change):'—')+'</span><span class="inj-etf-stamp">'+escape(stamp?tr('Ultima quotazione ','Last quote ')+stamp:'')+'</span></a>';
  }
  async function refreshETF(){
   if(etfBusy||document.hidden||global.hidden||section==='favorites')return;
@@ -268,15 +268,13 @@
  }
  function renderList(items){
   const coins=sorted(items),template=document.createElement('template'),next=new Map();
-  const q=String($('search')?.value||'').trim().toLowerCase(),dir=$('direction')?.value||'all';
-  const orderMode=section!=='favorites'&&$('marketProSort')?.value==='rank';
+  const orderMode=section!=='favorites'&&($('marketProSort')?.value||'rank')==='rank';
   const quoted=new Map(coins.map(c=>[c.id,c]));
-  const unavailable=(w)=>'<div class="inj-watch-unavailable"><strong>'+escape(w.symbol)+'</strong><small>'+tr('Quotazione non disponibile','Quote unavailable')+'</small><span>—</span></div>';
   let content=coins.map((coin,index)=>rowHtml(coin,index)).join('');
   if(section!=='favorites'&&orderMode){
    let index=0;content=watch().map(w=>{
-    const c=quoted.get(w.id),raw=all().find(x=>x.id===w.id&&String(x.symbol).toUpperCase()===w.symbol);
-    const row=c?rowHtml(c,index++):(!hasMarketQuote(raw)&&dir==='all'&&(!q||w.symbol.toLowerCase().includes(q)||w.id.includes(q))?unavailable(w):'');
+    const c=quoted.get(w.id);
+    const row=c?rowHtml(c,index++):'';
     return row+(w.symbol==='INJ'&&showETF()?etfRow():'');
    }).join('');
   }else if(section!=='favorites'&&showETF())content+=etfRow();
@@ -298,7 +296,7 @@
     active.setAttribute('aria-expanded','true');
    }else openSwipeId=null;
   }
-  $('mpMetaCount').textContent=section==='favorites'?tr('Crypto visualizzate: ','Displayed assets: ')+coins.length:coins.length+'/'+watch().length+' '+tr('coin con quotazione','quoted coins');
+  $('mpMetaCount').textContent=section==='favorites'?tr('Crypto visualizzate: ','Displayed assets: ')+coins.length:coins.length+' '+tr('coin con quotazione','quoted coins');
  }
  function tile(coin,index=99){
   const v=change(coin,range),node=document.createElement('button');
