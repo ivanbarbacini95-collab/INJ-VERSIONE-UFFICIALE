@@ -505,7 +505,7 @@
 <link rel="stylesheet" href="./inj-signature-collection-20261113.css?v=carbon-only-20261113b">
 <link rel="stylesheet" href="./inj-carbon-gold-unified-20261113.css?v=orientation-20261121">
 <link rel="stylesheet" href="./home-portrait-integrated-20261114.css?v=portrait-links-chart1">
-<link rel="stylesheet" href="./dashboard-portrait-gapfix-20261115.css?v=compact-20261121">
+<link rel="stylesheet" href="./dashboard-portrait-gapfix-20261115.css?v=window-fit-20261126">
 
 <link rel="stylesheet" href="./inj-light-financial-contrast-20261120.css?v=arctic-glass-20261124a">
 <style id="inj-home-portrait-balance-20261121">
@@ -2049,6 +2049,22 @@ html[data-inj-page="index"][data-theme] body.dashboard-scroll-ready:not(.entry-g
     });
     update();
   });
+})();
+</script>
+
+<script id="inj-dashboard-window-fit">
+(function(){
+ 'use strict';
+ // Only react when the displayed number's length changes; CSS handles every
+ // window resize immediately without polling or rebuilding the live numbers.
+ var nodes=document.querySelectorAll('#marketPrice,#netWorthUsd,#top .metric-value');
+ function update(node){
+   var value=node.getAttribute('data-rendered-value')||node.textContent||'';
+   var length=Math.max(node.id==='marketPrice'?8:node.id==='netWorthUsd'?10:9,value.trim().length+(node.id==='marketPrice'?1:0));
+   if(node.style.getPropertyValue('--dash-fit-length')!==String(length))node.style.setProperty('--dash-fit-length',length);
+ }
+ var observer=new MutationObserver(function(records){records.forEach(function(record){update(record.target)})});
+ nodes.forEach(function(node){update(node);observer.observe(node,{attributes:true,attributeFilter:['data-rendered-value']})});
 })();
 </script>
 </body>
