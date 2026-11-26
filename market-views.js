@@ -43,6 +43,27 @@
  let heatmapHasRendered=false;
  let openSwipeId=null;
  const all=()=>api()?.getCoins?.()||[];
+ const watch=()=>window.INJ_CRYPTO_WATCHLIST||[];
+ const watchOrder=()=>new Map(watch().map((c,i)=>[c.id,i]));
+ const watchCoins=()=>{const lookup=new Map(all().map(c=>[c.id,c]));return watch().map(w=>{const c=lookup.get(w.id);return c&&String(c.symbol).toUpperCase()===w.symbol?c:null}).filter(Boolean)};
+ let etfQuote=null,etfBusy=false;
+ function showETF(){
+  if(section==='favorites')return false;
+  const q=String($('search')?.value||'').trim().toLowerCase(),d=$('direction')?.value||'all';
+  return (!q||'injc canary staked inj etf'.includes(q))&&(d==='all'||(Number.isFinite(etfQuote?.change)&&(d==='up'?etfQuote.change>=0:etfQuote.change<0)));
+ }
+ function etfRow(){
+  const q=etfQuote, stamp=q?new Date(q.time).toLocaleString(en()?'en-US':'it-IT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+  const price=q?new Intl.NumberFormat(en()?'en-US':'it-IT',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(q.price):'—';
+  return '<a class="inj-watch-etf" href="./injc-etf.html" target="_top"><span class="inj-etf-icon">I</span><span class="inj-etf-name"><strong>INJC <small>ETF</small></strong><span>Canary Staked INJ ETF</span></span><span class="inj-etf-quote"><strong>'+escape(price)+'</strong><small class="'+tone(q?.change)+'">'+escape(q?percent(q.change):'—')+'</small><small>'+escape(stamp?tr('Ultima quotazione ','Last quote ')+stamp:tr('Dato non disponibile','Quote unavailable'))+'</small></span></a>';
+ }
+ async function refreshETF(){
+  if(etfBusy||document.hidden||global.hidden||section==='favorites')return;
+  etfBusy=true;const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),8500);
+  try{const res=await fetch('./market-data/injc-etf-quotes.json',{cache:'no-store',signal:ctrl.signal});if(!res.ok)throw Error('ETF snapshot');const data=await res.json(),q=data.quote,t=Date.parse(q?.quoteTime);if(data.ticker==='INJC'&&Number.isFinite(q?.price)&&q.price>0&&Number.isFinite(t)&&t<=Date.now()+60000){etfQuote={price:q.price,change:Number.isFinite(q.change)?q.change:NaN,time:t};const el=rows.querySelector('.inj-watch-etf');if(el&&showETF())el.outerHTML=etfRow();else if(mode==='list')requestRender();}}
+  catch(_){/* Keep the timestamped last quote, never label it live. */}finally{clearTimeout(timer);etfBusy=false;}
+ }
+ setInterval(refreshETF,90000);
  // Applies exclusively to the Heatmap. Global Crypto preserves the full Top 200.
  // Match identifiers/names as well as tickers; do not filter native BTC, ETH, SOL or INJ.
  const stableSymbols=new Set(['USDT','USDC','DAI','USDS','USDE','USDD','USD1','PYUSD','FDUSD','TUSD','FRAX','LUSD','GUSD','PAX','USDP','RLUSD','USDY','USD0','CRVUSD','GHO','EURI','EURC','EUROC','AEUR','SUSD','USDB','USDT0','BUSD','USTC','MIM','CUSD','USDF','BFUSD','USDX']);
@@ -80,7 +101,7 @@
   const direction=$('direction')?.value||'all';
   const rankedTop=section==='favorites'
    ?[...favorites.keys()].map(id=>all().find(c=>c.id===id)).filter(Boolean)
-   :all().slice(0,count);
+   :watchCoins();
   const eligible=mode==='heatmap'
    ?rankedTop.filter(coin=>(section==='favorites'||heatmapEligible(coin))&&hasHeatmapData(coin))
    :rankedTop.filter(hasMarketQuote);
@@ -93,7 +114,7 @@
  function ranked(items){return [...items].sort((a,b)=>(finite(a.market_cap_rank)?num(a.market_cap_rank):99999)-(finite(b.market_cap_rank)?num(b.market_cap_rank):99999))}
  function sorted(items){
   const sort=$('marketProSort')?.value||'rank';
-  if(sort==='rank')return ranked(items);
+  if(sort==='rank'){if(section==='favorites')return ranked(items);const order=watchOrder();return [...items].sort((a,b)=>order.get(a.id)-order.get(b.id));}
   const values={change:c=>change(c,'24h'),volume:c=>num(c.total_volume),price:c=>num(c.current_price)};
   const get=values[sort]||values.change;
   return [...items].sort((a,b)=>{
@@ -247,7 +268,19 @@
  }
  function renderList(items){
   const coins=sorted(items),template=document.createElement('template'),next=new Map();
-  template.innerHTML=coins.length?coins.map((coin,index)=>rowHtml(coin,index)).join(''):'<div class="mp-empty">'+
+  const q=String($('search')?.value||'').trim().toLowerCase(),dir=$('direction')?.value||'all';
+  const orderMode=section!=='favorites'&&$('marketProSort')?.value==='rank';
+  const quoted=new Map(coins.map(c=>[c.id,c]));
+  const unavailable=(w)=>'<div class="inj-watch-unavailable"><strong>'+escape(w.symbol)+'</strong><small>'+tr('Quotazione non disponibile','Quote unavailable')+'</small><span>—</span></div>';
+  let content=coins.map((coin,index)=>rowHtml(coin,index)).join('');
+  if(section!=='favorites'&&orderMode){
+   let index=0;content=watch().map(w=>{
+    const c=quoted.get(w.id),raw=all().find(x=>x.id===w.id&&String(x.symbol).toUpperCase()===w.symbol);
+    const row=c?rowHtml(c,index++):(!hasMarketQuote(raw)&&dir==='all'&&(!q||w.symbol.toLowerCase().includes(q)||w.id.includes(q))?unavailable(w):'');
+    return row+(w.symbol==='INJ'&&showETF()?etfRow():'');
+   }).join('');
+  }else if(section!=='favorites'&&showETF())content+=etfRow();
+  template.innerHTML=content||'<div class="mp-empty">'+
    (section==='favorites'&&favorites.size===0
     ?tr('Nessuna crypto salvata. Scorri a sinistra una crypto in Global Crypto e tocca la stella.','No saved cryptos yet. Swipe a coin left in Global Crypto and tap the star.')
     :all().length?tr('Nessun risultato o prezzo attualmente disponibile','No matching results or currently available quotes')
@@ -265,7 +298,7 @@
     active.setAttribute('aria-expanded','true');
    }else openSwipeId=null;
   }
-  $('mpMetaCount').textContent=tr('Crypto visualizzate: ','Displayed assets: ')+coins.length;
+  $('mpMetaCount').textContent=section==='favorites'?tr('Crypto visualizzate: ','Displayed assets: ')+coins.length:coins.length+'/'+watch().length+' '+tr('coin con quotazione','quoted coins');
  }
  function tile(coin,index=99){
   const v=change(coin,range),node=document.createElement('button');
@@ -326,7 +359,7 @@
   node.title=text;
  }
  function renderMap(items){
-  const coins=ranked(items),next=new Map();
+  const coins=section==='favorites'?ranked(items):[...items].sort((a,b)=>watchOrder().get(a.id)-watchOrder().get(b.id)),next=new Map();
   // Preserve each card, logo and its composited background between feeds:
   // replacing the whole grid every 90s makes iPad Safari visibly flash.
   const sameOrder=coins.length>0&&grid.children.length===coins.length
@@ -418,10 +451,11 @@
   heat.hidden=mode!=='heatmap';
   legacy.hidden=true;
   favControls.hidden=section!=='favorites';
-  scope.hidden=section==='favorites';
+  scope.hidden=true;
+  if(section!=='favorites')void refreshETF();
   $('marketProSort').hidden=mode==='heatmap';
   $('marketHeading').textContent=section==='favorites'?tr('Preferiti','Favorites'):mode==='heatmap'?'Market Heatmap':'Global Crypto';
-  $('mpMetaTitle').innerHTML=section==='favorites'?tr('PREFERITI','FAVORITES')+' <span>· HYBRID PRO</span>':'HYBRID PRO <span>· MARKET WATCH</span>';
+  $('mpMetaTitle').innerHTML=section==='favorites'?tr('PREFERITI','FAVORITES')+' <span>· HYBRID PRO</span>':'ASSET <span>· WATCHLIST</span>';
   updateFavoritesUI();
   requestRender();
  }
@@ -548,7 +582,7 @@
   $('heatmapNote').textContent=tr('Verde: rialzo · Rosso: ribasso','Green: up · Red: down');
   $('heatmapPerformanceSource').textContent=tr('Performance '+range.toUpperCase(),'Performance '+range.toUpperCase());
   $('marketHeading').textContent=section==='favorites'?tr('Preferiti','Favorites'):mode==='heatmap'?'Market Heatmap':'Global Crypto';
-  $('mpMetaTitle').innerHTML=section==='favorites'?tr('PREFERITI','FAVORITES')+' <span>· HYBRID PRO</span>':'HYBRID PRO <span>· MARKET WATCH</span>';
+  $('mpMetaTitle').innerHTML=section==='favorites'?tr('PREFERITI','FAVORITES')+' <span>· HYBRID PRO</span>':'ASSET <span>· WATCHLIST</span>';
   updateFavoritesUI();
   requestRender();
  }
