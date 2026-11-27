@@ -236,19 +236,13 @@
  // its own market date rather than masquerading as today's live volume.
  function publishTradingVolume(points,session){
    const today=nyDay(Date.now());
-   const weekday=new Date(today+'T12:00:00Z').getUTCDay();
-   const weekend=weekday===0||weekday===6;
-   let rows=points.filter(p=>p.date===today&&Number.isSafeInteger(p.volume)&&p.volume>0);
-   if(!rows.length&&weekend&&!session){
-     const latest=points.filter(p=>p.date<today&&Number.isSafeInteger(p.volume)&&p.volume>0).at(-1);
-     if(latest)rows=[latest];
-   }
-   const shares=rows.length
-     ?(session?rows.reduce((sum,p)=>sum+p.volume,0):rows.at(-1).volume):null;
-   const date=rows.at(-1)?.date||today;
-   const price=Number(rows.at(-1)?.price)>0?Number(rows.at(-1).price):null;
-   const snapshot={ticker:'INJC',date,shares,price,
-     source:session?intradaySource:lastVolumeSource};
+   // The selected chart mode must never change the session totals.
+   const daily=[...byDay].filter(([date,row])=>date<=today&&row.volume>0).map(([date,row])=>({date,volume:row.volume,price:dailyPrice.get(date)?.price})).sort((a,b)=>a.date.localeCompare(b.date));
+   const intraday=intradayPoints.filter(p=>p.date<=today&&p.volume>0).at(-1);
+   let latest=daily.at(-1);
+   if(intraday&&(!latest||intraday.date>latest.date||(intraday.date===latest.date&&intraday.volume>latest.volume)))latest=intraday;
+   const snapshot={ticker:'INJC',date:latest?.date||today,shares:latest?.volume??null,price:latest?.price??null,
+     source:lastVolumeSource||intradaySource};
   window.__injcEtfTradedShares=snapshot;
    window.dispatchEvent(new CustomEvent('injc:traded-shares',{detail:snapshot}));
  }
@@ -418,7 +412,7 @@
        cached.sessions.forEach(row=>{
          // Saved daily history is canonical after the session closes.
          // Live Yahoo fills gaps; it must not replace a stored historical bar.
-         const priority=row.date===nyDay(Date.now())?1:3;
+         const priority=row.date===nyDay(Date.now())?2:3;
          mergeVolume(row.date,row.volume,priority);
          rememberPrice(row.date,row.close,priority);
        });
@@ -431,6 +425,13 @@
      if(results[2].status==='fulfilled'){
        const d=results[2].value,q=d?.quote;
        snapshotPts=snapshotIntraday(d);
+       if(d?.ticker==='INJC'&&Array.isArray(d.sessions)){
+         for(const day of d.sessions){
+           const rows=(day.points||[]).filter(p=>p.session==='regular'&&Number.isSafeInteger(p.volume)&&p.volume>=0);
+           const total=rows.reduce((sum,p)=>sum+p.volume,0);
+           if(total>0){mergeVolume(day.date,total,day.date===nyDay(Date.now())?2:0);rememberPrice(day.date,rows.at(-1)?.close,0);}
+         }
+       }
        if(d?.ticker==='INJC'&&q?.quoteTime&&q.price&&q.session==='regular')
          rememberPrice(nyDay(Date.parse(q.quoteTime)),q.price,0);
        // A dated regular-session quote can recover a partial archived day on
@@ -441,7 +442,7 @@
            &&q.session==='regular'&&quoteDate>='2026-11-05'
            &&quoteDate<=nyDay(Date.now())
            &&Number.isSafeInteger(Number(q.volume))&&Number(q.volume)>0){
-         mergeVolume(quoteDate,q.volume,0);
+         mergeVolume(quoteDate,q.volume,quoteDate===nyDay(Date.now())?2:0);
          if(!lastVolumeSource)lastVolumeSource=tr(
            'Snapshot INJC '+quoteDate+' · dato potenzialmente parziale',
            'INJC snapshot '+quoteDate+' · potentially partial');
@@ -515,7 +516,7 @@
    const pollVolume=async()=>{
      if(!document.hidden&&navigator.onLine!==false)await refreshVolume();
      const open=$('etfChartSession')?.dataset.state==='open';
-     setTimeout(pollVolume,open?60000:180000);
+     setTimeout(pollVolume,open?30000:120000);
    };
    setTimeout(pollVolume,60000);
  }
