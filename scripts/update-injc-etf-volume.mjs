@@ -44,6 +44,22 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
   incoming=rows;break;
  }catch(error){console.warn(host+': '+error.message);}
 }
+// Independent official historical endpoint fills dates missing from Yahoo.
+try{
+ const r=await fetch('https://api.nasdaq.com/api/quote/INJC/historical?assetclass=etf&fromdate='+first+'&todate='+today+'&limit=5000',{signal:AbortSignal.timeout(16000),headers:{accept:'application/json, text/plain, */*','user-agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36',referer:'https://www.nasdaq.com/'}});
+ if(!r.ok)throw Error('Nasdaq HTTP '+r.status);
+ const d=(await r.json())?.data;
+ if(d?.symbol&&String(d.symbol).toUpperCase()!=='INJC')throw Error('Symbol mismatch');
+ for(const row of d?.tradesTable?.rows||[]){
+  const m=String(row.date||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(!m)continue;
+  const date=m[3]+'-'+m[1].padStart(2,'0')+'-'+m[2].padStart(2,'0');
+  const volume=Number(String(row.volume??'').replace(/,/g,'')),close=Number(String(row.close??'').replace(/[$,]/g,''));
+  if(date<first||date>today||!Number.isSafeInteger(volume)||volume<=0||!(close>0))continue;
+  if(!incoming)incoming=new Map();
+  if(!incoming.has(date)||volume>incoming.get(date).volume)incoming.set(date,{volume,close,verifiedSource:'https://www.nasdaq.com/market-activity/etf/injc/historical'});
+ }
+}catch(error){console.warn('Nasdaq historical fallback:',error.message);}
 // The separate five-minute quote collector can observe a higher cumulative
 // exchange-session total than Yahoo's broken/incomplete daily bar. Its dated
 // cumulative value is a conservative lower bound, not a fabricated close.
@@ -86,7 +102,7 @@ for(const [date,row] of incoming){
  previous.set(date,{
    volume,
    close:row.close>0?row.close:(prev?.close??null),
-   ...(prev?.verifiedSource&&volume===prev.volume?{verifiedSource:prev.verifiedSource}:{})
+   ...(row.verifiedSource?{verifiedSource:row.verifiedSource}:prev?.verifiedSource&&volume===prev.volume?{verifiedSource:prev.verifiedSource}:{})
  });
 }
 const sessions=[...previous].filter(([date])=>date>=first&&date<=today)
@@ -105,7 +121,7 @@ const payload={
  schemaVersion:1,ticker:'INJC',exchange:'Nasdaq',
  firstTradingSession:first,timeZone:'America/New_York',unit:'ETF shares',
  note:'Reported daily INJC ETF shares traded and same-session reported close used only for indicative valuation. Not fund flows. Latest session may be partial.',
- source:'Yahoo Finance · daily quote bars · potentially delayed',
+ source:'Yahoo Finance / Nasdaq historical · daily quote bars · potentially delayed',
  generatedAt:new Date().toISOString(),sessions
 };
 await fs.writeFile(path,JSON.stringify(payload,null,2)+'\n');
