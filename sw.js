@@ -1,7 +1,7 @@
 /* INJ Node PWA | Cross-platform lean cache (2026-11-06)
    One cache entry per asset path: query-string build aliases no longer
    occupy multiple CacheStorage slots. Auth/API requests are never cached. */
-const CACHE_NAME = 'inj-node-v20261126-multi-chart-pairs-ema3';
+const CACHE_NAME = 'inj-node-v20261127-staking-official4';
 const BOOT_ASSETS = [
   './index.html',
   './my-reward-20261101.js?v=20261126-reward-fit1',
@@ -33,7 +33,7 @@ const BOOT_ASSETS = [
   './app.js?v=foreground-20261122a',
   './navigation.js?v=foreground-20261122a',
   './scroll-guard.js?v=foreground-20261122a',
-  './home-bottom-tabs-20261030.js?v=foreground-20261122a',
+  './home-bottom-tabs-20261030.js?v=20261127-staking-official4',
   './validators-launcher.js?v=20261111e',
   './validators.html?v=20261113-signature11',
   './validators.css?v=20261111e',
@@ -42,7 +42,7 @@ const BOOT_ASSETS = [
   './network-history.js?v=20261110-uptime-history1',
   './network-live-ws.js?v=20261109-uptime-ws1',
   './network-history.css?v=20261110-uptime-history1',
-  './all-transactions.html?v=20261113-signature11',
+  './all-transactions.html?v=20261127-staking-official4',
   './night-view.html?v=20261116-home-digit-parity',
   './night-view.js?v=light-vivid-20261120'
 ];
@@ -118,7 +118,8 @@ self.addEventListener('fetch', event => {
     try {
       const sharedTheme = /\/inj-light-financial-contrast-20261120\.css$/.test(url.pathname);
       const multiChart = /\/multi-chart\.(?:html|css|js)$/.test(url.pathname);
-      const response = await fetch(request, navigation ? { cache: 'no-store' } : sharedTheme || multiChart ? { cache: 'no-cache' } : undefined);
+      const transactionAsset = /\/(?:all-transactions(?:-movements)?\.(?:html|js)|home-bottom-tabs-20261030\.js)$/i.test(url.pathname);
+      const response = await fetch(request, navigation || transactionAsset ? { cache: 'no-store' } : sharedTheme || multiChart ? { cache: 'no-cache' } : undefined);
       schedulePut(event, url, response);
       return response;
     } catch (_) {
