@@ -12,7 +12,11 @@ const nyKey=d=>{const p=parts(d);return p.year+'-'+p.month+'-'+p.day};
 const safe=x=>x===null||x===undefined||x===''||!Number.isFinite(Number(x))?null:Number(x);
 const session=time=>{
  const d=parts(new Date(time)),minutes=(Number(d.hour)%24)*60+Number(d.minute);
- return minutes>=240&&minutes<570?'pre':minutes>=570&&minutes<960?'regular':'other';
+ const thanksgivingFriday=d.month==='11'&&d.weekday==='Fri'&&Number(d.day)>=23&&Number(d.day)<=29;
+ const closed=['Sat','Sun'].includes(d.weekday)||(d.month==='11'&&d.weekday==='Thu'&&Number(d.day)>=22&&Number(d.day)<=28);
+ const end=thanksgivingFriday||(d.month==='12'&&d.day==='24')?780:960;
+ if(closed)return 'other';
+ return minutes>=240&&minutes<570?'pre':minutes>=570&&minutes<end?'regular':'other';
 };
 const previous=JSON.parse(await fs.readFile(path,'utf8'));
 const archived=new Map();
@@ -55,7 +59,8 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
     price=reportedPrice;quoteTime=reportedTime;
     todayPts.push({time:new Date(quoteTime).toISOString(),close:price,session:active});
   }
-  const prev=safe(meta.chartPreviousClose)??safe(meta.previousClose);
+  const priorRegular=pts.filter(p=>p.session==='regular'&&nyKey(new Date(p.time))<date).at(-1);
+  const prev=safe(meta.previousClose)??priorRegular?.close??null;
   payload={schemaVersion:1,ticker:'INJC',generatedAt:now.toISOString(),source:'Yahoo Finance · quotes may be delayed',
    quote:{price,quoteTime:new Date(quoteTime).toISOString(),session:active,
     previous:prev,change:prev&&prev>0?(price-prev)/prev*100:null,
@@ -100,7 +105,7 @@ try{
  const price=quoteValue(primary?.lastSalePrice);
  const timestamp=parseNasdaqEt(primary?.lastTradeTimestamp??primary?.lastTradeTime??primary?.lastTradeDateTime??'');
  if(!(price>0)||!Number.isFinite(timestamp)||timestamp>now.getTime()+120000
-   ||nyKey(new Date(timestamp))!==date)throw Error('No timestamped INJC Nasdaq trade for today');
+   ||nyKey(new Date(timestamp))!==date||!['pre','regular'].includes(session(timestamp)))throw Error('No timestamped INJC Nasdaq trade for today');
  const oldTime=Date.parse(payload?.quote?.quoteTime||'');
  if(!Number.isFinite(oldTime)||timestamp>=oldTime){
    const delta=quoteValue(primary.netChange),percentage=quoteValue(primary.percentageChange);
@@ -125,6 +130,10 @@ if(payload){
  remember([{time:payload.quote.quoteTime,close:payload.quote.price,session:payload.quote.session}]);
 }
 if(!payload||Date.parse(previous.quote?.quoteTime||'')>Date.parse(payload.quote?.quoteTime||''))payload={...previous};
+else if(previous.quote?.quoteTime&&nyKey(new Date(previous.quote.quoteTime))===nyKey(new Date(payload.quote.quoteTime))&&previous.quote.session===payload.quote.session){
+ const q=payload.quote,old=previous.quote;
+ for(const key of ['open','high','low','volume','previous','change'])if(q[key]===null||q[key]===undefined)q[key]=old[key]??null;
+}
 if(!payload.quote){console.warn('No verified quote yet');process.exit(0);}
 const sessions=[...archived].sort(([a],[b])=>a.localeCompare(b)).slice(-30).map(([date,rows])=>({date,points:[...rows.values()].sort((a,b)=>a.time.localeCompare(b.time))}));
 const quoteDay=nyKey(new Date(payload.quote.quoteTime));
