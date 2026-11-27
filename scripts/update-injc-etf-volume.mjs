@@ -10,10 +10,12 @@ const nyDate=ms=>{
  return p.year+'-'+p.month+'-'+p.day;
 };
 const today=nyDate(Date.now());
+const positive=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))&&Number(v)>0?Number(v):null;
+const ohlc=row=>({open:positive(row.open),high:positive(row.high),low:positive(row.low)});
 const existing=JSON.parse(await fs.readFile(path,'utf8'));
 const previous=new Map((existing.sessions||[]).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)
  &&Number.isSafeInteger(Number(x.volume))&&Number(x.volume)>0).map(x=>[x.date,{
-  volume:Number(x.volume),
+  volume:Number(x.volume),...ohlc(x),
   close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null,
   ...(typeof x.verifiedSource==='string'&&/^https:\/\//.test(x.verifiedSource)?{verifiedSource:x.verifiedSource}:{})
  }]));
@@ -38,7 +40,7 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
       ||!Number.isSafeInteger(volume)||volume<=0)return;
    const day=new Date(date+'T12:00:00Z').getUTCDay();
    if(day===0||day===6)return;
-   rows.set(date,{volume,close});
+   rows.set(date,{volume,close,...ohlc({open:q.open?.[i],high:q.high?.[i],low:q.low?.[i]})});
   });
   if(!rows.size)throw Error('No dated valid share volume on '+host);
   incoming=rows;break;
@@ -57,7 +59,7 @@ try{
   const volume=Number(String(row.volume??'').replace(/,/g,'')),close=Number(String(row.close??'').replace(/[$,]/g,''));
   if(date<first||date>today||!Number.isSafeInteger(volume)||volume<=0||!(close>0))continue;
   if(!incoming)incoming=new Map();
-  if(!incoming.has(date)||volume>incoming.get(date).volume)incoming.set(date,{volume,close,verifiedSource:'https://www.nasdaq.com/market-activity/etf/injc/historical'});
+  if(!incoming.has(date)||volume>incoming.get(date).volume)incoming.set(date,{volume,close,...ohlc(Object.fromEntries(['open','high','low'].map(k=>[k,String(row[k]??'').replace(/[$,]/g,'')]))),verifiedSource:'https://www.nasdaq.com/market-activity/etf/injc/historical'});
  }
 }catch(error){console.warn('Nasdaq historical fallback:',error.message);}
 // The separate five-minute quote collector can observe a higher cumulative
@@ -79,7 +81,7 @@ if(incoming&&quoteSnapshot){
  const daily=incoming.get(quoteSnapshot.date);
  if(!daily||quoteSnapshot.volume>daily.volume){
    incoming.set(quoteSnapshot.date,{
-     volume:quoteSnapshot.volume,close:daily?.close??quoteSnapshot.close
+     ...daily,volume:quoteSnapshot.volume,close:daily?.close??quoteSnapshot.close
    });
  }
 }
@@ -101,16 +103,17 @@ for(const [date,row] of incoming){
  const volume=date===today&&prev?Math.max(prev.volume,row.volume):row.volume;
  previous.set(date,{
    volume,
+   ...Object.fromEntries(['open','high','low'].map(k=>[k,positive(row[k])??positive(prev?.[k])])),
    close:row.close>0?row.close:(prev?.close??null),
    ...(row.verifiedSource?{verifiedSource:row.verifiedSource}:prev?.verifiedSource&&volume===prev.volume?{verifiedSource:prev.verifiedSource}:{})
  });
 }
 const sessions=[...previous].filter(([date])=>date>=first&&date<=today)
  .sort(([a],[b])=>a.localeCompare(b))
- .map(([date,row])=>({date,volume:row.volume,close:row.close,
+ .map(([date,row])=>({date,volume:row.volume,close:row.close,...ohlc(row),
    ...(row.verifiedSource?{verifiedSource:row.verifiedSource}:{})}));
 const old=JSON.stringify((existing.sessions||[]).map(x=>({
- date:x.date,volume:x.volume,close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null,
+ date:x.date,volume:x.volume,close:Number.isFinite(Number(x.close))&&Number(x.close)>0?Number(x.close):null,...ohlc(x),
  ...(x.verifiedSource?{verifiedSource:x.verifiedSource}:{})
 })));
 if(JSON.stringify(sessions)===old){
