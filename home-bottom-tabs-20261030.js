@@ -29,7 +29,7 @@
      if(after&&after.parentElement===actions)after.after(card);else actions.prepend(card);
    }
    card.className='entry-action entry-action-all-transactions';
-   card.href='./all-transactions.html?v=20261109-tools-return-motion1';
+   card.href='./all-transactions.html?v=20261127-staking-official4';
    card.setAttribute('aria-label','Apri All Transaction');
    card.innerHTML="<span><strong class=\"inj-home-tile-title\" data-it=\"All Transaction\" data-en=\"All Transaction\">All Transaction</strong><small class=\"inj-tile-description\" data-it=\"Storico e riepilogo on-chain\" data-en=\"On-chain history and totals\">Storico e riepilogo on-chain</small></span><span aria-hidden=\"true\" data-premium-artwork=\"luxury-b\" class=\"inj-tile-scene inj-precision-icon inj-luxury-icon inj-tools-art inj-transaction-art\"><svg viewBox=\"0 0 120 68\" xmlns=\"http://www.w3.org/2000/svg\" focusable=\"false\" aria-hidden=\"true\"><rect class=\"pi-panel\" x=\"31\" y=\"7\" width=\"58\" height=\"53\" rx=\"8\"/><path class=\"pi-hair\" d=\"M42 19h37M42 27h21M42 35h16M42 53h35\"/><path class=\"pi-detail inj-txn-row-a\" d=\"M42 20h27\"/><path class=\"pi-detail inj-txn-row-b\" d=\"M42 28h19\"/><path class=\"pi-strong inj-txn-check\" d=\"m65 39 6 6 12-14\"/><circle class=\"pi-led inj-txn-led\" cx=\"81\" cy=\"16\" r=\"2.7\"/></svg></span><svg aria-hidden=\"true\" class=\"entry-action-arrow\" viewBox=\"0 0 24 24\"><path d=\"m9 6 6 6-6 6\"/></svg>";
    return card;
