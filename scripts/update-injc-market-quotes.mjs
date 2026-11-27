@@ -5,7 +5,7 @@ import fs from 'node:fs/promises';
 const path='market-data/injc-etf-quotes.json',now=new Date();
 const parts=d=>Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).map(p=>[p.type,p.value]));
 const ny=parts(now),min=(Number(ny.hour)%24)*60+Number(ny.minute),date=ny.year+'-'+ny.month+'-'+ny.day;
-if(['Sat','Sun'].includes(ny.weekday)||min<240||min>1010){
+if(['Sat','Sun'].includes(ny.weekday)||min<240||min>1190){
  console.log('Outside Nasdaq pre-market/core-session snapshot window.');process.exit(0);
 }
 const nyKey=d=>{const p=parts(d);return p.year+'-'+p.month+'-'+p.day};
@@ -14,10 +14,24 @@ const session=time=>{
  const d=parts(new Date(time)),minutes=(Number(d.hour)%24)*60+Number(d.minute);
  return minutes>=240&&minutes<570?'pre':minutes>=570&&minutes<960?'regular':'other';
 };
+const previous=JSON.parse(await fs.readFile(path,'utf8'));
+const archived=new Map();
+function remember(points){
+ for(const p of points||[]){
+  const t=Date.parse(p.time),day=Number.isFinite(t)?nyKey(new Date(t)):null;
+  if(!day||!(p.close>0)||!['pre','regular'].includes(p.session))continue;
+  if(!archived.has(day))archived.set(day,new Map());
+  const rows=archived.get(day),old=rows.get(p.time);
+  rows.set(p.time,{...old,...Object.fromEntries(Object.entries(p).filter(([,v])=>v!==null&&v!==undefined))});
+ }
+}
+for(const entry of previous.sessions||[])remember(entry.points);
+remember(previous.points);
+if(previous.quote?.price>0&&previous.quote.quoteTime)remember([{time:previous.quote.quoteTime,close:previous.quote.price,session:previous.quote.session}]);
 let payload;
 for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
  try{
-  const res=await fetch('https://'+host+'/v8/finance/chart/INJC?range=1d&interval=1m&includePrePost=true',{
+  const res=await fetch('https://'+host+'/v8/finance/chart/INJC?range=5d&interval=1m&includePrePost=true',{
    signal:AbortSignal.timeout(16000),headers:{accept:'application/json','user-agent':'Mozilla/5.0 (compatible; INJNodeMarketMonitor/2.0)'}});
   if(!res.ok)throw Error('HTTP '+res.status);
   const obj=(await res.json())?.chart?.result?.[0];
@@ -26,8 +40,10 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
   const pts=(obj.timestamp||[]).map((timestamp,i)=>{
    const time=new Date(Number(timestamp)*1000).toISOString();
    return {time,session:session(Date.parse(time)),open:safe(q.open?.[i]),high:safe(q.high?.[i]),low:safe(q.low?.[i]),close:safe(q.close?.[i]),volume:safe(q.volume?.[i])};
-  }).filter(p=>p.close!==null&&p.close>0&&nyKey(new Date(p.time))===date&&(p.session==='pre'||p.session==='regular'));
-  const regular=pts.filter(p=>p.session==='regular'),pre=pts.filter(p=>p.session==='pre');
+  }).filter(p=>p.close!==null&&p.close>0&&(p.session==='pre'||p.session==='regular'));
+  remember(pts);
+  const todayPts=pts.filter(p=>nyKey(new Date(p.time))===date);
+  const regular=todayPts.filter(p=>p.session==='regular'),pre=todayPts.filter(p=>p.session==='pre');
   const active=regular.length?'regular':pre.length?'pre':null;
   if(!active)throw Error('No actual pre-market or regular-market INJC prints for '+date);
   const selected=(active==='pre'?pre:regular).at(-1);
@@ -37,7 +53,7 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
   if(Number.isFinite(reportedPrice)&&reportedPrice>0&&Number.isFinite(reportedTime)&&reportedTime>quoteTime
     &&nyKey(new Date(reportedTime))===date&&session(reportedTime)===active){
     price=reportedPrice;quoteTime=reportedTime;
-    pts.push({...selected,time:new Date(quoteTime).toISOString(),close:price,session:active});
+    todayPts.push({time:new Date(quoteTime).toISOString(),close:price,session:active});
   }
   const prev=safe(meta.chartPreviousClose)??safe(meta.previousClose);
   payload={schemaVersion:1,ticker:'INJC',generatedAt:now.toISOString(),source:'Yahoo Finance · quotes may be delayed',
@@ -47,7 +63,7 @@ for(const host of ['query1.finance.yahoo.com','query2.finance.yahoo.com']){
     high:regular.length?(safe(meta.regularMarketDayHigh)??Math.max(...regular.map(p=>p.high??p.close))):null,
     low:regular.length?(safe(meta.regularMarketDayLow)??Math.min(...regular.map(p=>p.low??p.close))):null,
     volume:regular.length?(safe(meta.regularMarketVolume)??regular.reduce((sum,p)=>sum+(p.volume??0),0)):null},
-   points:pts.slice(-500)};
+   points:todayPts};
   break;
  }catch(e){console.warn(host+': '+e.message);}
 }
@@ -82,11 +98,11 @@ try{
  if(d?.symbol&&String(d.symbol).toUpperCase()!=='INJC')throw Error('Symbol mismatch');
  const primary=d?.primaryData;
  const price=quoteValue(primary?.lastSalePrice);
- const timestamp=parseNasdaqEt(primary?.lastTradeTimestamp??primary?.lastTradeTime??'');
+ const timestamp=parseNasdaqEt(primary?.lastTradeTimestamp??primary?.lastTradeTime??primary?.lastTradeDateTime??'');
  if(!(price>0)||!Number.isFinite(timestamp)||timestamp>now.getTime()+120000
    ||nyKey(new Date(timestamp))!==date)throw Error('No timestamped INJC Nasdaq trade for today');
  const oldTime=Date.parse(payload?.quote?.quoteTime||'');
- if(!Number.isFinite(oldTime)||timestamp>=oldTime-60000){
+ if(!Number.isFinite(oldTime)||timestamp>=oldTime){
    const delta=quoteValue(primary.netChange),percentage=quoteValue(primary.percentageChange);
    const prev=Number.isFinite(delta)?price-delta:payload?.quote?.previous??null;
    const sameDay=payload?.quote?.quoteTime&&nyKey(new Date(payload.quote.quoteTime))===date;
@@ -103,13 +119,19 @@ try{
  }
 }catch(e){console.warn('Nasdaq public quote unavailable; using timestamped Yahoo backup: '+e.message);}
 
-if(!payload){console.log('No real INJC prints yet. Preserve previous verified snapshot.');process.exit(0);}
-const previous=JSON.parse(await fs.readFile(path,'utf8'));
-if(previous.quote&&Date.parse(previous.quote.quoteTime)>Date.parse(payload.quote.quoteTime)){
- console.log('Stored verified quote is newer; skipping.');process.exit(0);
+// Preserve every observed point across runs, and retain 30 recent sessions.
+if(payload){
+ remember(payload.points);
+ remember([{time:payload.quote.quoteTime,close:payload.quote.price,session:payload.quote.session}]);
 }
-if(previous.quote&&previous.quote.quoteTime===payload.quote.quoteTime&&previous.quote.price===payload.quote.price&&previous.quote.volume===payload.quote.volume){
- console.log('No new quote; no repository commit needed.');process.exit(0);
-}
+if(!payload||Date.parse(previous.quote?.quoteTime||'')>Date.parse(payload.quote?.quoteTime||''))payload={...previous};
+if(!payload.quote){console.warn('No verified quote yet');process.exit(0);}
+const sessions=[...archived].sort(([a],[b])=>a.localeCompare(b)).slice(-30).map(([date,rows])=>({date,points:[...rows.values()].sort((a,b)=>a.time.localeCompare(b.time))}));
+const quoteDay=nyKey(new Date(payload.quote.quoteTime));
+payload.points=sessions.find(row=>row.date===quoteDay)?.points||payload.points||[];
+payload.sessions=sessions;
+const comparable=o=>JSON.stringify({quote:o.quote,points:o.points,sessions:o.sessions});
+if(comparable(previous)===comparable(payload)){console.log('No new verified quote or history.');process.exit(0);}
+payload.generatedAt=now.toISOString();
 await fs.writeFile(path,JSON.stringify(payload,null,2)+'\n');
-console.log('INJC '+payload.quote.session+' '+payload.quote.price+' @ '+payload.quote.quoteTime);
+console.log('INJC archive updated:',sessions.length,'sessions; latest',payload.quote.quoteTime);
