@@ -6,86 +6,131 @@
   "timeZone": "America/New_York",
   "unit": "ETF shares",
   "note": "Reported daily INJC ETF shares traded and same-session reported close used only for indicative valuation. Not fund flows. Latest session may be partial.",
-  "source": "Yahoo Finance · daily quote bars · potentially delayed",
-  "generatedAt": "2026-11-27T14:26:00.000Z",
+  "source": "Yahoo Finance / Nasdaq historical · daily quote bars · potentially delayed",
+  "generatedAt": "2026-11-27T21:10:07.837Z",
   "sessions": [
     {
       "date": "2026-11-05",
       "volume": 2900,
-      "close": 26.368999481201172
+      "close": 26.368999481201172,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-06",
       "volume": 11928,
-      "close": 26.860000610351562
+      "close": 26.860000610351562,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-09",
       "volume": 5200,
-      "close": 25.870100021362305
+      "close": 25.870100021362305,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-10",
       "volume": 3400,
-      "close": 25.610000610351562
+      "close": 25.610000610351562,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-11",
       "volume": 2307,
-      "close": 25.645000457763672
+      "close": 25.645000457763672,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-12",
       "volume": 2633,
-      "close": 23.62030029296875
+      "close": 23.62030029296875,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-13",
       "volume": 8540,
       "close": 26.03,
+      "open": null,
+      "high": null,
+      "low": null,
       "verifiedSource": "https://www.stocknear.com/etf/INJC/history"
     },
     {
       "date": "2026-11-16",
       "volume": 5044,
-      "close": 22.199899673461914
+      "close": 22.199899673461914,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-17",
       "volume": 1284,
-      "close": 22.709999084472656
+      "close": 22.709999084472656,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-18",
       "volume": 225,
-      "close": 22.375
+      "close": 22.375,
+      "open": 22.375,
+      "high": 22.375,
+      "low": 22.375
     },
     {
       "date": "2026-11-19",
       "volume": 979,
-      "close": 23.209999084472656
+      "close": 23.209999084472656,
+      "open": 23.110000610351562,
+      "high": 23.209999084472656,
+      "low": 23.110000610351562
     },
     {
       "date": "2026-11-20",
       "volume": 1671,
-      "close": 19.520000457763672
+      "close": 19.520000457763672,
+      "open": null,
+      "high": null,
+      "low": null
     },
     {
       "date": "2026-11-23",
       "volume": 5400,
       "close": 20.59,
+      "open": null,
+      "high": null,
+      "low": null,
       "verifiedSource": "https://finance.yahoo.com/quote/INJC/history/"
     },
     {
       "date": "2026-11-24",
       "volume": 600,
       "close": 18.53,
+      "open": null,
+      "high": null,
+      "low": null,
       "verifiedSource": "https://finance.yahoo.com/quote/INJC/history/"
     },
     {
       "date": "2026-11-25",
       "volume": 1521,
       "close": 19.27,
+      "open": null,
+      "high": null,
+      "low": null,
       "verifiedSource": "https://finance.yahoo.com/quote/INJC/"
     }
   ]
