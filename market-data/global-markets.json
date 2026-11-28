@@ -1,8 +1,400 @@
 {
   "schema": 1,
-  "generatedAt": "2026-11-28T10:56:54.818Z",
+  "generatedAt": "2026-11-28T18:48:24.365Z",
   "type": "static-snapshot",
   "groups": {
+    "sectors": {
+      "quotes": [
+        {
+          "id": "technology",
+          "name": "Tecnologia",
+          "symbol": "XLK",
+          "price": 160.15,
+          "change": 2.798639193786512,
+          "previous": 155.79,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "finance",
+          "name": "Finanza",
+          "symbol": "XLF",
+          "price": 57.16,
+          "change": 1.150238895770661,
+          "previous": 56.51,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "energy",
+          "name": "Energia",
+          "symbol": "XLE",
+          "price": 61.67,
+          "change": 1.2643678160919603,
+          "previous": 60.9,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "healthcare",
+          "name": "Sanità",
+          "symbol": "XLV",
+          "price": 184.2,
+          "change": 0.28310104529616353,
+          "previous": 183.68,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "industrial",
+          "name": "Industria",
+          "symbol": "XLI",
+          "price": 165.56,
+          "change": 1.6017183185026207,
+          "previous": 162.95,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "consumer",
+          "name": "Consumi discrezionali",
+          "symbol": "XLY",
+          "price": 119.97,
+          "change": 2.110817941952514,
+          "previous": 117.49,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "staples",
+          "name": "Beni essenziali",
+          "symbol": "XLP",
+          "price": 92.68,
+          "change": 0.411700975081275,
+          "previous": 92.3,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "utilities",
+          "name": "Utilities",
+          "symbol": "XLU",
+          "price": 43.73,
+          "change": 0.2751662462737947,
+          "previous": 43.61,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "realestate",
+          "name": "Immobiliare",
+          "symbol": "XLRE",
+          "price": 44.14,
+          "change": 0.6383948928408545,
+          "previous": 43.86,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "materials",
+          "name": "Materiali",
+          "symbol": "XLB",
+          "price": 52.15,
+          "change": 1.8355789884788143,
+          "previous": 51.21,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "communications",
+          "name": "Comunicazioni",
+          "symbol": "XLC",
+          "price": 107.48,
+          "change": 1.9927880053141056,
+          "previous": 105.38,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "semis",
+          "name": "Semiconduttori",
+          "symbol": "SMH",
+          "price": 440.06,
+          "change": 4.166074894664584,
+          "previous": 422.46,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "biotech",
+          "name": "Biotecnologie",
+          "symbol": "XBI",
+          "price": 158.5,
+          "change": 1.2132822477650018,
+          "previous": 156.6,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "cleanenergy",
+          "name": "Energia pulita",
+          "symbol": "ICLN",
+          "price": 14.75,
+          "change": 3.8732394366197243,
+          "previous": 14.2,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "aerospace",
+          "name": "Difesa e aerospazio",
+          "symbol": "ITA",
+          "price": 70.36,
+          "change": 2.3120546750036386,
+          "previous": 68.77,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "banks",
+          "name": "Banche regionali",
+          "symbol": "KRE",
+          "price": 70.35,
+          "change": 0.7446656164971976,
+          "previous": 69.83,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        }
+      ],
+      "available": 16,
+      "fresh": 16,
+      "updatedAt": "2026-11-28T18:48:24.627Z",
+      "source": "CNBC",
+      "status": "complete"
+    },
+    "indices": {
+      "quotes": [
+        {
+          "id": "sp500",
+          "name": "S&P 500",
+          "symbol": "^GSPC",
+          "price": 7297.49,
+          "change": 1.5970139695215435,
+          "previous": 7182.78,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nasdaq",
+          "name": "NASDAQ",
+          "symbol": "^IXIC",
+          "price": 24129.5,
+          "change": 2.3051919116424457,
+          "previous": 23585.802,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "dow",
+          "name": "Dow Jones",
+          "symbol": "^DJI",
+          "price": 50774.94,
+          "change": 1.1796636108479142,
+          "previous": 50182.95,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "russell",
+          "name": "Russell 2000",
+          "symbol": "^RUT",
+          "price": 2750.297,
+          "change": 0,
+          "previous": 2750.297,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "stoxx",
+          "name": "Euro Stoxx 50",
+          "symbol": "^STOXX50E",
+          "price": 6089.2,
+          "change": 1.2379587480090493,
+          "previous": 6014.74,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "dax",
+          "name": "DAX",
+          "symbol": "^GDAXI",
+          "price": 25441.24,
+          "change": 0.8951629789907267,
+          "previous": 25215.52,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "cac",
+          "name": "CAC 40",
+          "symbol": "^FCHI",
+          "price": 8156.09,
+          "change": 0.5839378251121685,
+          "previous": 8108.74,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "ftse",
+          "name": "FTSE 100",
+          "symbol": "^FTSE",
+          "price": 10698.81,
+          "change": 0.8436937403975886,
+          "previous": 10609.3,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nikkei",
+          "name": "Nikkei 225",
+          "symbol": "^N225",
+          "price": 58711.11,
+          "change": 2.1077699222040724,
+          "previous": 57499.16,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "hangseng",
+          "name": "Hang Seng",
+          "symbol": "^HSI",
+          "price": 22694.77,
+          "change": 2.1050637786319992,
+          "previous": 22226.88,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nifty",
+          "name": "Nifty 50",
+          "symbol": "^NSEI",
+          "price": 25607.2,
+          "change": -1.0712974946396447,
+          "previous": 25884.5,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "asx",
+          "name": "ASX 200",
+          "symbol": "^AXJO",
+          "price": 8833.6,
+          "change": 0.79645815742031,
+          "previous": 8763.8,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "bovespa",
+          "name": "Ibovespa",
+          "symbol": "^BVSP",
+          "price": 176573.35,
+          "change": -0.12810531955231852,
+          "previous": 176799.84,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "ndx",
+          "name": "Nasdaq 100",
+          "symbol": "^NDX",
+          "price": 26726.388,
+          "change": 2.608721491853716,
+          "previous": 26046.897,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "vix",
+          "name": "VIX Volatilità",
+          "symbol": "^VIX",
+          "price": 23.81,
+          "change": -11.15671641791045,
+          "previous": 26.8,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "ibex",
+          "name": "IBEX 35",
+          "symbol": "^IBEX",
+          "price": 19386.6,
+          "change": 1.7247440693885396,
+          "previous": 19057.9,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "smi",
+          "name": "Swiss Market Index",
+          "symbol": "^SSMI",
+          "price": 14879.97,
+          "change": 0.4203761992430666,
+          "previous": 14817.68,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "shanghai",
+          "name": "Shanghai Composite",
+          "symbol": "000001.SS",
+          "price": 3606.487,
+          "change": 3.7276214723421797,
+          "previous": 3476.882,
+          "time": 1795737600,
+          "currency": "",
+          "source": "CNBC"
+        }
+      ],
+      "available": 18,
+      "fresh": 18,
+      "updatedAt": "2026-11-28T18:48:24.643Z",
+      "source": "CNBC",
+      "status": "complete"
+    },
     "stocks": {
       "quotes": [
         {
@@ -635,399 +1027,7 @@
       ],
       "available": 57,
       "fresh": 57,
-      "updatedAt": "2026-11-28T10:56:55.215Z",
-      "source": "CNBC",
-      "status": "complete"
-    },
-    "indices": {
-      "quotes": [
-        {
-          "id": "sp500",
-          "name": "S&P 500",
-          "symbol": "^GSPC",
-          "price": 7297.49,
-          "change": 1.5970139695215435,
-          "previous": 7182.78,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nasdaq",
-          "name": "NASDAQ",
-          "symbol": "^IXIC",
-          "price": 24129.5,
-          "change": 2.3051919116424457,
-          "previous": 23585.802,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "dow",
-          "name": "Dow Jones",
-          "symbol": "^DJI",
-          "price": 50774.94,
-          "change": 1.1796636108479142,
-          "previous": 50182.95,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "russell",
-          "name": "Russell 2000",
-          "symbol": "^RUT",
-          "price": 2750.297,
-          "change": 0,
-          "previous": 2750.297,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "stoxx",
-          "name": "Euro Stoxx 50",
-          "symbol": "^STOXX50E",
-          "price": 6089.2,
-          "change": 1.2379587480090493,
-          "previous": 6014.74,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "dax",
-          "name": "DAX",
-          "symbol": "^GDAXI",
-          "price": 25441.24,
-          "change": 0.8951629789907267,
-          "previous": 25215.52,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "cac",
-          "name": "CAC 40",
-          "symbol": "^FCHI",
-          "price": 8156.09,
-          "change": 0.5839378251121685,
-          "previous": 8108.74,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "ftse",
-          "name": "FTSE 100",
-          "symbol": "^FTSE",
-          "price": 10698.81,
-          "change": 0.8436937403975886,
-          "previous": 10609.3,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nikkei",
-          "name": "Nikkei 225",
-          "symbol": "^N225",
-          "price": 58711.11,
-          "change": 2.1077699222040724,
-          "previous": 57499.16,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "hangseng",
-          "name": "Hang Seng",
-          "symbol": "^HSI",
-          "price": 22694.77,
-          "change": 2.1050637786319992,
-          "previous": 22226.88,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nifty",
-          "name": "Nifty 50",
-          "symbol": "^NSEI",
-          "price": 25607.2,
-          "change": -1.0712974946396447,
-          "previous": 25884.5,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "asx",
-          "name": "ASX 200",
-          "symbol": "^AXJO",
-          "price": 8833.6,
-          "change": 0.79645815742031,
-          "previous": 8763.8,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "bovespa",
-          "name": "Ibovespa",
-          "symbol": "^BVSP",
-          "price": 176573.35,
-          "change": -0.12810531955231852,
-          "previous": 176799.84,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "ndx",
-          "name": "Nasdaq 100",
-          "symbol": "^NDX",
-          "price": 26726.388,
-          "change": 2.608721491853716,
-          "previous": 26046.897,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "vix",
-          "name": "VIX Volatilità",
-          "symbol": "^VIX",
-          "price": 23.81,
-          "change": -11.15671641791045,
-          "previous": 26.8,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "ibex",
-          "name": "IBEX 35",
-          "symbol": "^IBEX",
-          "price": 19386.6,
-          "change": 1.7247440693885396,
-          "previous": 19057.9,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "smi",
-          "name": "Swiss Market Index",
-          "symbol": "^SSMI",
-          "price": 14879.97,
-          "change": 0.4203761992430666,
-          "previous": 14817.68,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "shanghai",
-          "name": "Shanghai Composite",
-          "symbol": "000001.SS",
-          "price": 3606.487,
-          "change": 3.7276214723421797,
-          "previous": 3476.882,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        }
-      ],
-      "available": 18,
-      "fresh": 18,
-      "updatedAt": "2026-11-28T10:56:55.218Z",
-      "source": "CNBC",
-      "status": "complete"
-    },
-    "sectors": {
-      "quotes": [
-        {
-          "id": "technology",
-          "name": "Tecnologia",
-          "symbol": "XLK",
-          "price": 160.15,
-          "change": 2.798639193786512,
-          "previous": 155.79,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "finance",
-          "name": "Finanza",
-          "symbol": "XLF",
-          "price": 57.16,
-          "change": 1.150238895770661,
-          "previous": 56.51,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "energy",
-          "name": "Energia",
-          "symbol": "XLE",
-          "price": 61.67,
-          "change": 1.2643678160919603,
-          "previous": 60.9,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "healthcare",
-          "name": "Sanità",
-          "symbol": "XLV",
-          "price": 184.2,
-          "change": 0.28310104529616353,
-          "previous": 183.68,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "industrial",
-          "name": "Industria",
-          "symbol": "XLI",
-          "price": 165.56,
-          "change": 1.6017183185026207,
-          "previous": 162.95,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "consumer",
-          "name": "Consumi discrezionali",
-          "symbol": "XLY",
-          "price": 119.97,
-          "change": 2.110817941952514,
-          "previous": 117.49,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "staples",
-          "name": "Beni essenziali",
-          "symbol": "XLP",
-          "price": 92.68,
-          "change": 0.411700975081275,
-          "previous": 92.3,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "utilities",
-          "name": "Utilities",
-          "symbol": "XLU",
-          "price": 43.73,
-          "change": 0.2751662462737947,
-          "previous": 43.61,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "realestate",
-          "name": "Immobiliare",
-          "symbol": "XLRE",
-          "price": 44.14,
-          "change": 0.6383948928408545,
-          "previous": 43.86,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "materials",
-          "name": "Materiali",
-          "symbol": "XLB",
-          "price": 52.15,
-          "change": 1.8355789884788143,
-          "previous": 51.21,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "communications",
-          "name": "Comunicazioni",
-          "symbol": "XLC",
-          "price": 107.48,
-          "change": 1.9927880053141056,
-          "previous": 105.38,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "semis",
-          "name": "Semiconduttori",
-          "symbol": "SMH",
-          "price": 440.06,
-          "change": 4.166074894664584,
-          "previous": 422.46,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "biotech",
-          "name": "Biotecnologie",
-          "symbol": "XBI",
-          "price": 158.5,
-          "change": 1.2132822477650018,
-          "previous": 156.6,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "cleanenergy",
-          "name": "Energia pulita",
-          "symbol": "ICLN",
-          "price": 14.75,
-          "change": 3.8732394366197243,
-          "previous": 14.2,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "aerospace",
-          "name": "Difesa e aerospazio",
-          "symbol": "ITA",
-          "price": 70.36,
-          "change": 2.3120546750036386,
-          "previous": 68.77,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "banks",
-          "name": "Banche regionali",
-          "symbol": "KRE",
-          "price": 70.35,
-          "change": 0.7446656164971976,
-          "previous": 69.83,
-          "time": 1795737600,
-          "currency": "",
-          "source": "CNBC"
-        }
-      ],
-      "available": 16,
-      "fresh": 16,
-      "updatedAt": "2026-11-28T10:56:55.248Z",
+      "updatedAt": "2026-11-28T18:48:25.223Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -1168,7 +1168,148 @@
       ],
       "available": 12,
       "fresh": 12,
-      "updatedAt": "2026-11-28T10:56:55.321Z",
+      "updatedAt": "2026-11-28T18:48:25.487Z",
+      "source": "CNBC",
+      "status": "complete"
+    },
+    "forex": {
+      "quotes": [
+        {
+          "id": "eurusd",
+          "name": "EUR / USD",
+          "symbol": "EURUSD=X",
+          "price": 1.0934,
+          "change": 0,
+          "previous": 1.0934,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "gbpusd",
+          "name": "GBP / USD",
+          "symbol": "GBPUSD=X",
+          "price": 1.3095,
+          "change": 0,
+          "previous": 1.3095,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "usdjpy",
+          "name": "USD / JPY",
+          "symbol": "JPY=X",
+          "price": 159.55,
+          "change": 0,
+          "previous": 159.55,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "usdchf",
+          "name": "USD / CHF",
+          "symbol": "CHF=X",
+          "price": 0.8361,
+          "change": 0,
+          "previous": 0.8361,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "audusd",
+          "name": "AUD / USD",
+          "symbol": "AUDUSD=X",
+          "price": 0.6648,
+          "change": 0,
+          "previous": 0.6648,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "usdcny",
+          "name": "USD / CNY",
+          "symbol": "CNY=X",
+          "price": 6.6542,
+          "change": 0,
+          "previous": 6.6542,
+          "time": 1795797000,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "usdinr",
+          "name": "USD / INR",
+          "symbol": "INR=X",
+          "price": 92.99,
+          "change": 0,
+          "previous": 92.99,
+          "time": 1795773900,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "eurgbp",
+          "name": "EUR / GBP",
+          "symbol": "EURGBP=X",
+          "price": 0.8345,
+          "change": 0,
+          "previous": 0.8345,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "eurjpy",
+          "name": "EUR / JPY",
+          "symbol": "EURJPY=X",
+          "price": 174.45,
+          "change": 0,
+          "previous": 174.45,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "nzdusd",
+          "name": "NZD / USD",
+          "symbol": "NZDUSD=X",
+          "price": 0.5461,
+          "change": 0,
+          "previous": 0.5461,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "usdcad",
+          "name": "USD / CAD",
+          "symbol": "CAD=X",
+          "price": 1.4248,
+          "change": 0,
+          "previous": 1.4248,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        },
+        {
+          "id": "usdsek",
+          "name": "USD / SEK",
+          "symbol": "SEK=X",
+          "price": 10.2618,
+          "change": 0,
+          "previous": 10.2618,
+          "time": 1795816740,
+          "currency": "",
+          "source": "CNBC"
+        }
+      ],
+      "available": 12,
+      "fresh": 12,
+      "updatedAt": "2026-11-28T18:48:25.567Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -1331,148 +1472,7 @@
       ],
       "available": 14,
       "fresh": 14,
-      "updatedAt": "2026-11-28T10:56:55.322Z",
-      "source": "CNBC",
-      "status": "complete"
-    },
-    "forex": {
-      "quotes": [
-        {
-          "id": "eurusd",
-          "name": "EUR / USD",
-          "symbol": "EURUSD=X",
-          "price": 1.0934,
-          "change": 0,
-          "previous": 1.0934,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "gbpusd",
-          "name": "GBP / USD",
-          "symbol": "GBPUSD=X",
-          "price": 1.3095,
-          "change": 0,
-          "previous": 1.3095,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "usdjpy",
-          "name": "USD / JPY",
-          "symbol": "JPY=X",
-          "price": 159.55,
-          "change": 0,
-          "previous": 159.55,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "usdchf",
-          "name": "USD / CHF",
-          "symbol": "CHF=X",
-          "price": 0.8361,
-          "change": 0,
-          "previous": 0.8361,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "audusd",
-          "name": "AUD / USD",
-          "symbol": "AUDUSD=X",
-          "price": 0.6648,
-          "change": 0,
-          "previous": 0.6648,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "usdcny",
-          "name": "USD / CNY",
-          "symbol": "CNY=X",
-          "price": 6.6542,
-          "change": 0,
-          "previous": 6.6542,
-          "time": 1795797000,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "usdinr",
-          "name": "USD / INR",
-          "symbol": "INR=X",
-          "price": 92.99,
-          "change": 0,
-          "previous": 92.99,
-          "time": 1795773900,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "eurgbp",
-          "name": "EUR / GBP",
-          "symbol": "EURGBP=X",
-          "price": 0.8345,
-          "change": 0,
-          "previous": 0.8345,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "eurjpy",
-          "name": "EUR / JPY",
-          "symbol": "EURJPY=X",
-          "price": 174.45,
-          "change": 0,
-          "previous": 174.45,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "nzdusd",
-          "name": "NZD / USD",
-          "symbol": "NZDUSD=X",
-          "price": 0.5461,
-          "change": 0,
-          "previous": 0.5461,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "usdcad",
-          "name": "USD / CAD",
-          "symbol": "CAD=X",
-          "price": 1.4248,
-          "change": 0,
-          "previous": 1.4248,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        },
-        {
-          "id": "usdsek",
-          "name": "USD / SEK",
-          "symbol": "SEK=X",
-          "price": 10.2618,
-          "change": 0,
-          "previous": 10.2618,
-          "time": 1795816740,
-          "currency": "",
-          "source": "CNBC"
-        }
-      ],
-      "available": 12,
-      "fresh": 12,
-      "updatedAt": "2026-11-28T10:56:55.365Z",
+      "updatedAt": "2026-11-28T18:48:25.578Z",
       "source": "CNBC",
       "status": "complete"
     },
@@ -1624,7 +1624,7 @@
       ],
       "available": 13,
       "fresh": 13,
-      "updatedAt": "2026-11-28T10:56:55.460Z",
+      "updatedAt": "2026-11-28T18:48:25.893Z",
       "source": "CNBC",
       "status": "complete"
     }
